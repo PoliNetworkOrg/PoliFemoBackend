@@ -1,4 +1,3 @@
-
 try
 {
     var builder = WebApplication.CreateBuilder(args);
@@ -29,5 +28,5 @@ try
 }
 catch (Exception ex)
 {
-    ;
+    Console.WriteLine(ex);
 }
