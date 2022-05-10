@@ -208,24 +208,26 @@
     ]
   },
   "packageFolders": {
-    "/home/arme/.nuget/packages/": {}
+    "C:\\Users\\Arme\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/arme/git/PoliFemoBackend/PoliFemoBackend.csproj",
+      "projectUniqueName": "D:\\git\\PoliNetwork\\PoliFemoBackend\\PoliFemoBackend.csproj",
       "projectName": "PoliFemoBackend",
-      "projectPath": "/home/arme/git/PoliFemoBackend/PoliFemoBackend.csproj",
-      "packagesPath": "/home/arme/.nuget/packages/",
-      "outputPath": "/home/arme/git/PoliFemoBackend/obj/",
+      "projectPath": "D:\\git\\PoliNetwork\\PoliFemoBackend\\PoliFemoBackend.csproj",
+      "packagesPath": "C:\\Users\\Arme\\.nuget\\packages\\",
+      "outputPath": "D:\\git\\PoliNetwork\\PoliFemoBackend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/arme/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Arme\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -267,7 +269,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.202/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }
