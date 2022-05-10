@@ -1,0 +1,69 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/arme/git/PoliFemoBackend/PoliFemoBackend.csproj": {}
+  },
+  "projects": {
+    "/home/arme/git/PoliFemoBackend/PoliFemoBackend.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/arme/git/PoliFemoBackend/PoliFemoBackend.csproj",
+        "projectName": "PoliFemoBackend",
+        "projectPath": "/home/arme/git/PoliFemoBackend/PoliFemoBackend.csproj",
+        "packagesPath": "/home/arme/.nuget/packages/",
+        "outputPath": "/home/arme/git/PoliFemoBackend/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/arme/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.2.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.202/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
