@@ -14,6 +14,7 @@ public class ArticlesController : ControllerBase
     private static JObject? _articles;
 
     [HttpGet]
+    [HttpPost]
     public ObjectResult SearchArticles(string? id, string? author)
     {
         try
