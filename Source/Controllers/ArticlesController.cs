@@ -18,9 +18,9 @@ public class ArticlesController : ControllerBase
     {
         try
         {
-            var articlesToSearchInto = GetArticles();
+            var (articlesToSearchInto, exception) = GetArticles();
             return articlesToSearchInto == null
-                ? ErrorFindingArticles(null)
+                ? ErrorFindingArticles(exception)
                 : Ok(Filter(articlesToSearchInto, id, author));
         }
         catch (Exception ex)
@@ -39,26 +39,25 @@ public class ArticlesController : ControllerBase
         return objectResult;
     }
 
-    private static JObject? GetArticles()
+    private static Tuple<JObject?, Exception?> GetArticles()
     {
         if (_articles != null)
-            return _articles;
+            return new Tuple<JObject?, Exception?>(_articles, null);
         try
         {
             HttpClient client = new();
-            using var response = client.GetAsync("https://pastebin.com/raw/Giry1b7z").Result;
+            using var response = client.GetAsync(Constants.Constants.ArticlesUrl).Result;
             using var content = response.Content;
             var data = content.ReadAsStringAsync().Result;
-            var articles2 = JObject.Parse(data);
-            _articles = articles2;
+            _articles = JObject.Parse(data);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            return new Tuple<JObject?, Exception?>(null, ex);
         }
 
-
-        return _articles;
+        return new Tuple<JObject?, Exception?>(_articles, null);
     }
 
     private static List<JToken> Filter(JObject articles, string? id, string? author)
