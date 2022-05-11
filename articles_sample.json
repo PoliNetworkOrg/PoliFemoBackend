@@ -1,0 +1,120 @@
+[
+  {
+    "id": "1",
+    "title": "test titolo 1",
+    "subtitle": "test sottotitolo 1",
+    "text": "test testo 1",
+    "authors": [
+      {
+        "id": "1",
+        "name": "test autore 1_1",
+        "link": "www.author1_1.com"
+      },
+      {
+        "id": "2",
+        "name": "test autore 1_2",
+        "link": "www.author1_2.com"
+      }
+    ],
+    "sources": [
+      {
+        "name": "test fonte 1_1",
+        "link": "www.source1_1.com"
+      },
+      {
+        "name": "test fonte 1_2",
+        "link": "www.source1_2.com"
+      }
+    ],
+    "locations": [
+      {
+        "name": "test luogo 1_1",
+        "point": {
+          "latitude": "45.465454",
+          "longitude": "9.186516"
+        }
+      },
+      {
+        "name": "test luogo 1_2",
+        "point": {
+          "latitude": "41.8933203",
+          "longitude": "12.4829321"
+        }
+      }
+    ],
+    "hashtags": [
+      "test_hashtag_1_1",
+      "test_hashtag_1_2"
+    ],
+    "territorial": [
+      "Leonardo",
+      "Bovisa"
+    ],
+    "publishTime": "2022-01-01T23:59:59.999",
+    "targetTime": "2022-02-02T23:59:59.999",
+    "music": "www.music1.com",
+    "media": [
+      "www.media1_1.com",
+      "www.media1_2.com"
+    ]
+  },
+  {
+    "id": "2",
+    "title": "test titolo 2",
+    "subtitle": "test sottotitolo 2",
+    "text": "test testo 2",
+    "authors": [
+      {
+        "id": "1",
+        "name": "test autore 2_1",
+        "link": "www.author2_1.com"
+      },
+      {
+        "id": "2",
+        "name": "test autore 2_2",
+        "link": "www.author2_2.com"
+      }
+    ],
+    "sources": [
+      {
+        "name": "test fonte 2_1",
+        "link": "www.source2_1.com"
+      },
+      {
+        "name": "test fonte 2_2",
+        "link": "www.source2_2.com"
+      }
+    ],
+    "locations": [
+      {
+        "name": "test luogo 2_1",
+        "point": {
+          "latitude": "45.465454",
+          "longitude": "9.186516"
+        }
+      },
+      {
+        "name": "test luogo 2_2",
+        "point": {
+          "latitude": "45.0677551",
+          "longitude": "7.6824892"
+        }
+      }
+    ],
+    "hashtags": [
+      "test_hashtag_2_1",
+      "test_hashtag_2_2"
+    ],
+    "territorial": [
+      "Leonardo",
+      "Bovisa"
+    ],
+    "publishTime": "2022-01-01T23:59:59.999",
+    "targetTime": "2022-02-02T23:59:59.999",
+    "music": "www.music2.com",
+    "media": [
+      "www.media2_1.com",
+      "www.media2_2.com"
+    ]
+  }
+]
