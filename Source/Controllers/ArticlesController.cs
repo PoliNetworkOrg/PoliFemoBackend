@@ -9,7 +9,7 @@ namespace PoliFemoBackend.Controllers;
 public class ArticlesController : ControllerBase
 {
     [HttpGet]
-    public ObjectResult GetQuery(string? id, string? author)
+    public ObjectResult SearchArticles(string? id, string? author)
     {
         HttpClient client = new();
         using HttpResponseMessage response = client.GetAsync("https://pastebin.com/raw/Giry1b7z").Result;
