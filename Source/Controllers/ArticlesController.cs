@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#region
+
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Controllers;
 
@@ -8,14 +12,16 @@ namespace PoliFemoBackend.Source.Controllers;
 public class ArticlesController : ControllerBase
 {
     private static JObject? _articles;
-    
+
     [HttpGet]
     public ObjectResult SearchArticles(string? id, string? author)
     {
         try
         {
             var articlesToSearchInto = GetArticles();
-            return articlesToSearchInto == null ? ErrorFindingArticles(null) : Ok(Filter(articlesToSearchInto, id, author));
+            return articlesToSearchInto == null
+                ? ErrorFindingArticles(null)
+                : Ok(Filter(articlesToSearchInto, id, author));
         }
         catch (Exception ex)
         {
@@ -59,29 +65,24 @@ public class ArticlesController : ControllerBase
     {
         Func<JToken, bool> idCheck;
         if (string.IsNullOrEmpty(id) == false && string.IsNullOrEmpty(author))
-            idCheck = (child) => child["id"]?.ToString() == id;
+            idCheck = child => child["id"]?.ToString() == id;
         else if (string.IsNullOrEmpty(id) && string.IsNullOrEmpty(author))
-            idCheck = (child) => true;
+            idCheck = _ => true;
         else if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(author))
-        {
-            idCheck = (child) => { 
+            idCheck = child =>
+            {
                 var b = child["authors"]?.ToList().Any(x => Match(x, author));
                 return b != null && b.Value;
             };
-        }
-        else if (string.IsNullOrEmpty(id) == false && !(string.IsNullOrEmpty(author)))
-        {
-            idCheck = (child) =>
+        else if (string.IsNullOrEmpty(id) == false && !string.IsNullOrEmpty(author))
+            idCheck = child =>
             {
                 var b = child["authors"]?.ToList().Any(x => Match(x, author));
                 var b2 = child["id"]?.ToString() == id;
                 return b != null && b.Value && b2;
             };
-        }
         else
-        {
-            idCheck = (child) => false;
-        }
+            idCheck = _ => false;
 
         var results = articles["articles"]?.Where(idCheck).ToList();
         return results ?? new List<JToken>();
