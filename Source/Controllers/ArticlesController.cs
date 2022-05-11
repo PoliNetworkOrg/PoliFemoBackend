@@ -1,44 +1,67 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using System.Linq;
 
-namespace PoliFemoBackend.Controllers;
+namespace PoliFemoBackend.Source.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class ArticlesController : ControllerBase
 {
+    private static JObject? _articles;
+    
     [HttpGet]
     public ObjectResult SearchArticles(string? id, string? author)
     {
-        HttpClient client = new();
-        using HttpResponseMessage response = client.GetAsync("https://pastebin.com/raw/Giry1b7z").Result;
-        using HttpContent content = response.Content;
-        string data = content.ReadAsStringAsync().Result;
         try
         {
-            JObject articles = JObject.Parse(data);
-            List<JToken> results = Filter(articles, id, author);
-            return Ok(results);
+            var articlesToSearchInto = GetArticles();
+            return articlesToSearchInto == null ? ErrorFindingArticles(null) : Ok(Filter(articlesToSearchInto, id, author));
         }
         catch (Exception ex)
         {
-            ObjectResult objectResult = new(null)
-            {
-                StatusCode = 500,
-                Value = ex.Message
-            };
-            return objectResult;
+            return ErrorFindingArticles(ex);
         }
+    }
+
+    private static ObjectResult ErrorFindingArticles(Exception? ex)
+    {
+        ObjectResult objectResult = new(null)
+        {
+            StatusCode = 500,
+            Value = ex?.Message ?? ""
+        };
+        return objectResult;
+    }
+
+    private static JObject? GetArticles()
+    {
+        if (_articles != null)
+            return _articles;
+        try
+        {
+            HttpClient client = new();
+            using var response = client.GetAsync("https://pastebin.com/raw/Giry1b7z").Result;
+            using var content = response.Content;
+            var data = content.ReadAsStringAsync().Result;
+            var articles2 = JObject.Parse(data);
+            _articles = articles2;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+
+        return _articles;
     }
 
     private static List<JToken> Filter(JObject articles, string? id, string? author)
     {
-        Func<JToken, bool> idCheck = null;
+        Func<JToken, bool> idCheck;
         if (string.IsNullOrEmpty(id) == false && string.IsNullOrEmpty(author))
-            idCheck = (child) => { return child["id"]?.ToString() == id; };
+            idCheck = (child) => child["id"]?.ToString() == id;
         else if (string.IsNullOrEmpty(id) && string.IsNullOrEmpty(author))
-            idCheck = (child) => { return true; };
+            idCheck = (child) => true;
         else if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(author))
         {
             idCheck = (child) => { 
@@ -57,7 +80,7 @@ public class ArticlesController : ControllerBase
         }
         else
         {
-            idCheck = (child) => { return false; };
+            idCheck = (child) => false;
         }
 
         var results = articles["articles"]?.Where(idCheck).ToList();
