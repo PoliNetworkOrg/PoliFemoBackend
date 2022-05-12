@@ -1,3 +1,10 @@
+
+if (args.Length > 0 && args[0] == "test")
+{
+    PoliFemoBackend.Source.Test.Test.TestMain();
+    return;
+}
+
 try
 {
     var builder = WebApplication.CreateBuilder(args);
