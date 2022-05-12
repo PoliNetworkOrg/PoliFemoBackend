@@ -5,6 +5,6 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>C:\Users\diego\Desktop\PoliFemoBackend\bin\Release\net6.0\publish\</_PublishTargetUrl>
-    <History>False|2022-05-12T12:10:20.7587016Z;True|2022-05-12T13:32:08.7534991+02:00;True|2022-05-12T10:57:55.7961985+02:00;True|2022-05-12T10:45:30.2340190+02:00;</History>
+    <History>True|2022-05-12T12:12:44.0717373Z;False|2022-05-12T14:10:20.7587016+02:00;True|2022-05-12T13:32:08.7534991+02:00;True|2022-05-12T10:57:55.7961985+02:00;True|2022-05-12T10:45:30.2340190+02:00;</History>
   </PropertyGroup>
 </Project>
