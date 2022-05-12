@@ -19,10 +19,10 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: Github Action for wget
-      uses: wei/wget@v1.1.1
     - name: Download PublishProfile
-      run: wget https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/Properties/PublishProfiles/win-x64.pubxml
+      uses: wei/wget@v1.1.1
+      with:
+        args: https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/Properties/PublishProfiles/win-x64.pubxml
     - name: publish
       run: dotnet publish PoliFemoBackend.csproj /p:PublishProfile=linux-x64.pubxml
     - name: ls
