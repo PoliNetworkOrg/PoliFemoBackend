@@ -22,7 +22,7 @@ jobs:
     - name: Github Action for wget
       uses: wei/wget@v1.1.1
     - name: Download PublishProfile
-    - run: wget https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/Properties/PublishProfiles/win-x64.pubxml
+      run: wget https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/Properties/PublishProfiles/win-x64.pubxml
     - name: publish
       run: dotnet publish PoliFemoBackend.csproj /p:PublishProfile=linux-x64.pubxml
     - name: ls
