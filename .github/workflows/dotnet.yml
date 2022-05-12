@@ -21,3 +21,5 @@ jobs:
       run: dotnet restore
     - name: publish
       run: dotnet publish PoliFemoBackend.csproj /p:PublishProfile=Properties\linux-x64.pubxml
+    - name: ls
+      run: ls -l bin/Debug/net6.0/publish/
