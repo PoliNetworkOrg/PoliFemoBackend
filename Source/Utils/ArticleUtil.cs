@@ -116,4 +116,15 @@ public static class ArticleUtil
             return new List<JToken>();
         }
     }
+
+    public static List<JToken> FilterByTargetingTheFuture(JObject articlesToSearchInto)
+    {
+        var now = DateTime.Now;
+        var results = articlesToSearchInto["articles"]?.Where(child =>
+        {
+            var dt = DateTimeUtil.ConvertToDateTime(child["targetTime"]?.ToString());
+            return now <= dt;
+        }).ToList();
+        return results ?? new List<JToken>();
+    }
 }
