@@ -37,6 +37,6 @@ jobs:
     - name: Create Github Release
       uses: ncipollo/release-action@v1
       with:
-          artifacts: ".bin/Debug/net6.0/publish/PoliFemoBackend"
+          artifacts: "./bin/Debug/net6.0/publish/PoliFemoBackend"
           token: ${{ secrets.RELEASES_TOKEN }}
           tag: ${{ steps.date.outputs.date }}
