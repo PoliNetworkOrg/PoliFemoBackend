@@ -9,7 +9,7 @@ namespace PoliFemoBackend.Source.Controllers
 
         [HttpGet]
         [HttpPost]
-        public ObjectResult SearchArticles(string id)
+        public ObjectResult SearchArticles(int id)
         {
             try
             {

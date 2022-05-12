@@ -15,11 +15,11 @@ public class ArticlesObject
         return _articles.Where(func).Select(x => x.Value).ToList();
     }
 
-    public List<JToken>? GetArticleById(string id)
+    public List<JToken>? GetArticleById(int id)
     {
         try
         {
-            return new List<JToken>() { _articles[Convert.ToInt32(id)] };
+            return new List<JToken>() { _articles[id] };
         }
         catch
         {

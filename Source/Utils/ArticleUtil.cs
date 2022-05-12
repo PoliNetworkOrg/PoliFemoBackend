@@ -64,9 +64,9 @@ public static class ArticleUtil
         return new ArticlesObject(result);
     }
 
-    internal static List<JToken> FilterById(ArticlesObject? articlesToSearchInto, string id)
+    internal static List<JToken> FilterById(ArticlesObject? articlesToSearchInto, int id)
     {
-        return (string.IsNullOrEmpty(id) ? new List<JToken>() : articlesToSearchInto?.GetArticleById(id)) ?? new List<JToken>();
+        return articlesToSearchInto?.GetArticleById(id) ?? new List<JToken>();
     }
 
     public static List<JToken> FilterByAuthor(ArticlesObject? articlesToSearchInto, string? author)
@@ -111,16 +111,12 @@ public static class ArticleUtil
         return results ?? new List<JToken>();
     }
 
-    public static List<JToken> FilterByStartingId(ArticlesObject? articlesToSearchInto, string id)
+    public static List<JToken> FilterByStartingId(ArticlesObject? articlesToSearchInto, int id)
     {
-        if (string.IsNullOrEmpty(id))
-            return new List<JToken>();
-
         try
         {
-            var idInt = Convert.ToInt32(id);
             var results = articlesToSearchInto?.Search(
-                child => Convert.ToInt32(child.Value["id"]?.ToString()) >= idInt
+                child => Convert.ToInt32(child.Value["id"]?.ToString()) >= id
             ).ToList();
             return results ?? new List<JToken>();
         }
