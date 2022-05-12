@@ -7,8 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Content Remove="Other\Examples\articles_sample.json" />
+    </ItemGroup>
+
+    <ItemGroup>
         <_WebToolingArtifacts Remove="Properties\PublishProfiles\linux-x64.pubxml" />
         <_WebToolingArtifacts Remove="Properties\PublishProfiles\win-x64.pubxml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="Other\Examples\articles_sample.json" />
     </ItemGroup>
 
     <ItemGroup>
