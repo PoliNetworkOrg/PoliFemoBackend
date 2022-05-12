@@ -5,7 +5,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>PoliFemoBackendHTTPS</ActiveDebugProfile>
-    <NameOfLastUsedPublishProfile>C:\Users\diego\Desktop\PoliFemoBackend\Properties\PublishProfiles\win-x64.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>C:\Users\diego\Desktop\PoliFemoBackend\Properties\PublishProfiles\linux-x64.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
