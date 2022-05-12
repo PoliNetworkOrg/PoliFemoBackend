@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "PoliFemoBackend": {
+    "http only": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -19,7 +19,7 @@
       "applicationUrl": "http://localhost:5224",
       "dotnetRunMessages": true
     },
-    "PoliFemoBackendHTTPS": {
+    "https only": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
