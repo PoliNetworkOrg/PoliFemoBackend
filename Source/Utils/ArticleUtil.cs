@@ -6,6 +6,7 @@ namespace PoliFemoBackend.Source.Utils
     public static class ArticleUtil
     {
         private static JObject? _articles;
+        private static readonly object LockArticles = new object();
 
         public static ObjectResult ErrorFindingArticles(Exception? ex)
         {
@@ -21,21 +22,25 @@ namespace PoliFemoBackend.Source.Utils
         {
             if (_articles != null)
                 return new Tuple<JObject?, Exception?>(_articles, null);
-            try
-            {
-                HttpClient client = new();
-                using var response = client.GetAsync(Constants.Constants.ArticlesUrl).Result;
-                using var content = response.Content;
-                var data = content.ReadAsStringAsync().Result;
-                _articles = JObject.Parse(data);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return new Tuple<JObject?, Exception?>(null, ex);
-            }
 
-            return new Tuple<JObject?, Exception?>(_articles, null);
+            lock (LockArticles)
+            {
+                try
+                {
+                    HttpClient client = new();
+                    using var response = client.GetAsync(Constants.Constants.ArticlesUrl).Result;
+                    using var content = response.Content;
+                    var data = content.ReadAsStringAsync().Result;
+                    _articles = JObject.Parse(data);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return new Tuple<JObject?, Exception?>(null, ex);
+                }
+
+                return new Tuple<JObject?, Exception?>(_articles, null);
+            }
         }
 
         internal static List<JToken> FilterById(JObject articlesToSearchInto, string id)
