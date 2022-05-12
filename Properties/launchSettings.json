@@ -19,6 +19,16 @@
       "applicationUrl": "http://localhost:5224",
       "dotnetRunMessages": true
     },
+    "PoliFemoBackendHTTPS": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:7039",
+      "dotnetRunMessages": true
+    },
     "WSL": {
       "commandName": "WSL2",
       "launchBrowser": true,
