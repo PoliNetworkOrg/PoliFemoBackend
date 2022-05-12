@@ -4,7 +4,8 @@ namespace PoliFemoBackend.Source.Objects;
 
 public class ArticlesObject
 {
-    private readonly Dictionary<int, JToken> _articles;
+    private readonly Dictionary<int, JToken> _articles; //indexed by id
+    
     public ArticlesObject(Dictionary<int, JToken> articles)
     {
         _articles = articles;
