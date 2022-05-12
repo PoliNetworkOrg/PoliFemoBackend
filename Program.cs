@@ -1,4 +1,9 @@
 
+using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 if (args.Length > 0 && args[0] == "test")
 {
     PoliFemoBackend.Source.Test.Test.TestMain();
@@ -25,7 +30,8 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseHttpsRedirection();
+    if (args.Length <= 0 || args[0] != "http")
+        app.UseHttpsRedirection();
 
     app.UseAuthorization();
 

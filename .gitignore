@@ -5,3 +5,5 @@ obj/*
 bin/*
 .idea/*
 *.DotSettings.user
+*.csproj.user
+

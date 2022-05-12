@@ -17,7 +17,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:5224",
-      "dotnetRunMessages": true
+      "dotnetRunMessages": true,
+      "commandLineArgs": "http"
     },
     "https only": {
       "commandName": "Project",
@@ -29,21 +30,11 @@
       "applicationUrl": "https://localhost:7039",
       "dotnetRunMessages": true
     },
-    "Run as test http only": {
+    "Run as test": {
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5224",
-      "dotnetRunMessages": true,
-      "commandLineArgs": "test"
-    },
-    "Run as test https only": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:7039",
       "dotnetRunMessages": true,
       "commandLineArgs": "test"
     },
