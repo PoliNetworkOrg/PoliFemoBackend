@@ -30,7 +30,8 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseHttpsRedirection();
+    if (args.Length <= 0 || args[0] != "http")
+        app.UseHttpsRedirection();
 
     app.UseAuthorization();
 
