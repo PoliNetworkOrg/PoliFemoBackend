@@ -7,7 +7,7 @@ Do per scontato che sia già configurato un reverse proxy che riscrive automatica
 	cd PoliFemoBackend
 	wget https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/run.sh
 	sudo chmod +x run.sh
-	wget https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/appsettings.json
+	wget https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/appsettings_production.json -O appsettings.json
 	sudo apt install certbot
 	sudo certbot certonly --standalone -d api.polinetwork.org
 	sudo openssl pkcs12 -export -out $HOME/PoliFemoBackend/conf.d/https/dev_cert.pfx -inkey /etc/letsencrypt/live/api.polinetwork.org/privkey.pem -in /etc/letsencrypt/live/api.polinetwork.org/cert.pem -certfile /etc/letsencrypt/live/api.polinetwork.org/chain.pem
