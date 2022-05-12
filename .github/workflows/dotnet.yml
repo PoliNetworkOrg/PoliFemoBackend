@@ -26,7 +26,7 @@ jobs:
     - name: publish
       run: dotnet publish PoliFemoBackend.csproj /p:PublishProfile=linux-x64.pubxml
     - name: ls
-      run: ls -l bin/Debug/net6.0/publish/
+      run: ls -l bin/Debug/net6.0/linux-x64/publish/
       
     - name: Get current date
       id: date
