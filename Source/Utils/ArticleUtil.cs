@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Objects;
 
 #endregion
 
@@ -9,7 +10,7 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class ArticleUtil
 {
-    private static JObject? _articles;
+    private static ArticlesObject? _articles;
     private static readonly object LockArticles = new();
 
     public static ObjectResult ErrorFindingArticles(Exception? ex)
@@ -22,10 +23,10 @@ public static class ArticleUtil
         return objectResult;
     }
 
-    public static Tuple<JObject?, Exception?> GetArticles()
+    public static Tuple<ArticlesObject?, Exception?> GetArticles()
     {
         if (_articles != null)
-            return new Tuple<JObject?, Exception?>(_articles, null);
+            return new Tuple<ArticlesObject?, Exception?>(_articles, null);
 
         lock (LockArticles)
         {
@@ -35,70 +36,82 @@ public static class ArticleUtil
                 using var response = client.GetAsync(Constants.Constants.ArticlesUrl).Result;
                 using var content = response.Content;
                 var data = content.ReadAsStringAsync().Result;
-                _articles = JObject.Parse(data);
+                _articles = Parse(data);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new Tuple<JObject?, Exception?>(null, ex);
+                return new Tuple<ArticlesObject?, Exception?>(null, ex);
             }
 
-            return new Tuple<JObject?, Exception?>(_articles, null);
+            return new Tuple<ArticlesObject?, Exception?>(_articles, null);
         }
     }
 
-    internal static List<JToken> FilterById(JObject articlesToSearchInto, string id)
+    private static ArticlesObject? Parse(string data)
     {
-        if (string.IsNullOrEmpty(id))
-            return new List<JToken>();
+        var parsed = JObject.Parse(data);
+        var articles = parsed["articles"];
+        if (articles == null)
+            return null;
+        
+        var result = new Dictionary<int, JToken>();
+        foreach (var child in articles)
+        {
+            result[Convert.ToInt32(child["id"])] = child;
+        }
 
-        var results = articlesToSearchInto["articles"]?.Where(child => child["id"]?.ToString() == id).ToList();
-        return results ?? new List<JToken>();
+        return new ArticlesObject(result);
     }
 
-    public static List<JToken> FilterByAuthor(JObject articlesToSearchInto, string? author)
+    internal static List<JToken> FilterById(ArticlesObject? articlesToSearchInto, string id)
+    {
+        return (string.IsNullOrEmpty(id) ? new List<JToken>() : articlesToSearchInto?.GetArticleById(id)) ?? new List<JToken>();
+    }
+
+    public static List<JToken> FilterByAuthor(ArticlesObject? articlesToSearchInto, string? author)
     {
         if (string.IsNullOrEmpty(author))
             return new List<JToken>();
 
-        var results = articlesToSearchInto["articles"]?.Where(child =>
+        var results = articlesToSearchInto?.Search(child =>
         {
-            var b = child["authors"]?.ToList().Any(x => x.ToString().Contains(author));
+            var b = child.Value["authors"]?.ToList().Any(x => x.ToString().Contains(author));
             return b != null && b.Value;
         }).ToList();
         return results ?? new List<JToken>();
     }
 
-    public static List<JToken> FilterByDateTimeRange(JObject articlesToSearchInto, DateTime? start, DateTime? end)
+    public static List<JToken> FilterByDateTimeRange(ArticlesObject? articlesToSearchInto, DateTime? start, DateTime? end)
     {
         if (start == null && end == null)
             return new List<JToken>();
 
-        Func<JToken, bool> filter;
+        Func<KeyValuePair<int, JToken>, bool> filter;
         if (start == null)
             filter = child =>
             {
-                var dt = DateTimeUtil.ConvertToDateTime(child["publishTime"]?.ToString());
+                var dt = DateTimeUtil.ConvertToDateTime(child.Value["publishTime"]?.ToString());
                 return end >= dt;
             };
         else if (end == null)
             filter = child =>
             {
-                var dt = DateTimeUtil.ConvertToDateTime(child["publishTime"]?.ToString());
+                var dt = DateTimeUtil.ConvertToDateTime(child.Value["publishTime"]?.ToString());
                 return start <= dt;
             };
         else //start and end are not null
             filter = child =>
             {
-                var dt = DateTimeUtil.ConvertToDateTime(child["publishTime"]?.ToString());
+                var dt = DateTimeUtil.ConvertToDateTime(child.Value["publishTime"]?.ToString());
                 return end >= dt && start <= dt;
             };
 
-        var results = articlesToSearchInto["articles"]?.Where(filter).ToList();
+        var results = articlesToSearchInto?.Search(filter).ToList();
         return results ?? new List<JToken>();
     }
 
-    public static List<JToken> FilterByStartingId(JObject articlesToSearchInto, string id)
+    public static List<JToken> FilterByStartingId(ArticlesObject? articlesToSearchInto, string id)
     {
         if (string.IsNullOrEmpty(id))
             return new List<JToken>();
@@ -106,8 +119,8 @@ public static class ArticleUtil
         try
         {
             var idInt = Convert.ToInt32(id);
-            var results = articlesToSearchInto["articles"]?.Where(
-                child => Convert.ToInt32(child["id"]?.ToString()) >= idInt
+            var results = articlesToSearchInto?.Search(
+                child => Convert.ToInt32(child.Value["id"]?.ToString()) >= idInt
             ).ToList();
             return results ?? new List<JToken>();
         }
@@ -117,12 +130,12 @@ public static class ArticleUtil
         }
     }
 
-    public static List<JToken> FilterByTargetingTheFuture(JObject articlesToSearchInto)
+    public static List<JToken> FilterByTargetingTheFuture(ArticlesObject? articlesToSearchInto)
     {
         var now = DateTime.Now;
-        var results = articlesToSearchInto["articles"]?.Where(child =>
+        var results = articlesToSearchInto?.Search(child =>
         {
-            var dt = DateTimeUtil.ConvertToDateTime(child["targetTime"]?.ToString());
+            var dt = DateTimeUtil.ConvertToDateTime(child.Value["targetTime"]?.ToString());
             return now <= dt;
         }).ToList();
         return results ?? new List<JToken>();
