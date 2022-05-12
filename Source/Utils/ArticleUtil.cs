@@ -64,5 +64,42 @@ namespace PoliFemoBackend.Source.Utils
             }).ToList();
             return results ?? new List<JToken>();
         }
+
+        public static List<JToken> FilterByDateTimeRange(JObject articlesToSearchInto, DateTime? start, DateTime? end)
+        {
+            if (start == null && end == null)
+                return new List<JToken>();
+
+            Func<JToken, bool> filter;
+            if (start == null)
+            {
+                filter = (child) =>
+                {
+                    var dt = DateTimeUtil.ConvertToDateTime(child["publishTime"]?.ToString());
+                    return end >= dt;
+                };
+            }
+            else if (end == null)
+            {
+                filter = (child) =>
+                {
+                    var dt = DateTimeUtil.ConvertToDateTime(child["publishTime"]?.ToString());
+                    return start <= dt;
+                };
+            }
+            else //start and end are not null
+            {
+                filter = (child) =>
+                {
+                    var dt = DateTimeUtil.ConvertToDateTime(child["publishTime"]?.ToString());
+                    return end >= dt && start <= dt;
+                };
+            }
+            
+            var results = articlesToSearchInto["articles"]?.Where(filter).ToList();
+            return results ?? new List<JToken>();
+        }
     }
+
+
 }

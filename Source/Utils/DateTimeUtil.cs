@@ -1,0 +1,35 @@
+﻿namespace PoliFemoBackend.Source.Utils;
+
+public static class DateTimeUtil
+{
+    public static DateTime? ConvertToDateTime(string? s)
+    {
+        if (string.IsNullOrEmpty(s))
+            return null;
+        
+        //2022-01-01T23:59:59.999
+
+        try
+        {
+            var dates = s.Split('T');
+            var yearMonthDay = dates[0].Split('-');
+            var time = dates[1].Split('.');
+            var hourMinuteSecond = time[0].Split(':');
+            return new DateTime(
+                Convert.ToInt32(yearMonthDay[0]),
+                Convert.ToInt32(yearMonthDay[1]),
+                Convert.ToInt32(yearMonthDay[1]),
+                Convert.ToInt32(hourMinuteSecond[0]),
+                Convert.ToInt32(hourMinuteSecond[1]),
+                Convert.ToInt32(hourMinuteSecond[2]),
+                Convert.ToInt32(time[1])
+            );
+        }
+        catch
+        {
+            ;
+        }
+
+        return null;
+    }
+}
