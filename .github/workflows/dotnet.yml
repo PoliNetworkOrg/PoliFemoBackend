@@ -23,3 +23,20 @@ jobs:
       run: dotnet publish PoliFemoBackend.csproj /p:PublishProfile=Properties\linux-x64.pubxml
     - name: ls
       run: ls -l bin/Debug/net6.0/publish/
+      
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
+
+    - name: Tag snapshot
+      uses: tvdias/github-tagger@v0.0.1
+      with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.date.outputs.date }}
+
+    - name: Create Github Release
+      uses: ncipollo/release-action@v1
+      with:
+          artifacts: ".bin/Debug/net6.0/publish/PoliFemoBackend"
+          token: ${{ secrets.RELEASES_TOKEN }}
+          tag: ${{ steps.date.outputs.date }}
