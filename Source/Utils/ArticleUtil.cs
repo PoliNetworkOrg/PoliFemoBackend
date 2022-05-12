@@ -99,6 +99,25 @@ namespace PoliFemoBackend.Source.Utils
             var results = articlesToSearchInto["articles"]?.Where(filter).ToList();
             return results ?? new List<JToken>();
         }
+
+        public static List<JToken> FilterByStartingId(JObject articlesToSearchInto, string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return new List<JToken>();
+
+            try
+            {
+                var idInt = Convert.ToInt32(id);
+                var results = articlesToSearchInto["articles"]?.Where(
+                        child => Convert.ToInt32((child["id"]?.ToString())) >= idInt
+                    ).ToList();
+                return results ?? new List<JToken>();
+            }
+            catch
+            {
+                return new List<JToken>();
+            }
+        }
     }
 
 
