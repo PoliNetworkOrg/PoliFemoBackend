@@ -29,6 +29,17 @@
       "applicationUrl": "https://localhost:7039",
       "dotnetRunMessages": true
     },
+    "Run as test": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:7039",
+      "dotnetRunMessages": true,
+      "commandLineArgs":"test"
+    },
     "WSL": {
       "commandName": "WSL2",
       "launchBrowser": true,
