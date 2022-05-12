@@ -13,7 +13,7 @@ public class ArticlesByAuthorController : ControllerBase
 {
     [HttpGet]
     [HttpPost]
-    public ObjectResult SearchArticles(string? author)
+    public ObjectResult SearchArticles(string author)
     {
         try
         {
