@@ -23,7 +23,7 @@ public class ArticlesObject
     {
         try
         {
-            return new List<JToken>() { _articles[id] };
+            return new List<JToken> { _articles[id] };
         }
         catch
         {
