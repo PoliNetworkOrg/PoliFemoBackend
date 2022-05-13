@@ -1,22 +1,21 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace PoliFemoBackend.Source.Controllers
+namespace PoliFemoBackend.Source.Controllers.Article
 {
     [ApiController]
     [Route("[controller]")]
-    public class ArticlesByStartingIdController : ControllerBase
+    public class ArticlesByDateTimeRange : ControllerBase
     {
         [HttpGet]
         [HttpPost]
-        public ObjectResult SearchArticles(int id)
+        public ObjectResult SearchArticles(DateTime? start, DateTime? end)
         {
             try
             {
                 var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
                 return articlesToSearchInto == null
                     ? Utils.ArticleUtil.ErrorFindingArticles(exception)
-                    : Ok(Utils.ArticleUtil.FilterByStartingId(articlesToSearchInto, id));
+                    : Ok(Utils.ArticleUtil.FilterByDateTimeRange(articlesToSearchInto, start, end));
             }
             catch (Exception ex)
             {
@@ -24,5 +23,4 @@ namespace PoliFemoBackend.Source.Controllers
             }
         }
     }
-
 }

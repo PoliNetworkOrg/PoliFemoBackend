@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace PoliFemoBackend.Source.Controllers
+namespace PoliFemoBackend.Source.Controllers.Article
 {
     [ApiController]
     [Route("[controller]")]

@@ -1,11 +1,10 @@
 ﻿#region
 
-using System;
 using Microsoft.AspNetCore.Mvc;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers;
+namespace PoliFemoBackend.Source.Controllers.Article;
 
 [ApiController]
 [Route("[controller]")]
