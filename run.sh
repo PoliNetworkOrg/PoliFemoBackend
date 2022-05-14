@@ -5,6 +5,6 @@ do
         sleep 5
         wget https://github.com/PoliNetworkOrg/PoliFemoBackend/releases/latest/download/PoliFemoBackend -O /home/ubuntu/PoliFemoBackend/PoliFemoBackend
         chmod +x PoliFemoBackend
-        screen ./PoliFemoBackend
+        screen sudo ./PoliFemoBackend
         sleep 1d
 done

@@ -1,7 +1,5 @@
 # Generazione del certificato
 
-Do per scontato che sia già configurato un reverse proxy che riscrive automaticamente verso https://localhost:5001 quando arrivi da http://api.polinetwork.org oppure da https://api.polinetwork.org
-
 ```
 	mkdir PoliFemoBackend && cd PoliFemoBackend
 	wget https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/run.sh
@@ -19,5 +17,5 @@ Inserire password a scelta
 Inserirla nel file `appsettings.json`
 
 ```
-	screen ./run.sh
+	screen sudo ./run.sh
 ```
