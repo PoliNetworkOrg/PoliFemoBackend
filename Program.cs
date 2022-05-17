@@ -23,12 +23,8 @@ try
 
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
     if (args.Length <= 0 || args[0] != "http")
         app.UseHttpsRedirection();
