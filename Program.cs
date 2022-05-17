@@ -1,4 +1,3 @@
-
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,10 +23,11 @@ try
     var app = builder.Build();
 
     app.UseSwagger();
-    app.UseSwaggerUI();
-
-    if (args.Length <= 0 || args[0] != "http")
-        app.UseHttpsRedirection();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "PoliFemoBackend API V1");
+        options.RoutePrefix = string.Empty;
+    });
 
     app.UseAuthorization();
 

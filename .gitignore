@@ -4,7 +4,5 @@ obj/*
 .vs/*
 bin/*
 .idea/*
-*.DotSettings.user
-*.csproj.user
+*.user
 .vscode/*
-
