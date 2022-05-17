@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using HtmlAgilityPack;
 using PoliFemoBackend.Source.Objects;
+using System.Text;
 
 namespace PoliFemoBackend.Source.Utils;
 
@@ -18,7 +19,8 @@ public static class HtmlUtil
         var receiveStream = response.Content;
         try
         {
-            var s = await receiveStream.ReadAsStringAsync();
+            var te = receiveStream.ReadAsByteArrayAsync().Result;
+            var s = Encoding.UTF8.GetString(te, 0, te.Length);
 
             return new WebReply(s, HttpStatusCode.OK);
         }
