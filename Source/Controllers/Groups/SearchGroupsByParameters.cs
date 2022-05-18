@@ -15,11 +15,11 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
 [Route("[controller]")]
-public class SearchGroups : ControllerBase
+public class SearchGroupsByParameters : ControllerBase
 {
     [HttpGet]
     [HttpPost]
-    public async Task<ObjectResult> SearchGroupByName(string nome_gruppo)
+    public async Task<ObjectResult> SearchGroupByParameters(string name, string? year, string? degree, string? type, string? platform, string? language, string? office)
     {
         //get content from url
         var content = await Utils.HtmlUtil.DownloadHtmlAsync("https://raw.githubusercontent.com/PoliNetworkOrg/polinetworkWebsiteData/main/groups.json");
@@ -69,12 +69,31 @@ public class SearchGroups : ControllerBase
         {
             foreach (var item in json.index_data)
             {
-                //se il nome del gruppo è uguale a quello passato come parametro
-                if (item["class"].ToString().ToLower().Contains(nome_gruppo.ToLower()))
-                {
-                    //aggiungi risultato alla lista
-                    resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
+                //controlla se il gruppo ha il nome richiesto
+                if (item["class"].ToString().ToLower().Contains(name.ToLower())){
+                    //controlla se year è uguale a quello richiesto, in caso year non sia specificato controlla tutti i gruppi
+                    if (year == null || item.year.ToString().ToLower().Contains(year.ToLower())){
+                        //controlla se il gruppo ha il tipo richiesto
+                        if (type == null || item.type.ToString().ToLower().Contains(type.ToString().ToLower())){
+                            //controlla se il gruppo ha il livello di laurea richiesto
+                            if (degree == null || item.degree.ToString().ToLower().Contains(degree.ToLower())){
+                                //controlla se il gruppo ha la piattaforma richiesta
+                                if (platform == null || item.platform.ToString().ToLower().Contains(platform.ToLower())){
+                                    //controlla se il gruppo ha la lingua richiesta
+                                    if (language == null || item.language.ToString().ToLower().Contains(language.ToLower())){
+                                        //controlla se il gruppo ha l'ufficio richiesto
+                                        if (office == null || item.office.ToString().ToLower().Contains(office.ToLower())){
+                                            //aggiungi risultato alla lista
+                                            resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
+
+                    
             } 
         }
         
