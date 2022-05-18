@@ -29,6 +29,7 @@ public class SearchGroups : ControllerBase
     /// <response code="500">Can't connect to server</response> 
     /// <response code="204">No available groups</response>
     [HttpGet]
+    [HttpPost]
     public async Task<ObjectResult> SearchGroup([BindRequired] string name, string? year, string? degree, string? type, string? platform, string? language, string? office)
     {
         //get content from url
