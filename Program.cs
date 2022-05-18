@@ -21,7 +21,7 @@ try
         c.SwaggerDoc("v1", new OpenApiInfo
         {
             Version = "v1",
-            Title = "PoliFemo API",
+            Title = "PoliFemo API"
         });
 
         var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

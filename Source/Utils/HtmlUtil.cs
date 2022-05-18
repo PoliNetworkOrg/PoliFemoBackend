@@ -157,7 +157,7 @@ public static class HtmlUtil
                 return result;
             }
             default:
-                throw new ArgumentException();
+                return null;
         }
     }
 }
