@@ -21,13 +21,6 @@ public class ArticlesObject
 
     public List<JToken>? GetArticleById(int id)
     {
-        try
-        {
-            return new List<JToken> { _articles[id] };
-        }
-        catch
-        {
-            return null;
-        }
+        return _articles.Where(x => x.Key == id).Select(x => x.Value).ToList();
     }
 }
