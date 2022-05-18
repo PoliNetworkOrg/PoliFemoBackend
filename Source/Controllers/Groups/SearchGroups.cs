@@ -8,23 +8,28 @@ using System.Web;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 
-
-namespace PoliFemoBackend.Source.Controllers.Rooms;
+namespace PoliFemoBackend.Source.Controllers.Groups;
 
 [ApiController]
 [Route("[controller]")]
-public class SearchGroupsByName : ControllerBase
+public class SearchGroups : ControllerBase
 {
     /// <summary>
     /// Checks for available groups
     /// </summary>
     /// <param name="name" example="Informatica">Group name</param>
+    /// <param name="year" example="2022">Year</param>
+    /// <param name="degree" example="LT">Possible values: LT, LM, LU </param>
+    /// <param name="type" example="C">Possible values: S, C, E</param>
+    /// <param name="platform" example="TG">Possible values: WA, TG, FB</param>
+    /// <param name="language" example="ITA">Possible values: ITA, ENG</param>
+    /// <param name="office" example="Leonardo">Possible values: Bovisa, Como, Cremona, Lecco, Leonardo</param>
     /// <returns>An array of free groups</returns>
     /// <response code="200">Returns the array of groups</response>
     /// <response code="500">Can't connect to server</response> 
     /// <response code="204">No available groups</response>
     [HttpGet]
-    public async Task<ObjectResult> SearchGroupByName([BindRequired] string name)
+    public async Task<ObjectResult> SearchGroup([BindRequired] string name, string? year, string? degree, string? type, string? platform, string? language, string? office)
     {
         //get content from url
         var content = await Utils.HtmlUtil.DownloadHtmlAsync("https://raw.githubusercontent.com/PoliNetworkOrg/polinetworkWebsiteData/main/groups.json");
@@ -74,12 +79,31 @@ public class SearchGroupsByName : ControllerBase
         {
             foreach (var item in json.index_data)
             {
-                //se il nome del gruppo è uguale a quello passato come parametro
-                if (item["class"].ToString().ToLower().Contains(name.ToLower()))
-                {
-                    //aggiungi risultato alla lista
-                    resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
+                //controlla se il gruppo ha il nome richiesto
+                if (item["class"].ToString().ToLower().Contains(name.ToLower())){
+                    //controlla se year è uguale a quello richiesto, in caso year non sia specificato controlla tutti i gruppi
+                    if (year == null || item.year.ToString().ToLower().Contains(year.ToLower())){
+                        //controlla se il gruppo ha il tipo richiesto
+                        if (type == null || item.type.ToString().ToLower().Contains(type.ToString().ToLower())){
+                            //controlla se il gruppo ha il livello di laurea richiesto
+                            if (degree == null || item.degree.ToString().ToLower().Contains(degree.ToLower())){
+                                //controlla se il gruppo ha la piattaforma richiesta
+                                if (platform == null || item.platform.ToString().ToLower().Contains(platform.ToLower())){
+                                    //controlla se il gruppo ha la lingua richiesta
+                                    if (language == null || item.language.ToString().ToLower().Contains(language.ToLower())){
+                                        //controlla se il gruppo ha l'ufficio richiesto
+                                        if (office == null || item.office.ToString().ToLower().Contains(office.ToLower())){
+                                            //aggiungi risultato alla lista
+                                            resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
+
+                    
             } 
         }
         
