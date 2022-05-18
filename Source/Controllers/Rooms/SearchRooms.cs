@@ -20,6 +20,7 @@ public class SearchController : ControllerBase
     /// <response code="500">Can't connect to poli servers</response> 
     /// <response code="204">No available rooms</response>
     [HttpGet]
+    [HttpPost]
     public async Task<IActionResult> SearchFreeRooms([BindRequired] string sede, [BindRequired] DateTime hourStart, [BindRequired] DateTime hourStop)
     {
         hourStop = hourStop.AddMinutes(-1);
