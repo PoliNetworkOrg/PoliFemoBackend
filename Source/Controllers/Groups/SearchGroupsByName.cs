@@ -1,13 +1,11 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Utils;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
 using JObject = Newtonsoft.Json.Linq.JObject;
 using JArray = Newtonsoft.Json.Linq.JArray;
 using System.Web;
-using JSConverter = Newtonsoft.Json.JsonConverter; 
-
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 
 
@@ -17,9 +15,16 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 [Route("[controller]")]
 public class SearchGroupsByName : ControllerBase
 {
+    /// <summary>
+    /// Checks for available groups
+    /// </summary>
+    /// <param name="name" example="Informatica">Group name</param>
+    /// <returns>An array of free groups</returns>
+    /// <response code="200">Returns the array of groups</response>
+    /// <response code="500">Can't connect to server</response> 
+    /// <response code="204">No available groups</response>
     [HttpGet]
-    [HttpPost]
-    public async Task<ObjectResult> SearchGroupByName(string nome_gruppo)
+    public async Task<ObjectResult> SearchGroupByName([BindRequired] string name)
     {
         //get content from url
         var content = await Utils.HtmlUtil.DownloadHtmlAsync("https://raw.githubusercontent.com/PoliNetworkOrg/polinetworkWebsiteData/main/groups.json");
@@ -70,7 +75,7 @@ public class SearchGroupsByName : ControllerBase
             foreach (var item in json.index_data)
             {
                 //se il nome del gruppo è uguale a quello passato come parametro
-                if (item["class"].ToString().ToLower().Contains(nome_gruppo.ToLower()))
+                if (item["class"].ToString().ToLower().Contains(name.ToLower()))
                 {
                     //aggiungi risultato alla lista
                     resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));

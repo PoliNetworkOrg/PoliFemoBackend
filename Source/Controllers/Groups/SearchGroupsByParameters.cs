@@ -1,14 +1,11 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Utils;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
 using JObject = Newtonsoft.Json.Linq.JObject;
 using JArray = Newtonsoft.Json.Linq.JArray;
 using System.Web;
-using JSConverter = Newtonsoft.Json.JsonConverter; 
-
-
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 
 namespace PoliFemoBackend.Source.Controllers.Rooms;
@@ -17,9 +14,22 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 [Route("[controller]")]
 public class SearchGroupsByParameters : ControllerBase
 {
+    /// <summary>
+    /// Checks for available groups
+    /// </summary>
+    /// <param name="name" example="Informatica">Group name</param>
+    /// <param name="year" example="2022">Year</param>
+    /// <param name="degree" example="LT">Possible values: LT, LM, LU </param>
+    /// <param name="type" example="C">Possible values: S, C, E</param>
+    /// <param name="platform" example="TG">Possible values: WA, TG, FB</param>
+    /// <param name="language" example="ITA">Possible values: ITA, ENG</param>
+    /// <param name="office" example="Leonardo">Possible values: Bovisa, Como, Cremona, Lecco, Leonardo</param>
+    /// <returns>An array of free groups</returns>
+    /// <response code="200">Returns the array of groups</response>
+    /// <response code="500">Can't connect to server</response> 
+    /// <response code="204">No available groups</response>
     [HttpGet]
-    [HttpPost]
-    public async Task<ObjectResult> SearchGroupByParameters(string name, string? year, string? degree, string? type, string? platform, string? language, string? office)
+    public async Task<ObjectResult> SearchGroupByParameters([BindRequired] string name, string? year, string? degree, string? type, string? platform, string? language, string? office)
     {
         //get content from url
         var content = await Utils.HtmlUtil.DownloadHtmlAsync("https://raw.githubusercontent.com/PoliNetworkOrg/polinetworkWebsiteData/main/groups.json");
