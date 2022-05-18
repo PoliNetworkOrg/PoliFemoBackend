@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PoliFemoBackend.Source.Test;
+﻿namespace PoliFemoBackend.Source.Test;
 
 public static class Test
 {

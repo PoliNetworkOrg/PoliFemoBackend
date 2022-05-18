@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PoliFemoBackend.Source.Utils;
+﻿namespace PoliFemoBackend.Source.Utils;
 
 public static class DateTimeUtil
 {
