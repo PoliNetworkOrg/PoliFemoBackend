@@ -3,10 +3,21 @@
 namespace PoliFemoBackend.Source.Controllers.Article
 {
     [ApiController]
-    [Route("[controller]")]
-    public class ArticleByIdController : ControllerBase
+    [Route("/search/articles")]
+    public class SearchController : ControllerBase
     {
 
+        /// <summary>
+        /// Searches for articles with the specified parameters
+        /// </summary>
+        /// <param name="id" example="MIA">The article ID</param>
+        /// <param name="author" example="Mario Rossi">The article author</param>
+        /// <param name="start" example="2022-05-18T12:15:00Z">Article publish time</param>
+        /// <param name="end" example="2022-05-18T14:15:00Z">Article target time</param>
+        /// <param name="getNextIds" example="true">If true, returns the articles with ID greater than the one provided in the ID field</param>
+        /// <returns>An array of articles</returns>
+        /// <response code="200">Returns the array of articles</response>
+        /// <response code="500">Can't fetch the articles</response>
         [HttpGet]
         [HttpPost]
         public ObjectResult SearchArticles(int? id, string? author, DateTime? start, DateTime? end, Boolean getNextIds = false)
@@ -21,8 +32,7 @@ namespace PoliFemoBackend.Source.Controllers.Article
                             : Ok(Utils.ArticleUtil.FilterById(articlesToSearchInto, id.GetValueOrDefault()));
                     }
                     catch (Exception ex)
-                    {
-                        Console.WriteLine("no se pudo obtener los articulos");
+                    { 
                         return Utils.ArticleUtil.ErrorFindingArticles(ex);
                     }
 

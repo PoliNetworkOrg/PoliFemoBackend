@@ -11,11 +11,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace PoliFemoBackend.Source.Controllers.Groups;
 
 [ApiController]
-[Route("[controller]")]
-public class SearchGroups : ControllerBase
+[Route("/search/groups")]
+public class SearchController : ControllerBase
 {
     /// <summary>
-    /// Checks for available groups
+    /// Searches for available groups
     /// </summary>
     /// <param name="name" example="Informatica">Group name</param>
     /// <param name="year" example="2022">Year</param>

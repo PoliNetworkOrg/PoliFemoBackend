@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
-[Route("[controller]")]
-public class FreeRoomsController : ControllerBase
+[Route("/search/rooms")]
+public class SearchController : ControllerBase
 {
 
     /// <summary>
-    /// Checks for available rooms in a given time range
+    /// Searches for available rooms in a given time range
     /// </summary>
     /// <param name="sede" example="MIA">Possible values: MIA, MIB</param>
     /// <param name="hourStart" example="2022-05-18T12:15:00Z">Start time</param>
