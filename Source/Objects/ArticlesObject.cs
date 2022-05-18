@@ -19,7 +19,7 @@ public class ArticlesObject
         return _articles.Where(func).Select(x => x.Value).ToList();
     }
 
-    public List<JToken>? GetArticleById(int id)
+    public List<JToken> GetArticleById(int id)
     {
         return _articles.Where(x => x.Key == id).Select(x => x.Value).ToList();
     }
