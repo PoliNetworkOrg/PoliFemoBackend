@@ -1,11 +1,10 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using HtmlAgilityPack;
-using JsonConvert = Newtonsoft.Json.JsonConvert;
 using JObject = Newtonsoft.Json.Linq.JObject;
 using JArray = Newtonsoft.Json.Linq.JArray;
 using System.Web;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PoliFemoBackend.Source.Utils;
 
 
 namespace PoliFemoBackend.Source.Controllers.Groups;
@@ -32,74 +31,37 @@ public class SearchController : ControllerBase
     [HttpPost]
     public async Task<ObjectResult> SearchGroup([BindRequired] string name, string? year, string? degree, string? type, string? platform, string? language, string? office)
     {
-        //get content from url
-        var content = await Utils.HtmlUtil.DownloadHtmlAsync("https://raw.githubusercontent.com/PoliNetworkOrg/polinetworkWebsiteData/main/groups.json");
-
-        var doc = new HtmlDocument();
-      
-        var c = content.GetData();
-        if (c == null)
-        {
-            return new ObjectResult(new { error = "Errore durante il recupero dei gruppi" }) {StatusCode = (int) HttpStatusCode.InternalServerError};
-        }
-        {
-            var c1 = c.Replace("<", "&lt;");
-            doc.LoadHtml(c1); 
-        }
-        
-        //WriteLine doc
-        //Console.WriteLine(doc.DocumentNode.InnerHtml);  //tenere non cancellare
-
-
-        //convert doc to json
-        var json = JsonConvert.DeserializeObject<dynamic>(doc.DocumentNode.InnerHtml);
-
-        //print json file
-        //return Ok(json);
-
-        //crea  json vuoto
-        var results = new JObject();
-        
-        //crea lista results dentro json
-        
-        var resultsList = new JArray();
-        
-
-        
-
-        //cicla json
+        var json = await GroupsUtil.GetGroups();
         if (json == null)
-            return new ObjectResult(new { error = "Errore durante il recupero dei gruppi" }) {StatusCode = (int) HttpStatusCode.InternalServerError};
+            return GroupsUtil.ErrorInRetrievingGroups();
         
-        
-        foreach (var item in json.index_data)
+        //filtra per i parametri
+        var results = new JObject();
+        var resultsList = new JArray();
+        try
         {
-            //controlla se il gruppo ha il nome richiesto
-            if (!item["class"].ToString().ToLower().Contains(name.ToLower())) 
-                continue;
-            //controlla se year è uguale a quello richiesto, in caso year non sia specificato controlla tutti i gruppi
-            if (year != null && !item.year.ToString().ToLower().Contains(year.ToLower()))
-                continue;
-            //controlla se il gruppo ha il tipo richiesto
-            if (type != null && !item.type.ToString().ToLower().Contains(type.ToLower()))
-                continue;
-            //controlla se il gruppo ha il livello di laurea richiesto
-            if (degree != null && !item.degree.ToString().ToLower().Contains(degree.ToLower()))
-                continue;
-            //controlla se il gruppo ha la piattaforma richiesta
-            if (platform != null && !item.platform.ToString().ToLower().Contains(platform.ToLower()))
-                continue;
-            //controlla se il gruppo ha la lingua richiesta
-            if (language != null && !item.language.ToString().ToLower().Contains(language.ToLower())) 
-                continue;
-            //controlla se il gruppo ha l'ufficio richiesto
-            if (office == null || item.office.ToString().ToLower().Contains(office.ToLower()))
-                resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString()))); //aggiungi risultato alla lista
-        } 
-        
-        
-        results["groups"] = resultsList;
-        
+            var indexData = json.index_data;
+            foreach (var item in indexData)
+            {
+                if (item["class"].ToString().ToLower().Contains(name.ToLower()) &&
+                    (string.IsNullOrEmpty(year) || item.year.ToString().ToLower().Contains(year.ToLower())) &&
+                    (string.IsNullOrEmpty(type) || item.type.ToString().ToLower().Contains(type.ToLower())) &&
+                    (string.IsNullOrEmpty(degree) || item.degree.ToString().ToLower().Contains(degree.ToLower())) &&
+                    (string.IsNullOrEmpty(platform) ||
+                     item.platform.ToString().ToLower().Contains(platform.ToLower())) &&
+                    (string.IsNullOrEmpty(language) ||
+                     item.language.ToString().ToLower().Contains(language.ToLower())) &&
+                    (string.IsNullOrEmpty(office) || item.office.ToString().ToLower().Contains(office.ToLower())))
+                    resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
+            }
+
+            results["groups"] = resultsList;
+        }
+        catch (Exception ex)
+        {
+            return ResultUtil.ExceptionResult(ex);
+        }
+
         //se la lista è vuota
         if (results.Count == 0 || resultsList.Count == 0)
         {
@@ -112,6 +74,6 @@ public class SearchController : ControllerBase
         return Ok(results);
     }
 
-
+   
 }
 
