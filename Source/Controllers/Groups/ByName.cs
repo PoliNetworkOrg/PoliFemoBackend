@@ -13,7 +13,7 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
 [Route("/groups/byname")]
-public class SearchGroupsByName : ControllerBase
+public class GroupsByName : ControllerBase
 {
     /// <summary>
     /// Checks for available groups
