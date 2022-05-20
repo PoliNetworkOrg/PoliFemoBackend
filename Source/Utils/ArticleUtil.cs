@@ -13,7 +13,15 @@ public static class ArticleUtil
     private static readonly object LockArticles = new();
 
 
-
+    /// <summary>
+    ///    Get the articles object
+    /// </summary>
+    /// <complexity>
+    ///     <best>O(1)</best>
+    ///     <average>O(1)</average>
+    ///     <worst>O(n)</worst>
+    /// </complexity>
+    /// <returns></returns>
     public static Tuple<ArticlesObject?, Exception?> GetArticles()
     {
         if (_articles != null)
@@ -38,7 +46,17 @@ public static class ArticleUtil
             return new Tuple<ArticlesObject?, Exception?>(_articles, null);
         }
     }
-
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <complexity>
+    ///     <best>O(1)</best>
+    ///     <average>O(n)</average>
+    ///     <worst>O(n)</worst>
+    /// </complexity>
+    /// <param name="data"></param>
+    /// <returns></returns>
     private static ArticlesObject? Parse(string data)
     {
         var parsed = JObject.Parse(data);
@@ -46,31 +64,18 @@ public static class ArticleUtil
         if (articles == null)
             return null;
         
-        var result = new Dictionary<int, JToken>();
+        var result = new Dictionary<uint, JToken>();
         foreach (var child in articles)
         {
-            result[Convert.ToInt32(child["id"])] = child;
+            result[Convert.ToUInt32(child["id"])] = child;
         }
 
         return new ArticlesObject(result);
     }
-
-    internal static List<JToken> FilterById(ArticlesObject? articlesToSearchInto, int id)
+    
+    internal static List<JToken> FilterById(ArticlesObject? articlesToSearchInto, uint id)
     {
         return articlesToSearchInto?.GetArticleById(id) ?? new List<JToken>();
-    }
-
-    public static List<JToken> FilterByAuthor(ArticlesObject? articlesToSearchInto, string? author)
-    {
-        if (string.IsNullOrEmpty(author))
-            return new List<JToken>();
-
-        var results = articlesToSearchInto?.Search(child =>
-        {
-            var b = child.Value["authors"]?.ToList().Any(x => x.ToString().Contains(author));
-            return b != null && b.Value;
-        }).ToList();
-        return results ?? new List<JToken>();
     }
 
     public static List<JToken> FilterByDateTimeRange(ArticlesObject? articlesToSearchInto, DateTime? start, DateTime? end)
@@ -78,7 +83,7 @@ public static class ArticleUtil
         if (start == null && end == null)
             return new List<JToken>();
 
-        Func<KeyValuePair<int, JToken>, bool> filter;
+        Func<KeyValuePair<uint, JToken>, bool> filter;
         if (start == null)
             filter = child =>
             {
@@ -100,21 +105,6 @@ public static class ArticleUtil
 
         var results = articlesToSearchInto?.Search(filter).ToList();
         return results ?? new List<JToken>();
-    }
-
-    public static List<JToken> FilterByStartingId(ArticlesObject? articlesToSearchInto, int id)
-    {
-        try
-        {
-            var results = articlesToSearchInto?.Search(
-                child => Convert.ToInt32(child.Value["id"]?.ToString()) >= id
-            ).ToList();
-            return results ?? new List<JToken>();
-        }
-        catch
-        {
-            return new List<JToken>();
-        }
     }
 
     public static List<JToken> FilterByTargetingTheFuture(ArticlesObject? articlesToSearchInto)

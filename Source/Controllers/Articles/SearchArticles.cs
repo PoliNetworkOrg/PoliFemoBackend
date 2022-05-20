@@ -20,7 +20,7 @@ public class SearchController : ControllerBase
     /// <response code="500">Can't fetch the articles</response>
     [HttpGet]
     [HttpPost]
-    public ObjectResult SearchArticles(int? id, string? author, DateTime? start, DateTime? end, bool getNextIds = false)
+    public ObjectResult SearchArticles(uint? id, string? author, DateTime? start, DateTime? end, bool getNextIds = false)
     {
         if (id != null)
         {
@@ -46,7 +46,7 @@ public class SearchController : ControllerBase
                 var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
                 return articlesToSearchInto == null
                     ? Utils.ResultUtil.ExceptionResult(exception)
-                    : Ok(Utils.ArticleUtil.FilterByStartingId(articlesToSearchInto, id.GetValueOrDefault()));
+                    : Ok(articlesToSearchInto.FilterByStartingId(id.GetValueOrDefault()));
             }
             catch (Exception ex)
             {
@@ -62,7 +62,7 @@ public class SearchController : ControllerBase
                 var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
                 return articlesToSearchInto == null
                     ? Utils.ResultUtil.ExceptionResult(exception)
-                    : Ok(Utils.ArticleUtil.FilterByAuthor(articlesToSearchInto, author));
+                    : Ok(articlesToSearchInto.FilterByAuthor(author));
             }
             catch (Exception ex)
             {

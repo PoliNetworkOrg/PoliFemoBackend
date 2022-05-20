@@ -1,8 +1,4 @@
-﻿#region
-
-using Microsoft.AspNetCore.Mvc;
-
-#endregion
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace PoliFemoBackend.Source.Controllers.Article;
 
@@ -10,6 +6,16 @@ namespace PoliFemoBackend.Source.Controllers.Article;
 [Route("/articles/byauthor")]
 public class ArticlesByAuthorController : ControllerBase
 {
+    /// <summary>
+    ///     Get all articles by author
+    /// </summary>
+    /// <complexity>
+    ///     <best>O(1)</best>
+    ///     <average>O(1)</average>
+    ///     <worst>O(n)</worst>
+    /// </complexity>
+    /// <param name="author"></param>
+    /// <returns></returns>
     [HttpGet]
     [HttpPost]
     public ObjectResult SearchArticles(string author)
@@ -19,7 +25,7 @@ public class ArticlesByAuthorController : ControllerBase
             var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
             return articlesToSearchInto == null
                 ? Utils.ResultUtil.ExceptionResult(exception)
-                : Ok(Utils.ArticleUtil.FilterByAuthor(articlesToSearchInto, author));
+                : Ok(articlesToSearchInto.FilterByAuthor(author));
         }
         catch (Exception ex)
         {
