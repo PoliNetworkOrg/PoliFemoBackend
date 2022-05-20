@@ -1,4 +1,8 @@
-﻿using HtmlAgilityPack;
+﻿#region
+
+using HtmlAgilityPack;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils;
 
@@ -24,7 +28,7 @@ public static class RoomUtil
     {
         if (node == null)
             return null;
-        
+
         if (!node.GetClasses().Contains("normalRow")) return null;
         if (node.ChildNodes == null) return null;
 
@@ -120,5 +124,4 @@ public static class RoomUtil
         var t3 = HtmlUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
         return t3;
     }
-
 }

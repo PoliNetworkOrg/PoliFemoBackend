@@ -1,26 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#region
 
-namespace PoliFemoBackend.Source.Controllers.Article
+using Microsoft.AspNetCore.Mvc;
+using PoliFemoBackend.Source.Utils;
+
+#endregion
+
+namespace PoliFemoBackend.Source.Controllers.Articles;
+
+[ApiController]
+[Route("/articles/targetingthefuture")]
+public class ArticlesTargetingTheFuture : ControllerBase
 {
-    [ApiController]
-    [Route("/articles/targetingthefuture")]
-    public class ArticlesTargetingTheFuture : ControllerBase
+    [HttpGet]
+    [HttpPost]
+    public ObjectResult SearchArticles()
     {
-        [HttpGet]
-        [HttpPost]
-        public ObjectResult SearchArticles()
+        try
         {
-            try
-            {
-                var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
-                return articlesToSearchInto == null
-                    ? Utils.ResultUtil.ExceptionResult(exception)
-                    : Ok(Utils.ArticleUtil.FilterByTargetingTheFuture(articlesToSearchInto));
-            }
-            catch (Exception ex)
-            {
-                return Utils.ResultUtil.ExceptionResult(ex);
-            }
+            var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
+            return articlesToSearchInto == null
+                ? ResultUtil.ExceptionResult(exception)
+                : Ok(ArticleUtil.FilterByTargetingTheFuture(articlesToSearchInto));
+        }
+        catch (Exception ex)
+        {
+            return ResultUtil.ExceptionResult(ex);
         }
     }
 }

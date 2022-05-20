@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿#region
+
+using Newtonsoft.Json.Linq;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Objects;
 
@@ -12,9 +16,8 @@ public class ArticlesObject
         _articles = articles;
         _articlesByAuthor = FillAuthors(_articles);
     }
-    
+
     /// <summary>
-    /// 
     /// </summary>
     /// <complexity>
     ///     <best>O(n)</best>
@@ -29,20 +32,17 @@ public class ArticlesObject
         foreach (var article in articles)
         {
             var author = article.Value["author"]?.ToString();
-            if (!string.IsNullOrEmpty(author))
-            {
-                if (!result.ContainsKey(author))
-                {
-                    result.Add(author, new List<JToken>());
-                }
-                result[author].Add(article.Value);
-            }
+            if (string.IsNullOrEmpty(author))
+                continue;
+
+            if (!result.ContainsKey(author)) result.Add(author, new List<JToken>());
+            result[author].Add(article.Value);
         }
+
         return result;
     }
-    
+
     /// <summary>
-    /// 
     /// </summary>
     /// <complexity>
     ///     <best>O(1)</best>
@@ -57,7 +57,6 @@ public class ArticlesObject
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <complexity>
     ///     <best>O(n)</best>
@@ -75,30 +74,25 @@ public class ArticlesObject
     {
         return _articles.Where(x => x.Key == id).Select(x => x.Value).ToList();
     }
-    
+
     /// <summary>
-    /// <complexity>
-    ///     <best>O(1)</best>
-    ///     <average>O(10)</average> // 10 is the number of new articles that we expect the client is missing on average
-    ///     <worst>O(n)</worst>
-    /// </complexity>
+    ///     <complexity>
+    ///         <best>O(1)</best>
+    ///         <average>O(10)</average> // 10 is the number of new articles that we expect the client is missing on average
+    ///         <worst>O(n)</worst>
+    ///     </complexity>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
     public List<JToken> FilterByStartingId(uint id)
     {
-        if (id == 0) {
-            return new List<JToken>();
-        }
-        
+        if (id == 0) return new List<JToken>();
+
         try
         {
             var results = new List<JToken>();
-            for (var i = id; i <= _articles.Count; i++)
-            {
-                results.Add(_articles[i]);
-            }
-            return results ?? new List<JToken>();
+            for (var i = id; i <= _articles.Count; i++) results.Add(_articles[i]);
+            return results;
         }
         catch
         {

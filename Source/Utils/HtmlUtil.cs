@@ -1,7 +1,11 @@
-﻿using System.Net;
+﻿#region
+
+using System.Net;
+using System.Text;
 using HtmlAgilityPack;
 using PoliFemoBackend.Source.Objects;
-using System.Text;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils;
 
@@ -29,7 +33,7 @@ public static class HtmlUtil
             return new WebReply(null, HttpStatusCode.ExpectationFailed);
         }
     }
-    
+
     internal static List<HtmlNode>? GetElementsByTagAndClassName(HtmlNode? doc, string tag = "",
         string className = "", long? limit = null)
     {

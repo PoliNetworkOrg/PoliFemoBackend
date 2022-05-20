@@ -1,37 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#region
 
-namespace PoliFemoBackend.Source.Controllers.Article
+using Microsoft.AspNetCore.Mvc;
+using PoliFemoBackend.Source.Utils;
+
+#endregion
+
+namespace PoliFemoBackend.Source.Controllers.Articles;
+
+[ApiController]
+[Route("/articles/bystartingid")]
+public class ArticlesByStartingId : ControllerBase
 {
-    [ApiController]
-    [Route("/articles/bystartingid")]
-    public class ArticlesByStartingId : ControllerBase
+    /// <summary>
+    ///     Get articles by starting id
+    /// </summary>
+    /// <complexity>
+    ///     <best>O(1)</best>
+    ///     <average>O(10)</average>
+    ///     <worst>O(n)</worst>
+    /// </complexity>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [HttpPost]
+    public ObjectResult SearchArticles(uint id)
     {
-        /// <summary>
-        /// Get articles by starting id
-        /// </summary>
-        /// <complexity>
-        ///     <best>O(1)</best>
-        ///     <average>O(10)</average>
-        ///     <worst>O(n)</worst>
-        /// </complexity>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [HttpPost]
-        public ObjectResult SearchArticles(uint id)
+        try
         {
-            try
-            {
-                var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
-                return articlesToSearchInto == null
-                    ? Utils.ResultUtil.ExceptionResult(exception)
-                    : Ok(articlesToSearchInto.FilterByStartingId(id));
-            }
-            catch (Exception ex)
-            {
-                return Utils.ResultUtil.ExceptionResult(ex);
-            }
+            var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
+            return articlesToSearchInto == null
+                ? ResultUtil.ExceptionResult(exception)
+                : Ok(articlesToSearchInto.FilterByStartingId(id));
+        }
+        catch (Exception ex)
+        {
+            return ResultUtil.ExceptionResult(ex);
         }
     }
-
 }

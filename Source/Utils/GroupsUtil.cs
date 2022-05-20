@@ -1,35 +1,38 @@
-﻿using System.Net;
+﻿#region
+
+using System.Net;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils;
 
 public static class GroupsUtil
 {
     private static dynamic? _groups;
-    
+
     public static async Task<dynamic?> GetGroups()
     {
         //if groups have been already downloaded, return them.
         if (_groups != null)
             return _groups;
-        
+
         //get content from url
         var content = await HtmlUtil.DownloadHtmlAsync(Constants.Constants.GroupsUrl);
 
         var doc = new HtmlDocument();
-      
+
         var c = content.GetData();
         if (c == null)
-        {
-            return new ObjectResult(new { error = "Errore durante il recupero dei gruppi" }) {StatusCode = (int) HttpStatusCode.InternalServerError};
-        }
+            return new ObjectResult(new { error = "Errore durante il recupero dei gruppi" })
+                { StatusCode = (int)HttpStatusCode.InternalServerError };
         {
             var c1 = c.Replace("<", "&lt;");
-            doc.LoadHtml(c1); 
+            doc.LoadHtml(c1);
         }
-        
+
         //WriteLine doc
         //Console.WriteLine(doc.DocumentNode.InnerHtml);  //tenere non cancellare
 
@@ -51,7 +54,7 @@ public static class GroupsUtil
             error = "Errore durante il recupero dei gruppi"
         })
         {
-            StatusCode = (int) HttpStatusCode.InternalServerError
+            StatusCode = (int)HttpStatusCode.InternalServerError
         };
     }
 }

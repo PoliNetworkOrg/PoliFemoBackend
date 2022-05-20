@@ -14,7 +14,7 @@ public static class ArticleUtil
 
 
     /// <summary>
-    ///    Get the articles object
+    ///     Get the articles object
     /// </summary>
     /// <complexity>
     ///     <best>O(1)</best>
@@ -46,9 +46,8 @@ public static class ArticleUtil
             return new Tuple<ArticlesObject?, Exception?>(_articles, null);
         }
     }
-    
+
     /// <summary>
-    /// 
     /// </summary>
     /// <complexity>
     ///     <best>O(1)</best>
@@ -63,22 +62,20 @@ public static class ArticleUtil
         var articles = parsed["articles"];
         if (articles == null)
             return null;
-        
+
         var result = new Dictionary<uint, JToken>();
-        foreach (var child in articles)
-        {
-            result[Convert.ToUInt32(child["id"])] = child;
-        }
+        foreach (var child in articles) result[Convert.ToUInt32(child["id"])] = child;
 
         return new ArticlesObject(result);
     }
-    
+
     internal static List<JToken> FilterById(ArticlesObject? articlesToSearchInto, uint id)
     {
         return articlesToSearchInto?.GetArticleById(id) ?? new List<JToken>();
     }
 
-    public static List<JToken> FilterByDateTimeRange(ArticlesObject? articlesToSearchInto, DateTime? start, DateTime? end)
+    public static List<JToken> FilterByDateTimeRange(ArticlesObject? articlesToSearchInto, DateTime? start,
+        DateTime? end)
     {
         if (start == null && end == null)
             return new List<JToken>();

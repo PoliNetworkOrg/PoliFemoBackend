@@ -1,27 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#region
 
-namespace PoliFemoBackend.Source.Controllers.Article
+using Microsoft.AspNetCore.Mvc;
+using PoliFemoBackend.Source.Utils;
+
+#endregion
+
+namespace PoliFemoBackend.Source.Controllers.Articles;
+
+[ApiController]
+[Route("/articles/byid")]
+public class ArticleByIdController : ControllerBase
 {
-    [ApiController]
-    [Route("/articles/byid")]
-    public class ArticleByIdController : ControllerBase
+    [HttpGet]
+    [HttpPost]
+    public ObjectResult SearchArticles(uint id)
     {
-
-        [HttpGet]
-        [HttpPost]
-        public ObjectResult SearchArticles(uint id)
+        try
         {
-            try
-            {
-                var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
-                return articlesToSearchInto == null
-                    ? Utils.ResultUtil.ExceptionResult(exception)
-                    : Ok(Utils.ArticleUtil.FilterById(articlesToSearchInto, id));
-            }
-            catch (Exception ex)
-            {
-                return Utils.ResultUtil.ExceptionResult(ex);
-            }
+            var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
+            return articlesToSearchInto == null
+                ? ResultUtil.ExceptionResult(exception)
+                : Ok(ArticleUtil.FilterById(articlesToSearchInto, id));
+        }
+        catch (Exception ex)
+        {
+            return ResultUtil.ExceptionResult(ex);
         }
     }
 }

@@ -7,28 +7,28 @@
     </PropertyGroup>
 
     <PropertyGroup>
-      <GenerateDocumentationFile>true</GenerateDocumentationFile>
-      <NoWarn>$(NoWarn);1591</NoWarn>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Remove="Other\Examples\articles_sample.json" />
+        <Content Remove="Other\Examples\articles_sample.json"/>
     </ItemGroup>
 
     <ItemGroup>
-        <_WebToolingArtifacts Remove="Properties\PublishProfiles\linux-x64.pubxml" />
-        <_WebToolingArtifacts Remove="Properties\PublishProfiles\win-x64.pubxml" />
+        <_WebToolingArtifacts Remove="Properties\PublishProfiles\linux-x64.pubxml"/>
+        <_WebToolingArtifacts Remove="Properties\PublishProfiles\win-x64.pubxml"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="Other\Examples\articles_sample.json" />
+        <None Include="Other\Examples\articles_sample.json"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.5" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.42"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.5"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1"/>
     </ItemGroup>
 
 </Project>

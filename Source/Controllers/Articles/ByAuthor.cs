@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#region
 
-namespace PoliFemoBackend.Source.Controllers.Article;
+using Microsoft.AspNetCore.Mvc;
+using PoliFemoBackend.Source.Utils;
+
+#endregion
+
+namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
 [Route("/articles/byauthor")]
@@ -22,16 +27,14 @@ public class ArticlesByAuthorController : ControllerBase
     {
         try
         {
-            var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
+            var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
             return articlesToSearchInto == null
-                ? Utils.ResultUtil.ExceptionResult(exception)
+                ? ResultUtil.ExceptionResult(exception)
                 : Ok(articlesToSearchInto.FilterByAuthor(author));
         }
         catch (Exception ex)
         {
-            return Utils.ResultUtil.ExceptionResult(ex);
+            return ResultUtil.ExceptionResult(ex);
         }
     }
-
-
 }

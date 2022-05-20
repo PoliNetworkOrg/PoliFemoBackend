@@ -4,11 +4,8 @@ public static class DateTimeUtil
 {
     public static DateTime? ConvertToDateTime(string? s)
     {
-        if (string.IsNullOrEmpty(s))
-        {
-            return null;
-        }
-        
+        if (string.IsNullOrEmpty(s)) return null;
+
         //2022-01-01T23:59:59.999
 
         try

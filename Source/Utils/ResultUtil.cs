@@ -1,5 +1,9 @@
-﻿using System.Net;
+﻿#region
+
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils;
 
@@ -9,7 +13,7 @@ public static class ResultUtil
     {
         ObjectResult objectResult = new(null)
         {
-            StatusCode = (int) HttpStatusCode.InternalServerError,
+            StatusCode = (int)HttpStatusCode.InternalServerError,
             Value = (object?)ex ?? ex?.Message ?? ""
         };
         return objectResult;

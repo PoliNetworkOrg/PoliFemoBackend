@@ -1,9 +1,14 @@
-using Microsoft.OpenApi.Models;
+#region
+
 using System.Reflection;
+using Microsoft.OpenApi.Models;
+using PoliFemoBackend.Source.Test;
+
+#endregion
 
 if (args.Length > 0 && args[0] == "test")
 {
-    PoliFemoBackend.Source.Test.Test.TestMain();
+    Test.TestMain();
     return;
 }
 

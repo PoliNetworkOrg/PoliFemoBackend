@@ -1,26 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#region
 
-namespace PoliFemoBackend.Source.Controllers.Article
+using Microsoft.AspNetCore.Mvc;
+using PoliFemoBackend.Source.Utils;
+
+#endregion
+
+namespace PoliFemoBackend.Source.Controllers.Articles;
+
+[ApiController]
+[Route("/articles/bydatetimerange")]
+public class ArticlesByDateTimeRange : ControllerBase
 {
-    [ApiController]
-    [Route("/articles/bydatetimerange")]
-    public class ArticlesByDateTimeRange : ControllerBase
+    [HttpGet]
+    [HttpPost]
+    public ObjectResult SearchArticles(DateTime? start, DateTime? end)
     {
-        [HttpGet]
-        [HttpPost]
-        public ObjectResult SearchArticles(DateTime? start, DateTime? end)
+        try
         {
-            try
-            {
-                var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
-                return articlesToSearchInto == null
-                    ? Utils.ResultUtil.ExceptionResult(exception)
-                    : Ok(Utils.ArticleUtil.FilterByDateTimeRange(articlesToSearchInto, start, end));
-            }
-            catch (Exception ex)
-            {
-                return Utils.ResultUtil.ExceptionResult(ex);
-            }
+            var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
+            return articlesToSearchInto == null
+                ? ResultUtil.ExceptionResult(exception)
+                : Ok(ArticleUtil.FilterByDateTimeRange(articlesToSearchInto, start, end));
+        }
+        catch (Exception ex)
+        {
+            return ResultUtil.ExceptionResult(ex);
         }
     }
 }
