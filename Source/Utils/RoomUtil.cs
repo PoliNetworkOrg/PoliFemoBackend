@@ -96,7 +96,8 @@ public static class RoomUtil
         var month = date.Month;
         var year = date.Year;
 
-        if (string.IsNullOrEmpty(sede)) return null;
+        if (string.IsNullOrEmpty(sede))
+            return null;
 
         var url = "https://www7.ceda.polimi.it/spazi/spazi/controller/OccupazioniGiornoEsatto.do?" +
                   "csic=" + sede +
