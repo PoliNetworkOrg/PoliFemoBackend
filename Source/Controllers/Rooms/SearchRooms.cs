@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
-[Route("/search/rooms")]
+[Route("/rooms/search")]
 public class SearchController : ControllerBase
 {
 

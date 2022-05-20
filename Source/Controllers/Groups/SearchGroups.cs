@@ -10,7 +10,7 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Groups;
 
 [ApiController]
-[Route("/search/groups")]
+[Route("/groups/search")]
 public class SearchController : ControllerBase
 {
     /// <summary>
