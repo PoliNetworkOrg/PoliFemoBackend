@@ -3,7 +3,7 @@
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[Route("/search/articles")]
+[Route("/articles/search")]
 public class SearchController : ControllerBase
 {
 
