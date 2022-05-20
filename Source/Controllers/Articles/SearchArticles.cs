@@ -29,12 +29,12 @@ public class SearchController : ControllerBase
                 {
                     var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
                     return articlesToSearchInto == null
-                        ? Utils.ArticleUtil.ErrorFindingArticles(exception)
+                        ? Utils.ResultUtil.ExceptionResult(exception)
                         : Ok(Utils.ArticleUtil.FilterById(articlesToSearchInto, id.GetValueOrDefault()));
                 }
                 catch (Exception ex)
                 { 
-                    return Utils.ArticleUtil.ErrorFindingArticles(ex);
+                    return Utils.ResultUtil.ExceptionResult(ex);
                 }
 
 
@@ -45,12 +45,12 @@ public class SearchController : ControllerBase
             {
                 var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
                 return articlesToSearchInto == null
-                    ? Utils.ArticleUtil.ErrorFindingArticles(exception)
+                    ? Utils.ResultUtil.ExceptionResult(exception)
                     : Ok(Utils.ArticleUtil.FilterByStartingId(articlesToSearchInto, id.GetValueOrDefault()));
             }
             catch (Exception ex)
             {
-                return Utils.ArticleUtil.ErrorFindingArticles(ex);
+                return Utils.ResultUtil.ExceptionResult(ex);
             }
 
 
@@ -61,12 +61,12 @@ public class SearchController : ControllerBase
             {
                 var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
                 return articlesToSearchInto == null
-                    ? Utils.ArticleUtil.ErrorFindingArticles(exception)
+                    ? Utils.ResultUtil.ExceptionResult(exception)
                     : Ok(Utils.ArticleUtil.FilterByAuthor(articlesToSearchInto, author));
             }
             catch (Exception ex)
             {
-                return Utils.ArticleUtil.ErrorFindingArticles(ex);
+                return Utils.ResultUtil.ExceptionResult(ex);
             }
         }
                 
@@ -77,12 +77,12 @@ public class SearchController : ControllerBase
             {
                 var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
                 return articlesToSearchInto == null
-                    ? Utils.ArticleUtil.ErrorFindingArticles(exception)
+                    ? Utils.ResultUtil.ExceptionResult(exception)
                     : Ok(Utils.ArticleUtil.FilterByDateTimeRange(articlesToSearchInto, start, end));
             }
             catch (Exception ex)
             {
-                return Utils.ArticleUtil.ErrorFindingArticles(ex);
+                return Utils.ResultUtil.ExceptionResult(ex);
             }
 
 
@@ -93,12 +93,12 @@ public class SearchController : ControllerBase
         {
             var (articlesToSearchInto, exception) = Utils.ArticleUtil.GetArticles();
             return articlesToSearchInto == null
-                ? Utils.ArticleUtil.ErrorFindingArticles(exception)
+                ? Utils.ResultUtil.ExceptionResult(exception)
                 : Ok(Utils.ArticleUtil.FilterByTargetingTheFuture(articlesToSearchInto));
         }
         catch (Exception ex)
         {
-            return Utils.ArticleUtil.ErrorFindingArticles(ex);
+            return Utils.ResultUtil.ExceptionResult(ex);
         }
     }
 }
