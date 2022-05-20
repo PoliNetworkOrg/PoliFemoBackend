@@ -1,6 +1,5 @@
 ﻿#region
 
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects;
 
@@ -13,15 +12,7 @@ public static class ArticleUtil
     private static ArticlesObject? _articles;
     private static readonly object LockArticles = new();
 
-    public static ObjectResult ErrorFindingArticles(Exception? ex)
-    {
-        ObjectResult objectResult = new(null)
-        {
-            StatusCode = 500,
-            Value = ex?.Message ?? ""
-        };
-        return objectResult;
-    }
+
 
     public static Tuple<ArticlesObject?, Exception?> GetArticles()
     {
