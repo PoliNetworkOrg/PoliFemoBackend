@@ -69,11 +69,6 @@ public static class ArticleUtil
         return new ArticlesObject(result);
     }
 
-    internal static JToken? FilterById(ArticlesObject? articlesToSearchInto, uint id)
-    {
-        return articlesToSearchInto?.GetArticleById(id);
-    }
-
     public static List<JToken> FilterByDateTimeRange(ArticlesObject? articlesToSearchInto, DateTime? start,
         DateTime? end)
     {

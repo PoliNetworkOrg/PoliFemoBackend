@@ -38,7 +38,7 @@ public class SearchController : ControllerBase
                     var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
                     return articlesToSearchInto == null
                         ? ResultUtil.ExceptionResult(exception)
-                        : Ok(ArticleUtil.FilterById(articlesToSearchInto, id.GetValueOrDefault()));
+                        : Ok(articlesToSearchInto.GetArticleById(id.GetValueOrDefault()));
                 }
                 catch (Exception ex)
                 {

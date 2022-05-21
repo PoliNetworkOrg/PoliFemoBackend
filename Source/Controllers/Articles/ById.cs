@@ -20,7 +20,7 @@ public class ArticleByIdController : ControllerBase
             var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
             return articlesToSearchInto == null
                 ? ResultUtil.ExceptionResult(exception)
-                : Ok(ArticleUtil.FilterById(articlesToSearchInto, id));
+                : Ok(articlesToSearchInto.GetArticleById(id));
         }
         catch (Exception ex)
         {
