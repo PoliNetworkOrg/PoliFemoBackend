@@ -36,15 +36,20 @@ public class SearchController : ControllerBase
             return GroupsUtil.ErrorInRetrievingGroups();
 
         //filtra per i parametri
-        bool Filter(dynamic item) => item["class"].ToString().ToLower().Contains(name.ToLower()) &&
-                                     (string.IsNullOrEmpty(year) || item.year.ToString().ToLower().Contains(year.ToLower())) &&
-                                     (string.IsNullOrEmpty(type) || item.type.ToString().ToLower().Contains(type.ToLower())) &&
-                                     (string.IsNullOrEmpty(degree) || item.degree.ToString().ToLower().Contains(degree.ToLower())) &&
-                                     (string.IsNullOrEmpty(platform) || item.platform.ToString().ToLower().Contains(platform.ToLower())) &&
-                                     (string.IsNullOrEmpty(language) || item.language.ToString().ToLower().Contains(language.ToLower())) &&
-                                     (string.IsNullOrEmpty(office) || item.office.ToString().ToLower().Contains(office.ToLower()));
+        bool Filter(dynamic item)
+        {
+            return item["class"].ToString().ToLower().Contains(name.ToLower()) &&
+                   (string.IsNullOrEmpty(year) || item.year.ToString().ToLower().Contains(year.ToLower())) &&
+                   (string.IsNullOrEmpty(type) || item.type.ToString().ToLower().Contains(type.ToLower())) &&
+                   (string.IsNullOrEmpty(degree) || item.degree.ToString().ToLower().Contains(degree.ToLower())) &&
+                   (string.IsNullOrEmpty(platform) ||
+                    item.platform.ToString().ToLower().Contains(platform.ToLower())) &&
+                   (string.IsNullOrEmpty(language) ||
+                    item.language.ToString().ToLower().Contains(language.ToLower())) &&
+                   (string.IsNullOrEmpty(office) || item.office.ToString().ToLower().Contains(office.ToLower()));
+        }
 
-        var filtered =  GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
+        var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
         return GroupsUtil.ResultSearch(this, filtered);
     }
 }

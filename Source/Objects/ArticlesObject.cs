@@ -93,7 +93,7 @@ public class ArticlesObject
         try
         {
             var results = new List<JToken>();
-            for (var i = id; i <= _articles.Count; i++) 
+            for (var i = id; i <= _articles.Count; i++)
                 results.Add(_articles[i]);
             return results;
         }

@@ -62,15 +62,13 @@ public static class GroupsUtil
 
     public static JArray Filter(dynamic json, Func<dynamic, bool> filter)
     {
-
         var resultsList = new JArray();
-        
+
         foreach (var item in json.index_data)
             if (filter.Invoke(item))
                 resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
 
         return resultsList;
-
     }
 
     public static ObjectResult ResultSearch(ControllerBase controllerBase, dynamic filtered)
@@ -86,7 +84,7 @@ public static class GroupsUtil
             {
                 StatusCode = (int)HttpStatusCode.InternalServerError
             };
-        
+
         return controllerBase.Ok(results);
     }
 }

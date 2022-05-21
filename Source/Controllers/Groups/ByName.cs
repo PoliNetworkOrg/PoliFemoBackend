@@ -29,10 +29,13 @@ public class GroupsByName : ControllerBase
         if (json == null)
             return new ObjectResult(new { error = "Errore durante il recupero dei gruppi" })
                 { StatusCode = (int)HttpStatusCode.InternalServerError };
-        
-        bool Filter(dynamic item) => item["class"].ToString().ToLower().Contains(name.ToLower());
-        var filtered =  GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
-        return GroupsUtil.ResultSearch(this, filtered);
 
+        bool Filter(dynamic item)
+        {
+            return item["class"].ToString().ToLower().Contains(name.ToLower());
+        }
+
+        var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
+        return GroupsUtil.ResultSearch(this, filtered);
     }
 }
