@@ -1,9 +1,11 @@
 ﻿#region
 
 using System.Net;
+using System.Web;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -56,5 +58,35 @@ public static class GroupsUtil
         {
             StatusCode = (int)HttpStatusCode.InternalServerError
         };
+    }
+
+    public static JArray Filter(dynamic json, Func<dynamic, bool> filter)
+    {
+
+        var resultsList = new JArray();
+        
+        foreach (var item in json.index_data)
+            if (filter.Invoke(item))
+                resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
+
+        return resultsList;
+
+    }
+
+    public static ObjectResult ResultSearch(ControllerBase controllerBase, dynamic filtered)
+    {
+        var results = new JObject
+        {
+            ["groups"] = filtered
+        };
+
+        //se la lista è vuota
+        if (filtered.Count == 0)
+            return new ObjectResult(new { error = "Nessun gruppo trovato" })
+            {
+                StatusCode = (int)HttpStatusCode.InternalServerError
+            };
+        
+        return controllerBase.Ok(results);
     }
 }

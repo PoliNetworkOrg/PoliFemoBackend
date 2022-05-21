@@ -1,10 +1,7 @@
 #region
 
-using System.Net;
-using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils;
 
 #endregion
@@ -39,38 +36,15 @@ public class SearchController : ControllerBase
             return GroupsUtil.ErrorInRetrievingGroups();
 
         //filtra per i parametri
-        var results = new JObject();
-        var resultsList = new JArray();
-        try
-        {
-            var indexData = json.index_data;
-            foreach (var item in indexData)
-                if (item["class"].ToString().ToLower().Contains(name.ToLower()) &&
-                    (string.IsNullOrEmpty(year) || item.year.ToString().ToLower().Contains(year.ToLower())) &&
-                    (string.IsNullOrEmpty(type) || item.type.ToString().ToLower().Contains(type.ToLower())) &&
-                    (string.IsNullOrEmpty(degree) || item.degree.ToString().ToLower().Contains(degree.ToLower())) &&
-                    (string.IsNullOrEmpty(platform) ||
-                     item.platform.ToString().ToLower().Contains(platform.ToLower())) &&
-                    (string.IsNullOrEmpty(language) ||
-                     item.language.ToString().ToLower().Contains(language.ToLower())) &&
-                    (string.IsNullOrEmpty(office) || item.office.ToString().ToLower().Contains(office.ToLower())))
-                    resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
+        bool Filter(dynamic item) => item["class"].ToString().ToLower().Contains(name.ToLower()) &&
+                                     (string.IsNullOrEmpty(year) || item.year.ToString().ToLower().Contains(year.ToLower())) &&
+                                     (string.IsNullOrEmpty(type) || item.type.ToString().ToLower().Contains(type.ToLower())) &&
+                                     (string.IsNullOrEmpty(degree) || item.degree.ToString().ToLower().Contains(degree.ToLower())) &&
+                                     (string.IsNullOrEmpty(platform) || item.platform.ToString().ToLower().Contains(platform.ToLower())) &&
+                                     (string.IsNullOrEmpty(language) || item.language.ToString().ToLower().Contains(language.ToLower())) &&
+                                     (string.IsNullOrEmpty(office) || item.office.ToString().ToLower().Contains(office.ToLower()));
 
-            results["groups"] = resultsList;
-        }
-        catch (Exception ex)
-        {
-            return ResultUtil.ExceptionResult(ex);
-        }
-
-        //se la lista è vuota
-        if (results.Count == 0 || resultsList.Count == 0)
-            return new ObjectResult(new { error = "Nessun gruppo trovato" })
-            {
-                StatusCode = (int)HttpStatusCode.InternalServerError
-            };
-
-        //se la lista contiene almeno un elemento
-        return Ok(results);
+        var filtered =  GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
+        return GroupsUtil.ResultSearch(this, filtered);
     }
 }

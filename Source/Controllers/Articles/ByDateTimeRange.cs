@@ -8,7 +8,7 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[Route("/articles/bydatetimerange")]
+[Route("/articles/byDateTimeRange")]
 public class ArticlesByDateTimeRange : ControllerBase
 {
     [HttpGet]

@@ -8,7 +8,7 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[Route("/articles/byid")]
+[Route("/articles/byId")]
 public class ArticleByIdController : ControllerBase
 {
     [HttpGet]

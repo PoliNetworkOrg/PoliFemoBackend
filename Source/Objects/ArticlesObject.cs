@@ -53,9 +53,8 @@ public class ArticlesObject
     /// <returns></returns>
     public List<JToken> FilterByAuthor(string author)
     {
-        if (_articlesByAuthor.ContainsKey(author))
-            return _articlesByAuthor[author];
-        return new List<JToken>();
+        return string.IsNullOrEmpty(author) ? new List<JToken>() :
+            _articlesByAuthor.ContainsKey(author) ? _articlesByAuthor[author] : new List<JToken>();
     }
 
     /// <summary>
@@ -72,9 +71,9 @@ public class ArticlesObject
         return _articles.Where(func).Select(x => x.Value).ToList();
     }
 
-    public List<JToken> GetArticleById(uint id)
+    public JToken? GetArticleById(uint id)
     {
-        return _articles.Where(x => x.Key == id).Select(x => x.Value).ToList();
+        return _articles.ContainsKey(id) ? _articles[id] : null;
     }
 
     /// <summary>
@@ -88,12 +87,14 @@ public class ArticlesObject
     /// <returns></returns>
     public List<JToken> FilterByStartingId(uint id)
     {
-        if (id == 0) return new List<JToken>();
+        if (id == 0)
+            return new List<JToken>();
 
         try
         {
             var results = new List<JToken>();
-            for (var i = id; i <= _articles.Count; i++) results.Add(_articles[i]);
+            for (var i = id; i <= _articles.Count; i++) 
+                results.Add(_articles[i]);
             return results;
         }
         catch
