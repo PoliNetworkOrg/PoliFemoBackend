@@ -53,7 +53,9 @@ public class ArticlesObject
     /// <returns></returns>
     public List<JToken> FilterByAuthor(string author)
     {
-        return _articlesByAuthor[author];
+        if (_articlesByAuthor.ContainsKey(author))
+            return _articlesByAuthor[author];
+        return new List<JToken>();
     }
 
     /// <summary>
