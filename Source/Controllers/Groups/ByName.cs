@@ -36,6 +36,6 @@ public class GroupsByName : ControllerBase
         }
 
         var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
-        return GroupsUtil.ResultSearch(this, filtered);
+        return Ok(filtered);
     }
 }

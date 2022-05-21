@@ -60,31 +60,14 @@ public static class GroupsUtil
         };
     }
 
-    public static JArray Filter(dynamic json, Func<dynamic, bool> filter)
+    public static List<JObject> Filter(dynamic json, Func<dynamic, bool> filter)
     {
-        var resultsList = new JArray();
+        var resultsList = new List<JObject>();
 
         foreach (var item in json.index_data)
             if (filter.Invoke(item))
                 resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
 
         return resultsList;
-    }
-
-    public static ObjectResult ResultSearch(ControllerBase controllerBase, dynamic filtered)
-    {
-        var results = new JObject
-        {
-            ["groups"] = filtered
-        };
-
-        //se la lista è vuota
-        if (filtered.Count == 0)
-            return new ObjectResult(new { error = "Nessun gruppo trovato" })
-            {
-                StatusCode = (int)HttpStatusCode.InternalServerError
-            };
-
-        return controllerBase.Ok(results);
     }
 }
