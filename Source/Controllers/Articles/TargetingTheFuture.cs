@@ -1,4 +1,4 @@
-﻿#region
+﻿#region includes
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
@@ -8,9 +8,12 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[Route("/articles/targetingthefuture")]
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/[controller]")]
+[Route("[controller]")]
 public class ArticlesTargetingTheFuture : ControllerBase
 {
+    [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
     public ObjectResult SearchArticles()

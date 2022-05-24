@@ -1,17 +1,19 @@
-﻿#region
+﻿#region includes
 
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PoliFemoBackend.Source.Utils;
+using System.Net;
 
 #endregion
 
 namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
-[Route("/rooms/search")]
-public class SearchController : ControllerBase
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/[controller]")]
+[Route("[controller]")]
+public class SearchRoomsController : ControllerBase
 {
     /// <summary>
     ///     Searches for available rooms in a given time range
@@ -23,9 +25,10 @@ public class SearchController : ControllerBase
     /// <response code="200">Returns the array of free rooms</response>
     /// <response code="500">Can't connect to poli servers</response>
     /// <response code="204">No available rooms</response>
+    [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    public async Task<IActionResult> SearchFreeRooms([BindRequired] string sede, [BindRequired] DateTime hourStart,
+    public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] DateTime hourStart,
         [BindRequired] DateTime hourStop)
     {
         hourStop = hourStop.AddMinutes(-1);
@@ -40,7 +43,10 @@ public class SearchController : ControllerBase
         }
 
         var t4 = RoomUtil.GetFreeRooms(t3[0], hourStart, hourStop);
-        if (t4 is null || t4.Count == 0) return NoContent();
+        if (t4 is null || t4.Count == 0)
+        {
+            return NoContent();
+        }
 
         var json = new { freeRooms = t4 };
 

@@ -1,4 +1,4 @@
-#region
+#region includes
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -9,8 +9,10 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Groups;
 
 [ApiController]
-[Route("/groups/search")]
-public class SearchController : ControllerBase
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/[controller]")]
+[Route("[controller]")]
+public class SearchGroupsController : ControllerBase
 {
     /// <summary>
     ///     Searches for available groups
@@ -26,14 +28,17 @@ public class SearchController : ControllerBase
     /// <response code="200">Returns the array of groups</response>
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available groups</response>
+    [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    public async Task<ObjectResult> SearchGroup([BindRequired] string name, string? year, string? degree, string? type,
+    public async Task<ObjectResult> SearchGroups([BindRequired] string name, string? year, string? degree, string? type,
         string? platform, string? language, string? office)
     {
         var json = await GroupsUtil.GetGroups();
         if (json == null)
+        {
             return GroupsUtil.ErrorInRetrievingGroups();
+        }
 
         //filtra per i parametri
         bool Filter(dynamic item)

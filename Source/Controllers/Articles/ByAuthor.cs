@@ -1,4 +1,4 @@
-﻿#region
+﻿#region includes
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
@@ -8,7 +8,9 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[Route("/articles/byAuthor")]
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/[controller]")]
+[Route("[controller]")]
 public class ArticlesByAuthorController : ControllerBase
 {
     /// <summary>
@@ -21,6 +23,7 @@ public class ArticlesByAuthorController : ControllerBase
     /// </complexity>
     /// <param name="author"></param>
     /// <returns></returns>
+    [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
     public ObjectResult SearchArticles(string author)

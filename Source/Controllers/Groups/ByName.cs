@@ -1,16 +1,18 @@
-﻿#region
+﻿#region includes
 
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PoliFemoBackend.Source.Utils;
+using System.Net;
 
 #endregion
 
 namespace PoliFemoBackend.Source.Controllers.Groups;
 
 [ApiController]
-[Route("/groups/byname")]
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/[controller]")]
+[Route("[controller]")]
 public class GroupsByName : ControllerBase
 {
     /// <summary>
@@ -21,14 +23,17 @@ public class GroupsByName : ControllerBase
     /// <response code="200">Returns the array of groups</response>
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available groups</response>
+    [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    public async Task<ObjectResult> SearchGroupByName([BindRequired] string name)
+    public async Task<ObjectResult> SearchGroups([BindRequired] string name)
     {
         var json = await GroupsUtil.GetGroups();
         if (json == null)
+        {
             return new ObjectResult(new { error = "Errore durante il recupero dei gruppi" })
-                { StatusCode = (int)HttpStatusCode.InternalServerError };
+            { StatusCode = (int)HttpStatusCode.InternalServerError };
+        }
 
         bool Filter(dynamic item)
         {

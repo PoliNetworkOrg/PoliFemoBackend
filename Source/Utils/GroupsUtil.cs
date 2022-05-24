@@ -1,11 +1,11 @@
-﻿#region
+﻿#region includes
 
-using System.Net;
-using System.Web;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net;
+using System.Web;
 
 #endregion
 
@@ -19,7 +19,9 @@ public static class GroupsUtil
     {
         //if groups have been already downloaded, return them.
         if (_groups != null)
+        {
             return _groups;
+        }
 
         //get content from url
         var content = await HtmlUtil.DownloadHtmlAsync(Constants.Constants.GroupsUrl);
@@ -28,8 +30,11 @@ public static class GroupsUtil
 
         var c = content.GetData();
         if (c == null)
+        {
             return new ObjectResult(new { error = "Errore durante il recupero dei gruppi" })
-                { StatusCode = (int)HttpStatusCode.InternalServerError };
+            { StatusCode = (int)HttpStatusCode.InternalServerError };
+        }
+
         {
             var c1 = c.Replace("<", "&lt;");
             doc.LoadHtml(c1);
@@ -43,7 +48,9 @@ public static class GroupsUtil
         var json = JsonConvert.DeserializeObject<dynamic>(doc.DocumentNode.InnerHtml);
 
         if (json == null)
+        {
             return ErrorInRetrievingGroups();
+        }
 
         _groups = json;
         return json;
@@ -65,8 +72,12 @@ public static class GroupsUtil
         var resultsList = new List<JObject>();
 
         foreach (var item in json.index_data)
+        {
             if (filter.Invoke(item))
+            {
                 resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
+            }
+        }
 
         return resultsList;
     }

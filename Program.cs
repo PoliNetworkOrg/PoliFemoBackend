@@ -1,7 +1,8 @@
-#region
+#region includes
 
-using System.Reflection;
-using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using PoliFemoBackend;
 using PoliFemoBackend.Source.Test;
 
 #endregion
@@ -16,30 +17,41 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    // Add services to the container.
-
     builder.Services.AddControllers().AddNewtonsoftJson();
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(c =>
-    {
-        c.SwaggerDoc("v1", new OpenApiInfo
-        {
-            Version = "v1",
-            Title = "PoliFemo API"
-        });
 
-        var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    builder.Services.AddApiVersioning(setup =>
+    {
+        setup.DefaultApiVersion = new ApiVersion(1, 0);
+        setup.AssumeDefaultVersionWhenUnspecified = true;
+        setup.ReportApiVersions = true;
     });
+    builder.Services.AddVersionedApiExplorer(setup =>
+    {
+        setup.GroupNameFormat = "'v'VVV";
+        setup.SubstituteApiVersionInUrl = true;
+    });
+
+    builder.Services.AddSwaggerGen();
+    builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
     var app = builder.Build();
 
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "PoliFemoBackend API V1");
-        options.RoutePrefix = string.Empty;
+        if (app.Services.GetService(typeof(IApiVersionDescriptionProvider)) is IApiVersionDescriptionProvider provider)
+        {
+            foreach (var description in provider.ApiVersionDescriptions)
+            {
+                options.SwaggerEndpoint("/swagger/" + description.GroupName + "/swagger.json", "PoliFemoBackend API " + description.GroupName.ToUpperInvariant());
+                options.RoutePrefix = "swagger";
+            }
+        }
+        else
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "PoliFemoBackend API V1");
+            options.RoutePrefix = "swagger";
+        }
     });
 
     app.UseAuthorization();

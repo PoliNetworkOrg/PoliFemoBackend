@@ -1,4 +1,4 @@
-﻿#region
+﻿#region includes
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
@@ -8,8 +8,10 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[Route("/articles/search")]
-public class SearchController : ControllerBase
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/[controller]")]
+[Route("[controller]")]
+public class SearchArticlesController : ControllerBase
 {
     /// <summary>
     ///     Searches for articles with the specified parameters
@@ -25,6 +27,7 @@ public class SearchController : ControllerBase
     /// <returns>An array of articles</returns>
     /// <response code="200">Returns the array of articles</response>
     /// <response code="500">Can't fetch the articles</response>
+    [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
     public ObjectResult SearchArticles(uint? id, string? author, DateTime? start, DateTime? end,
@@ -33,6 +36,7 @@ public class SearchController : ControllerBase
         if (id != null)
         {
             if (!getNextIds) //Search by id
+            {
                 try
                 {
                     var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
@@ -44,6 +48,7 @@ public class SearchController : ControllerBase
                 {
                     return ResultUtil.ExceptionResult(ex);
                 }
+            }
 
             //Search by starting id
             try
@@ -60,6 +65,7 @@ public class SearchController : ControllerBase
         }
 
         if (author != null) //Search by author
+        {
             try
             {
                 var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
@@ -71,9 +77,10 @@ public class SearchController : ControllerBase
             {
                 return ResultUtil.ExceptionResult(ex);
             }
-
+        }
 
         if (start != null && end != null) //Search by date range
+        {
             try
             {
                 var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
@@ -85,6 +92,7 @@ public class SearchController : ControllerBase
             {
                 return ResultUtil.ExceptionResult(ex);
             }
+        }
 
         //Get future articles
         try

@@ -1,4 +1,4 @@
-﻿#region
+﻿#region includes
 
 using HtmlAgilityPack;
 
@@ -11,33 +11,46 @@ public static class RoomUtil
     internal static List<string?>? GetFreeRooms(HtmlNode? table, DateTime start, DateTime stop)
     {
         if (table?.ChildNodes == null)
+        {
             return null;
+        }
 
         var shiftStart = GetShiftSlotFromTime(start);
         var shiftEnd = GetShiftSlotFromTime(stop);
 
         return (from child in table.ChildNodes
-            where child != null
-            select CheckIfFree(child, shiftStart, shiftEnd)
+                where child != null
+                select CheckIfFree(child, shiftStart, shiftEnd)
             into toAdd
-            where !string.IsNullOrEmpty(toAdd)
-            select toAdd).ToList();
+                where !string.IsNullOrEmpty(toAdd)
+                select toAdd).ToList();
     }
 
     private static string? CheckIfFree(HtmlNode? node, int shiftStart, int shiftEnd)
     {
         if (node == null)
+        {
             return null;
+        }
 
-        if (!node.GetClasses().Contains("normalRow")) return null;
-        if (node.ChildNodes == null) return null;
+        if (!node.GetClasses().Contains("normalRow"))
+        {
+            return null;
+        }
+
+        if (node.ChildNodes == null)
+        {
+            return null;
+        }
 
         if (!node.ChildNodes.Any(x =>
                 x.HasClass("dove")
                 && x.ChildNodes != null
                 && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))
             ))
+        {
             return null;
+        }
 
         var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
         return roomFree ? GetNomeAula(node) : null;
@@ -46,7 +59,9 @@ public static class RoomUtil
     private static bool IsRoomFree(HtmlNode? node, int shiftStart, int shiftEnd)
     {
         if (node?.ChildNodes == null)
+        {
             return true;
+        }
 
         var colsizetotal = 0;
         // the first two children are not time slots
@@ -55,9 +70,13 @@ public static class RoomUtil
             int colsize;
             // for each column, take it's span as the colsize
             if (node.ChildNodes[i].Attributes.Contains("colspan"))
+            {
                 colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
+            }
             else
+            {
                 colsize = 1;
+            }
 
             // the time start in shifts for each column, is the previous total
             var vStart = colsizetotal;
@@ -67,12 +86,16 @@ public static class RoomUtil
             // this is the trickery, if any column ends before the shift start or starts before
             // the shift end, then we skip
             if (vEnd < shiftStart || vStart > shiftEnd)
+            {
                 continue;
+            }
 
             // if one of the not-skipped column represents an actual lesson, then return false,
             // the room is occupied
             if (!string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()))
+            {
                 return false;
+            }
         }
 
         // if no lesson takes place in the room in the time window, the room is free (duh)
@@ -101,7 +124,9 @@ public static class RoomUtil
         var year = date.Year;
 
         if (string.IsNullOrEmpty(sede))
+        {
             return null;
+        }
 
         var url = "https://www7.ceda.polimi.it/spazi/spazi/controller/OccupazioniGiornoEsatto.do?" +
                   "csic=" + sede +
@@ -114,7 +139,9 @@ public static class RoomUtil
 
         var html = await HtmlUtil.DownloadHtmlAsync(url);
         if (html.IsValid() == false)
+        {
             return null;
+        }
 
         var doc = new HtmlDocument();
         doc.LoadHtml(html.GetData());

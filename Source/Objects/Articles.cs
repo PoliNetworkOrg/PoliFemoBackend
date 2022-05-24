@@ -1,4 +1,4 @@
-﻿#region
+﻿#region includes
 
 using Newtonsoft.Json.Linq;
 
@@ -6,12 +6,12 @@ using Newtonsoft.Json.Linq;
 
 namespace PoliFemoBackend.Source.Objects;
 
-public class ArticlesObject
+public class Articles
 {
     private readonly Dictionary<uint, JToken> _articles; // indexed by id
     private readonly Dictionary<string, List<JToken>> _articlesByAuthor; // indexed by author
 
-    public ArticlesObject(Dictionary<uint, JToken> articles)
+    public Articles(Dictionary<uint, JToken> articles)
     {
         _articles = articles;
         _articlesByAuthor = FillAuthors(_articles);
@@ -33,9 +33,15 @@ public class ArticlesObject
         {
             var author = article.Value["author"]?.ToString();
             if (string.IsNullOrEmpty(author))
+            {
                 continue;
+            }
 
-            if (!result.ContainsKey(author)) result.Add(author, new List<JToken>());
+            if (!result.ContainsKey(author))
+            {
+                result.Add(author, new List<JToken>());
+            }
+
             result[author].Add(article.Value);
         }
 
@@ -88,13 +94,18 @@ public class ArticlesObject
     public List<JToken> FilterByStartingId(uint id)
     {
         if (id == 0)
+        {
             return new List<JToken>();
+        }
 
         try
         {
             var results = new List<JToken>();
             for (var i = id; i <= _articles.Count; i++)
+            {
                 results.Add(_articles[i]);
+            }
+
             return results;
         }
         catch
