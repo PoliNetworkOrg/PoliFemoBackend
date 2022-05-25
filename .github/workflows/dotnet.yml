@@ -24,9 +24,9 @@ jobs:
       with:
         args: https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/Properties/PublishProfiles/linux-x64.pubxml
     - name: publish
-      run: dotnet publish PoliFemoBackend.csproj /p:PublishProfile=linux-x64.pubxml
+      run: dotnet publish PoliFemoBackend.csproj /p:Configuration=Release /p:Platform="x64" /p:PublishProfile=linux-x64.pubxml
     - name: ls
-      run: ls -l bin/Release/net6.0/linux-x64/
+      run: ls -l bin/Release/net6.0/linux-x64/publish/
       
     - name: Get current date
       id: date
