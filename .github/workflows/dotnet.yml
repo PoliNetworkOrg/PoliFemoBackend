@@ -39,6 +39,6 @@ jobs:
     - name: Create Github Release
       uses: ncipollo/release-action@v1
       with:
-          artifacts: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/x64/Release/net6.0/linux-x64/PoliFemoBackend.zip"
+          artifacts: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/x64/Release/net6.0/PoliFemoBackend.zip"
           token: ${{ secrets.RELEASES_TOKEN }}
           tag: ${{ steps.date.outputs.date }}
