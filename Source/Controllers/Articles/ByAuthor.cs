@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
+using PoliNetworkBot_CSharp.Code.Data;
 
 #endregion
 
@@ -40,4 +41,21 @@ public class ArticlesByAuthorController : ControllerBase
             return ResultUtil.ExceptionResult(ex);
         }
     }
+
+    public ObjectResult SearchArticlesDb(string author)
+    {
+        var results = Utils.Database.ExecuteSelect(
+            "SELECT * FROM Articles WHERE author = @author",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object>
+            {
+                {"@author", author}
+            });
+
+        return Ok(results);
+    }
+           
+    
+        
+    
 }

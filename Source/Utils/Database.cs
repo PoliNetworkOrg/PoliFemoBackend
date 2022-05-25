@@ -28,8 +28,10 @@ public static class Database
         return numberOfRowsAffected;
     }
 
-    public static DataTable ExecuteSelect(string query, DbConfig dbConfig, Dictionary<string, object>? args = null)
+    public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object>? args = null)
     {
+        if(dbConfig == null)
+            return default (DataTable);
         Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
