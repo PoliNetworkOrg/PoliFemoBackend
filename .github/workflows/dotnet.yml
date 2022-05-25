@@ -24,7 +24,7 @@ jobs:
       with:
         args: https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/Properties/PublishProfiles/linux-x64.pubxml
     - name: publish
-      run: dotnet publish PoliFemoBackend.csproj /p:Configuration=Release /p:Platform="x64" /p:PublishProfile=linux-x64.pubxml
+      run: dotnet build PoliFemoBackend.csproj /p:DeployOnBuild=true /p:Configuration=Release /p:Platform="x64" /p:PublishProfile=linux-x64.pubxml
       
     - name: Get current date
       id: date
@@ -39,6 +39,6 @@ jobs:
     - name: Create Github Release
       uses: ncipollo/release-action@v1
       with:
-          artifacts: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/x64/Release/net6.0/linux-x64/publish/PoliFemoBackend.zip"
+          artifacts: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/x64/Release/net6.0/linux-x64/PoliFemoBackend.zip"
           token: ${{ secrets.RELEASES_TOKEN }}
           tag: ${{ steps.date.outputs.date }}
