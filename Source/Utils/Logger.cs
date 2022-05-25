@@ -1,6 +1,4 @@
-
-#region
-
+#region includes
 
 using System.Globalization;
 
@@ -27,9 +25,8 @@ public static class Logger{
             {
                 File.AppendAllLinesAsync(Constants.Constants.DataLogPath, new[]
                 {
-                        "#@#LOG ENTRY#@#" + GetTime()
-                                        + " | " + logSeverityLevel + " | " + log1
-                    });
+                        "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
+                });
             }
 
             

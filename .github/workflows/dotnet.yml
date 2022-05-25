@@ -22,11 +22,11 @@ jobs:
     - name: Download PublishProfile
       uses: wei/wget@v1.1.1
       with:
-        args: https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/Properties/PublishProfiles/win-x64.pubxml
+        args: https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/Properties/PublishProfiles/linux-x64.pubxml
     - name: publish
       run: dotnet publish PoliFemoBackend.csproj /p:PublishProfile=linux-x64.pubxml
     - name: ls
-      run: ls -l bin/Debug/net6.0/linux-x64/publish/
+      run: ls -l bin/Release/net6.0/linux-x64/
       
     - name: Get current date
       id: date
@@ -41,6 +41,6 @@ jobs:
     - name: Create Github Release
       uses: ncipollo/release-action@v1
       with:
-          artifacts: "./bin/Debug/net6.0/linux-x64/publish/PoliFemoBackend"
+          artifacts: "./bin/Release/net6.0/linux-x64/publish/PoliFemoBackend.zip"
           token: ${{ secrets.RELEASES_TOKEN }}
           tag: ${{ steps.date.outputs.date }}

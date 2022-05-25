@@ -1,5 +1,4 @@
-#region
-
+#region includes
 
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
@@ -8,7 +7,6 @@ using PoliNetworkBot_CSharp.Code.Data;
 #endregion
 
 namespace PoliFemoBackend.Source.Utils;
-
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
@@ -56,8 +54,7 @@ public class DbConfig
 
     public string GetConnectionString()
     {
-        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
-               Password + "'";
+        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" + Password + "'";
     }
     public static DbConfig? DbConfigVar { get; set; }   
 }
