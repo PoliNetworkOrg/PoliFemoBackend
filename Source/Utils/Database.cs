@@ -2,7 +2,7 @@
 
 using System.Data;
 using MySql.Data.MySqlClient;
-using PoliFemoBackend.Utils.Logger;
+using PoliFemoBackend.Utils;
 
 #endregion
 
@@ -12,7 +12,7 @@ public static class Database
 {
     public static int Execute(string query, DbConfig dbConfig, Dictionary<string, object>? args = null)
     {
-        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+        Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
@@ -31,7 +31,7 @@ public static class Database
 
     public static DataTable ExecuteSelect(string query, DbConfig dbConfig, Dictionary<string, object>? args = null)
     {
-        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+        Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
