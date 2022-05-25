@@ -13,7 +13,7 @@ namespace PoliFemoBackend;
 
 public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
 {
-    public readonly IApiVersionDescriptionProvider provider;
+    private readonly IApiVersionDescriptionProvider provider;
 
     public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
     {
@@ -40,7 +40,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
 
     private static OpenApiInfo CreateVersionInfo(ApiVersionDescription description)
     {
-        var info = new OpenApiInfo()
+        var info = new OpenApiInfo
         {
             Title = "PoliFemoBackend API",
             Version = description.ApiVersion.ToString()

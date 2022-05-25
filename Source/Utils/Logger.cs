@@ -12,7 +12,7 @@ public static class Logger{
     private static readonly object LogFileLock = new();
 
 
-    public static void WriteLine(object log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
+    public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
     {
         if (log == null || string.IsNullOrEmpty(log.ToString()))
             return;
@@ -40,7 +40,7 @@ public static class Logger{
         }
     }
 
-    private static void CriticalError(Exception e, object log)
+    private static void CriticalError(Exception e, object? log)
     {
         try
         {
