@@ -12,16 +12,16 @@ namespace PoliFemoBackend.Source.Controllers.Utils;
 [ApiVersion("1.0")]
 [Route("v{version:apiVersion}/[controller]")]
 [Route("[controller]")]
-public class GetVersionsController : ControllerBase
+public class DeployLatestController : ControllerBase
 {
     /// <summary>
-    ///     Get the available versions of the API
+    ///     Shuts the server down and reboots it on the latest release available on GitHub
     /// </summary>
     /// <returns></returns>
     [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    public ObjectResult GetVersions()
+    public ObjectResult DeployLatest()
     {
         try
         {
