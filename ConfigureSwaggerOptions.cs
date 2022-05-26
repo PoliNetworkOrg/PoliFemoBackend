@@ -17,7 +17,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
 
     public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
     {
-        this._provider = provider;
+        _provider = provider;
     }
 
     public void Configure(SwaggerGenOptions options)
