@@ -13,23 +13,23 @@ namespace PoliFemoBackend;
 
 public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
 {
-    private readonly IApiVersionDescriptionProvider provider;
+    private readonly IApiVersionDescriptionProvider _provider;
 
     public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
     {
-        this.provider = provider;
+        this._provider = provider;
     }
 
     public void Configure(SwaggerGenOptions options)
     {
-        foreach (var description in provider.ApiVersionDescriptions)
+        foreach (var description in _provider.ApiVersionDescriptions)
         {
             var info = CreateVersionInfo(description);
             options.SwaggerDoc(description.GroupName, info);
 
             var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-            APIVersionsManager.AddVersion(info.Version);
+            ApiVersionsManager.AddVersion(info.Version);
         }
     }
 

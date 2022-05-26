@@ -25,7 +25,7 @@ public class DeployLatestController : ControllerBase
     {
         try
         {
-            return Ok(JsonConvert.SerializeObject(new { versions = APIVersionsManager.ReadAPIVersions() }, Formatting.Indented));
+            return Ok(JsonConvert.SerializeObject(new { versions = ApiVersionsManager.ReadApiVersions() }, Formatting.Indented));
         }
         catch (Exception ex)
         {

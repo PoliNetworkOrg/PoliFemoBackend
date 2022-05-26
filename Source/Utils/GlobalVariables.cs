@@ -1,11 +1,10 @@
 #region includes
 
 using MySql.Data.MySqlClient;
-using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Data;
+namespace PoliFemoBackend.Source.Utils;
 
 public static class GlobalVariables
 {
