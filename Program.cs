@@ -1,9 +1,11 @@
 #region includes
 
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using PoliFemoBackend;
 using PoliFemoBackend.Source.Test;
+using PoliNetworkBot_CSharp.Code.Data;
 
 #endregion
 
@@ -35,6 +37,9 @@ try
     builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
     var app = builder.Build();
+
+    GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
+
 
     app.UseSwagger();
     app.UseSwaggerUI(options =>
