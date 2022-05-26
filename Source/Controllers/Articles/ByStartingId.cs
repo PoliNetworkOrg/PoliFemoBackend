@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
+using PoliNetworkBot_CSharp.Code.Data;
 
 #endregion
 
@@ -39,5 +40,18 @@ public class ArticlesByStartingId : ControllerBase
         {
             return ResultUtil.ExceptionResult(ex);
         }
+    }
+
+    public ObjectResult SearchArticlesDb(uint id)
+    {
+        var results = Utils.Database.ExecuteSelect(
+            "SELECT * FROM article WHERE id_article >= @id",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object>
+            {
+                {"@id", id}
+            });
+
+        return Ok(results);
     }
 }

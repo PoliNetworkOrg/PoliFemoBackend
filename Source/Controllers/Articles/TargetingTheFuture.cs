@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
+using PoliNetworkBot_CSharp.Code.Data;
 
 #endregion
 
@@ -29,5 +30,16 @@ public class ArticlesTargetingTheFuture : ControllerBase
         {
             return ResultUtil.ExceptionResult(ex);
         }
+    }
+
+    //date today    
+    public ObjectResult SearchArticlesByTargetingTheFuture()
+    {
+        var dateToday = DateTime.Now.ToString("yyyy-MM-dd");
+        var results = Utils.Database.ExecuteSelect(
+            "SELECT * FROM article WHERE publishTime > @dateToday",
+            GlobalVariables.DbConfigVar);
+
+        return Ok(results);
     }
 }

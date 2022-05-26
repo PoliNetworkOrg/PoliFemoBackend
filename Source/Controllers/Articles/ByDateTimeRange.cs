@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
+using PoliNetworkBot_CSharp.Code.Data;
 
 #endregion
 
@@ -29,5 +30,19 @@ public class ArticlesByDateTimeRange : ControllerBase
         {
             return ResultUtil.ExceptionResult(ex);
         }
+    }
+
+    public ObjectResult SearchArticlesByDateRange(string start, string end)
+    {
+        var results = Utils.Database.ExecuteSelect(
+            "SELECT * FROM article WHERE publishTime >= @start AND publishTime <= @end",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object>
+            {
+                {"@start", start},
+                {"@end", end}
+            });
+
+        return Ok(results);
     }
 }
