@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PoliFemoBackend.Source.Utils;
-using PoliNetworkBot_CSharp.Code.Data;
+using Database = PoliFemoBackend.Source.Utils.Database;
 using System.Net;
 
 #endregion
@@ -47,7 +47,7 @@ public class GroupsByName : ControllerBase
 
     public ObjectResult SearchGroupsDB(string name)
     {
-        var results = Utils.Database.ExecuteSelect(
+        var results = Database.ExecuteSelect(
             "SELECT * FROM gruppo WHERE class = @name",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object>

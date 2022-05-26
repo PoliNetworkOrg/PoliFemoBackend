@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
-using PoliNetworkBot_CSharp.Code.Data;
+using Database = PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -35,7 +35,7 @@ public class ArticleByIdController : ControllerBase
 
     public ObjectResult SearchArticlesByID(uint id)
     {
-        var results = Utils.Database.ExecuteSelect(
+        var results = Database.ExecuteSelect(
             "SELECT * FROM article WHERE id_article = @id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object>

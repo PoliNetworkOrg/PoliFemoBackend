@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PoliFemoBackend.Source.Utils;
-using PoliNetworkBot_CSharp.Code.Data;
+using Database = PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -96,7 +96,7 @@ public class SearchGroupsController : ControllerBase
             d.Add("office", office);
         }
 
-        var results = Utils.Database.ExecuteSelect( query, GlobalVariables.DbConfigVar,d);
+        var results = Database.ExecuteSelect( query, GlobalVariables.DbConfigVar,d);
 
         return Ok(results);
     }
