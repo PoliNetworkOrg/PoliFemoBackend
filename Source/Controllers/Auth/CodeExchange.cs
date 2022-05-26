@@ -3,7 +3,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using PoliNetworkBot_CSharp.Code.Data;
+using GlobalVariables = PoliFemoBackend.Source.Utils.GlobalVariables;
 
 #endregion
 

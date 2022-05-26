@@ -2,7 +2,6 @@
 
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Data;
 
 #endregion
 
@@ -48,7 +47,7 @@ public class DbConfig
         DbConfigVar = new DbConfig();
         var x = JsonConvert.SerializeObject(DbConfigVar);
         File.WriteAllText(Constants.Constants.DbConfig, x);
-        Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.CRITICAL);
+        Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.Critical);
         throw new Exception("Database failed to initialize, we generated an empty file to fill");
     }
 

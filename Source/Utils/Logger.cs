@@ -10,7 +10,7 @@ public static class Logger{
     private static readonly object LogFileLock = new();
 
 
-    public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
+    public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.Info)
     {
         if (log == null || string.IsNullOrEmpty(log.ToString()))
             return;

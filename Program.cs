@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using PoliFemoBackend;
 using PoliFemoBackend.Source.Test;
-using PoliNetworkBot_CSharp.Code.Data;
+using PoliFemoBackend.Source.Utils;
 
 #endregion
 
@@ -58,6 +58,7 @@ try
             options.RoutePrefix = "swagger";
         }
     });
+    DbConfig.InitializeDbConfig();
 
     app.UseAuthorization();
 

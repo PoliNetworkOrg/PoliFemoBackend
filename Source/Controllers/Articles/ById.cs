@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
+using Database = PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -29,5 +30,19 @@ public class ArticleByIdController : ControllerBase
         {
             return ResultUtil.ExceptionResult(ex);
         }
+    }
+
+
+    public ObjectResult SearchArticlesByID(uint id)
+    {
+        var results = Database.ExecuteSelect(
+            "SELECT * FROM article WHERE id_article = @id",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object>
+            {
+                {"@id", id}
+            });
+
+        return Ok(results);
     }
 }

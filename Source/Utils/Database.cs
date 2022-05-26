@@ -11,7 +11,7 @@ public static class Database
 {
     public static int Execute(string query, DbConfig dbConfig, Dictionary<string, object>? args = null)
     {
-        Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
@@ -28,9 +28,11 @@ public static class Database
         return numberOfRowsAffected;
     }
 
-    public static DataTable ExecuteSelect(string query, DbConfig dbConfig, Dictionary<string, object>? args = null)
+    public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object>? args = null)
     {
-        Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+        if(dbConfig == null)
+            return default (DataTable);
+        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
