@@ -1,6 +1,4 @@
-
-#region
-
+#region includes
 
 using System.Globalization;
 
@@ -12,7 +10,7 @@ public static class Logger{
     private static readonly object LogFileLock = new();
 
 
-    public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
+    public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.Info)
     {
         if (log == null || string.IsNullOrEmpty(log.ToString()))
             return;
@@ -27,9 +25,8 @@ public static class Logger{
             {
                 File.AppendAllLinesAsync(Constants.Constants.DataLogPath, new[]
                 {
-                        "#@#LOG ENTRY#@#" + GetTime()
-                                        + " | " + logSeverityLevel + " | " + log1
-                    });
+                        "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
+                });
             }
 
             

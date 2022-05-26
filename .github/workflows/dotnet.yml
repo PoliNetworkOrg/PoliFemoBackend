@@ -19,28 +19,17 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: Download PublishProfile
-      uses: wei/wget@v1.1.1
-      with:
-        args: https://raw.githubusercontent.com/PoliNetworkOrg/PoliFemoBackend/main/Properties/PublishProfiles/win-x64.pubxml
-    - name: publish
-      run: dotnet publish PoliFemoBackend.csproj /p:PublishProfile=linux-x64.pubxml
-    - name: ls
-      run: ls -l bin/Debug/net6.0/linux-x64/publish/
+    - name: Build
+      run: dotnet build PoliFemoBackend.csproj /p:DeployOnBuild=true /p:Configuration=Release /p:Platform="x64" /p:PublishProfile=Properties/PublishProfiles/linux-x64.pubxml
       
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
 
-    - name: Tag snapshot
-      uses: tvdias/github-tagger@v0.0.1
-      with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.date.outputs.date }}
-
     - name: Create Github Release
-      uses: ncipollo/release-action@v1
+      uses: softprops/action-gh-release@v1
       with:
-          artifacts: "./bin/Debug/net6.0/linux-x64/publish/PoliFemoBackend"
+          files: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/Release/net6.0/PoliFemoBackend.zip"
+          tag_name: ${{ steps.date.outputs.date }}
           token: ${{ secrets.RELEASES_TOKEN }}
-          tag: ${{ steps.date.outputs.date }}
+          

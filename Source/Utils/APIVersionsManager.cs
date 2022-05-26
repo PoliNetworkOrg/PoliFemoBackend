@@ -1,16 +1,16 @@
 ﻿namespace PoliFemoBackend.Source.Utils;
 
-public static class APIVersionsManager
+public static class ApiVersionsManager
 {
-    private static readonly List<string> versions = new();
+    private static readonly List<string> Versions = new();
 
     public static void AddVersion(string version)
     {
-        versions.Add(version);
+        Versions.Add(version);
     }
 
-    public static List<string> ReadAPIVersions()
+    public static List<string> ReadApiVersions()
     {
-        return versions;
+        return Versions;
     }
 }

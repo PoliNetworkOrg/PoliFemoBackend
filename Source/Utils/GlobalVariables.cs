@@ -1,20 +1,13 @@
-#region
+#region includes
 
-using System.Collections.Generic;
-using System.Linq;
 using MySql.Data.MySqlClient;
-using PoliFemoBackend.Source.Utils;
-
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Data;
+namespace PoliFemoBackend.Source.Utils;
 
 public static class GlobalVariables
 {
     public static DbConfig? DbConfigVar { get; set; }
     public static MySqlConnection? DbConnection { get; set; }   
-        
-
-
 }

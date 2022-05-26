@@ -1,14 +1,11 @@
-#region
-
+#region includes
 
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Data;
 
 #endregion
 
 namespace PoliFemoBackend.Source.Utils;
-
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
@@ -50,14 +47,13 @@ public class DbConfig
         DbConfigVar = new DbConfig();
         var x = JsonConvert.SerializeObject(DbConfigVar);
         File.WriteAllText(Constants.Constants.DbConfig, x);
-        Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.CRITICAL);
+        Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.Critical);
         throw new Exception("Database failed to initialize, we generated an empty file to fill");
     }
 
     public string GetConnectionString()
     {
-        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
-               Password + "'";
+        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" + Password + "'";
     }
     public static DbConfig? DbConfigVar { get; set; }   
 }
