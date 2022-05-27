@@ -7,4 +7,4 @@ cp appsettings_production.json appsettings.json
 SSLCert=$(cat secrets.json | jq -r '.SSLCert')
 cat appsettings.json | jq --arg SSLCert "$SSLCert" '.Kestrel.Endpoints.HttpsInlineCertAndKeyFile.Certificate.Password |= $SSLCert' > appsettings.json.tmp
 cp appsettings.json.tmp appsettings.json
-screen sudo ./PoliFemoBackend
+sudo ./PoliFemoBackend
