@@ -38,7 +38,7 @@ public class CodeExchangeController : ControllerBase
     {
         try
         {
-            HttpResponseMessage? response = AuthUtil.GetResponse(code, GrantTypeEnum.authorization_code);
+            var response = AuthUtil.GetResponse(code, GrantTypeEnum.authorization_code);
 
             if (response == null)
             {
