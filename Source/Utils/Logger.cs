@@ -1,36 +1,44 @@
 #region includes
 
-using System.Globalization;
 using PoliFemoBackend.Source.Data;
+using System.Globalization;
 
 #endregion
 
 namespace PoliFemoBackend.Source.Utils;
 
-public static class Logger{
+public static class Logger
+{
     private static readonly object LogFileLock = new();
 
 
     public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.Info)
     {
         if (log == null || string.IsNullOrEmpty(log.ToString()))
+        {
             return;
+        }
+
         try
         {
             Console.WriteLine(logSeverityLevel + " | " + log);
             var log1 = log.ToString();
-            if (Directory.Exists("../data/") == false) Directory.CreateDirectory("../data/");
+            Directory.CreateDirectory("../data/");
 
-            if (!File.Exists(Constants.DataLogPath)) File.WriteAllText(Constants.DataLogPath, "");
+            if (!File.Exists(Constants.DataLogPath))
+            {
+                FileInfo file = new(Constants.DataLogPath);
+                file.Directory?.Create();
+                File.WriteAllText(file.FullName, "");
+            }
+
             lock (LogFileLock)
             {
                 File.AppendAllLinesAsync(Constants.DataLogPath, new[]
                 {
-                        "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
+                    "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
                 });
             }
-
-            
         }
         catch (Exception e)
         {
@@ -47,9 +55,14 @@ public static class Logger{
             Console.WriteLine(e);
             Console.WriteLine("#############2#############");
             if (log == null)
+            {
                 Console.WriteLine("[null]");
+            }
             else
+            {
                 Console.WriteLine(log);
+            }
+
             Console.WriteLine("#############3#############");
         }
         catch (Exception ex)
