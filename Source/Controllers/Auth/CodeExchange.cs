@@ -1,9 +1,10 @@
 #region includes
 
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using System.Net;
+using PoliFemoBackend.Source.Utils;
 using GlobalVariables = PoliFemoBackend.Source.Data.GlobalVariables;
 
 #endregion
@@ -59,25 +60,34 @@ public class CodeExchangeController : ControllerBase
 
         var token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
         var domain = token?.Payload["upn"].ToString();
-        if (domain == null)
-        {
+        if (domain==null || token?.Subject == null)
             return new ObjectResult(new
             {
-                error = "Token is not valid", //todo: change this text to something more meaningful
-                statusCode = HttpStatusCode.Forbidden
+                error = "The received code is not a valid organization code. Request a new authorization code and login with your PoliMi account",
+                statusCode = HttpStatusCode.BadRequest
             });
-        }
-
+        
         if (!domain.Contains("polimi.it"))
-        {
             return new ObjectResult(new
             {
                 error = "Only PoliMi students are allowed",
                 statusCode = HttpStatusCode.Forbidden
             });
-        }
 
+        addUser(token.Subject);
         return Ok(responseBody);
+    }
 
+
+    public void addUser(string id)
+    {
+        var d = new Dictionary<string, object> { { "id", id } };
+
+        var query = "select * from utente where id_utente = @id;";
+        var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
+        if(results == null){
+            query = " insert into utente values(@id, 0)";
+            results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
+        }
     }
 }
