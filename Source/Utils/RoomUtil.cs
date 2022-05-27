@@ -1,6 +1,8 @@
 ﻿#region includes
 
 using HtmlAgilityPack;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -8,7 +10,7 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class RoomUtil
 {
-    internal static List<string?>? GetFreeRooms(HtmlNode? table, DateTime start, DateTime stop)
+    internal static List<Object?>? GetFreeRooms(HtmlNode? table, DateTime start, DateTime stop)
     {
         if (table?.ChildNodes == null)
         {
@@ -22,11 +24,11 @@ public static class RoomUtil
                 where child != null
                 select CheckIfFree(child, shiftStart, shiftEnd)
             into toAdd
-                where !string.IsNullOrEmpty(toAdd)
+                where toAdd != null
                 select toAdd).ToList();
     }
 
-    private static string? CheckIfFree(HtmlNode? node, int shiftStart, int shiftEnd)
+    private static Object? CheckIfFree(HtmlNode? node, int shiftStart, int shiftEnd)
     {
         if (node == null)
         {
@@ -53,7 +55,7 @@ public static class RoomUtil
         }
 
         var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
-        return roomFree ? GetNomeAula(node) : null;
+        return roomFree ? GetAula(node) : null;
     }
 
     private static bool IsRoomFree(HtmlNode? node, int shiftStart, int shiftEnd)
@@ -102,11 +104,40 @@ public static class RoomUtil
         return true;
     }
 
-    private static string? GetNomeAula(HtmlNode? node)
+    private static Object? GetAula(HtmlNode? node)
+    {
+        //Flag to indicate if the room has a power outlet (yes/no)
+        var pwr = RoomWithPower(node);
+        var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
+        //Getting Rooom name
+        var nome = dove?.ChildNodes.First(x => x.Name == "a")?.InnerText.Trim();
+        
+        // Builds room object 
+        return (new { name = nome, power = pwr, building = "0" });
+    }
+
+    private static string? RoomWithPower(HtmlNode? node)
     {
         var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
         var a = dove?.ChildNodes.First(x => x.Name == "a");
-        return a?.InnerText.Trim();
+
+        string? aulaUrl = a?.Attributes["href"].Value;
+        
+        //Get the room id, in order to see whether it has power or not
+        int id_aula = Int32.Parse(aulaUrl.Split('=').Last());
+
+        string json = File.ReadAllText("Other/Examples/roomsWithPower.json");
+        JObject data = JObject.Parse(json);
+
+        //Retriving the list of IDs for the room with power outlets
+        int[]? list = data["rwp"]?.Select(x => (int)x).ToArray();
+
+        // Checking whether the room has a power outlet
+        if(list.Contains(id_aula)) 
+            return("yes");
+        else
+            return("no");
+
     }
 
     private static int GetShiftSlotFromTime(DateTime time)
@@ -148,6 +179,7 @@ public static class RoomUtil
 
         var t1 = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "BoxInfoCard", 1);
 
+        //Get html node tbody (table) containing the rooms' daily situation requested by the query 
         var t3 = HtmlUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
         return t3;
     }
