@@ -1,9 +1,10 @@
 */.vs/*
+.vs/*
 */obj/*
 obj/*
-.vs/*
 bin/*
 .idea/*
 *.user
+*.csproj.user
 .vscode/*
 /secrets.json
