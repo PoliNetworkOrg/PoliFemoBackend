@@ -1,4 +1,4 @@
-﻿namespace PoliFemoBackend.Source.Constants;
+﻿namespace PoliFemoBackend.Source.Data;
 
 public static class Constants
 {
@@ -9,6 +9,10 @@ public static class Constants
     public const string DbConfig = "../config/dbconfig.json";
 
     public const string DataLogPath = "../logs/backend.log";
+
+    public const string AzureClientId = "92602f24-dd8e-448e-a378-b1c575310f9d";
+
+    public const string AzureClientSecret = ""; //da spostare?
 
     
 }

@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PoliFemoBackend.Source.Utils;
 using System.Net;
+using PoliFemoBackend.Source.Data;
+using Database = PoliFemoBackend.Source.Utils.Database;
+
 
 #endregion
 
@@ -42,5 +45,19 @@ public class GroupsByName : ControllerBase
 
         var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
         return Ok(filtered);
+    }
+
+    public ObjectResult SearchGroupsDb(string name)
+    {
+        var results = Database.ExecuteSelect(
+            "SELECT * FROM gruppo WHERE class = @name",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object>
+            {
+                { "name", name }
+            });
+            
+
+        return Ok(results);
     }
 }

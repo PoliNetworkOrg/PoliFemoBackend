@@ -1,9 +1,12 @@
 #region includes
 
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using PoliFemoBackend;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Test;
+using PoliFemoBackend.Source.Utils;
 
 #endregion
 
@@ -36,6 +39,9 @@ try
 
     var app = builder.Build();
 
+    GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
+
+
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
@@ -53,6 +59,7 @@ try
             options.RoutePrefix = "swagger";
         }
     });
+    DbConfig.InitializeDbConfig();
 
     app.UseAuthorization();
 

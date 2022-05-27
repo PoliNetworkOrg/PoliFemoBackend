@@ -1,7 +1,9 @@
 ﻿#region includes
 
 using Microsoft.AspNetCore.Mvc;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
+using Database = PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -40,4 +42,23 @@ public class ArticlesByAuthorController : ControllerBase
             return ResultUtil.ExceptionResult(ex);
         }
     }
+
+    public ObjectResult SearchArticlesDb(string author)
+    {
+        var results = Database.ExecuteSelect(
+            "SELECT article.id_article, article.title, article.subtitle, article.text_, article.publishTime, article.targetTime, article.music, article.id_media " +
+            "FROM author, article, scritto " +
+            " WHERE scritto.id_article = article.id_article AND scritto.id_author = author.id_author AND author.name = @author",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object>
+            {
+                {"@author", author}
+            });
+
+        return Ok(results);
+    }
+           
+    
+        
+    
 }

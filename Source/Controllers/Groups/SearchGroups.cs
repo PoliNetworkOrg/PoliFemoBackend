@@ -2,7 +2,9 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
+using Database = PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -56,5 +58,47 @@ public class SearchGroupsController : ControllerBase
 
         var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
         return Ok(filtered);
+    }
+
+    public ObjectResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,string? language, string? office)
+    {
+
+        var d=  new Dictionary<string, object>{{ "name", name }};
+        
+        var query = "SELECT * FROM gruppo WHERE class = @name";
+        if (year != null)
+        {
+            query += " AND year = @year";
+            d.Add("year", year);
+        }
+        if(degree != null)
+        {
+            query += " AND degree = @degree";
+            d.Add("degree", degree);
+        }
+        if(type != null)
+        {
+            query += " AND type_ = @type";
+            d.Add("type", type);
+        }
+        if(platform != null)
+        {
+            query += " AND platform = @platform";
+            d.Add("platform", platform);
+        }
+        if(language != null)
+        {
+            query += " AND language_ = @language";
+            d.Add("language", language);
+        }
+        if(office != null)
+        {
+            query += " AND office = @office";
+            d.Add("office", office);
+        }
+
+        var results = Database.ExecuteSelect( query, GlobalVariables.DbConfigVar,d);
+
+        return Ok(results);
     }
 }

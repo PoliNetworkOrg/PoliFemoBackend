@@ -9,9 +9,10 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class Database
 {
+    // ReSharper disable once UnusedMember.Global
     public static int Execute(string query, DbConfig dbConfig, Dictionary<string, object>? args = null)
     {
-        Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
@@ -28,9 +29,11 @@ public static class Database
         return numberOfRowsAffected;
     }
 
-    public static DataTable ExecuteSelect(string query, DbConfig dbConfig, Dictionary<string, object>? args = null)
+    public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object>? args = null)
     {
-        Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+        if(dbConfig == null)
+            return default;
+        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
@@ -58,9 +61,11 @@ public static class Database
 
     private static void OpenConnection(IDbConnection connection)
     {
-        if (connection.State != ConnectionState.Open) connection.Open();
+        if (connection.State != ConnectionState.Open)
+            connection.Open();
     }
 
+    // ReSharper disable once UnusedMember.Global
     internal static object? GetFirstValueFromDataTable(DataTable dt)
     {
         try
@@ -73,6 +78,7 @@ public static class Database
         }
     }
 
+    // ReSharper disable once UnusedMember.Global
     public static long? GetIntFromColumn(DataRow dr, string columnName)
     {
         var o = dr[columnName];

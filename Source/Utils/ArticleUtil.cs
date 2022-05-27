@@ -1,6 +1,7 @@
 ﻿#region includes
 
 using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects;
 
 #endregion
@@ -34,7 +35,7 @@ public static class ArticleUtil
             try
             {
                 HttpClient client = new();
-                using var response = client.GetAsync(Constants.Constants.ArticlesUrl).Result;
+                using var response = client.GetAsync(Constants.ArticlesUrl).Result;
                 using var content = response.Content;
                 var data = content.ReadAsStringAsync().Result;
                 _articles = Parse(data);
