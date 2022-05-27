@@ -58,7 +58,10 @@ try
             options.RoutePrefix = "swagger";
         }
     });
-    DbConfig.InitializeDbConfig();
+
+    if (!app.Environment.IsDevelopment()) {
+        DbConfig.InitializeDbConfig();
+    }
 
     app.UseAuthorization();
 
