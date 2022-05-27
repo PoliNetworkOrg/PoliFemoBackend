@@ -36,5 +36,8 @@ jobs:
           tag_name: ${{ steps.date.outputs.date }}
           token: ${{ secrets.RELEASES_TOKEN }}
           
+    - name: Wait
+      run: sleep 10
+      
     - name: Deploy
-      run: curl https://api.polinetwork.org/v1/deploylatest?token={{ secrets.TOKEN_UPGRADE }}
+      run: curl https://api.polinetwork.org/v1/deploylatest?token=${{ secrets.TOKEN_UPGRADE }}
