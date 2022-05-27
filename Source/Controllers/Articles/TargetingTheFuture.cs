@@ -35,9 +35,8 @@ public class ArticlesTargetingTheFuture : ControllerBase
     //date today    
     public ObjectResult SearchArticlesByTargetingTheFuture()
     {
-        var dateToday = DateTime.Now.ToString("yyyy-MM-dd");
         var results = Database.ExecuteSelect(
-            "SELECT * FROM article WHERE publishTime > @dateToday",
+            "SELECT * FROM article WHERE publishTime > NOW()",
             GlobalVariables.DbConfigVar);
 
         return Ok(results);

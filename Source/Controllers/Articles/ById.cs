@@ -33,7 +33,7 @@ public class ArticleByIdController : ControllerBase
     }
 
 
-    public ObjectResult SearchArticlesByID(uint id)
+    public ObjectResult SearchArticlesById(uint id)
     {
         var results = Database.ExecuteSelect(
             "SELECT * FROM article WHERE id_article = @id",

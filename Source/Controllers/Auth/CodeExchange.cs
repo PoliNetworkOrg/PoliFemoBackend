@@ -42,7 +42,7 @@ public class CodeExchangeController : ControllerBase
             { "code", code },
             { "grant_type", "authorization_code" }
         });
-        var response = httpClient.PostAsync($"https://login.microsoftonline.com/organizations/oauth2/v2.0/token", formUrlEncodedContent).Result;
+        var response = httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token", formUrlEncodedContent).Result;
 
         if (!response.IsSuccessStatusCode)
         {
@@ -56,10 +56,15 @@ public class CodeExchangeController : ControllerBase
         var responseBody = response.Content.ReadAsStringAsync().Result;
         var responseJson = JToken.Parse(responseBody);
 
-        var token = GlobalVariables.TokenHandler.ReadJwtToken(responseJson["access_token"]?.ToString());
-
-        var domain = token.Payload["upn"].ToString();
-
+        var token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
+        var domain = token?.Payload["upn"].ToString();
+        if (domain==null)
+            return new ObjectResult(new
+            {
+                error = "Token is not valid", //todo: change this text to something more meaningful
+                statusCode = HttpStatusCode.Forbidden
+            });
+        
         if (!domain.Contains("polimi.it"))
             return new ObjectResult(new
             {

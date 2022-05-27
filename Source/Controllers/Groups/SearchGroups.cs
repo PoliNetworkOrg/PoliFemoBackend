@@ -59,7 +59,7 @@ public class SearchGroupsController : ControllerBase
         return Ok(filtered);
     }
 
-    public ObjectResult SearchGroupsDB(string name, string? year, string? degree, string? type, string? platform,string? language, string? office)
+    public ObjectResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,string? language, string? office)
     {
 
         var d=  new Dictionary<string, object>{{ "name", name }};

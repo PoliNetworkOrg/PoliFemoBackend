@@ -46,7 +46,7 @@ public class GroupsByName : ControllerBase
         return Ok(filtered);
     }
 
-    public ObjectResult SearchGroupsDB(string name)
+    public ObjectResult SearchGroupsDb(string name)
     {
         var results = Database.ExecuteSelect(
             "SELECT * FROM gruppo WHERE class = @name",
