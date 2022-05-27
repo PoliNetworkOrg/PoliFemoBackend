@@ -1,11 +1,10 @@
 #region includes
 
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
-using GlobalVariables = PoliFemoBackend.Source.Data.GlobalVariables;
+using System.Net;
 
 #endregion
 
@@ -32,50 +31,58 @@ public class CodeExchangeController : ControllerBase
 
     [MapToApiVersion("1.0")]
     [HttpGet]
+    [HttpPost]
     public ObjectResult CodeExchange(string code)
     // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d&scope=openid%20offline_access&response_type=code&login_hint=nome.cognome@mail.polimi.it
     {
-        HttpClient httpClient = new();
-        FormUrlEncodedContent formUrlEncodedContent = new(new Dictionary<string, string>
+        try
         {
-            { "client_id", Constants.AzureClientId },
-            { "scope", "openid" },
-            { "client_secret", Constants.AzureClientSecret },
-            { "code", code },
-            { "grant_type", "authorization_code" }
-        });
-        var response = httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token", formUrlEncodedContent).Result;
+            HttpResponseMessage? response = AuthUtil.GetResponse(code);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return new ObjectResult(new
+            if (response == null)
             {
-                error = "Error while exchanging code for token",
-                statusCode = response.StatusCode
-            });
+                return BadRequest("Client secret not found");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new ObjectResult(new
+                {
+                    error = "Error while exchanging code for token",
+                    statusCode = response.StatusCode
+                });
+            }
+
+            var responseBody = response.Content.ReadAsStringAsync().Result;
+            var responseJson = JToken.Parse(responseBody);
+
+            var token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
+            var domain = token?.Payload["upn"].ToString();
+            if (domain == null || token?.Subject == null)
+            {
+                return new ObjectResult(new
+                {
+                    error = "The received code is not a valid organization code. Request a new authorization code and login with your PoliMi account",
+                    statusCode = HttpStatusCode.BadRequest
+                });
+            }
+
+            if (!domain.Contains("polimi.it"))
+            {
+                return new ObjectResult(new
+                {
+                    error = "Only PoliMi students are allowed",
+                    statusCode = HttpStatusCode.Forbidden
+                });
+            }
+
+            //addUser(token.Subject); // TODO
+            return Ok(responseBody);
         }
-
-        var responseBody = response.Content.ReadAsStringAsync().Result;
-        var responseJson = JToken.Parse(responseBody);
-
-        var token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
-        var domain = token?.Payload["upn"].ToString();
-        if (domain==null || token?.Subject == null)
-            return new ObjectResult(new
-            {
-                error = "The received code is not a valid organization code. Request a new authorization code and login with your PoliMi account",
-                statusCode = HttpStatusCode.BadRequest
-            });
-        
-        if (!domain.Contains("polimi.it"))
-            return new ObjectResult(new
-            {
-                error = "Only PoliMi students are allowed",
-                statusCode = HttpStatusCode.Forbidden
-            });
-
-        //addUser(token.Subject); // TODO
-        return Ok(responseBody);
+        catch (Exception ex)
+        {
+            return ResultUtil.ExceptionResult(ex);
+        }
     }
 
     /*

@@ -1,7 +1,7 @@
 #region includes
 
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Utils;
 
 #endregion
 
@@ -25,26 +25,30 @@ public class RefreshTokenController : ControllerBase
     [HttpPost]
     public ObjectResult RefreshToken(string refreshToken)
     {
-        HttpClient httpClient = new();
-        FormUrlEncodedContent formUrlEncodedContent = new(new Dictionary<string, string>
+        try
         {
-            { "client_id", Constants.AzureClientId },
-            { "client_secret", Constants.AzureClientSecret },
-            { "refresh_token", refreshToken},
-            { "grant_type", "refresh_token" }
-        });
-        var response = httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token", formUrlEncodedContent).Result;
+            HttpResponseMessage? response = AuthUtil.GetResponse(refreshToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return new ObjectResult(new
+            if (response == null)
             {
-                error = "Refresh token not valid. Request a new authorization code.",
-                statusCode = response.StatusCode
-            });
-        }
+                return BadRequest("Client secret not found");
+            }
 
-        var responseBody = response.Content.ReadAsStringAsync().Result;
-        return Ok(responseBody);
+            if (!response.IsSuccessStatusCode)
+            {
+                return new ObjectResult(new
+                {
+                    error = "Refresh token not valid. Request a new authorization code.",
+                    statusCode = response.StatusCode
+                });
+            }
+
+            var responseBody = response.Content.ReadAsStringAsync().Result;
+            return Ok(responseBody);
+        }
+        catch (Exception ex)
+        {
+            return ResultUtil.ExceptionResult(ex);
+        }
     }
 }
