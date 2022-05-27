@@ -47,10 +47,10 @@ jobs:
       
     - name: Get uptime
       id: uptime
-      run: uptime=4736100
+      run: echo "::set-output name=uptime::2364924"
       
     - name: Check whether the deployment was successful
       if: ${{ steps.uptime.outputs.uptime > 120 }}
-      uses: actions/github-script@v3
+      uses: actions/github-script@v6
       with:
         script: core.setFailed('Built and released successfully but failed to deploy')
