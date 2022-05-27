@@ -3,13 +3,9 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-<<<<<<< HEAD
-using PoliFemoBackend.Source.Utils;
-using GlobalVariables = PoliFemoBackend.Source.Utils.GlobalVariables;
-=======
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Utils;
 using GlobalVariables = PoliFemoBackend.Source.Data.GlobalVariables;
->>>>>>> d8837fd50e369f3cdc040b0da13be903fe26b437
 
 #endregion
 
