@@ -2,10 +2,11 @@
 
 using System.IdentityModel.Tokens.Jwt;
 using MySql.Data.MySqlClient;
+using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils;
+namespace PoliFemoBackend.Source.Data;
 
 public static class GlobalVariables
 {
