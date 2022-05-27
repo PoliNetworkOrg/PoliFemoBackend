@@ -1,6 +1,7 @@
 ﻿#region includes
 
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Enums;
 
 #endregion
 
@@ -8,11 +9,11 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class AuthUtil
 {
-    public static HttpResponseMessage? GetResponse(string code, string grant_type)
+    public static HttpResponseMessage? GetResponse(string code, GrantTypeEnum grantType)
     {
         HttpClient httpClient = new();
 
-        var clientSecret = GlobalVariables.secrets?["Azure"]?.ToString();
+        var clientSecret = GlobalVariables.Secrets?["Azure"]?.ToString();
         if (clientSecret == null)
         {
             return null;
@@ -22,8 +23,8 @@ public static class AuthUtil
         {
             { "client_id", Constants.AzureClientId },
             { "client_secret", clientSecret},
-            { grant_type == "authorization_code" ? "code" : "refresh_token", code},
-            { "grant_type", grant_type }
+            { grantType == GrantTypeEnum.authorization_code ? "code" : "refresh_token", code},
+            { "grant_type", grantType.ToString() }
         });
 
         return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token", formUrlEncodedContent).Result;

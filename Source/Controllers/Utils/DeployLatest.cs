@@ -26,7 +26,7 @@ public class DeployLatestController : ControllerBase
     {
         try
         {
-            if (token == GlobalVariables.secrets?["Deploy"]?.ToString())
+            if (token == GlobalVariables.Secrets?["Deploy"]?.ToString())
             {
                 Task.Run(() =>
                 {
