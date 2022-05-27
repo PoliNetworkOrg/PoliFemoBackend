@@ -47,7 +47,7 @@ jobs:
       
     - name: Get uptime
       id: uptime
-      run: echo "::set-output name=uptime::2364924"
+      run: echo "::set-output name=uptime::$(curl https://api.polinetwork.org/v1/GetUptime)"
       
     - name: Check whether the deployment was successful
       if: ${{ steps.uptime.outputs.uptime > 120 }}
