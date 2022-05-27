@@ -60,7 +60,8 @@ try
         }
     });
 
-    if (!app.Environment.IsDevelopment()) {
+    if (!app.Environment.IsDevelopment())
+    {
         DbConfig.InitializeDbConfig();
     }
 

@@ -25,7 +25,7 @@ public class GetUptimeController : ControllerBase
     {
         try
         {
-            return Ok((DateTime.Now - GlobalVariables.start).Ticks / 10000000);
+            return Ok((DateTime.Now - GlobalVariables.Start).Ticks / 10000000);
         }
         catch (Exception ex)
         {

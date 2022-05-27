@@ -1,8 +1,7 @@
 ﻿#region includes
 
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 using System.Diagnostics;
 
@@ -27,21 +26,18 @@ public class DeployLatestController : ControllerBase
     {
         try
         {
-            if (token == JsonConvert.DeserializeObject<JObject>(System.IO.File.ReadAllText("secrets.json"))?["Deploy"]?.ToString())
-            {
-                Task.Run(() =>
-                {
-                    GracefullyShutdown.Shutdown();
-                    Process.Start("./run.sh");
-                    Thread.Sleep(1000);
-                    Environment.Exit(0);
-                });
-                return Ok("Request received successfully");
-            }
-            else
-            {
+            if (token != GlobalVariables.Secrets?["Deploy"]?.ToString())
                 return Unauthorized("Invalid token");
-            }
+            
+
+            Task.Run(() =>
+            {
+                GracefullyShutdown.Shutdown();
+                Process.Start("./run.sh");
+                Thread.Sleep(1000);
+                Environment.Exit(0);
+            });
+            return Ok("Request received successfully");
         }
         catch (Exception ex)
         {

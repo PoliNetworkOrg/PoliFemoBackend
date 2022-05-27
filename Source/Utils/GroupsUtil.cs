@@ -12,6 +12,7 @@ using System.Web;
 
 namespace PoliFemoBackend.Source.Utils;
 
+// ReSharper disable once UnusedType.Global
 public static class GroupsUtil
 {
     private static dynamic? _groups;
@@ -57,7 +58,7 @@ public static class GroupsUtil
         return json;
     }
 
-    public static ObjectResult ErrorInRetrievingGroups()
+    private static ObjectResult ErrorInRetrievingGroups()
     {
         return new ObjectResult(new
         {
