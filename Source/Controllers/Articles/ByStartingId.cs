@@ -28,21 +28,20 @@ public class ArticlesByStartingId : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    public ObjectResult SearchArticles(uint id)
-    {
-        try
-        {
-            var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
-            return articlesToSearchInto == null
-                ? ResultUtil.ExceptionResult(exception)
-                : Ok(articlesToSearchInto.FilterByStartingId(id));
-        }
-        catch (Exception ex)
-        {
-            return ResultUtil.ExceptionResult(ex);
-        }
-    }
-
+    // public ObjectResult SearchArticles(uint id)
+    // {
+    //     try
+    //     {
+    //         var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
+    //         return articlesToSearchInto == null
+    //             ? ResultUtil.ExceptionResult(exception)
+    //             : Ok(articlesToSearchInto.FilterByStartingId(id));
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return ResultUtil.ExceptionResult(ex);
+    //     }
+    // }
     public ObjectResult SearchArticlesDb(uint id)
     {
         var results = Database.ExecuteSelect(

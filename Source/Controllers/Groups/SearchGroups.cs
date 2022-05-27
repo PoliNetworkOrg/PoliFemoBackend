@@ -33,32 +33,32 @@ public class SearchGroupsController : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    public async Task<ObjectResult> SearchGroups([BindRequired] string name, string? year, string? degree, string? type,
-        string? platform, string? language, string? office)
-    {
-        var json = await GroupsUtil.GetGroups();
-        if (json == null)
-        {
-            return GroupsUtil.ErrorInRetrievingGroups();
-        }
+    // public async Task<ObjectResult> SearchGroups([BindRequired] string name, string? year, string? degree, string? type,
+    //     string? platform, string? language, string? office)
+    // {
+    //     var json = await GroupsUtil.GetGroups();
+    //     if (json == null)
+    //     {
+    //         return GroupsUtil.ErrorInRetrievingGroups();
+    //     }
 
-        //filtra per i parametri
-        bool Filter(dynamic item)
-        {
-            return item["class"].ToString().ToLower().Contains(name.ToLower()) &&
-                   (string.IsNullOrEmpty(year) || item.year.ToString().ToLower().Contains(year.ToLower())) &&
-                   (string.IsNullOrEmpty(type) || item.type.ToString().ToLower().Contains(type.ToLower())) &&
-                   (string.IsNullOrEmpty(degree) || item.degree.ToString().ToLower().Contains(degree.ToLower())) &&
-                   (string.IsNullOrEmpty(platform) ||
-                    item.platform.ToString().ToLower().Contains(platform.ToLower())) &&
-                   (string.IsNullOrEmpty(language) ||
-                    item.language.ToString().ToLower().Contains(language.ToLower())) &&
-                   (string.IsNullOrEmpty(office) || item.office.ToString().ToLower().Contains(office.ToLower()));
-        }
+    //     //filtra per i parametri
+    //     bool Filter(dynamic item)
+    //     {
+    //         return item["class"].ToString().ToLower().Contains(name.ToLower()) &&
+    //                (string.IsNullOrEmpty(year) || item.year.ToString().ToLower().Contains(year.ToLower())) &&
+    //                (string.IsNullOrEmpty(type) || item.type.ToString().ToLower().Contains(type.ToLower())) &&
+    //                (string.IsNullOrEmpty(degree) || item.degree.ToString().ToLower().Contains(degree.ToLower())) &&
+    //                (string.IsNullOrEmpty(platform) ||
+    //                 item.platform.ToString().ToLower().Contains(platform.ToLower())) &&
+    //                (string.IsNullOrEmpty(language) ||
+    //                 item.language.ToString().ToLower().Contains(language.ToLower())) &&
+    //                (string.IsNullOrEmpty(office) || item.office.ToString().ToLower().Contains(office.ToLower()));
+    //     }
 
-        var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
-        return Ok(filtered);
-    }
+    //     var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
+    //     return Ok(filtered);
+    // }
 
     public ObjectResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,string? language, string? office)
     {

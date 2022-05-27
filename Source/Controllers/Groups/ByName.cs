@@ -29,23 +29,23 @@ public class GroupsByName : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    public async Task<ObjectResult> SearchGroups([BindRequired] string name)
-    {
-        var json = await GroupsUtil.GetGroups();
-        if (json == null)
-        {
-            return new ObjectResult(new { error = "Errore durante il recupero dei gruppi" })
-            { StatusCode = (int)HttpStatusCode.InternalServerError };
-        }
+    // public async Task<ObjectResult> SearchGroups([BindRequired] string name)
+    // {
+    //     var json = await GroupsUtil.GetGroups();
+    //     if (json == null)
+    //     {
+    //         return new ObjectResult(new { error = "Errore durante il recupero dei gruppi" })
+    //         { StatusCode = (int)HttpStatusCode.InternalServerError };
+    //     }
 
-        bool Filter(dynamic item)
-        {
-            return item["class"].ToString().ToLower().Contains(name.ToLower());
-        }
+    //     bool Filter(dynamic item)
+    //     {
+    //         return item["class"].ToString().ToLower().Contains(name.ToLower());
+    //     }
 
-        var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
-        return Ok(filtered);
-    }
+    //     var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
+    //     return Ok(filtered);
+    // }
 
     public ObjectResult SearchGroupsDb(string name)
     {

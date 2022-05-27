@@ -15,25 +15,23 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 [Route("[controller]")]
 public class ArticleByIdController : ControllerBase
 {
+    // public ObjectResult SearchArticles(uint id)
+    // {
+    //     try
+    //     {
+    //         var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
+    //         return articlesToSearchInto == null
+    //             ? ResultUtil.ExceptionResult(exception)
+    //             : Ok(articlesToSearchInto.GetArticleById(id));
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return ResultUtil.ExceptionResult(ex);
+    //     }
+    // }
     [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    public ObjectResult SearchArticles(uint id)
-    {
-        try
-        {
-            var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
-            return articlesToSearchInto == null
-                ? ResultUtil.ExceptionResult(exception)
-                : Ok(articlesToSearchInto.GetArticleById(id));
-        }
-        catch (Exception ex)
-        {
-            return ResultUtil.ExceptionResult(ex);
-        }
-    }
-
-
     public ObjectResult SearchArticlesById(uint id)
     {
         var results = Database.ExecuteSelect(

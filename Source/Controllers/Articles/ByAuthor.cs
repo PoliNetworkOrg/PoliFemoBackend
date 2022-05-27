@@ -28,21 +28,20 @@ public class ArticlesByAuthorController : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    public ObjectResult SearchArticles(string author)
-    {
-        try
-        {
-            var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
-            return articlesToSearchInto == null
-                ? ResultUtil.ExceptionResult(exception)
-                : Ok(articlesToSearchInto.FilterByAuthor(author));
-        }
-        catch (Exception ex)
-        {
-            return ResultUtil.ExceptionResult(ex);
-        }
-    }
-
+    // public ObjectResult SearchArticles(string author)
+    // {
+    //     try
+    //     {
+    //         var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
+    //         return articlesToSearchInto == null
+    //             ? ResultUtil.ExceptionResult(exception)
+    //             : Ok(articlesToSearchInto.FilterByAuthor(author));
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return ResultUtil.ExceptionResult(ex);
+    //     }
+    // }
     public ObjectResult SearchArticlesDb(string author)
     {
         var results = Database.ExecuteSelect(
