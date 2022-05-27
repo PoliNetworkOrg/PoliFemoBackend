@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Web;
+using PoliFemoBackend.Source.Data;
 
 #endregion
 
@@ -24,7 +25,7 @@ public static class GroupsUtil
         }
 
         //get content from url
-        var content = await HtmlUtil.DownloadHtmlAsync(Constants.Constants.GroupsUrl);
+        var content = await HtmlUtil.DownloadHtmlAsync(Constants.GroupsUrl);
 
         var doc = new HtmlDocument();
 

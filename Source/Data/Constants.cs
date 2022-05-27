@@ -1,4 +1,4 @@
-﻿namespace PoliFemoBackend.Source.Constants;
+﻿namespace PoliFemoBackend.Source.Data;
 
 public static class Constants
 {

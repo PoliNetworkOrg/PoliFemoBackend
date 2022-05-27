@@ -1,6 +1,7 @@
 #region includes
 
 using Microsoft.AspNetCore.Mvc;
+using PoliFemoBackend.Source.Data;
 
 #endregion
 
@@ -27,8 +28,8 @@ public class RefreshTokenController : ControllerBase
         HttpClient httpClient = new();
         FormUrlEncodedContent formUrlEncodedContent = new(new Dictionary<string, string>
         {
-            { "client_id", Constants.Constants.AzureClientId },
-            { "client_secret", Constants.Constants.AzureClientSecret },
+            { "client_id", Constants.AzureClientId },
+            { "client_secret", Constants.AzureClientSecret },
             { "refresh_token", refreshToken},
             { "grant_type", "refresh_token" }
         });

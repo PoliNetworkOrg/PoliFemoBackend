@@ -2,7 +2,7 @@
 
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-
+using PoliFemoBackend.Source.Data;
 
 #endregion
 
@@ -20,11 +20,11 @@ public class DbConfig
 
     public static void InitializeDbConfig()
     {
-        if (File.Exists(Constants.Constants.DbConfig))
+        if (File.Exists(Constants.DbConfig))
         {
             try
             {
-                var text = File.ReadAllText(Constants.Constants.DbConfig);
+                var text = File.ReadAllText(Constants.DbConfig);
                 DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
             }
             catch (Exception ex)
@@ -47,7 +47,7 @@ public class DbConfig
     {
         DbConfigVar = new DbConfig();
         var x = JsonConvert.SerializeObject(DbConfigVar);
-        File.WriteAllText(Constants.Constants.DbConfig, x);
+        File.WriteAllText(Constants.DbConfig, x);
         Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.Critical);
         throw new Exception("Database failed to initialize, we generated an empty file to fill");
     }

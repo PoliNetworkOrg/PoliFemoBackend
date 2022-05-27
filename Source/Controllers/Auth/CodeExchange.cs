@@ -3,8 +3,13 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+<<<<<<< HEAD
 using PoliFemoBackend.Source.Utils;
 using GlobalVariables = PoliFemoBackend.Source.Utils.GlobalVariables;
+=======
+using PoliFemoBackend.Source.Data;
+using GlobalVariables = PoliFemoBackend.Source.Data.GlobalVariables;
+>>>>>>> d8837fd50e369f3cdc040b0da13be903fe26b437
 
 #endregion
 
@@ -37,9 +42,9 @@ public class CodeExchangeController : ControllerBase
         HttpClient httpClient = new();
         FormUrlEncodedContent formUrlEncodedContent = new(new Dictionary<string, string>
         {
-            { "client_id", Constants.Constants.AzureClientId },
+            { "client_id", Constants.AzureClientId },
             { "scope", "openid" },
-            { "client_secret", Constants.Constants.AzureClientSecret },
+            { "client_secret", Constants.AzureClientSecret },
             { "code", code },
             { "grant_type", "authorization_code" }
         });

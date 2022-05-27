@@ -2,7 +2,9 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils;
+using System.Diagnostics;
 
 #endregion
 
@@ -21,11 +23,23 @@ public class DeployLatestController : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    public ObjectResult DeployLatest()
+    public ObjectResult DeployLatest(string token)
     {
         try
         {
-            return Ok(JsonConvert.SerializeObject(new { versions = ApiVersionsManager.ReadApiVersions() }, Formatting.Indented));
+            if (token == JsonConvert.DeserializeObject<JObject>(System.IO.File.ReadAllText("secrets.json"))?["Deploy"]?.ToString())
+            {
+                Process.Start("./run.sh");
+                Task.Run(() => {
+                    Thread.Sleep(1000);
+                    Environment.Exit(0);
+                });
+                return Ok("Request received successfully");
+            }
+            else
+            {
+                return Unauthorized("Invalid token");
+            }
         }
         catch (Exception ex)
         {
