@@ -1,9 +1,9 @@
 #region includes
 
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
+using System.Net;
 using GlobalVariables = PoliFemoBackend.Source.Data.GlobalVariables;
 
 #endregion
@@ -59,19 +59,24 @@ public class CodeExchangeController : ControllerBase
 
         var token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
         var domain = token?.Payload["upn"].ToString();
-        if (domain==null)
+        if (domain == null)
+        {
             return new ObjectResult(new
             {
                 error = "Token is not valid", //todo: change this text to something more meaningful
                 statusCode = HttpStatusCode.Forbidden
             });
-        
+        }
+
         if (!domain.Contains("polimi.it"))
+        {
             return new ObjectResult(new
             {
                 error = "Only PoliMi students are allowed",
                 statusCode = HttpStatusCode.Forbidden
             });
+        }
+
         return Ok(responseBody);
 
     }

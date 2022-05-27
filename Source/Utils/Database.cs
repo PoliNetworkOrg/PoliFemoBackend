@@ -1,7 +1,7 @@
 #region includes
 
-using System.Data;
 using MySql.Data.MySqlClient;
+using System.Data;
 
 #endregion
 
@@ -21,8 +21,12 @@ public static class Database
         OpenConnection(connection);
 
         if (args != null)
+        {
             foreach (var (key, value) in args)
+            {
                 cmd.Parameters.AddWithValue(key, value);
+            }
+        }
 
         var numberOfRowsAffected = cmd.ExecuteNonQuery();
 
@@ -31,8 +35,11 @@ public static class Database
 
     public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object>? args = null)
     {
-        if(dbConfig == null)
+        if (dbConfig == null)
+        {
             return default;
+        }
+
         Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
@@ -40,8 +47,12 @@ public static class Database
         var cmd = new MySqlCommand(query, connection);
 
         if (args != null)
+        {
             foreach (var (key, value) in args)
+            {
                 cmd.Parameters.AddWithValue(key, value);
+            }
+        }
 
         OpenConnection(connection);
 
@@ -62,7 +73,9 @@ public static class Database
     private static void OpenConnection(IDbConnection connection)
     {
         if (connection.State != ConnectionState.Open)
+        {
             connection.Open();
+        }
     }
 
     // ReSharper disable once UnusedMember.Global
@@ -83,7 +96,9 @@ public static class Database
     {
         var o = dr[columnName];
         if (o is null or DBNull)
+        {
             return null;
+        }
 
         try
         {

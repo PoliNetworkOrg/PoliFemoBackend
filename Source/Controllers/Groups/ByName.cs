@@ -2,9 +2,9 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 using System.Net;
-using PoliFemoBackend.Source.Data;
 using Database = PoliFemoBackend.Source.Utils.Database;
 
 
@@ -56,7 +56,7 @@ public class GroupsByName : ControllerBase
             {
                 { "name", name }
             });
-            
+
 
         return Ok(results);
     }

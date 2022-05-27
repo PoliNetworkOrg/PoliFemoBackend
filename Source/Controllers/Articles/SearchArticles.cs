@@ -107,5 +107,5 @@ public class SearchArticlesController : ControllerBase
             return ResultUtil.ExceptionResult(ex);
         }
     }
-    
+
 }

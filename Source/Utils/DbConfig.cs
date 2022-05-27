@@ -32,7 +32,10 @@ public class DbConfig
                 Logger.WriteLine(ex);
             }
 
-            if (DbConfigVar == null) GenerateDbConfigEmpty();
+            if (DbConfigVar == null)
+            {
+                GenerateDbConfigEmpty();
+            }
         }
         else
         {
@@ -47,7 +50,9 @@ public class DbConfig
     {
         DbConfigVar = new DbConfig();
         var x = JsonConvert.SerializeObject(DbConfigVar);
-        File.WriteAllText(Constants.DbConfig, x);
+        FileInfo file = new(Constants.DbConfig);
+        file.Directory?.Create();
+        File.WriteAllText(file.FullName, x);
         Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.Critical);
         throw new Exception("Database failed to initialize, we generated an empty file to fill");
     }
@@ -56,7 +61,7 @@ public class DbConfig
     {
         return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" + Password + "'";
     }
-    public static DbConfig? DbConfigVar { get; set; }   
+    public static DbConfig? DbConfigVar { get; set; }
 }
 
 

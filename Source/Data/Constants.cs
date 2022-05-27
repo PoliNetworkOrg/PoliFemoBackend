@@ -13,6 +13,4 @@ public static class Constants
     public const string AzureClientId = "92602f24-dd8e-448e-a378-b1c575310f9d";
 
     public const string AzureClientSecret = ""; //da spostare?
-
-    
 }
