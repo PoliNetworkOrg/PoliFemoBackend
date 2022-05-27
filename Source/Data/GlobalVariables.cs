@@ -10,6 +10,7 @@ namespace PoliFemoBackend.Source.Data;
 
 public static class GlobalVariables
 {
+    public static readonly DateTime start = DateTime.Now;
     public static DbConfig? DbConfigVar { get; set; }
     public static MySqlConnection? DbConnection { get; set; }
     public static JwtSecurityTokenHandler? TokenHandler { get; set; }

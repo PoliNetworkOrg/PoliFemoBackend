@@ -29,9 +29,10 @@ public class DeployLatestController : ControllerBase
         {
             if (token == JsonConvert.DeserializeObject<JObject>(System.IO.File.ReadAllText("secrets.json"))?["Deploy"]?.ToString())
             {
-                Process.Start("./run.sh");
                 Task.Run(() =>
                 {
+                    GracefullyShutdown.Shutdown();
+                    Process.Start("./run.sh");
                     Thread.Sleep(1000);
                     Environment.Exit(0);
                 });
