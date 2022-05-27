@@ -74,11 +74,11 @@ public class CodeExchangeController : ControllerBase
                 statusCode = HttpStatusCode.Forbidden
             });
 
-        addUser(token.Subject);
+        //addUser(token.Subject); // TODO
         return Ok(responseBody);
     }
 
-
+    /*
     public void addUser(string id)
     {
         var d = new Dictionary<string, object> { { "id", id } };
@@ -89,5 +89,5 @@ public class CodeExchangeController : ControllerBase
             query = " insert into utente values(@id, 0)";
             results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
         }
-    }
+    }*/
 }
