@@ -41,3 +41,16 @@ jobs:
       
     - name: Deploy
       run: curl https://api.polinetwork.org/v1/deploylatest?token=${{ secrets.TOKEN_UPGRADE }}
+
+    - name: Wait
+      run: sleep 20
+      
+    - name: Get uptime
+      id: uptime
+      run: uptime=4736100
+      
+    - name: Check whether the deployment was successful
+      if: ${{ steps.uptime.outputs.uptime > 120 }}
+      uses: actions/github-script@v3
+      with:
+        script: core.setFailed('Built and released successfully but failed to deploy')
