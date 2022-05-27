@@ -37,7 +37,7 @@ public class CodeExchangeController : ControllerBase
     {
         try
         {
-            HttpResponseMessage? response = AuthUtil.GetResponse(code);
+            HttpResponseMessage? response = AuthUtil.GetResponse(code, "authorization_code");
 
             if (response == null)
             {

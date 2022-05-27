@@ -8,7 +8,7 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class AuthUtil
 {
-    public static HttpResponseMessage? GetResponse(string code)
+    public static HttpResponseMessage? GetResponse(string code, string grant_type)
     {
         HttpClient httpClient = new();
 
@@ -22,8 +22,8 @@ public static class AuthUtil
         {
             { "client_id", Constants.AzureClientId },
             { "client_secret", clientSecret},
-            { "refresh_token", code},
-            { "grant_type", "refresh_token" }
+            { grant_type == "authorization_code" ? "code" : "refresh_token", code},
+            { "grant_type", grant_type }
         });
 
         return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token", formUrlEncodedContent).Result;

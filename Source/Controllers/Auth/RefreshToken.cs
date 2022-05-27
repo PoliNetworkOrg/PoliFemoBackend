@@ -27,7 +27,7 @@ public class RefreshTokenController : ControllerBase
     {
         try
         {
-            HttpResponseMessage? response = AuthUtil.GetResponse(refreshToken);
+            HttpResponseMessage? response = AuthUtil.GetResponse(refreshToken, "refresh_token");
 
             if (response == null)
             {
