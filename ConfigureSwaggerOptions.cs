@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
@@ -26,10 +26,19 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
         {
             var info = CreateVersionInfo(description);
             options.SwaggerDoc(description.GroupName, info);
+            options.OperationFilter<AuthOperationsFilter>();
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = "Access token using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
 
             var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-            ApiVersionsManager.AddVersion(info.Version);
+            Source.Utils.ApiVersionsManager.AddVersion(info.Version);
         }
     }
 
