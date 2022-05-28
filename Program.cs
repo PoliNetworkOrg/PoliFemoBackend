@@ -1,7 +1,9 @@
 #region includes
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Newtonsoft.Json;
 using PoliFemoBackend;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Test;
@@ -35,6 +37,37 @@ try
     });
 
     builder.Services.AddSwaggerGen();
+
+    builder.Services.AddAuthentication(sharedOptions =>
+    {
+        sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(options =>
+    {
+        options.Authority = PoliFemoBackend.Source.Data.Constants.AzureAuthority;
+        options.TokenValidationParameters.ValidAudience = PoliFemoBackend.Source.Data.Constants.AzureAudience;
+        options.TokenValidationParameters.ValidIssuer = PoliFemoBackend.Source.Data.Constants.AzureIssuer;
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async (context) =>
+            {
+                context.HandleResponse();
+
+                if (context.AuthenticateFailure != null)
+                {
+                    context.Response.StatusCode = 401;
+
+                    var json = new {
+                        error = "Invalid token. Refresh your current access token or request a new authorization code",
+                        reason = context.AuthenticateFailure.Message
+                    };
+
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(json));
+                }
+            }
+        };
+    });
+
     builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
     var app = builder.Build();
@@ -64,6 +97,8 @@ try
     {
         DbConfig.InitializeDbConfig();
     }
+
+    app.UseAuthentication();
 
     app.UseAuthorization();
 

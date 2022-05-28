@@ -21,10 +21,11 @@ public static class AuthUtil
         FormUrlEncodedContent formUrlEncodedContent = new(new Dictionary<string, string>
         {
             { "client_id", Constants.AzureClientId },
+            { "scope", Constants.AzureScope},
             { "client_secret", clientSecret},
             { grant_type == "authorization_code" ? "code" : "refresh_token", code},
             { "grant_type", grant_type }
-        });
+            });
 
         return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token", formUrlEncodedContent).Result;
     }
