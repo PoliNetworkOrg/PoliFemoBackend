@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 using System.Net;
+using PoliFemoBackend.Source.Enums;
 
 #endregion
 
@@ -37,7 +38,7 @@ public class CodeExchangeController : ControllerBase
     {
         try
         {
-            HttpResponseMessage? response = AuthUtil.GetResponse(code, "authorization_code");
+            var response = AuthUtil.GetResponse(code, GrantTypeEnum.authorization_code);
 
             if (response == null)
             {

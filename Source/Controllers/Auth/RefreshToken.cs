@@ -1,6 +1,7 @@
 #region includes
 
 using Microsoft.AspNetCore.Mvc;
+using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils;
 
 #endregion
@@ -27,7 +28,7 @@ public class RefreshTokenController : ControllerBase
     {
         try
         {
-            HttpResponseMessage? response = AuthUtil.GetResponse(refreshToken, "refresh_token");
+            var response = AuthUtil.GetResponse(refreshToken, GrantTypeEnum.refresh_token);
 
             if (response == null)
             {

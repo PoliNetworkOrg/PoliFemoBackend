@@ -26,21 +26,18 @@ public class DeployLatestController : ControllerBase
     {
         try
         {
-            if (token == GlobalVariables.secrets?["Deploy"]?.ToString())
-            {
-                Task.Run(() =>
-                {
-                    GracefullyShutdown.Shutdown();
-                    Process.Start("./run.sh");
-                    Thread.Sleep(1000);
-                    Environment.Exit(0);
-                });
-                return Ok("Request received successfully");
-            }
-            else
-            {
+            if (token != GlobalVariables.Secrets?["Deploy"]?.ToString())
                 return Unauthorized("Invalid token");
-            }
+            
+
+            Task.Run(() =>
+            {
+                GracefullyShutdown.Shutdown();
+                Process.Start("./run.sh");
+                Thread.Sleep(1000);
+                Environment.Exit(0);
+            });
+            return Ok("Request received successfully");
         }
         catch (Exception ex)
         {

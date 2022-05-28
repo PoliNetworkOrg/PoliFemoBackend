@@ -12,8 +12,8 @@ namespace PoliFemoBackend.Source.Data;
 
 public static class GlobalVariables
 {
-    public static readonly DateTime start = DateTime.Now;
-    public static readonly JObject? secrets = JsonConvert.DeserializeObject<JObject>(File.ReadAllText("secrets.json"));
+    public static readonly DateTime Start = DateTime.Now;
+    public static readonly JObject? Secrets = JsonConvert.DeserializeObject<JObject>(File.ReadAllText("secrets.json"));
     public static DbConfig? DbConfigVar { get; set; }
     public static MySqlConnection? DbConnection { get; set; }
     public static JwtSecurityTokenHandler? TokenHandler { get; set; }
