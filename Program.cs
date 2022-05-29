@@ -43,12 +43,12 @@ try
         sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     }).AddJwtBearer(options =>
     {
-        options.Authority = PoliFemoBackend.Source.Data.Constants.AzureAuthority;
-        options.TokenValidationParameters.ValidAudience = PoliFemoBackend.Source.Data.Constants.AzureAudience;
-        options.TokenValidationParameters.ValidIssuer = PoliFemoBackend.Source.Data.Constants.AzureIssuer;
+        options.Authority = Constants.AzureAuthority;
+        options.TokenValidationParameters.ValidAudience = Constants.AzureAudience;
+        options.TokenValidationParameters.ValidIssuer = Constants.AzureIssuer;
         options.Events = new JwtBearerEvents
         {
-            OnChallenge = async (context) =>
+            OnChallenge = async context =>
             {
                 context.HandleResponse();
 

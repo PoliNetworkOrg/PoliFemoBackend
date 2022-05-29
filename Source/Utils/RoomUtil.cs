@@ -1,7 +1,6 @@
 ﻿#region includes
 
 using HtmlAgilityPack;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -10,7 +9,7 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class RoomUtil
 {
-    internal static List<Object?>? GetFreeRooms(HtmlNode? table, DateTime start, DateTime stop)
+    internal static List<object?>? GetFreeRooms(HtmlNode? table, DateTime start, DateTime stop)
     {
         if (table?.ChildNodes == null)
         {
@@ -28,7 +27,7 @@ public static class RoomUtil
                 select toAdd).ToList();
     }
 
-    private static Object? CheckIfFree(HtmlNode? node, int shiftStart, int shiftEnd)
+    private static object? CheckIfFree(HtmlNode? node, int shiftStart, int shiftEnd)
     {
         if (node == null)
         {
@@ -104,39 +103,36 @@ public static class RoomUtil
         return true;
     }
 
-    private static Object? GetAula(HtmlNode? node)
+    private static object GetAula(HtmlNode? node)
     {
         //Flag to indicate if the room has a power outlet (yes/no)
         var pwr = RoomWithPower(node);
         var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
-        //Getting Rooom name
+        //Getting Room name
         var nome = dove?.ChildNodes.First(x => x.Name == "a")?.InnerText.Trim();
         
         // Builds room object 
-        return (new { name = nome, power = pwr, building = "0" });
+        return new { name = nome, power = pwr, building = "0" };
     }
 
-    private static string? RoomWithPower(HtmlNode? node)
+    private static string RoomWithPower(HtmlNode? node)
     {
         var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
         var a = dove?.ChildNodes.First(x => x.Name == "a");
 
-        string? aulaUrl = a?.Attributes["href"].Value;
+        var aulaUrl = a?.Attributes["href"].Value;
         
         //Get the room id, in order to see whether it has power or not
-        int id_aula = Int32.Parse(aulaUrl.Split('=').Last());
+        var idAula = int.Parse(aulaUrl?.Split('=').Last() ?? string.Empty);
 
-        string json = File.ReadAllText("Other/Examples/roomsWithPower.json");
-        JObject data = JObject.Parse(json);
+        var json = File.ReadAllText("Other/Examples/roomsWithPower.json");
+        var data = JObject.Parse(json);
 
-        //Retriving the list of IDs for the room with power outlets
-        int[]? list = data["rwp"]?.Select(x => (int)x).ToArray();
+        //Retrieving the list of IDs for the room with power outlets
+        var list = data["rwp"]?.Select(x => (int)x).ToArray();
 
         // Checking whether the room has a power outlet
-        if(list.Contains(id_aula)) 
-            return("yes");
-        else
-            return("no");
+        return list != null && list.Contains(idAula) ? "yes" : "no";
 
     }
 

@@ -3,9 +3,9 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using PoliFemoBackend.Source;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
+using PoliFemoBackend.Source.Utils;
 
 #endregion
 
@@ -38,7 +38,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
 
             var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-            Source.Utils.ApiVersionsManager.AddVersion(info.Version);
+            ApiVersionsManager.AddVersion(info.Version);
         }
     }
 
