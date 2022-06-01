@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace PoliFemoBackend.Source.Utils;
-public abstract class AuthOperationsFilter : IOperationFilter
+public class AuthOperationsFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
