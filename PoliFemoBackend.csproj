@@ -14,7 +14,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Remove="Other\Examples\articles_sample.json" />
+      <None Remove="Other\DB\DBPolifemo.SQL" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,9 +23,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="Other\Examples\articles_sample.json">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
+      <Content Include="Other\DB\DBPolifemo.SQL">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
@@ -47,6 +47,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Update="Other\Examples\articles_sample.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
       <Content Update="Other\Examples\roomsWithPower.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
