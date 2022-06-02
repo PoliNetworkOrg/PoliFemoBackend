@@ -40,7 +40,7 @@ jobs:
       run: sleep 10
       
     - name: Deploy
-      run: curl https://api.polinetwork.org/v1/DeployLatest?token=${{ secrets.TOKEN_UPGRADE }}
+      run: curl --connection-timeout 5 https://api.polinetwork.org/v1/DeployLatest?token=${{ secrets.TOKEN_UPGRADE }}
 
     - name: Wait
       run: sleep 20
