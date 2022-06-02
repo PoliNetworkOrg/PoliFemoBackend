@@ -1,5 +1,12 @@
 #!/bin/sh
 sleep 2
+sudo iptables -P INPUT ACCEPT
+sudo iptables -P FORWARD ACCEPT
+sudo iptables -P OUTPUT ACCEPT
+sudo iptables -t nat -F
+sudo iptables -t mangle -F
+sudo iptables -F
+sudo iptables -X
 wget https://github.com/PoliNetworkOrg/PoliFemoBackend/releases/latest/download/PoliFemoBackend.zip -O /home/ubuntu/PoliFemoBackend/PoliFemoBackend.zip
 unzip -o PoliFemoBackend.zip
 sudo chmod +x run.sh
