@@ -74,7 +74,6 @@ try
 
     GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
-
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
@@ -97,6 +96,8 @@ try
     {
         DbConfig.InitializeDbConfig();
     }
+
+    app.UseMiddleware<PageNotFoundMiddleware>();
 
     app.UseAuthentication();
 
