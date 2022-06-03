@@ -13,8 +13,17 @@ public static class Database
     public static int Execute(string query, DbConfig dbConfig, Dictionary<string, object>? args = null)
     {
         Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
-
+        
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
+
+
+        if (args != null)
+        {
+            foreach (var (key, value) in args)
+            {
+                query = query.Replace(key, value.ToString());
+            }
+        }
 
         var cmd = new MySqlCommand(query, connection);
 
@@ -49,7 +58,6 @@ public static class Database
         }
 
         Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery);
-
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
         var cmd = new MySqlCommand(query, connection);

@@ -94,7 +94,7 @@ public class SearchGroupsController : ControllerBase
         }
         if (office != null)
         {
-            query += " AND office = '@office'";
+            query += " AND office = '@office';";
             d.Add("@office", office);
         }
 

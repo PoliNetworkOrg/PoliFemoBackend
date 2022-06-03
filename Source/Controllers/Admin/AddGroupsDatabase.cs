@@ -16,59 +16,130 @@ namespace PoliFemoBackend.Source.Controllers.Groups;
 public class AddGroupsController : ControllerBase
 {
     /// <summary>
-    ///     Add groups on Database
+    /// Add groups on Database
     /// </summary>
     /// <returns>Nothing</returns>
-    /// <response code="200">Returns the array of groups</response>
-    /// <response code="500">Can't connect to server</response>
-    /// <response code="204">No available groups</response>
+    /// <response code="200">Group Added</response>
+    /// <response code="500">Can't connect to server or Group not Added</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
     
 
-    public ObjectResult AddGroupsDb()
+    public ObjectResult AddGroupsDb(string name, string? year, string id, string? degree, string? type, string? platform, string language, string? office, string? school, string id_link)
     {
-            var json = JsonConvert.SerializeObject(GroupsUtil.GetGroups()); //get groups from url
-            //get index_data from json
-               var index_data = JsonConvert.DeserializeObject<dynamic>(json);
-            for (int i = 0; i < index_data.Count; i++)
-            {
-                 try
-                 {
-                    if (index_data[i].degree == null)
-                    {
-                         index_data[i].degree = "";
-                    }
-                    if (index_data[i].school == null)
-                    {
-                         index_data[i].school = "";
-                    }
-                    if (index_data[i].year == null)
-                    {
-                         index_data[i].year = "";
-                    }
-                    if (index_data[i].permanentId == null)
-                    {
-                         index_data[i].permanentId = "";
-                    }
-                    if (index_data[i].linkfunzionante == null)
-                    {
-                         index_data[i].linkfunzionante = "";
-                    }
-                    
-                    var query = "INSERT IGNORE INTO gruppo VALUES (" + index_data[i]["class"] + ", '" + index_data[i]["office"] + "', " + index_data[i]["id"] + ", '" + index_data[i]["degree"] + "','" + index_data[i]["school"] + "'," + index_data[i]["id_link"] + ",'" + index_data[i]["language"] + "','" + index_data[i]["type"] + "', '" + index_data[i]["year"] + "', '" + index_data[i]["platform"] + "', '" + index_data[i]["permanentId"] + "', '" + index_data[i]["LastUpdateInviteLinkTime"] + "', '" + index_data[i]["linkfunzionante"] + "');";
-                    var queryreplace = query.Replace("''", "NULL");
-                    var results = Database.ExecuteSelect(queryreplace, GlobalVariables.DbConfigVar);
 
-                 }
-                 catch (System.Exception)
-                 {
-                      
-                      throw;
-                 }
-            }
-          return Ok(index_data);
+          var d = new Dictionary<string, object> { { "@name", name } };
+
+          var query = "INSERT IGNORE INTO gruppo VALUES ( '@name', ";
+
+          //office
+          if (office != null)
+          {
+               query += "'@office',";
+               d.Add("@office", office);
+          }
+          else
+          {
+               query += "null, ";
+          }
+
+          //id
+          if (id != null)
+          {
+               query += "'@id',";
+               d.Add("@id", id);
+          }
+
+          //degree
+          if (degree != null)
+          {
+               query += "'@degree',";
+               d.Add("@degree", degree);
+          }
+          else
+          {
+               query += "null, ";
+          }
+
+          //school
+          if (school != null)
+          {
+               query += "'@school', ";
+               d.Add("@school", school);
+          }
+          else
+          {
+               query += "null, ";
+          }
+
+          //id_link
+          if (id_link != null)
+          {
+               query += "'@id_link',";
+               d.Add("@id_link", id_link);
+          }
+
+          //language
+          if (language != null)
+          {
+               query += "'@language',";
+               d.Add("@language", language);
+          }
+
+          //type
+          if (type != null)
+          {
+               query += "'@type',";
+               d.Add("@type", type);
+          }
+          else
+          {
+               query += "null, ";
+          }
+
+          //year
+          if (year != null)
+          {
+               query += "'@year', ";
+               d.Add("@year", year);
+          }
+          else
+          {
+               query += "null, ";
+          }
+
+          //platform
+          if (platform != null)
+          {
+               query += "'@platform',";
+               d.Add("@platform", platform);
+          }
+          else
+          {
+               query += "null, ";
+          }
+
+          //permanent id
+          query += "null, ";
+
+          //Last update date
+          query += "now(), ";
+
+          //Link Funzionante
+          query += "'Y');";
+          
+          //Console.WriteLine(query);
+          var results = Database.Execute(query, GlobalVariables.DbConfigVar, d);
+          
+          if (results == 0)
+          {
+               return new ObjectResult(new { message = "Group NOT Added", status = 500 });
+          }
+          else
+          {
+               return new ObjectResult(new { message = "Group Added", status = 200 });
+          }
     }
 }
 
