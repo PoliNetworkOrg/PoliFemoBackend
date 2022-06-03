@@ -11,7 +11,8 @@ id_calendar int unsigned primary key auto_increment NOT NULL
 
 /*tabella giorno*/
 create table day(
-id_day int unsigned primary key auto_increment  NOT NULL
+id_day int unsigned primary key auto_increment  NOT NULL,
+giorno date
 )engine innodb;
 
 /*tabella tipologia*/
