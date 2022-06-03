@@ -58,7 +58,7 @@ public static class GroupsUtil
         return json;
     }
 
-    private static ObjectResult ErrorInRetrievingGroups()
+    public static ObjectResult ErrorInRetrievingGroups()
     {
         return new ObjectResult(new
         {

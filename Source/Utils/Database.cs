@@ -40,7 +40,15 @@ public static class Database
             return default;
         }
 
-        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
+        if (args != null)
+        {
+            foreach (var (key, value) in args)
+            {
+                query = query.Replace(key, value.ToString());
+            }
+        }
+
+        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery);
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
