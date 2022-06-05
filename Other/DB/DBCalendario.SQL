@@ -3,16 +3,9 @@ create database DBCalendario;
 use DBCalendario;
 
 
-/*tabella calendario scolastico*/
-create table calendar(
-id_calendar int unsigned primary key auto_increment NOT NULL
-)engine innodb;
-
-
 /*tabella giorno*/
 create table day(
-id_day int unsigned primary key auto_increment  NOT NULL,
-giorno date
+giorno date primary_key
 )engine innodb;
 
 /*tabella tipologia*/
@@ -23,11 +16,13 @@ name_ ENUM ("Festivo", "Esame", "Esame di profitto", "Lauree Magistrali", "Lezio
 
 /*tabella appartiene*/
 create table appartiene(
-id_day int unsigned,
-foreign key(id_day) references day(id_day),
+giorno int unsigned,
+foreign key(giorno) references day(giorno),
 id_tipologia int unsigned,
 foreign key(id_tipologia) references tipologia(id_tipologia)
 )engine innodb;
+
+ALTER TABLE appartiene ADD PRIMARY KEY (giorno, id_tipologia);
 
 /*tabella lezione*/
 create table lesson(
@@ -41,8 +36,8 @@ professore varchar(200)
 
 /*tabella presente*/
 create table presente(
-id_day int unsigned,
-foreign key(id_day) references day(id_day),
+giorno int unsigned,
+foreign key(giorno) references day(giorno),
 id_lesson int unsigned,
 foreign key(id_lesson) references lesson(id_lesson)
 )engine innodb;
@@ -55,8 +50,8 @@ sede varchar(100),
 semetre int,
 docente varchar(500),
 data datetime,
-id_day int unsigned,
-foreign key(id_day) references day(id_day)
+giorno int unsigned,
+foreign key(giorno) references day(giorno)
 )engine innodb;
 
 
