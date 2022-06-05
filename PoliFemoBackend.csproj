@@ -35,7 +35,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="EPPlus" Version="6.0.4" />
         <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
+        <PackageReference Include="iTextSharp" Version="5.5.13.3" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
