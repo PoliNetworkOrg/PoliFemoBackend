@@ -47,7 +47,7 @@ create table exam(
 id_exam int unsigned primary key auto_increment NOT NULL,	
 name_ varchar(50),
 sede varchar(100),
-semetre int,
+semestre int,
 docente varchar(500),
 data datetime,
 giorno int unsigned,
