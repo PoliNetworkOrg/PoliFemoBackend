@@ -18,7 +18,7 @@ giorno date
 /*tabella tipologia*/
 create table tipologia(
 id_tipologia int unsigned primary key auto_increment NOT NULL,	
-name_ ENUM ("Festivo", "Esame", "Prova itinere", "Lauree Magistrali", "Lezione", "Sabato", "Laureee 1 liv")
+name_ ENUM ("Festivo", "Esame", "Esame di profitto", "Lauree Magistrali", "Lezione", "Sabato", "Laureee 1 liv")
 )engine innodb;
 
 /*tabella appartiene*/
