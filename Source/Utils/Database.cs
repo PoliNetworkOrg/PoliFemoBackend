@@ -13,7 +13,7 @@ public static class Database
     public static int Execute(string query, DbConfig? dbConfig, Dictionary<string, object>? args = null)
     {
         if (dbConfig == null) return default;
-        
+
         Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
@@ -25,15 +25,17 @@ public static class Database
 
         var cmd = new MySqlCommand(query, connection);
 
-        OpenConnection(connection);
-
         if (args != null)
             foreach (var (key, value) in args)
                 cmd.Parameters.AddWithValue(key, value);
 
-        var numberOfRowsAffected = cmd.ExecuteNonQuery();
+        OpenConnection(connection);
+
+        int? numberOfRowsAffected = null;
+        if (connection.State == ConnectionState.Open) numberOfRowsAffected = cmd.ExecuteNonQuery();
+
         connection.Close();
-        return numberOfRowsAffected;
+        return numberOfRowsAffected ?? -1;
     }
 
     public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object>? args = null)
@@ -60,8 +62,11 @@ public static class Database
             SelectCommand = cmd
         };
 
-        var ret = new DataSet();
 
+        if (connection.State != ConnectionState.Open)
+            return default;
+
+        var ret = new DataSet();
         adapter.Fill(ret);
 
         adapter.Dispose();
