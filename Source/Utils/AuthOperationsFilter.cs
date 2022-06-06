@@ -8,7 +8,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace PoliFemoBackend.Source.Utils;
 
-public abstract class AuthOperationsFilter : IOperationFilter
+// ReSharper disable once ClassNeverInstantiated.Global
+public class AuthOperationsFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
