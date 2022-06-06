@@ -16,9 +16,9 @@ name_ ENUM ("Festivo", "Esame", "Esame di profitto", "Lauree Magistrali", "Lezio
 /*tabella appartiene*/
 create table appartiene(
 giorno int unsigned,
-foreign key(giorno) references day(giorno),
+foreign key(giorno) references Days(giorno),
 id_tipologia int unsigned,
-foreign key(id_tipologia) references tipologia(id_tipologia)
+foreign key(id_tipologia) references Types(id_tipologia)
 )engine innodb;
 
 ALTER TABLE appartiene ADD PRIMARY KEY (giorno, id_tipologia);
@@ -36,9 +36,9 @@ professore varchar(200)
 /*tabella presente*/
 create table presente(
 giorno int unsigned,
-foreign key(giorno) references day(giorno),
+foreign key(giorno) references Days(giorno),
 id_lesson int unsigned,
-foreign key(id_lesson) references lesson(id_lesson)
+foreign key(id_lesson) references Lessons(id_lesson)
 )engine innodb;
 
 /*tabella esame*/
@@ -50,5 +50,5 @@ semestre int,
 docente varchar(500),
 data datetime,
 giorno int unsigned,
-foreign key(giorno) references day(giorno)
+foreign key(giorno) references Days(giorno)
 )engine innodb;
