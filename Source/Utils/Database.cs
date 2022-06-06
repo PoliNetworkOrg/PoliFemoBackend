@@ -10,8 +10,10 @@ namespace PoliFemoBackend.Source.Utils;
 public static class Database
 {
     // ReSharper disable once UnusedMember.Global
-    public static int Execute(string query, DbConfig dbConfig, Dictionary<string, object>? args = null)
+    public static int Execute(string query, DbConfig? dbConfig, Dictionary<string, object>? args = null)
     {
+        if (dbConfig == null) return default;
+        
         Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
