@@ -63,7 +63,7 @@ public static class Database
         adapter.Fill(ret);
 
         adapter.Dispose();
-
+        connection.Close(); 
         return ret.Tables[0];
     }
 
