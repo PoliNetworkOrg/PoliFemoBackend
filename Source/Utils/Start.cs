@@ -1,6 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿#region
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils;
 

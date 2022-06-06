@@ -6,6 +6,7 @@ using iTextSharp.text.pdf.parser;
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
+using Path = System.IO.Path;
 
 #endregion
 
@@ -32,7 +33,7 @@ public class AddCalendarControllers : ControllerBase
         int results;
         //populate the database with day of year
         var d = new DateTime(int.Parse(year), 8, 1);
-       // if (GlobalVariables.DbConfigVar == null) return Ok("error");
+        // if (GlobalVariables.DbConfigVar == null) return Ok("error");
 
         for (i = 1; i <= 365; i++)
         {
@@ -72,7 +73,7 @@ public class AddCalendarControllers : ControllerBase
 
         var sb = new StringBuilder();
         //get name path file
-        var path = System.IO.Path.GetTempFileName();
+        var path = Path.GetTempFileName();
         using var reader = new PdfReader(file[0].OpenReadStream());
 
         //read the text from each page
@@ -149,7 +150,7 @@ public class AddCalendarControllers : ControllerBase
             {
                 if (d4.DayOfWeek != DayOfWeek.Sunday)
                 {
-                    var query3 = "INSERT IGNORE INTO appartiene VALUES ( '" + d4.ToString("yyyy-MM-dd") +"', 5 );";
+                    var query3 = "INSERT IGNORE INTO appartiene VALUES ( '" + d4.ToString("yyyy-MM-dd") + "', 5 );";
                     var results3 = Database.Execute(query3, GlobalVariables.DbConfigVar);
                 }
 

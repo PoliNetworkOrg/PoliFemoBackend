@@ -14,13 +14,13 @@ namespace PoliFemoBackend.Source.Controllers.Admin;
 [Route("[controller]")]
 public class AddGroupsController : ControllerBase
 {
-     /// <summary>
-     ///     Add groups on Database
-     /// </summary>
-     /// <returns>Nothing</returns>
-     /// <response code="200">Group Added</response>
-     /// <response code="500">Can't connect to server or Group not Added</response>
-     [MapToApiVersion("1.0")]
+    /// <summary>
+    ///     Add groups on Database
+    /// </summary>
+    /// <returns>Nothing</returns>
+    /// <response code="200">Group Added</response>
+    /// <response code="500">Can't connect to server or Group not Added</response>
+    [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
     public ObjectResult AddGroupsDb(string name, string? year, string id, string? degree, string? type,

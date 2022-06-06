@@ -30,7 +30,7 @@ public static class Database
                 cmd.Parameters.AddWithValue(key, value);
 
         var numberOfRowsAffected = cmd.ExecuteNonQuery();
-        connection.Close(); 
+        connection.Close();
         return numberOfRowsAffected;
     }
 
@@ -63,7 +63,7 @@ public static class Database
         adapter.Fill(ret);
 
         adapter.Dispose();
-        connection.Close(); 
+        connection.Close();
         return ret.Tables[0];
     }
 

@@ -22,10 +22,7 @@ public class DbConfig
 
     public static void InitializeDbConfig()
     {
-        if (!Directory.Exists("../config/"))
-        {
-            Directory.CreateDirectory("../config/");
-        }
+        if (!Directory.Exists("../config/")) Directory.CreateDirectory("../config/");
 
         if (File.Exists(Constants.DbConfig))
         {
@@ -42,7 +39,6 @@ public class DbConfig
 
             if (DbConfigVar == null)
                 GenerateDbConfigEmpty();
-
         }
         else
         {
@@ -54,7 +50,7 @@ public class DbConfig
         try
         {
             GlobalVariables.DbConnection.Open();
-            if (GlobalVariables.DbConnection?.State == ConnectionState.Open)
+            if (GlobalVariables.DbConnection.State == ConnectionState.Open)
                 Console.WriteLine("Connection to db on start works!");
         }
         catch (Exception ex)
@@ -63,7 +59,7 @@ public class DbConfig
         }
     }
 
- 
+
     private static void GenerateDbConfigEmpty()
     {
         DbConfigVar = new DbConfig();

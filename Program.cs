@@ -97,7 +97,6 @@ try
     try
     {
         Start.StartThings();
-  
     }
     catch (Exception ex)
     {
