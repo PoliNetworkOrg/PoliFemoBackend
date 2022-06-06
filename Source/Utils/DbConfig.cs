@@ -1,5 +1,6 @@
 #region
 
+using System.Data;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Data;
@@ -21,19 +22,27 @@ public class DbConfig
 
     public static void InitializeDbConfig()
     {
+        if (!Directory.Exists("../config/"))
+        {
+            Directory.CreateDirectory("../config/");
+        }
+
         if (File.Exists(Constants.DbConfig))
         {
             try
             {
                 var text = File.ReadAllText(Constants.DbConfig);
                 DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
+                GlobalVariables.DbConfigVar = DbConfigVar;
             }
             catch (Exception ex)
             {
                 Logger.WriteLine(ex);
             }
 
-            if (DbConfigVar == null) GenerateDbConfigEmpty();
+            if (DbConfigVar == null)
+                GenerateDbConfigEmpty();
+
         }
         else
         {
@@ -42,11 +51,23 @@ public class DbConfig
 
 
         GlobalVariables.DbConnection = new MySqlConnection(GlobalVariables.DbConfigVar?.GetConnectionString());
+        try
+        {
+            GlobalVariables.DbConnection.Open();
+            if (GlobalVariables.DbConnection?.State == ConnectionState.Open)
+                Console.WriteLine("Connection to db on start works!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
+ 
     private static void GenerateDbConfigEmpty()
     {
         DbConfigVar = new DbConfig();
+        GlobalVariables.DbConfigVar = DbConfigVar;
         var x = JsonConvert.SerializeObject(DbConfigVar);
         FileInfo file = new(Constants.DbConfig);
         file.Directory?.Create();
