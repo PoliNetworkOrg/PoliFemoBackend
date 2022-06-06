@@ -29,43 +29,65 @@ public class AddCalendarControllers : ControllerBase
 
     public ObjectResult AddCalendarDb(List<IFormFile> file, string year)
     {
-
+        var i = 0;
+        string query;
+        int results;
         //populate the database with day of year
         var d = new DateTime(int.Parse(year), 8, 1);
-        for (var i = 1; i <= 365; i++)
+        if (GlobalVariables.DbConfigVar == null)
         {
-            var query = "INSERT IGNORE INTO day VALUES ( '"+ d.ToString("yyyy-MM-dd")+ "' );";
-            var results = Database.Execute(query, GlobalVariables.DbConfigVar);
+            return Ok("error");
+        }
+
+        for (i = 1; i <= 365; i++)
+        {
+            query = "INSERT IGNORE INTO day VALUES ( '" + d.ToString("yyyy-MM-dd") + "' );";
+
+            results = Database.Execute(query, GlobalVariables.DbConfigVar);
             switch (d.DayOfWeek)
             {
                 //se d è sabato
                 case DayOfWeek.Saturday:
                     query = "INSERT IGNORE INTO appartiene VALUES (" + results + " , 6);";
-                    results = Database.Execute(query, GlobalVariables.DbConfigVar);
+                    Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
                 //se d è domenica
                 case DayOfWeek.Sunday:
                     query = "INSERT IGNORE INTO appartiene VALUES (" + results + " , 1);";
-                    results = Database.Execute(query, GlobalVariables.DbConfigVar);
+                    Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
+                case DayOfWeek.Monday:
+
+                case DayOfWeek.Tuesday:
+
+                case DayOfWeek.Wednesday:
+     
+                case DayOfWeek.Thursday:
+
+                case DayOfWeek.Friday:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+
 
             //add day
             d = d.AddDays(1);
         }
 
-        var sb  = new StringBuilder();
+        var sb = new StringBuilder();
         const string s = @"C:\Users\lolel\Desktop\CALENDARIO\CALENDARIO_2022 -2023.pdf";
         using var reader = new PdfReader(s);
-        {
+        
             //read the text from each page
             sb.Append(PdfTextExtractor.GetTextFromPage(reader, 2));
-            
-            
+
+
             //ESAMI DI PROFITTO
             var line = sb.ToString().Split('\n').First(x => x.Contains("SESSIONE PER GLI ESAMI"));
-            var i=0;
-            while(i<4){
+             i = 0;
+            while (i < 4)
+            {
                 //VAI ALLA RIGA DOPO
                 line = sb.ToString().Split('\n').SkipWhile(x => x != line).Skip(1).First();
                 //extract the date
@@ -80,10 +102,11 @@ public class AddCalendarControllers : ControllerBase
                     //var results = Database.Execute(query, GlobalVariables.DbConfigVar);
                     //if(results)
                     var query6 = "INSERT IGNORE INTO appartiene VALUES ( '" + d5.ToString("yyyy-MM-dd") + "', 3 );";
-                    
+
                     var results6 = Database.Execute(query6, GlobalVariables.DbConfigVar);
                     d5 = d5.AddDays(1);
                 }
+
                 i++;
             }
             //Console.WriteLine(date1);
@@ -101,51 +124,59 @@ public class AddCalendarControllers : ControllerBase
                 //se la riga contiene una parola
                 if (!item.Contains("Laurea Triennale") && !item.Contains("Laurea Magistrale"))
                     continue;
-                
+
                 //extract the date
                 var date1 = item.Split("Laurea").First().Split("ì").Last().Trim();
                 //Console.WriteLine(date1);
-                if(date1 != ""){
+                if (date1 != "")
+                {
                     d3 = DateTime.Parse(date1);
                 }
-                var query4="";
-                if(item.Contains("Laurea Triennale")){ 
+
+                var query4 = "";
+                if (item.Contains("Laurea Triennale"))
+                {
                     query4 = "INSERT IGNORE INTO appartiene VALUES ( '" + d3.ToString("yyyy-MM-dd") + "', 7 );";
-                } 
+                }
                 else
                 {
                     query4 = "INSERT IGNORE INTO appartiene VALUES ( '" + d3.ToString("yyyy-MM-dd") + "', 4);";
                 }
-                var results4 = Database.Execute(query4, GlobalVariables.DbConfigVar);
 
+                var results4 = Database.Execute(query4, GlobalVariables.DbConfigVar);
             }
 
             //PER LE LEZIONI
             line = sb.ToString().Split('\n').First(x => x.Contains("PERIODI DI LEZIONE"));
             line = sb.ToString().Split('\n').SkipWhile(x => x != line).Skip(2).First();
-            i=0;
-            while(i<2){
+            i = 0;
+            while (i < 2)
+            {
                 var date1 = line.Split("Dal").Last().Split("al").First().Trim();
                 var date2 = line.Split(" al ").Last().Split(",").First().Trim();
                 var d4 = DateTime.Parse(date1);
                 var d5 = DateTime.Parse(date2);
                 while (d4 <= d5)
                 {
-                    if(d4.DayOfWeek!= DayOfWeek.Sunday){
-                        var query3 = "INSERT IGNORE INTO appartiene VALUES ( '" + d4.ToString("yyyy-MM-dd") + "', 5 );";
+                    if (d4.DayOfWeek != DayOfWeek.Sunday)
+                    {
+                        var query3 = "INSERT IGNORE INTO appartiene VALUES ( '" + d4.ToString("yyyy-MM-dd") +
+                                     "', 5 );";
                         var results3 = Database.Execute(query3, GlobalVariables.DbConfigVar);
                     }
+
                     d4 = d4.AddDays(1);
                 }
+
                 i++;
                 line = sb.ToString().Split('\n').SkipWhile(x => x != line).Skip(4).First();
             }
 
             //PER LE VACANZE
-            
+
             var d1 = DateTime.Parse("2022-08-01");
             var d2 = DateTime.Parse("2022-08-24");
-            
+
             while (d1 <= d2)
             {
                 if (d1.DayOfWeek != DayOfWeek.Sunday)
@@ -153,10 +184,12 @@ public class AddCalendarControllers : ControllerBase
                     var query3 = "INSERT IGNORE INTO appartiene VALUES ( '" + d1.ToString("yyyy-MM-dd") + "', 8 );";
                     var results3 = Database.Execute(query3, GlobalVariables.DbConfigVar);
                 }
+
                 d1 = d1.AddDays(1);
-            } 
-            var query = "INSERT IGNORE INTO appartiene VALUES ( '2022-10-31', 8 );";
-            var results = Database.Execute(query, GlobalVariables.DbConfigVar);
+            }
+
+            query = "INSERT IGNORE INTO appartiene VALUES ( '2022-10-31', 8 );";
+            results = Database.Execute(query, GlobalVariables.DbConfigVar);
             query = "INSERT IGNORE INTO appartiene VALUES ( '2022-12-9', 8 );";
             results = Database.Execute(query, GlobalVariables.DbConfigVar);
             query = "INSERT IGNORE INTO appartiene VALUES ( '2022-12-10', 8 );";
@@ -172,8 +205,8 @@ public class AddCalendarControllers : ControllerBase
                     var query3 = "INSERT IGNORE INTO appartiene VALUES ( '" + d1.ToString("yyyy-MM-dd") + "', 8 );";
                     var results3 = Database.Execute(query3, GlobalVariables.DbConfigVar);
                 }
-                d1 = d1.AddDays(1); 
 
+                d1 = d1.AddDays(1);
             }
 
 
@@ -187,9 +220,10 @@ public class AddCalendarControllers : ControllerBase
                     var query3 = "INSERT IGNORE INTO appartiene VALUES ( '" + d1.ToString("yyyy-MM-dd") + "', 8 );";
                     var results3 = Database.Execute(query3, GlobalVariables.DbConfigVar);
                 }
-                d1 = d1.AddDays(1);
 
+                d1 = d1.AddDays(1);
             }
+
             const string query2 = "INSERT IGNORE INTO appartiene VALUES ( '2023-04-24', 8 );";
             var results2 = Database.Execute(query2, GlobalVariables.DbConfigVar);
 
@@ -203,15 +237,13 @@ public class AddCalendarControllers : ControllerBase
                     var query3 = "INSERT IGNORE INTO appartiene VALUES ( '" + d1.ToString("yyyy-MM-dd") + "', 8 );";
                     var results3 = Database.Execute(query3, GlobalVariables.DbConfigVar);
                 }
-                d1 = d1.AddDays(1);
 
+                d1 = d1.AddDays(1);
             }
 
 
             return Ok("OK");
-
-            
-        }
+        
         //Console.WriteLine(sb.ToString());
         //Console.ReadKey();
     }

@@ -129,15 +129,14 @@ public class AddGroupsController : ControllerBase
           query += "'Y');";
           
           //Console.WriteLine(query);
-          if (GlobalVariables.DbConfigVar != null)
-          {
-               var results = Database.Execute(query, GlobalVariables.DbConfigVar, d);
+          if (GlobalVariables.DbConfigVar == null)
+               return new ObjectResult(new { message = "Error", status = 200 });
           
-               return results == 0 
-                    ? new ObjectResult(new { message = "Group NOT Added", status = 500 }) 
-                    : new ObjectResult(new { message = "Group Added", status = 200 });
-          }
-          return new ObjectResult(new { message = "Error", status = 200 });
+          var results = Database.Execute(query, GlobalVariables.DbConfigVar, d);
+          
+          return results == 0 
+               ? new ObjectResult(new { message = "Group NOT Added", status = 500 }) 
+               : new ObjectResult(new { message = "Group Added", status = 200 });
     }
 }
 
