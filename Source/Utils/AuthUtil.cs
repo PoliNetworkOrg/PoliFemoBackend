@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
@@ -14,20 +14,18 @@ public static class AuthUtil
         HttpClient httpClient = new();
 
         var clientSecret = GlobalVariables.Secrets?["Azure"]?.ToString();
-        if (clientSecret == null)
-        {
-            return null;
-        }
+        if (clientSecret == null) return null;
 
         FormUrlEncodedContent formUrlEncodedContent = new(new Dictionary<string, string>
         {
             { "client_id", Constants.AzureClientId },
-            { "scope", Constants.AzureScope},
-            { "client_secret", clientSecret},
-            { grantType == GrantTypeEnum.authorization_code ? "code" : "refresh_token", code},
+            { "scope", Constants.AzureScope },
+            { "client_secret", clientSecret },
+            { grantType == GrantTypeEnum.authorization_code ? "code" : "refresh_token", code },
             { "grant_type", grantType.ToString() }
         });
 
-        return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token", formUrlEncodedContent).Result;
+        return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token",
+            formUrlEncodedContent).Result;
     }
 }

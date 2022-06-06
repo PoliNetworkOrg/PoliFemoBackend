@@ -1,4 +1,4 @@
-#region includes
+#region
 
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
@@ -17,6 +17,7 @@ public class DbConfig
     public string? Password;
     public int Port;
     public string? User;
+    public static DbConfig? DbConfigVar { get; set; }
 
     public static void InitializeDbConfig()
     {
@@ -32,10 +33,7 @@ public class DbConfig
                 Logger.WriteLine(ex);
             }
 
-            if (DbConfigVar == null)
-            {
-                GenerateDbConfigEmpty();
-            }
+            if (DbConfigVar == null) GenerateDbConfigEmpty();
         }
         else
         {
@@ -59,10 +57,7 @@ public class DbConfig
 
     public string GetConnectionString()
     {
-        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" + Password + "'";
+        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
+               Password + "'";
     }
-    public static DbConfig? DbConfigVar { get; set; }
 }
-
-
-

@@ -1,7 +1,7 @@
-#region includes
+#region
 
-using PoliFemoBackend.Source.Data;
 using System.Globalization;
+using PoliFemoBackend.Source.Data;
 
 #endregion
 
@@ -14,10 +14,7 @@ public static class Logger
 
     public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.Info)
     {
-        if (log == null || string.IsNullOrEmpty(log.ToString()))
-        {
-            return;
-        }
+        if (log == null || string.IsNullOrEmpty(log.ToString())) return;
 
         try
         {
@@ -55,13 +52,9 @@ public static class Logger
             Console.WriteLine(e);
             Console.WriteLine("#############2#############");
             if (log == null)
-            {
                 Console.WriteLine("[null]");
-            }
             else
-            {
                 Console.WriteLine(log);
-            }
 
             Console.WriteLine("#############3#############");
         }
@@ -70,9 +63,9 @@ public static class Logger
             Console.WriteLine(ex);
         }
     }
+
     private static string GetTime()
     {
         return DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
     }
 }
-

@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
@@ -38,8 +38,8 @@ public class ArticlesByDateTimeRange : ControllerBase
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object>
             {
-                {"@start", start},
-                {"@end", end}
+                { "@start", start },
+                { "@end", end }
             });
 
         return Ok(results);

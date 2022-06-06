@@ -1,9 +1,9 @@
-﻿#region includes
+﻿#region
 
-using HtmlAgilityPack;
-using PoliFemoBackend.Source.Objects;
 using System.Net;
 using System.Text;
+using HtmlAgilityPack;
+using PoliFemoBackend.Source.Objects;
 
 #endregion
 
@@ -17,10 +17,7 @@ public static class HtmlUtil
         HttpClient httpClient = new();
         var response = await httpClient.GetAsync(urlAddress);
 
-        if (response.StatusCode != HttpStatusCode.OK)
-        {
-            return new WebReply(null, response.StatusCode);
-        }
+        if (response.StatusCode != HttpStatusCode.OK) return new WebReply(null, response.StatusCode);
 
         var receiveStream = response.Content;
         try
@@ -39,23 +36,14 @@ public static class HtmlUtil
     internal static List<HtmlNode>? GetElementsByTagAndClassName(HtmlNode? doc, string tag = "",
         string className = "", long? limit = null)
     {
-        if (doc == null)
-        {
-            return null;
-        }
+        if (doc == null) return null;
 
         var lst = new List<HtmlNode>();
         var emptyTag = string.IsNullOrEmpty(tag);
         var emptyCn = string.IsNullOrEmpty(className);
-        if (emptyTag && emptyCn)
-        {
-            return null;
-        }
+        if (emptyTag && emptyCn) return null;
 
-        if (limit is <= 0)
-        {
-            return null;
-        }
+        if (limit is <= 0) return null;
 
         var result = new List<HtmlNode>();
 
@@ -64,16 +52,10 @@ public static class HtmlUtil
             lst.Add(doc);
             for (var i = 0; i < lst.Count; i++)
             {
-                if (lst[i].GetClasses().Contains(className))
-                {
-                    result.Add(lst[i]);
-                }
+                if (lst[i].GetClasses().Contains(className)) result.Add(lst[i]);
 
                 var childcollection = lst[i].ChildNodes;
-                if (childcollection == null)
-                {
-                    continue;
-                }
+                if (childcollection == null) continue;
 
                 lst.AddRange(childcollection);
             }
@@ -84,47 +66,35 @@ public static class HtmlUtil
         switch (emptyCn)
         {
             case true when limit == null:
+            {
+                lst.Add(doc);
+                for (var i = 0; i < lst.Count; i++)
                 {
-                    lst.Add(doc);
-                    for (var i = 0; i < lst.Count; i++)
-                    {
-                        if (lst[i].Name == tag)
-                        {
-                            result.Add(lst[i]);
-                        }
+                    if (lst[i].Name == tag) result.Add(lst[i]);
 
-                        var childcollection = lst[i].ChildNodes;
-                        if (childcollection == null)
-                        {
-                            continue;
-                        }
+                    var childcollection = lst[i].ChildNodes;
+                    if (childcollection == null) continue;
 
-                        lst.AddRange(childcollection);
-                    }
-
-                    return result;
+                    lst.AddRange(childcollection);
                 }
+
+                return result;
+            }
             case false when emptyTag == false && limit == null:
+            {
+                lst.Add(doc);
+                for (var i = 0; i < lst.Count; i++)
                 {
-                    lst.Add(doc);
-                    for (var i = 0; i < lst.Count; i++)
-                    {
-                        if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag)
-                        {
-                            result.Add(lst[i]);
-                        }
+                    if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag) result.Add(lst[i]);
 
-                        var childcollection = lst[i].ChildNodes;
-                        if (childcollection == null)
-                        {
-                            continue;
-                        }
+                    var childcollection = lst[i].ChildNodes;
+                    if (childcollection == null) continue;
 
-                        lst.AddRange(childcollection);
-                    }
-
-                    return result;
+                    lst.AddRange(childcollection);
                 }
+
+                return result;
+            }
         }
 
         if (emptyTag && limit != null)
@@ -136,17 +106,11 @@ public static class HtmlUtil
                 {
                     result.Add(lst[i]);
 
-                    if (result.Count == limit.Value)
-                    {
-                        return result;
-                    }
+                    if (result.Count == limit.Value) return result;
                 }
 
                 var childcollection = lst[i].ChildNodes;
-                if (childcollection == null)
-                {
-                    continue;
-                }
+                if (childcollection == null) continue;
 
                 lst.AddRange(childcollection);
             }
@@ -157,57 +121,45 @@ public static class HtmlUtil
         switch (emptyCn)
         {
             case true when limit != null:
+            {
+                lst.Add(doc);
+                for (var i = 0; i < lst.Count; i++)
                 {
-                    lst.Add(doc);
-                    for (var i = 0; i < lst.Count; i++)
+                    if (lst[i].Name == tag)
                     {
-                        if (lst[i].Name == tag)
-                        {
-                            result.Add(lst[i]);
+                        result.Add(lst[i]);
 
-                            if (result.Count == limit.Value)
-                            {
-                                return result;
-                            }
-                        }
-
-                        var childcollection = lst[i].ChildNodes;
-                        if (childcollection == null)
-                        {
-                            continue;
-                        }
-
-                        lst.AddRange(childcollection);
+                        if (result.Count == limit.Value) return result;
                     }
 
-                    return result;
+                    var childcollection = lst[i].ChildNodes;
+                    if (childcollection == null) continue;
+
+                    lst.AddRange(childcollection);
                 }
+
+                return result;
+            }
             case false when emptyTag == false && limit != null:
+            {
+                lst.Add(doc);
+                for (var i = 0; i < lst.Count; i++)
                 {
-                    lst.Add(doc);
-                    for (var i = 0; i < lst.Count; i++)
+                    if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag)
                     {
-                        if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag)
-                        {
-                            result.Add(lst[i]);
+                        result.Add(lst[i]);
 
-                            if (result.Count == limit.Value)
-                            {
-                                return result;
-                            }
-                        }
-
-                        var childcollection = lst[i].ChildNodes;
-                        if (childcollection == null)
-                        {
-                            continue;
-                        }
-
-                        lst.AddRange(childcollection);
+                        if (result.Count == limit.Value) return result;
                     }
 
-                    return result;
+                    var childcollection = lst[i].ChildNodes;
+                    if (childcollection == null) continue;
+
+                    lst.AddRange(childcollection);
                 }
+
+                return result;
+            }
             default:
                 return null;
         }

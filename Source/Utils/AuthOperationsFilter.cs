@@ -1,13 +1,19 @@
+#region
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
+#endregion
+
 namespace PoliFemoBackend.Source.Utils;
+
 public abstract class AuthOperationsFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var noAuthRequired = context.ApiDescription.CustomAttributes().All(attr => attr.GetType() != typeof(AuthorizeAttribute));
+        var noAuthRequired = context.ApiDescription.CustomAttributes()
+            .All(attr => attr.GetType() != typeof(AuthorizeAttribute));
 
         if (noAuthRequired) return;
 

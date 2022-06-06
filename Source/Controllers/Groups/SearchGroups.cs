@@ -1,4 +1,4 @@
-#region includes
+#region
 
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -59,10 +59,9 @@ public class SearchGroupsController : ControllerBase
     //     var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
     //     return Ok(filtered);
     // }
-
-    public ActionResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform, string? language, string? office)
+    public ActionResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,
+        string? language, string? office)
     {
-
         var d = new Dictionary<string, object> { { "@name", name } };
 
         var query = "SELECT * FROM gruppo WHERE class LIKE '%@name%'";
@@ -71,26 +70,31 @@ public class SearchGroupsController : ControllerBase
             query += " AND year = '@year'";
             d.Add("@year", year);
         }
+
         if (degree != null)
         {
             query += " AND degree = '@degree'";
             d.Add("@degree", degree);
         }
+
         if (type != null)
         {
             query += " AND type_ = '@type'";
             d.Add("@type", type);
         }
+
         if (platform != null)
         {
             query += " AND platform = '@platform'";
             d.Add("@platform", platform);
         }
+
         if (language != null)
         {
             query += " AND language_ = '@language'";
             d.Add("@language", language);
         }
+
         if (office != null)
         {
             query += " AND office = '@office';";
@@ -100,15 +104,9 @@ public class SearchGroupsController : ControllerBase
         var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
 
         //if results is null
-        if (results == null)
-        {
-            return GroupsUtil.ErrorInRetrievingGroups();
-        }
+        if (results == null) return GroupsUtil.ErrorInRetrievingGroups();
 
-        if (results.Rows.Count == 0)
-        {
-            return NoContent();
-        }
+        if (results.Rows.Count == 0) return NoContent();
 
         var sg = JsonConvert.SerializeObject(results);
         HttpContext.Response.ContentType = "application/json";

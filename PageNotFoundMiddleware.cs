@@ -18,18 +18,17 @@ public class PageNotFoundMiddleware
         // this ensures that the message we are about to send does not 
         // suppress messages from the controller with the same status code
         if (!httpContext.Response.HasStarted)
-        {
             switch (httpContext.Response.StatusCode)
             {
                 case 404:
                     await httpContext.Response.WriteAsJsonAsync(new
                     {
-                        Description = "Welcome to PoliNetwork's API. If you were looking for something in particular it has not been found or has been moved. For a list of available APIs please visit https://api.polinetwork.org/swagger",
+                        Description =
+                            "Welcome to PoliNetwork's API. If you were looking for something in particular it has not been found or has been moved. For a list of available APIs please visit https://api.polinetwork.org/swagger",
                         Status = 404
                     });
 
                     return;
             }
-        }
     }
 }

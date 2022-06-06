@@ -1,7 +1,7 @@
-#region includes
+#region
 
-using MySql.Data.MySqlClient;
 using System.Data;
+using MySql.Data.MySqlClient;
 
 #endregion
 
@@ -13,29 +13,21 @@ public static class Database
     public static int Execute(string query, DbConfig dbConfig, Dictionary<string, object>? args = null)
     {
         Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
-        
+
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
 
         if (args != null)
-        {
             foreach (var (key, value) in args)
-            {
                 query = query.Replace(key, value.ToString());
-            }
-        }
 
         var cmd = new MySqlCommand(query, connection);
 
         OpenConnection(connection);
 
         if (args != null)
-        {
             foreach (var (key, value) in args)
-            {
                 cmd.Parameters.AddWithValue(key, value);
-            }
-        }
 
         var numberOfRowsAffected = cmd.ExecuteNonQuery();
 
@@ -44,18 +36,11 @@ public static class Database
 
     public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object>? args = null)
     {
-        if (dbConfig == null)
-        {
-            return default;
-        }
+        if (dbConfig == null) return default;
 
         if (args != null)
-        {
             foreach (var (key, value) in args)
-            {
                 query = query.Replace(key, value.ToString());
-            }
-        }
 
         Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery);
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
@@ -63,12 +48,8 @@ public static class Database
         var cmd = new MySqlCommand(query, connection);
 
         if (args != null)
-        {
             foreach (var (key, value) in args)
-            {
                 cmd.Parameters.AddWithValue(key, value);
-            }
-        }
 
         OpenConnection(connection);
 
@@ -88,10 +69,7 @@ public static class Database
 
     private static void OpenConnection(IDbConnection connection)
     {
-        if (connection.State != ConnectionState.Open)
-        {
-            connection.Open();
-        }
+        if (connection.State != ConnectionState.Open) connection.Open();
     }
 
     // ReSharper disable once UnusedMember.Global
@@ -111,10 +89,7 @@ public static class Database
     public static long? GetIntFromColumn(DataRow dr, string columnName)
     {
         var o = dr[columnName];
-        if (o is null or DBNull)
-        {
-            return null;
-        }
+        if (o is null or DBNull) return null;
 
         try
         {

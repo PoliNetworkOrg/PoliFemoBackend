@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
@@ -50,13 +50,9 @@ public class ArticlesByAuthorController : ControllerBase
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object>
             {
-                {"@author", author}
+                { "@author", author }
             });
 
         return Ok(results);
     }
-
-
-
-
 }

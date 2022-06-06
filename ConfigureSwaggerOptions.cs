@@ -1,11 +1,11 @@
-﻿#region includes
+﻿#region
 
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Reflection;
 using PoliFemoBackend.Source.Utils;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 #endregion
 
@@ -55,10 +55,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
             Version = description.ApiVersion.ToString()
         };
 
-        if (description.IsDeprecated)
-        {
-            info.Description += " This API version has been deprecated.";
-        }
+        if (description.IsDeprecated) info.Description += " This API version has been deprecated.";
 
         return info;
     }

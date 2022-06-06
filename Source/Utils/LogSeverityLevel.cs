@@ -1,4 +1,5 @@
 // ReSharper disable UnusedMember.Global
+
 namespace PoliFemoBackend.Source.Utils;
 
 public enum LogSeverityLevel

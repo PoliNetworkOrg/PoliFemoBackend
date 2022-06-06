@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
@@ -11,47 +11,33 @@ public static class RoomUtil
 {
     internal static List<object?>? GetFreeRooms(HtmlNode? table, DateTime start, DateTime stop)
     {
-        if (table?.ChildNodes == null)
-        {
-            return null;
-        }
+        if (table?.ChildNodes == null) return null;
 
         var shiftStart = GetShiftSlotFromTime(start);
         var shiftEnd = GetShiftSlotFromTime(stop);
 
         return (from child in table.ChildNodes
-                where child != null
-                select CheckIfFree(child, shiftStart, shiftEnd)
+            where child != null
+            select CheckIfFree(child, shiftStart, shiftEnd)
             into toAdd
-                where toAdd != null
-                select toAdd).ToList();
+            where toAdd != null
+            select toAdd).ToList();
     }
 
     private static object? CheckIfFree(HtmlNode? node, int shiftStart, int shiftEnd)
     {
-        if (node == null)
-        {
-            return null;
-        }
+        if (node == null) return null;
 
-        if (!node.GetClasses().Contains("normalRow"))
-        {
-            return null;
-        }
+        if (!node.GetClasses().Contains("normalRow")) return null;
 
-        if (node.ChildNodes == null)
-        {
-            return null;
-        }
+        if (node.ChildNodes == null) return null;
 
         if (!node.ChildNodes.Any(x =>
                 x.HasClass("dove")
                 && x.ChildNodes != null
                 && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))
             ))
-        {
             return null;
-        }
 
         var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
         return roomFree ? GetAula(node) : null;
@@ -59,10 +45,7 @@ public static class RoomUtil
 
     private static bool IsRoomFree(HtmlNode? node, int shiftStart, int shiftEnd)
     {
-        if (node?.ChildNodes == null)
-        {
-            return true;
-        }
+        if (node?.ChildNodes == null) return true;
 
         var colsizetotal = 0;
         // the first two children are not time slots
@@ -71,13 +54,9 @@ public static class RoomUtil
             int colsize;
             // for each column, take it's span as the colsize
             if (node.ChildNodes[i].Attributes.Contains("colspan"))
-            {
                 colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
-            }
             else
-            {
                 colsize = 1;
-            }
 
             // the time start in shifts for each column, is the previous total
             var vStart = colsizetotal;
@@ -86,17 +65,11 @@ public static class RoomUtil
 
             // this is the trickery, if any column ends before the shift start or starts before
             // the shift end, then we skip
-            if (vEnd < shiftStart || vStart > shiftEnd)
-            {
-                continue;
-            }
+            if (vEnd < shiftStart || vStart > shiftEnd) continue;
 
             // if one of the not-skipped column represents an actual lesson, then return false,
             // the room is occupied
-            if (!string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()))
-            {
-                return false;
-            }
+            if (!string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim())) return false;
         }
 
         // if no lesson takes place in the room in the time window, the room is free (duh)
@@ -110,7 +83,7 @@ public static class RoomUtil
         var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
         //Getting Room name
         var nome = dove?.ChildNodes.First(x => x.Name == "a")?.InnerText.Trim();
-        
+
         // Builds room object 
         return new { name = nome, power = pwr, building = "0" };
     }
@@ -121,7 +94,7 @@ public static class RoomUtil
         var a = dove?.ChildNodes.First(x => x.Name == "a");
 
         var aulaUrl = a?.Attributes["href"].Value;
-        
+
         //Get the room id, in order to see whether it has power or not
         var idAula = int.Parse(aulaUrl?.Split('=').Last() ?? string.Empty);
 
@@ -133,7 +106,6 @@ public static class RoomUtil
 
         // Checking whether the room has a power outlet
         return list != null && list.Contains(idAula) ? "yes" : "no";
-
     }
 
     private static int GetShiftSlotFromTime(DateTime time)
@@ -150,10 +122,7 @@ public static class RoomUtil
         var month = date.Month;
         var year = date.Year;
 
-        if (string.IsNullOrEmpty(sede))
-        {
-            return null;
-        }
+        if (string.IsNullOrEmpty(sede)) return null;
 
         var url = "https://www7.ceda.polimi.it/spazi/spazi/controller/OccupazioniGiornoEsatto.do?" +
                   "csic=" + sede +
@@ -165,10 +134,7 @@ public static class RoomUtil
                   "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&evn_visualizza=";
 
         var html = await HtmlUtil.DownloadHtmlAsync(url);
-        if (html.IsValid() == false)
-        {
-            return null;
-        }
+        if (html.IsValid() == false) return null;
 
         var doc = new HtmlDocument();
         doc.LoadHtml(html.GetData());

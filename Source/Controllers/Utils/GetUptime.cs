@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
