@@ -94,7 +94,14 @@ try
         }
     });
 
-    if (!app.Environment.IsDevelopment()) DbConfig.InitializeDbConfig();
+    try
+    {
+        DbConfig.InitializeDbConfig();
+    }
+    catch
+    {
+        ;
+    }
 
     app.UseMiddleware<PageNotFoundMiddleware>();
 
