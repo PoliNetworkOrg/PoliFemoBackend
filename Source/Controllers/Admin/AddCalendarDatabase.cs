@@ -32,7 +32,7 @@ public class AddCalendarControllers : ControllerBase
         int results;
         //populate the database with day of year
         var d = new DateTime(int.Parse(year), 8, 1);
-        if (GlobalVariables.DbConfigVar == null) return Ok("error");
+       // if (GlobalVariables.DbConfigVar == null) return Ok("error");
 
         for (i = 1; i <= 365; i++)
         {
@@ -71,8 +71,9 @@ public class AddCalendarControllers : ControllerBase
         }
 
         var sb = new StringBuilder();
-        const string s = @"C:\Users\lolel\Desktop\CALENDARIO\CALENDARIO_2022 -2023.pdf";
-        using var reader = new PdfReader(s);
+        //get name path file
+        var path = System.IO.Path.GetTempFileName();
+        using var reader = new PdfReader(file[0].OpenReadStream());
 
         //read the text from each page
         sb.Append(PdfTextExtractor.GetTextFromPage(reader, 2));

@@ -30,7 +30,7 @@ public static class Database
                 cmd.Parameters.AddWithValue(key, value);
 
         var numberOfRowsAffected = cmd.ExecuteNonQuery();
-
+        connection.Close(); 
         return numberOfRowsAffected;
     }
 
