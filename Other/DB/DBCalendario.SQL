@@ -1,15 +1,14 @@
-drop database if exists DBCalendario;
-create database DBCalendario;
-use DBCalendario;
+
+use DBPolifemo;
 
 
 /*tabella giorno*/
-create table day(
+create table Days(
 giorno date primary_key
 )engine innodb;
 
 /*tabella tipologia*/
-create table tipologia(
+create table Types(
 id_tipologia int unsigned primary key auto_increment NOT NULL,	
 name_ ENUM ("Festivo", "Esame", "Esame di profitto", "Lauree Magistrali", "Lezione", "Sabato", "Laureee 1 liv")
 )engine innodb;
@@ -25,7 +24,7 @@ foreign key(id_tipologia) references tipologia(id_tipologia)
 ALTER TABLE appartiene ADD PRIMARY KEY (giorno, id_tipologia);
 
 /*tabella lezione*/
-create table lesson(
+create table Lessons(
 id_lesson int unsigned primary key auto_increment NOT NULL,	
 name_ varchar(100),
 aula varchar(100),
@@ -43,7 +42,7 @@ foreign key(id_lesson) references lesson(id_lesson)
 )engine innodb;
 
 /*tabella esame*/
-create table exam(
+create table Exams(
 id_exam int unsigned primary key auto_increment NOT NULL,	
 name_ varchar(50),
 sede varchar(100),
