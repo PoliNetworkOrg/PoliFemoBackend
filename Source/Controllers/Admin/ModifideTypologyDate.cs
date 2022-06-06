@@ -6,7 +6,7 @@ using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Groups;
+namespace PoliFemoBackend.Source.Controllers.Admin;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -27,22 +27,45 @@ public class ModifyDateControllers : ControllerBase
     [HttpPost]
 
 
-    public ObjectResult ModifedTypeDateDb(DateTime date, int tipologia, string operazione)
+    public ObjectResult ModifiedTypeDateDb(DateTime date, int tipologia, string operazione)
     {
-        if(operazione == "rimuovi"){
-            var query = "DELETE FROM appartiene WHERE id_tipologia = " + tipologia + " AND id_giorno = '" + date.ToString("yyyy-MM-dd") + "';";
-            var results = Database.Execute(query, GlobalVariables.DbConfigVar);
-        }
-        if(operazione == "aggiungi"){
-            var query = "INSERT IGNORE INTO appartiene VALUES ('" + date.ToString("yyyy-MM-dd") + "', " + tipologia + " );";
-            var results = Database.Execute(query, GlobalVariables.DbConfigVar);
+        int? results = null;
+        if (GlobalVariables.DbConfigVar == null)
+            return results switch
+            {
+                null => Ok("error"),
+                <= 0 => Ok("no effect"),
+                _ => Ok("done")
+            };
+        
+        switch (operazione)
+        {
+            case "rimuovi":
+            {
+                var query = "DELETE FROM appartiene WHERE id_tipologia = " + tipologia + " AND id_giorno = '" + date.ToString("yyyy-MM-dd") + "';";
+
+                results = Database.Execute(query, GlobalVariables.DbConfigVar);
+                break;
+            }
+            case "aggiungi":
+            {
+                var query = "INSERT IGNORE INTO appartiene VALUES ('" + date.ToString("yyyy-MM-dd") + "', " + tipologia + " );";
+                results = Database.Execute(query, GlobalVariables.DbConfigVar);
+                break;
+            }
+            case "modifica":
+            {
+                var query = "UPDATE appartiene SET id_tipologia = " + tipologia + " WHERE id_giorno = '" + date.ToString("yyyy-MM-dd") + "';";
+                results = Database.Execute(query, GlobalVariables.DbConfigVar);
+                break;
+            }
         }
 
-        if(operazione == "modifica"){
-            var query = "UPDATE appartiene SET id_tipologia = " + tipologia + " WHERE id_giorno = '" + date.ToString("yyyy-MM-dd") + "';";
-            var results = Database.Execute(query, GlobalVariables.DbConfigVar);
-        }
-        
-        return Ok("bravo");
+        return results switch
+        {
+            null => Ok("error"),
+            <= 0 => Ok("no effect"),
+            _ => Ok("done")
+        };
     }
 }

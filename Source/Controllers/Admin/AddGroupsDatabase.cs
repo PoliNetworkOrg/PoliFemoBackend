@@ -1,13 +1,12 @@
 #region includes
 
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Groups;
+namespace PoliFemoBackend.Source.Controllers.Admin;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -26,7 +25,7 @@ public class AddGroupsController : ControllerBase
     [HttpPost]
     
 
-    public ObjectResult AddGroupsDb(string name, string? year, string id, string? degree, string? type, string? platform, string language, string? office, string? school, string id_link)
+    public ObjectResult AddGroupsDb(string name, string? year, string id, string? degree, string? type, string? platform, string language, string? office, string? school, string idLink)
     {
 
           var d = new Dictionary<string, object> { { "@name", name } };
@@ -45,7 +44,7 @@ public class AddGroupsController : ControllerBase
           }
 
           //id
-          if (id != null)
+          if (!string.IsNullOrEmpty(id))
           {
                query += "'@id',";
                d.Add("@id", id);
@@ -74,14 +73,14 @@ public class AddGroupsController : ControllerBase
           }
 
           //id_link
-          if (id_link != null)
+          if (!string.IsNullOrEmpty(idLink))
           {
                query += "'@id_link',";
-               d.Add("@id_link", id_link);
+               d.Add("@id_link", idLink);
           }
 
           //language
-          if (language != null)
+          if (!string.IsNullOrEmpty(language))
           {
                query += "'@language',";
                d.Add("@language", language);
@@ -130,16 +129,15 @@ public class AddGroupsController : ControllerBase
           query += "'Y');";
           
           //Console.WriteLine(query);
-          var results = Database.Execute(query, GlobalVariables.DbConfigVar, d);
+          if (GlobalVariables.DbConfigVar != null)
+          {
+               var results = Database.Execute(query, GlobalVariables.DbConfigVar, d);
           
-          if (results == 0)
-          {
-               return new ObjectResult(new { message = "Group NOT Added", status = 500 });
+               return results == 0 
+                    ? new ObjectResult(new { message = "Group NOT Added", status = 500 }) 
+                    : new ObjectResult(new { message = "Group Added", status = 200 });
           }
-          else
-          {
-               return new ObjectResult(new { message = "Group Added", status = 200 });
-          }
+          return new ObjectResult(new { message = "Error", status = 200 });
     }
 }
 

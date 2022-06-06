@@ -11,7 +11,7 @@ public class PageNotFoundMiddleware
 
     public async Task Invoke(HttpContext httpContext)
     {
-        // invoke _next to make the next code run before the response sended
+        // invoke _next to make the next code run before the response sent
         await _next(httpContext);
 
         // Make sure the response has not been sent by the controller, 

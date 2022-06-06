@@ -1,16 +1,15 @@
 #region includes
 
+using System.Text;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
-using System.Text;
-
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Groups;
+namespace PoliFemoBackend.Source.Controllers.Admin;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -33,29 +32,31 @@ public class AddCalendarControllers : ControllerBase
 
         //populate the database with day of year
         var d = new DateTime(int.Parse(year), 8, 1);
-        for (int i = 1; i <= 365; i++)
+        for (var i = 1; i <= 365; i++)
         {
             var query = "INSERT IGNORE INTO day VALUES ( '"+ d.ToString("yyyy-MM-dd")+ "' );";
             var results = Database.Execute(query, GlobalVariables.DbConfigVar);
-            //se d è sabato
-            if (d.DayOfWeek == DayOfWeek.Saturday)
+            switch (d.DayOfWeek)
             {
-                query = "INSERT IGNORE INTO appartiene VALUES (" + results + " , 6);";
-                results = Database.Execute(query, GlobalVariables.DbConfigVar);
+                //se d è sabato
+                case DayOfWeek.Saturday:
+                    query = "INSERT IGNORE INTO appartiene VALUES (" + results + " , 6);";
+                    results = Database.Execute(query, GlobalVariables.DbConfigVar);
+                    break;
+                //se d è domenica
+                case DayOfWeek.Sunday:
+                    query = "INSERT IGNORE INTO appartiene VALUES (" + results + " , 1);";
+                    results = Database.Execute(query, GlobalVariables.DbConfigVar);
+                    break;
             }
-            //se d è domenica
-            if (d.DayOfWeek == DayOfWeek.Sunday)
-            {
-                query = "INSERT IGNORE INTO appartiene VALUES (" + results + " , 1);";
-                results = Database.Execute(query, GlobalVariables.DbConfigVar);
-            }
+
             //add day
             d = d.AddDays(1);
         }
 
-        StringBuilder sb  = new StringBuilder();
-        string  s = @"C:\Users\lolel\Desktop\CALENDARIO\CALENDARIO_2022 -2023.pdf";
-        using(PdfReader reader = new PdfReader(s))
+        var sb  = new StringBuilder();
+        const string s = @"C:\Users\lolel\Desktop\CALENDARIO\CALENDARIO_2022 -2023.pdf";
+        using var reader = new PdfReader(s);
         {
             //read the text from each page
             sb.Append(PdfTextExtractor.GetTextFromPage(reader, 2));
@@ -63,7 +64,7 @@ public class AddCalendarControllers : ControllerBase
             
             //ESAMI DI PROFITTO
             var line = sb.ToString().Split('\n').First(x => x.Contains("SESSIONE PER GLI ESAMI"));
-            int i=0;
+            var i=0;
             while(i<4){
                 //VAI ALLA RIGA DOPO
                 line = sb.ToString().Split('\n').SkipWhile(x => x != line).Skip(1).First();
@@ -71,8 +72,8 @@ public class AddCalendarControllers : ControllerBase
                 var date1 = line.Split("dal").Last().Split("al").First().Trim();
                 var date2 = line.Split(" al ").Last().Split(" ").First().Trim();
 
-                DateTime d5 = DateTime.Parse(date1);
-                DateTime d6 = DateTime.Parse(date2);
+                var d5 = DateTime.Parse(date1);
+                var d6 = DateTime.Parse(date2);
                 while (d5 <= d6)
                 {
                     //var query = "SELECT * INTO appartiene WHERE giorno = '" + d1.ToString("yyyy-MM-dd") + "' AND tipologia = 3;";
@@ -94,27 +95,28 @@ public class AddCalendarControllers : ControllerBase
             var array = sb.ToString().Split("SESSIONI DI LAUREA").Last().Split("\n");
             Console.WriteLine(line);
             //loop array
-            DateTime d3 = DateTime.Parse("2020-08-01");
-            foreach (var item in array){ 
+            var d3 = DateTime.Parse("2020-08-01");
+            foreach (var item in array)
+            {
                 //se la riga contiene una parola
-                if (item.Contains("Laurea Triennale") || item.Contains("Laurea Magistrale"))
-                {
-                    //extract the date
-                    var date1 = item.Split("Laurea").First().Split("ì").Last().Trim();
-                    //Console.WriteLine(date1);
-                    if(date1 != ""){
-                        d3 = DateTime.Parse(date1);
-                    }
-                    var query4="";
-                    if(item.Contains("Laurea Triennale")){ 
-                        query4 = "INSERT IGNORE INTO appartiene VALUES ( '" + d3.ToString("yyyy-MM-dd") + "', 7 );";
-                    } 
-                    else
-                    {
-                        query4 = "INSERT IGNORE INTO appartiene VALUES ( '" + d3.ToString("yyyy-MM-dd") + "', 4);";
-                    }
-                    var results4 = Database.Execute(query4, GlobalVariables.DbConfigVar);    
+                if (!item.Contains("Laurea Triennale") && !item.Contains("Laurea Magistrale"))
+                    continue;
+                
+                //extract the date
+                var date1 = item.Split("Laurea").First().Split("ì").Last().Trim();
+                //Console.WriteLine(date1);
+                if(date1 != ""){
+                    d3 = DateTime.Parse(date1);
                 }
+                var query4="";
+                if(item.Contains("Laurea Triennale")){ 
+                    query4 = "INSERT IGNORE INTO appartiene VALUES ( '" + d3.ToString("yyyy-MM-dd") + "', 7 );";
+                } 
+                else
+                {
+                    query4 = "INSERT IGNORE INTO appartiene VALUES ( '" + d3.ToString("yyyy-MM-dd") + "', 4);";
+                }
+                var results4 = Database.Execute(query4, GlobalVariables.DbConfigVar);
 
             }
 
@@ -125,8 +127,8 @@ public class AddCalendarControllers : ControllerBase
             while(i<2){
                 var date1 = line.Split("Dal").Last().Split("al").First().Trim();
                 var date2 = line.Split(" al ").Last().Split(",").First().Trim();
-                DateTime d4 = DateTime.Parse(date1);
-                DateTime d5 = DateTime.Parse(date2);
+                var d4 = DateTime.Parse(date1);
+                var d5 = DateTime.Parse(date2);
                 while (d4 <= d5)
                 {
                     if(d4.DayOfWeek!= DayOfWeek.Sunday){
@@ -141,8 +143,8 @@ public class AddCalendarControllers : ControllerBase
 
             //PER LE VACANZE
             
-            DateTime d1 = DateTime.Parse("2022-08-01");
-            DateTime d2 = DateTime.Parse("2022-08-24");
+            var d1 = DateTime.Parse("2022-08-01");
+            var d2 = DateTime.Parse("2022-08-24");
             
             while (d1 <= d2)
             {
@@ -188,7 +190,7 @@ public class AddCalendarControllers : ControllerBase
                 d1 = d1.AddDays(1);
 
             }
-            var query2 = "INSERT IGNORE INTO appartiene VALUES ( '2023-04-24', 8 );";
+            const string query2 = "INSERT IGNORE INTO appartiene VALUES ( '2023-04-24', 8 );";
             var results2 = Database.Execute(query2, GlobalVariables.DbConfigVar);
 
             d1 = DateTime.Parse("2023-07-29");

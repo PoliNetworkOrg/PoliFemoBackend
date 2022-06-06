@@ -98,7 +98,7 @@ public class SearchGroupsController : ControllerBase
             d.Add("@office", office);
         }
 
-        DataTable? results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
+        var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
 
         //if results is null
         if (results == null)
@@ -114,10 +114,9 @@ public class SearchGroupsController : ControllerBase
         var sg = JsonConvert.SerializeObject(results);
         HttpContext.Response.ContentType = "application/json";
 
-        JArray? ag = JsonConvert.DeserializeObject(sg) as JArray;
+        var ag = JsonConvert.DeserializeObject(sg) as JArray;
 
-        JObject o = new JObject();
-        o.Add("groups", ag);
+        var o = new JObject { { "groups", ag } };
         return Ok(o);
     }
 }
