@@ -57,7 +57,7 @@ create table Links(
 id_link int unsigned primary key auto_increment NOT NULL,	
 link varchar(100),
 id_media int unsigned,
-foreign key(id_media) references media(id_media)
+foreign key(id_media) references Medias(id_media)
 )engine innodb;
 
 
@@ -74,7 +74,7 @@ id_location int unsigned primary key auto_increment NOT NULL,
 name_ varchar(50),
 link varchar(200),
 id_point int unsigned,
-foreign key(id_point) references point_(id_point)
+foreign key(id_point) references Points(id_point)
 )engine innodb;
 
 /*tabella AUTHOR*/
@@ -101,45 +101,45 @@ publishTime datetime,
 targetTime datetime,
 music varchar(200),
 id_media int unsigned,
-foreign key(id_media) references media(id_media)	
+foreign key(id_media) references Medias(id_media)	
 )engine innodb;
 
 /*tabella collega AUTHOR-ARTICLE*/
 create table scritto(
 id_author int unsigned,
-foreign key(id_author) references author(id_author),
+foreign key(id_author) references Authors(id_author),
 id_article int unsigned,
-foreign key(id_article) references article(id_article)
+foreign key(id_article) references Articles(id_article)
 )engine innodb;
 
 /*tabella collega TERRITORIAL-ARTICLE*/
 create table su(
 id_territorial int unsigned,
-foreign key(id_territorial) references territorial(id_territorial),
+foreign key(id_territorial) references Territorials(id_territorial),
 id_article int unsigned,
-foreign key(id_article) references article(id_article)
+foreign key(id_article) references Articles(id_article)
 )engine innodb;
 
 /*tabella collega SOURCE-ARTICLE*/
 create table prende(
 id_source int unsigned,
-foreign key(id_source) references source(id_source),
+foreign key(id_source) references Sources(id_source),
 id_article int unsigned,
-foreign key(id_article) references article(id_article)
+foreign key(id_article) references Articles(id_article)
 )engine innodb;
 
 /*tabella collega LOCATION-ARTICLE*/
 create table where_(
 id_location int unsigned,
-foreign key(id_location) references location(id_location),
+foreign key(id_location) references Locations(id_location),
 id_article int unsigned,
-foreign key(id_article) references article(id_article)
+foreign key(id_article) references Articles(id_article)
 )engine innodb;
 
 /*tabella collega HASHTAG-ARTICLE*/
 create table tag(
 id_hashtag int unsigned,
-foreign key(id_hashtag) references hashtag(id_hashtag),
+foreign key(id_hashtag) references Hashtags(id_hashtag),
 id_article int unsigned,
-foreign key(id_article) references article(id_article)
+foreign key(id_article) references Articles(id_article)
 )engine innodb;
