@@ -96,11 +96,12 @@ try
 
     try
     {
-        DbConfig.InitializeDbConfig();
+        Start.StartThings();
+  
     }
-    catch
+    catch (Exception ex)
     {
-        ;
+        Console.WriteLine(ex);
     }
 
     app.UseMiddleware<PageNotFoundMiddleware>();
