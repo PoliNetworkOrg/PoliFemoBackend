@@ -44,7 +44,7 @@ public class ArticlesByStartingId : ControllerBase
     public ObjectResult SearchArticlesDb(uint id)
     {
         var results = Database.ExecuteSelect(
-            "SELECT * FROM article WHERE id_article >= @id",
+            "SELECT * FROM Articles WHERE id_article >= @id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object>
             {

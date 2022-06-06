@@ -36,7 +36,7 @@ public class AddCalendarControllers : ControllerBase
 
         for (i = 1; i <= 365; i++)
         {
-            query = "INSERT IGNORE INTO day VALUES ( '" + d.ToString("yyyy-MM-dd") + "' );";
+            query = "INSERT IGNORE INTO Days VALUES ( '" + d.ToString("yyyy-MM-dd") + "' );";
 
             results = Database.Execute(query, GlobalVariables.DbConfigVar);
             switch (d.DayOfWeek)
@@ -148,8 +148,7 @@ public class AddCalendarControllers : ControllerBase
             {
                 if (d4.DayOfWeek != DayOfWeek.Sunday)
                 {
-                    var query3 = "INSERT IGNORE INTO appartiene VALUES ( '" + d4.ToString("yyyy-MM-dd") +
-                                 "', 5 );";
+                    var query3 = "INSERT IGNORE INTO appartiene VALUES ( '" + d4.ToString("yyyy-MM-dd") +"', 5 );";
                     var results3 = Database.Execute(query3, GlobalVariables.DbConfigVar);
                 }
 

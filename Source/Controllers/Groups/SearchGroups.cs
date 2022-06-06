@@ -64,7 +64,7 @@ public class SearchGroupsController : ControllerBase
     {
         var d = new Dictionary<string, object> { { "@name", name } };
 
-        var query = "SELECT * FROM gruppo WHERE class LIKE '%@name%'";
+        var query = "SELECT * FROM Groups WHERE class LIKE '%@name%'";
         if (year != null)
         {
             query += " AND year = '@year'";

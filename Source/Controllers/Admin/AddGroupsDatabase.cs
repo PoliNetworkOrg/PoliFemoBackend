@@ -28,7 +28,7 @@ public class AddGroupsController : ControllerBase
     {
         var d = new Dictionary<string, object> { { "@name", name } };
 
-        var query = "INSERT IGNORE INTO gruppo VALUES ( '@name', ";
+        var query = "INSERT IGNORE INTO Groups VALUES ( '@name', ";
 
         //office
         if (office != null)
