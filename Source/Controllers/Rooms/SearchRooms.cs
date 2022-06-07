@@ -1,9 +1,9 @@
-﻿#region includes
+﻿#region
 
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PoliFemoBackend.Source.Utils;
-using System.Net;
 
 #endregion
 
@@ -43,13 +43,9 @@ public class SearchRoomsController : ControllerBase
         }
 
         var t4 = RoomUtil.GetFreeRooms(t3[0], hourStart, hourStop);
-        if (t4 is null || t4.Count == 0)
-        {
-            return NoContent();
-        }
+        if (t4 is null || t4.Count == 0) return NoContent();
 
         var json = new { freeRooms = t4 };
-
 
 
         return Ok(json);

@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
@@ -34,12 +34,12 @@ public class ArticlesByDateTimeRange : ControllerBase
     public ObjectResult SearchArticlesByDateRange(string start, string end)
     {
         var results = Database.ExecuteSelect(
-            "SELECT * FROM article WHERE publishTime >= @start AND publishTime <= @end",
+            "SELECT * FROM Articles WHERE publishTime >= @start AND publishTime <= @end",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object>
             {
-                {"@start", start},
-                {"@end", end}
+                { "@start", start },
+                { "@end", end }
             });
 
         return Ok(results);

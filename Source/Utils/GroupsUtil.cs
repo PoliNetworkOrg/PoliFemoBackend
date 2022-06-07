@@ -1,12 +1,12 @@
-﻿#region includes
+﻿#region
 
+using System.Net;
+using System.Web;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using System.Net;
-using System.Web;
 
 #endregion
 
@@ -20,10 +20,7 @@ public static class GroupsUtil
     public static async Task<dynamic?> GetGroups()
     {
         //if groups have been already downloaded, return them.
-        if (_groups != null)
-        {
-            return _groups;
-        }
+        if (_groups != null) return _groups;
 
         //get content from url
         var content = await HtmlUtil.DownloadHtmlAsync(Constants.GroupsUrl);
@@ -32,10 +29,8 @@ public static class GroupsUtil
 
         var c = content.GetData();
         if (c == null)
-        {
             return new ObjectResult(new { error = "Errore durante il recupero dei gruppi" })
-            { StatusCode = (int)HttpStatusCode.InternalServerError };
-        }
+                { StatusCode = (int)HttpStatusCode.InternalServerError };
 
         {
             var c1 = c.Replace("<", "&lt;");
@@ -49,16 +44,13 @@ public static class GroupsUtil
         //convert doc to json
         var json = JsonConvert.DeserializeObject<dynamic>(doc.DocumentNode.InnerHtml);
 
-        if (json == null)
-        {
-            return ErrorInRetrievingGroups();
-        }
+        if (json == null) return ErrorInRetrievingGroups();
 
         _groups = json;
         return json;
     }
 
-    private static ObjectResult ErrorInRetrievingGroups()
+    public static ObjectResult ErrorInRetrievingGroups()
     {
         return new ObjectResult(new
         {
@@ -74,12 +66,8 @@ public static class GroupsUtil
         var resultsList = new List<JObject>();
 
         foreach (var item in json.index_data)
-        {
             if (filter.Invoke(item))
-            {
                 resultsList.Add(JObject.Parse(HttpUtility.HtmlDecode(item.ToString())));
-            }
-        }
 
         return resultsList;
     }

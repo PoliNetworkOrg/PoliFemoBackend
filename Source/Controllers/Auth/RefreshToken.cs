@@ -1,4 +1,4 @@
-#region includes
+#region
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Enums;
@@ -30,19 +30,14 @@ public class RefreshTokenController : ControllerBase
         {
             var response = AuthUtil.GetResponse(refreshToken, GrantTypeEnum.refresh_token);
 
-            if (response == null)
-            {
-                return BadRequest("Client secret not found");
-            }
+            if (response == null) return BadRequest("Client secret not found");
 
             if (!response.IsSuccessStatusCode)
-            {
                 return new ObjectResult(new
                 {
                     error = "Refresh token not valid. Request a new authorization code.",
                     statusCode = response.StatusCode
                 });
-            }
 
             var responseBody = response.Content.ReadAsStringAsync().Result;
             return Ok(responseBody);

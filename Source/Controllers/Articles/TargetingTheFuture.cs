@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
@@ -36,7 +36,7 @@ public class ArticlesTargetingTheFuture : ControllerBase
     public ObjectResult SearchArticlesByTargetingTheFuture()
     {
         var results = Database.ExecuteSelect(
-            "SELECT * FROM article WHERE publishTime > NOW()",
+            "SELECT * FROM Articles WHERE publishTime > NOW()",
             GlobalVariables.DbConfigVar);
 
         return Ok(results);

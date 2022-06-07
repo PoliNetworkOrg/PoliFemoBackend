@@ -1,5 +1,6 @@
-#region includes
+#region
 
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -8,7 +9,6 @@ using PoliFemoBackend;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Test;
 using PoliFemoBackend.Source.Utils;
-using System.IdentityModel.Tokens.Jwt;
 
 #endregion
 
@@ -56,7 +56,8 @@ try
                 {
                     context.Response.StatusCode = 401;
 
-                    var json = new {
+                    var json = new
+                    {
                         error = "Invalid token. Refresh your current access token or request a new authorization code",
                         reason = context.AuthenticateFailure.Message
                     };
@@ -81,7 +82,8 @@ try
         {
             foreach (var description in provider.ApiVersionDescriptions)
             {
-                options.SwaggerEndpoint("/swagger/" + description.GroupName + "/swagger.json", "PoliFemoBackend API " + description.GroupName.ToUpperInvariant());
+                options.SwaggerEndpoint("/swagger/" + description.GroupName + "/swagger.json",
+                    "PoliFemoBackend API " + description.GroupName.ToUpperInvariant());
                 options.RoutePrefix = "swagger";
             }
         }
@@ -92,9 +94,13 @@ try
         }
     });
 
-    if (!app.Environment.IsDevelopment())
+    try
     {
-        DbConfig.InitializeDbConfig();
+        Start.StartThings();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
     }
 
     app.UseMiddleware<PageNotFoundMiddleware>();

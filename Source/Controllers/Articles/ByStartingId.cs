@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
@@ -44,11 +44,11 @@ public class ArticlesByStartingId : ControllerBase
     public ObjectResult SearchArticlesDb(uint id)
     {
         var results = Database.ExecuteSelect(
-            "SELECT * FROM article WHERE id_article >= @id",
+            "SELECT * FROM Articles WHERE id_article >= @id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object>
             {
-                {"@id", id}
+                { "@id", id }
             });
 
         return Ok(results);

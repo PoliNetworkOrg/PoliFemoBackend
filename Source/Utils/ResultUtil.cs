@@ -1,7 +1,7 @@
-﻿#region includes
+﻿#region
 
-using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 #endregion
 

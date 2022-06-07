@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
@@ -25,10 +25,7 @@ public static class ArticleUtil
     /// <returns></returns>
     public static Tuple<Articles?, Exception?> GetArticles()
     {
-        if (_articles != null)
-        {
-            return new Tuple<Articles?, Exception?>(_articles, null);
-        }
+        if (_articles != null) return new Tuple<Articles?, Exception?>(_articles, null);
 
         lock (LockArticles)
         {
@@ -63,16 +60,10 @@ public static class ArticleUtil
     {
         var parsed = JObject.Parse(data);
         var articles = parsed["articles"];
-        if (articles == null)
-        {
-            return null;
-        }
+        if (articles == null) return null;
 
         var result = new Dictionary<uint, JToken>();
-        foreach (var child in articles)
-        {
-            result[Convert.ToUInt32(child["id"])] = child;
-        }
+        foreach (var child in articles) result[Convert.ToUInt32(child["id"])] = child;
 
         return new Articles(result);
     }
@@ -80,36 +71,27 @@ public static class ArticleUtil
     public static List<JToken> FilterByDateTimeRange(Articles? articlesToSearchInto, DateTime? start,
         DateTime? end)
     {
-        if (start == null && end == null)
-        {
-            return new List<JToken>();
-        }
+        if (start == null && end == null) return new List<JToken>();
 
         Func<KeyValuePair<uint, JToken>, bool> filter;
         if (start == null)
-        {
             filter = child =>
             {
                 var dt = DateTimeUtil.ConvertToDateTime(child.Value["publishTime"]?.ToString());
                 return end >= dt;
             };
-        }
         else if (end == null)
-        {
             filter = child =>
             {
                 var dt = DateTimeUtil.ConvertToDateTime(child.Value["publishTime"]?.ToString());
                 return start <= dt;
             };
-        }
         else //start and end are not null
-        {
             filter = child =>
             {
                 var dt = DateTimeUtil.ConvertToDateTime(child.Value["publishTime"]?.ToString());
                 return end >= dt && start <= dt;
             };
-        }
 
         var results = articlesToSearchInto?.Search(filter).ToList();
         return results ?? new List<JToken>();

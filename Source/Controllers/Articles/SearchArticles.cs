@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
@@ -36,7 +36,6 @@ public class SearchArticlesController : ControllerBase
         if (id != null)
         {
             if (!getNextIds) //Search by id
-            {
                 try
                 {
                     var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
@@ -48,7 +47,6 @@ public class SearchArticlesController : ControllerBase
                 {
                     return ResultUtil.ExceptionResult(ex);
                 }
-            }
 
             //Search by starting id
             try
@@ -65,7 +63,6 @@ public class SearchArticlesController : ControllerBase
         }
 
         if (author != null) //Search by author
-        {
             try
             {
                 var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
@@ -77,10 +74,8 @@ public class SearchArticlesController : ControllerBase
             {
                 return ResultUtil.ExceptionResult(ex);
             }
-        }
 
         if (start != null && end != null) //Search by date range
-        {
             try
             {
                 var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
@@ -92,7 +87,6 @@ public class SearchArticlesController : ControllerBase
             {
                 return ResultUtil.ExceptionResult(ex);
             }
-        }
 
         //Get future articles
         try
@@ -107,5 +101,4 @@ public class SearchArticlesController : ControllerBase
             return ResultUtil.ExceptionResult(ex);
         }
     }
-
 }

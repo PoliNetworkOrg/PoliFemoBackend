@@ -1,9 +1,9 @@
-﻿#region includes
+﻿#region
 
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
-using System.Diagnostics;
 
 #endregion
 
@@ -28,7 +28,7 @@ public class DeployLatestController : ControllerBase
         {
             if (token != GlobalVariables.Secrets?["Deploy"]?.ToString())
                 return Unauthorized("Invalid token");
-            
+
 
             Task.Run(() =>
             {

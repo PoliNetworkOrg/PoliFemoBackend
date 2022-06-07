@@ -1,9 +1,8 @@
-﻿#region includes
+﻿#region
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
-
 
 #endregion
 
@@ -43,11 +42,10 @@ public class GroupsByName : ControllerBase
     //     var filtered = GroupsUtil.Filter(json, (Func<dynamic, bool>)Filter);
     //     return Ok(filtered);
     // }
-
     public ObjectResult SearchGroupsDb(string name)
     {
         var results = Database.ExecuteSelect(
-            "SELECT * FROM gruppo WHERE class = @name",
+            "SELECT * FROM Groups WHERE class = @name",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object>
             {

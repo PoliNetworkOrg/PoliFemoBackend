@@ -1,4 +1,4 @@
-﻿#region includes
+﻿#region
 
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -25,7 +25,8 @@ public class GetVersionsController : ControllerBase
     {
         try
         {
-            return Ok(JsonConvert.SerializeObject(new { versions = ApiVersionsManager.ReadApiVersions() }, Formatting.Indented));
+            return Ok(JsonConvert.SerializeObject(new { versions = ApiVersionsManager.ReadApiVersions() },
+                Formatting.Indented));
         }
         catch (Exception ex)
         {
