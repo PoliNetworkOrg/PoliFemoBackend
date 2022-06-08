@@ -83,13 +83,7 @@ public static class RoomUtil
         var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
         //Getting Room name
         var nome = dove?.ChildNodes.First(x => x.Name == "a")?.InnerText.Trim();
-
-<<<<<<< HEAD
-        //Getting Room building
         
-=======
->>>>>>> 61ace885dd8080d658f262b9b0ff2068d85fe286
-        // Builds room object 
         return new { name = nome, power = pwr};
     }
 
