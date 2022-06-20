@@ -27,6 +27,7 @@ public class ModifyDateControllers : ControllerBase
     /// <response code="200">Group Added</response>
     /// <response code="500">Can't connect to server or Group not Added</response>
     [MapToApiVersion("1.0")]
+    [HttpGet]
     [HttpPost]
     public ObjectResult ModifiedTypeDateDb(DateTime date, int tipologia, string operazione)
     {

@@ -25,6 +25,7 @@ public class AddCalendarControllers : ControllerBase
     /// <response code="200">Days Added</response>
     /// <response code="500">Can't connect to server or Days not Added</response>
     [MapToApiVersion("1.0")]
+    [HttpGet]
     [HttpPost]
     public ObjectResult AddCalendarDb(List<IFormFile> file, string year)
     {
@@ -63,7 +64,7 @@ public class AddCalendarControllers : ControllerBase
                 case DayOfWeek.Friday:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(year));
             }
 
 
