@@ -62,7 +62,7 @@ public class SearchGroupsController : ControllerBase
     public ActionResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,
         string? language, string? office)
     {
-        var d = new Dictionary<string, object> { { "@name", name } };
+        var d = new Dictionary<string, object?> { { "@name", name } };
 
         var query = "SELECT * FROM Groups WHERE class LIKE '%@name%'";
         if (year != null)

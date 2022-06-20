@@ -36,7 +36,7 @@ public class ArticleByIdController : ControllerBase
         var results = Database.ExecuteSelect(
             "SELECT * FROM Articles WHERE id_article = @id",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object>
+            new Dictionary<string, object?>
             {
                 { "@id", id }
             });

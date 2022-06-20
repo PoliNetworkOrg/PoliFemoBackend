@@ -14,10 +14,10 @@ public class InsertArticleOverAnOldOne :ControllerBase
     [MapToApiVersion("1.0")]
     [HttpPost]
     [HttpGet]
-    public ObjectResult InsertArticleOverAnOldOneDb(int idOld, string title, string content) //todo: auth + all parameters
+    public ObjectResult InsertArticleOverAnOldOneDb(int idOld, string? title, string? content) //todo: auth + all parameters
     {
         const string q1 = "SELECT * FROM Articles WHERE id_article = @rid";
-        var paramsDict1 = new Dictionary<string, object>()
+        var paramsDict1 = new Dictionary<string, object?>
         {
             {"@rid", idOld}
         };
@@ -26,7 +26,7 @@ public class InsertArticleOverAnOldOne :ControllerBase
             return new BadRequestObjectResult("Id of the old article is invalid. No article found.");
         
         const string q2 = "SELECT * FROM Articles WHERE replace_id = @rid";
-        var paramsDict2 = new Dictionary<string, object>()
+        var paramsDict2 = new Dictionary<string, object?>
         {
             {"@rid", idOld}
         };
@@ -34,14 +34,7 @@ public class InsertArticleOverAnOldOne :ControllerBase
         if (result2 != null && result2.Rows.Count > 0)
             return new BadRequestObjectResult("Id of the old article is invalid. That article has been already overwritten.");
         
-        const string q3 = "INSERT INTO Articles ('title', 'content', 'replace_id') VALUES (@title, @content,@rid)";
-        var paramsDict3 = new Dictionary<string, object>()
-        {
-            { "@title", title },
-            { "@content", content },
-            { "@rid", idOld }
-        };
-        var result3 = Source.Utils.Database.Execute(q3, GlobalVariables.DbConfigVar, paramsDict3);
+        var result3 =PoliFemoBackend.Source.Utils.ArticleUtil.InsertArticle(title, content, idOld);
         return Ok(result3);
 
     }

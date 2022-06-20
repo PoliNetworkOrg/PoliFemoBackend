@@ -10,7 +10,7 @@ namespace PoliFemoBackend.Source.Utils;
 public static class Database
 {
     // ReSharper disable once UnusedMember.Global
-    public static int Execute(string query, DbConfig? dbConfig, Dictionary<string, object>? args = null)
+    public static int Execute(string query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)
     {
         if (dbConfig == null) return default;
 
@@ -21,7 +21,7 @@ public static class Database
 
         if (args != null)
             foreach (var (key, value) in args)
-                query = query.Replace(key, value.ToString());
+                query = query.Replace(key,  value ==null? "[null]" : value.ToString());
 
         var cmd = new MySqlCommand(query, connection);
 
@@ -38,13 +38,13 @@ public static class Database
         return numberOfRowsAffected ?? -1;
     }
 
-    public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object>? args = null)
+    public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)
     {
         if (dbConfig == null) return default;
 
         if (args != null)
             foreach (var (key, value) in args)
-                query = query.Replace(key, value.ToString());
+                query = query.Replace(key, value == null ? "[null]" : value.ToString());
 
         Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery);
         var connection = new MySqlConnection(dbConfig.GetConnectionString());

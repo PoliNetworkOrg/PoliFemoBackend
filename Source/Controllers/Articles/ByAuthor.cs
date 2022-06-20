@@ -48,7 +48,7 @@ public class ArticlesByAuthorController : ControllerBase
             "FROM Authors, Articles, scritto " +
             " WHERE scritto.id_article = Articles.id_article AND scritto.id_author = Authors.id_author AND Authors.name = @author",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object>
+            new Dictionary<string, object?>
             {
                 { "@author", author }
             });

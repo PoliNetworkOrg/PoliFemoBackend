@@ -47,7 +47,7 @@ public class GroupsByName : ControllerBase
         var results = Database.ExecuteSelect(
             "SELECT * FROM Groups WHERE class = @name",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object>
+            new Dictionary<string, object?>
             {
                 { "name", name }
             });

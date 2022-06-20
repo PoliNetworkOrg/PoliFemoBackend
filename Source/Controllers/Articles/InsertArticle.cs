@@ -12,15 +12,9 @@ public class InsertArticle :ControllerBase
     [MapToApiVersion("1.0")]
     [HttpPost]
     [HttpGet]
-    public ObjectResult InsertArticleDb(string title, string content) //todo: auth + all parameters
+    public ObjectResult InsertArticleDb(string? title, string? content) //todo: auth + all parameters
     {
-        const string q = "INSERT INTO Articles ('title', 'content') VALUES (@title, @content)";
-        var paramsDict = new Dictionary<string, object>()
-        {
-            {"@title", title},
-            {"@content", content}
-        };
-        var result = Source.Utils.Database.Execute(q, GlobalVariables.DbConfigVar, paramsDict);
+        var result = PoliFemoBackend.Source.Utils.ArticleUtil.InsertArticle(title, content, null);
         return Ok(result);
     }
 }

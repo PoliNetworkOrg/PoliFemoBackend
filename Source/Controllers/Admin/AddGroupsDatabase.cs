@@ -26,7 +26,7 @@ public class AddGroupsController : ControllerBase
     public ObjectResult AddGroupsDb(string name, string? year, string id, string? degree, string? type,
         string? platform, string language, string? office, string? school, string idLink)
     {
-        var d = new Dictionary<string, object> { { "@name", name } };
+        var d = new Dictionary<string, object?> { { "@name", name } };
 
         var query = "INSERT IGNORE INTO Groups VALUES ( '@name', ";
 

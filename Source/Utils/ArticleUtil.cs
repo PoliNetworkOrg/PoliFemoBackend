@@ -107,4 +107,16 @@ public static class ArticleUtil
         }).ToList();
         return results ?? new List<JToken>();
     }
+
+    public static int? InsertArticle(string? title, string? content, int? idOld)
+    {
+        const string q = "INSERT INTO Articles ('title', 'content', 'replace_id') VALUES (@title, @content, @rid)";
+        var paramsDict = new Dictionary<string, object?>
+        {
+            {"@title", title},
+            {"@content", content},
+            {"@rid", idOld}
+        };
+        return Source.Utils.Database.Execute(q, GlobalVariables.DbConfigVar, paramsDict);
+    }
 }

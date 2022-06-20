@@ -36,7 +36,7 @@ public class ArticlesByDateTimeRange : ControllerBase
         var results = Database.ExecuteSelect(
             "SELECT * FROM Articles WHERE publishTime >= @start AND publishTime <= @end",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object>
+            new Dictionary<string, object?>
             {
                 { "@start", start },
                 { "@end", end }

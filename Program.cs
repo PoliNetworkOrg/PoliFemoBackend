@@ -5,115 +5,132 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Newtonsoft.Json;
-using PoliFemoBackend;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Test;
 using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-if (args.Length > 0 && args[0] == "test")
+namespace PoliFemoBackend;
+
+internal static class Program
 {
-    Test.TestMain();
-    return;
-}
-
-try
-{
-    var builder = WebApplication.CreateBuilder(args);
-
-    builder.Services.AddControllers().AddNewtonsoftJson();
-
-    builder.Services.AddApiVersioning(setup =>
+    /// <summary>
+    ///     The main entry point for the application.
+    /// </summary>
+    [STAThread]
+    private static void Main(string[] args)
     {
-        setup.DefaultApiVersion = new ApiVersion(1, 0);
-        setup.AssumeDefaultVersionWhenUnspecified = true;
-        setup.ReportApiVersions = true;
-    });
-    builder.Services.AddVersionedApiExplorer(setup =>
-    {
-        setup.GroupNameFormat = "'v'VVV";
-        setup.SubstituteApiVersionInUrl = true;
-    });
 
-    builder.Services.AddSwaggerGen();
-
-    builder.Services.AddAuthentication(sharedOptions =>
-    {
-        sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    }).AddJwtBearer(options =>
-    {
-        options.Authority = Constants.AzureAuthority;
-        options.TokenValidationParameters.ValidAudience = Constants.AzureAudience;
-        options.TokenValidationParameters.ValidIssuer = Constants.AzureIssuer;
-        options.Events = new JwtBearerEvents
+        if (args.Length > 0 && args[0] == "test")
         {
-            OnChallenge = async context =>
-            {
-                context.HandleResponse();
+            Test.TestMain();
+            return;
+        }
 
-                if (context.AuthenticateFailure != null)
+        try
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddControllers().AddNewtonsoftJson();
+
+            builder.Services.AddApiVersioning(setup =>
+            {
+                setup.DefaultApiVersion = new ApiVersion(1, 0);
+                setup.AssumeDefaultVersionWhenUnspecified = true;
+                setup.ReportApiVersions = true;
+            });
+            builder.Services.AddVersionedApiExplorer(setup =>
+            {
+                setup.GroupNameFormat = "'v'VVV";
+                setup.SubstituteApiVersionInUrl = true;
+            });
+
+            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = Constants.AzureAuthority;
+                options.TokenValidationParameters.ValidAudience = Constants.AzureAudience;
+                options.TokenValidationParameters.ValidIssuer = Constants.AzureIssuer;
+                options.Events = new JwtBearerEvents
                 {
-                    context.Response.StatusCode = 401;
+                    OnChallenge = async context => { await OnChallengeMethod(context); }
+                };
+            });
 
-                    var json = new
-                    {
-                        error = "Invalid token. Refresh your current access token or request a new authorization code",
-                        reason = context.AuthenticateFailure.Message
-                    };
+            builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
-                    context.Response.ContentType = "application/json";
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(json));
-                }
-            }
-        };
-    });
+            var app = builder.Build();
 
-    builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+            GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
-    var app = builder.Build();
-
-    GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
-
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        if (app.Services.GetService(typeof(IApiVersionDescriptionProvider)) is IApiVersionDescriptionProvider provider)
-        {
-            foreach (var description in provider.ApiVersionDescriptions)
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/" + description.GroupName + "/swagger.json",
-                    "PoliFemoBackend API " + description.GroupName.ToUpperInvariant());
-                options.RoutePrefix = "swagger";
+                if (app.Services.GetService(typeof(IApiVersionDescriptionProvider)) is IApiVersionDescriptionProvider
+                    provider)
+                {
+                    foreach (var description in provider.ApiVersionDescriptions)
+                    {
+                        options.SwaggerEndpoint("/swagger/" + description.GroupName + "/swagger.json",
+                            "PoliFemoBackend API " + description.GroupName.ToUpperInvariant());
+                        options.RoutePrefix = "swagger";
+                    }
+                }
+                else
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "PoliFemoBackend API V1");
+                    options.RoutePrefix = "swagger";
+                }
+            });
+
+            try
+            {
+                Start.StartThings();
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            app.UseMiddleware<PageNotFoundMiddleware>();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.Run();
         }
-        else
+        catch (Exception ex)
         {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "PoliFemoBackend API V1");
-            options.RoutePrefix = "swagger";
+            Console.WriteLine(ex);
         }
-    });
-
-    try
-    {
-        Start.StartThings();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex);
     }
 
-    app.UseMiddleware<PageNotFoundMiddleware>();
+    private static async Task OnChallengeMethod(JwtBearerChallengeContext context)
+    {
+        context.HandleResponse();
 
-    app.UseAuthentication();
+        if (context.AuthenticateFailure == null)
+        {
+            return;
+        }
 
-    app.UseAuthorization();
+        context.Response.StatusCode = 401;
 
-    app.MapControllers();
+        var json = new
+        {
+            error = "Invalid token. Refresh your current access token or request a new authorization code",
+            reason = context.AuthenticateFailure.Message
+        };
 
-    app.Run();
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex);
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync(JsonConvert.SerializeObject(json));
+    }
 }
