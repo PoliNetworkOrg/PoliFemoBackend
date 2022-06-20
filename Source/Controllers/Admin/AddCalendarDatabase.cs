@@ -1,12 +1,12 @@
 #region
 
 using System.Text;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
-using Path = System.IO.Path;
 
 #endregion
 
@@ -78,7 +78,11 @@ public class AddCalendarControllers : ControllerBase
         using var reader = new PdfReader(file[0].OpenReadStream());
 
         //read the text from each page
-        sb.Append(PdfTextExtractor.GetTextFromPage(reader, 2));
+        ITextExtractionStrategy textExtractionStrategy = new SimpleTextExtractionStrategy();
+        var pdfDocument = new PdfDocument(reader);
+        var numberOfPages = pdfDocument.GetNumberOfPages();
+        for (var indexPage = 1; indexPage <= numberOfPages; indexPage++)
+            sb.Append(PdfTextExtractor.GetTextFromPage(pdfDocument.GetPage(indexPage), textExtractionStrategy));
 
 
         //ESAMI DI PROFITTO

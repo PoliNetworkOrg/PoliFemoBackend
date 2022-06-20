@@ -113,10 +113,10 @@ public static class ArticleUtil
         const string q = "INSERT INTO Articles ('title', 'content', 'replace_id') VALUES (@title, @content, @rid)";
         var paramsDict = new Dictionary<string, object?>
         {
-            {"@title", title},
-            {"@content", content},
-            {"@rid", idOld}
+            { "@title", title },
+            { "@content", content },
+            { "@rid", idOld }
         };
-        return Source.Utils.Database.Execute(q, GlobalVariables.DbConfigVar, paramsDict);
+        return Database.Execute(q, GlobalVariables.DbConfigVar, paramsDict);
     }
 }

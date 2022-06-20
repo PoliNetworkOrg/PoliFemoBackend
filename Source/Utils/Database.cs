@@ -21,7 +21,7 @@ public static class Database
 
         if (args != null)
             foreach (var (key, value) in args)
-                query = query.Replace(key,  value ==null? "[null]" : value.ToString());
+                query = query.Replace(key, value == null ? "[null]" : value.ToString());
 
         var cmd = new MySqlCommand(query, connection);
 

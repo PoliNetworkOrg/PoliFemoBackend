@@ -21,7 +21,6 @@ internal static class Program
     [STAThread]
     private static void Main(string[] args)
     {
-
         if (args.Length > 0 && args[0] == "test")
         {
             Test.TestMain();
@@ -117,10 +116,7 @@ internal static class Program
     {
         context.HandleResponse();
 
-        if (context.AuthenticateFailure == null)
-        {
-            return;
-        }
+        if (context.AuthenticateFailure == null) return;
 
         context.Response.StatusCode = 401;
 
