@@ -35,17 +35,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="EPPlus" Version="6.0.4" />
+        <PackageReference Include="EPPlus" Version="6.0.5"/>
         <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
         <PackageReference Include="iTextSharp" Version="5.5.13.3" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.5" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.5" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
-        <PackageReference Include="Mysql.Data" Version="8.0.29" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.19.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.6"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.6"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0"/>
+        <PackageReference Include="Mysql.Data" Version="8.0.29"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.19.0"/>
     </ItemGroup>
 
     <ItemGroup>
