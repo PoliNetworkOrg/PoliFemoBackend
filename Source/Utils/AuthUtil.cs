@@ -13,7 +13,7 @@ public static class AuthUtil
     {
         HttpClient httpClient = new();
 
-        var clientSecret = GlobalVariables.Secrets?["Azure"]?.ToString();
+        var clientSecret = GlobalVariables.GetSecrets("Azure")?.ToString();
         if (clientSecret == null) return null;
 
         FormUrlEncodedContent formUrlEncodedContent = new(new Dictionary<string, string>

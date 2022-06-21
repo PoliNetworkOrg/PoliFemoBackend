@@ -29,9 +29,8 @@ public class AddCalendarControllers : ControllerBase
     [HttpPost]
     public ObjectResult AddCalendarDb(List<IFormFile> file, string year)
     {
-        var i = 0;
+        int i;
         string query;
-        int results;
         //populate the database with day of year
         var d = new DateTime(int.Parse(year), 8, 1);
         // if (GlobalVariables.DbConfigVar == null) return Ok("error");
@@ -40,7 +39,7 @@ public class AddCalendarControllers : ControllerBase
         {
             query = "INSERT IGNORE INTO Days VALUES ( '" + d.ToString("yyyy-MM-dd") + "' );";
 
-            results = Database.Execute(query, GlobalVariables.DbConfigVar);
+            var results = Database.Execute(query, GlobalVariables.DbConfigVar);
             switch (d.DayOfWeek)
             {
                 //se d è sabato
@@ -132,11 +131,9 @@ public class AddCalendarControllers : ControllerBase
             //Console.WriteLine(date1);
             if (date1 != "") d3 = DateTime.Parse(date1);
 
-            var query4 = "";
-            if (item.Contains("Laurea Triennale"))
-                query4 = "INSERT IGNORE INTO appartiene VALUES ( '" + d3.ToString("yyyy-MM-dd") + "', 7 );";
-            else
-                query4 = "INSERT IGNORE INTO appartiene VALUES ( '" + d3.ToString("yyyy-MM-dd") + "', 4);";
+            var query4 = item.Contains("Laurea Triennale")
+                ? "INSERT IGNORE INTO appartiene VALUES ( '" + d3.ToString("yyyy-MM-dd") + "', 7 );"
+                : "INSERT IGNORE INTO appartiene VALUES ( '" + d3.ToString("yyyy-MM-dd") + "', 4);";
 
             var results4 = Database.Execute(query4, GlobalVariables.DbConfigVar);
         }
@@ -183,11 +180,11 @@ public class AddCalendarControllers : ControllerBase
         }
 
         query = "INSERT IGNORE INTO appartiene VALUES ( '2022-10-31', 8 );";
-        results = Database.Execute(query, GlobalVariables.DbConfigVar);
+        Database.Execute(query, GlobalVariables.DbConfigVar);
         query = "INSERT IGNORE INTO appartiene VALUES ( '2022-12-9', 8 );";
-        results = Database.Execute(query, GlobalVariables.DbConfigVar);
+        Database.Execute(query, GlobalVariables.DbConfigVar);
         query = "INSERT IGNORE INTO appartiene VALUES ( '2022-12-10', 8 );";
-        results = Database.Execute(query, GlobalVariables.DbConfigVar);
+        Database.Execute(query, GlobalVariables.DbConfigVar);
 
         d1 = DateTime.Parse("2022-12-24");
         d2 = DateTime.Parse("2023-01-07");

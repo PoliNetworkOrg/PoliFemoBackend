@@ -12,8 +12,18 @@ namespace PoliFemoBackend.Source.Data;
 public static class GlobalVariables
 {
     public static readonly DateTime Start = DateTime.Now;
-    public static JObject? Secrets = null;
+    private static JObject? _secrets;
     public static DbConfig? DbConfigVar { get; set; }
     public static MySqlConnection? DbConnection { get; set; }
     public static JwtSecurityTokenHandler? TokenHandler { get; set; }
+
+    public static JToken? GetSecrets(string? v)
+    {
+        return v != null ? _secrets?[v] : null;
+    }
+
+    public static void SetSecrets(JObject? jObject)
+    {
+        _secrets = jObject;
+    }
 }

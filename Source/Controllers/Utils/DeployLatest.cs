@@ -26,7 +26,7 @@ public class DeployLatestController : ControllerBase
     {
         try
         {
-            if (token != GlobalVariables.Secrets?["Deploy"]?.ToString())
+            if (token != GlobalVariables.GetSecrets("Deploy")?.ToString())
                 return Unauthorized("Invalid token");
 
 
