@@ -17,6 +17,7 @@ public static class GroupsUtil
 {
     private static dynamic? _groups;
 
+    // ReSharper disable once UnusedMember.Global
     public static async Task<dynamic?> GetGroups()
     {
         //if groups have been already downloaded, return them.
@@ -61,6 +62,7 @@ public static class GroupsUtil
         };
     }
 
+    // ReSharper disable once UnusedMember.Global
     public static List<JObject> Filter(dynamic json, Func<dynamic, bool> filter)
     {
         var resultsList = new List<JObject>();
