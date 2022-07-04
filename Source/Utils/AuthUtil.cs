@@ -30,24 +30,24 @@ public static class AuthUtil
     }
 
     /// <summary>
-    /// Get Sub id from auth token
+    ///     Get Sub id from auth token
     /// </summary>
     /// <param name="httpRequest">The http request from the user</param>
     /// <returns>The sub id of the auth token</returns>
     private static string? GetSubIdMicrosoftId(HttpRequest httpRequest)
     {
         var headers = httpRequest.Headers;
-        return (from h in headers 
-            where h.Key == "Authorization" 
-            from h2 in h.Value 
-            select GlobalVariables.TokenHandler?.ReadJwtToken(h2) 
-            into token 
+        return (from h in headers
+            where h.Key == "Authorization"
+            from h2 in h.Value
+            select GlobalVariables.TokenHandler?.ReadJwtToken(h2)
+            into token
             where token != null
             select token.Subject).FirstOrDefault();
     }
 
     /// <summary>
-    /// Detect if the user can insert articles
+    ///     Detect if the user can insert articles
     /// </summary>
     /// <param name="httpRequest">The http request from the user</param>
     /// <returns>A bool, indicating if the user can insert articles</returns>
@@ -57,7 +57,7 @@ public static class AuthUtil
         // ReSharper disable once ConvertIfStatementToReturnStatement
         if (string.IsNullOrEmpty(s))
             return false;
-        
+
         //todo query the db to see if the user can post articles
         return true;
     }

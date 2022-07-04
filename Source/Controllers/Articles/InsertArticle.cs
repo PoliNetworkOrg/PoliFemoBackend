@@ -20,10 +20,7 @@ public class InsertArticle : ControllerBase
     [HttpGet]
     public ObjectResult InsertArticleDb(string? title, string? content) //todo: auth + all parameters
     {
-        if (!AuthUtil.CanInsertArticles(Request))
-        {
-            return Unauthorized("User can't insert articles.");
-        }
+        if (!AuthUtil.CanInsertArticles(Request)) return Unauthorized("User can't insert articles.");
 
         var result = ArticleUtil.InsertArticle(title, content, null);
         return Ok(result);
