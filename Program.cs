@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Test;
 using PoliFemoBackend.Source.Utils;
@@ -114,19 +115,22 @@ internal static class Program
 
     private static async Task OnChallengeMethod(JwtBearerChallengeContext context)
     {
-        context.HandleResponse();
-
-        if (context.AuthenticateFailure == null) return;
-
+        JObject json = new JObject();
+        json.Add("error", "Invalid token. Refresh your current access token or request a new authorization code");
+        json.Add("reason", context.AuthenticateFailure?.Message);
         context.Response.StatusCode = 401;
-
-        var json = new
-        {
-            error = "Invalid token. Refresh your current access token or request a new authorization code",
-            reason = context.AuthenticateFailure.Message
-        };
-
         context.Response.ContentType = "application/json";
+        
+
+        if (!context.Request.Headers.ContainsKey("Authorization"))
+        {
+            json["reason"] = "Missing Authorization header";
+        } else if (!context.Request.Headers["Authorization"].ToString().StartsWith("Bearer "))
+        {
+            json["reason"] = "Not a Bearer token";     
+        }
+
+        context.HandleResponse();
         await context.Response.WriteAsync(JsonConvert.SerializeObject(json));
     }
 }

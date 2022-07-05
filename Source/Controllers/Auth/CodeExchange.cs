@@ -2,6 +2,7 @@
 
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
@@ -30,7 +31,6 @@ public class CodeExchangeController : ControllerBase
     /// <returns>An access and a refresh token</returns>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    [HttpPost]
     public ObjectResult CodeExchange(string code)
         // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d&scope=openid%20offline_access&response_type=code&login_hint=nome.cognome@mail.polimi.it
     {
@@ -40,15 +40,15 @@ public class CodeExchangeController : ControllerBase
 
             if (response == null) return BadRequest("Client secret not found");
 
+            var responseJson = JToken.Parse(response.Content.ReadAsStringAsync().Result);
+
             if (!response.IsSuccessStatusCode)
                 return new ObjectResult(new
                 {
                     error = "Error while exchanging code for token",
+                    reason = responseJson.Value<string>("error"),
                     statusCode = response.StatusCode
                 });
-
-            var responseBody = response.Content.ReadAsStringAsync().Result;
-            var responseJson = JToken.Parse(responseBody);
 
             var token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
             var domain = token?.Payload["upn"].ToString();
@@ -67,25 +67,21 @@ public class CodeExchangeController : ControllerBase
                     statusCode = HttpStatusCode.Forbidden
                 });
 
-            //addUser(token.Subject); // TODO
-            return Ok(responseBody);
+            var query = "insert ignore into utente values(sha2('" + token.Subject + "', 256), 1)";
+            var results = Database.Execute(query, GlobalVariables.DbConfigVar);
+            return Ok(responseJson);
+        }
+        catch (MySqlException)
+        {
+            return new ObjectResult(new
+                {
+                    error = "Database error",
+                    statusCode = HttpStatusCode.InternalServerError
+                });
         }
         catch (Exception ex)
         {
             return ResultUtil.ExceptionResult(ex);
         }
     }
-
-    /*
-    public void addUser(string id)
-    {
-        var d = new Dictionary<string, object> { { "id", id } };
-
-        var query = "select * from utente where id_utente = @id;";
-        var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
-        if(results == null){
-            query = " insert into utente values(@id, 0)";
-            results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
-        }
-    }*/
 }
