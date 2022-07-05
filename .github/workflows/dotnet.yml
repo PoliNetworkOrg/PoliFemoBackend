@@ -26,10 +26,12 @@ jobs:
       run: dotnet build PoliFemoBackend.csproj /p:DeployOnBuild=true /p:Configuration=Release /p:Platform="x64" /p:PublishProfile=Properties/PublishProfiles/linux-x64.pubxml
       
     - name: Get current date
+      continue-on-error: true
       id: date
       run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
 
     - name: Create Github Release
+      continue-on-error: true
       uses: softprops/action-gh-release@v1
       with:
           files: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/Release/net6.0/PoliFemoBackend.zip"
@@ -37,19 +39,24 @@ jobs:
           token: ${{ secrets.RELEASES_TOKEN }}
           
     - name: Wait
+      continue-on-error: true
       run: sleep 10
       
     - name: Deploy
+      continue-on-error: true
       run: curl -m 10 https://api.polinetwork.org/v1/DeployLatest?token=${{ secrets.TOKEN_UPGRADE }}
 
     - name: Wait
+      continue-on-error: true
       run: sleep 20
       
     - name: Get uptime
+      continue-on-error: true
       id: uptime
       run: echo "::set-output name=uptime::$(curl https://api.polinetwork.org/v1/GetUptime)"
       
     - name: Check whether the deployment was successful
+      continue-on-error: true
       if: ${{ steps.uptime.outputs.uptime > 120 }}
       uses: actions/github-script@v6
       with:
