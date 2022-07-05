@@ -33,7 +33,7 @@ public class DeployLatestController : ControllerBase
             Task.Run(() =>
             {
                 GracefullyShutdown.Shutdown();
-                Process.Start("./run.sh");
+                Process.Start("screen ./run.sh");
                 Thread.Sleep(1000);
                 Environment.Exit(0);
             });
