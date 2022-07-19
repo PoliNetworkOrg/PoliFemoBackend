@@ -31,7 +31,7 @@ internal static class Program
         try
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            
             builder.Services.AddControllers().AddNewtonsoftJson();
 
             builder.Services.AddApiVersioning(setup =>
@@ -98,6 +98,14 @@ internal static class Program
             }
 
             app.UseMiddleware<PageNotFoundMiddleware>();
+
+            app.UseCors(builder =>
+            {
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
 
             app.UseAuthentication();
 

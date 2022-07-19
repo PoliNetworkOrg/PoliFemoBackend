@@ -25,18 +25,19 @@ public class CodeExchangeController : ControllerBase
     ///     This is a callback endpoint. DO NOT call manually.
     /// </remarks>
     /// <param name="code">The authorization code</param>
+    /// <param name="state">App ID</param>
     /// <response code="200">Returns the access token and refresh token</response>
     /// <response code="400">The code is not valid</response>
     /// <response code="403">The user is not using a PoliMi email</response>
     /// <returns>An access and a refresh token</returns>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ObjectResult CodeExchange(string code)
-        // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d&scope=openid%20offline_access&response_type=code&login_hint=nome.cognome@mail.polimi.it
+    public ActionResult CodeExchange(string code, int state)
+        // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d&scope=openid%20offline_access&response_type=code&login_hint=nome.cognome@mail.polimi.it&state=10010&redirect_uri=https://api.polinetwork.org/v1/CodeExchange
     {
         try
         {
-            var response = AuthUtil.GetResponse(code, GrantTypeEnum.authorization_code);
+            var response = AuthUtil.GetResponse(code, state, GrantTypeEnum.authorization_code);
 
             if (response == null) return BadRequest("Client secret not found");
 
