@@ -67,11 +67,11 @@ public static class Database
             return default;
 
         var ret = new DataSet();
-        adapter.Fill(ret);
-
+        var fr = adapter.Fill(ret);
+        
         adapter.Dispose();
         connection.Close();
-        return ret.Tables[0];
+        return fr == 0 ? null : ret.Tables[0];
     }
 
     private static void OpenConnection(IDbConnection connection)
