@@ -14,8 +14,9 @@ namespace PoliFemoBackend.Source.Controllers.Auth;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
+[ApiExplorerSettings(GroupName = "Auth")]
+[Route("v{version:apiVersion}/auth/code")]
+[Route("auth/code")]
 public class CodeExchangeController : ControllerBase
 {
     /// <summary>
@@ -33,7 +34,7 @@ public class CodeExchangeController : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpGet]
     public ActionResult CodeExchange(string code, int state)
-        // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d&scope=openid%20offline_access&response_type=code&login_hint=nome.cognome@mail.polimi.it&state=10010&redirect_uri=https://api.polinetwork.org/v1/CodeExchange
+        // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d&scope=openid%20offline_access&response_type=code&login_hint=nome.cognome@mail.polimi.it&state=10010&redirect_uri=https://api.polinetwork.org/v1/auth/code
     {
         try
         {

@@ -34,7 +34,7 @@ public static class AuthUtil
                 }
                 
                 default: {
-                    formcontent.Add("redirect_uri", "https://api.polinetwork.org/v1/CodeExchange");
+                    formcontent.Add("redirect_uri", "https://api.polinetwork.org/v1/auth/code");
                     break;
                 }
             }
@@ -67,7 +67,7 @@ public static class AuthUtil
     /// <param name="httpRequest">The http request from the user</param>
     /// <returns>A bool, indicating if the user can insert articles</returns>
     public static bool CanInsertArticles(HttpRequest httpRequest)
-    {
+            {
         var s = GetSubIdMicrosoftId(httpRequest);
         // ReSharper disable once ConvertIfStatementToReturnStatement
         if (string.IsNullOrEmpty(s))
