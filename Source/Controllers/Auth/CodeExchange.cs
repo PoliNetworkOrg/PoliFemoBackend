@@ -20,7 +20,7 @@ namespace PoliFemoBackend.Source.Controllers.Auth;
 public class CodeExchangeController : ControllerBase
 {
     /// <summary>
-    ///     Gets access and refresh token from Microsoft and performs user checks.
+    ///     Get access and refresh token from Microsoft and perform user checks
     /// </summary>
     /// <remarks>
     ///     This is a callback endpoint. DO NOT call manually.

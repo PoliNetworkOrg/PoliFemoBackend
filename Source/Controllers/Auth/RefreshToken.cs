@@ -17,8 +17,8 @@ namespace PoliFemoBackend.Source.Controllers.Auth;
 public class RefreshTokenController : ControllerBase
 {
     /// <summary>
-    ///     Get a new access token from Microsoft.
-    ///     The refresh token is sent in the token header.
+    ///     Get a new access token from Microsoft
+    ///     The refresh token is sent in the token header
     /// </summary>
     /// <response code="200">Returns the new access token</response>
     /// <response code="400">The refresh token is not valid</response>
@@ -29,7 +29,7 @@ public class RefreshTokenController : ControllerBase
     {
         try
         {
-            var refreshToken = Request.Headers["token"].ToString();
+            var refreshToken = Request.Headers["Token"].ToString();
             var response = AuthUtil.GetResponse(refreshToken, 99999, GrantTypeEnum.refresh_token);
 
             if (response == null) return BadRequest("Client secret not found");

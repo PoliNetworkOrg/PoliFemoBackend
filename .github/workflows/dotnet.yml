@@ -10,6 +10,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    name: Build and release
 
     steps:
     - uses: actions/checkout@v3
@@ -29,21 +30,21 @@ jobs:
       continue-on-error: true
       id: date
       run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
+  
+  
+  
+  deploy:
 
-    - name: Create Github Release
-      continue-on-error: true
-      uses: softprops/action-gh-release@v1
-      with:
-          files: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/Release/net6.0/PoliFemoBackend.zip"
-          tag_name: ${{ steps.date.outputs.date }}
-          token: ${{ secrets.RELEASES_TOKEN }}
-          
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+
+    steps:
     - name: Wait
       continue-on-error: true
       run: sleep 10
       
     - name: Deploy
-      continue-on-error: true
       run: curl -m 10 https://api.polinetwork.org/v1/DeployLatest?token=${{ secrets.TOKEN_UPGRADE }}
 
     - name: Wait
@@ -51,7 +52,6 @@ jobs:
       run: sleep 20
       
     - name: Get uptime
-      continue-on-error: true
       id: uptime
       run: echo "::set-output name=uptime::$(curl https://api.polinetwork.org/v1/GetUptime)"
       
@@ -60,4 +60,4 @@ jobs:
       if: ${{ steps.uptime.outputs.uptime > 120 }}
       uses: actions/github-script@v6
       with:
-        script: core.setFailed('Built and released successfully but failed to deploy')
+        script: core.setFailed('Deploy failed')

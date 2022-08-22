@@ -33,7 +33,9 @@ public class DeployLatestController : ControllerBase
             Task.Run(() =>
             {
                 GracefullyShutdown.Shutdown();
-                Process.Start("sudo screen ./run.sh");
+                ProcessStartInfo processStartInfo = new ProcessStartInfo() { FileName = GlobalVariables.ScreenPath, Arguments = "-S backend -p 0 -X stuff \"./run.sh\"\n", UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+                Process process = new Process() { StartInfo = processStartInfo };
+                process.Start();
                 Thread.Sleep(1000);
                 Environment.Exit(0);
             });
