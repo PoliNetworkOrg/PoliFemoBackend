@@ -30,7 +30,13 @@ jobs:
       continue-on-error: true
       id: date
       run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
-  
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+          files: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/Release/net6.0/PoliFemoBackend.zip"
+          tag_name: ${{ steps.date.outputs.date }}
+          token: ${{ secrets.RELEASES_TOKEN }} 
   
   
   deploy:
