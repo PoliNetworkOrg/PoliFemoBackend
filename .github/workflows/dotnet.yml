@@ -62,7 +62,6 @@ jobs:
       run: echo "::set-output name=uptime::$(curl https://api.polinetwork.org/v1/GetUptime)"
       
     - name: Check whether the deployment was successful
-      continue-on-error: true
       if: ${{ steps.uptime.outputs.uptime > 120 }}
       uses: actions/github-script@v6
       with:

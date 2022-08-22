@@ -33,7 +33,7 @@ public class DeployLatestController : ControllerBase
             Task.Run(() =>
             {
                 GracefullyShutdown.Shutdown();
-                ProcessStartInfo processStartInfo = new ProcessStartInfo() { FileName = GlobalVariables.ScreenPath, Arguments = "-S backend -p 0 -X stuff \"./run.sh\"\n", UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+                ProcessStartInfo processStartInfo = new ProcessStartInfo() { FileName = GlobalVariables.ScreenPath, Arguments = "-S backend -p 0 -X stuff \"^C\n./run.sh\"\n", UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
                 Process process = new Process() { StartInfo = processStartInfo };
                 process.Start();
                 Thread.Sleep(1000);
