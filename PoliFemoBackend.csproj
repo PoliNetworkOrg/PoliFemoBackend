@@ -36,7 +36,7 @@
 
     <ItemGroup>
         <PackageReference Include="EPPlus" Version="6.0.6"/>
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.43"/>
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.45"/>
         <PackageReference Include="itext7" Version="7.2.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.8"/>
