@@ -35,16 +35,13 @@ public class DeployLatestController : ControllerBase
                 GracefullyShutdown.Shutdown();
                 try
                 {
-                    Process.Start("sudo screen ./run.sh");
+                    ProcessStartInfo processStartInfo = new ProcessStartInfo() { FileName = "/usr/bin/sudo", Arguments = "service polifemo restart", UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+                    Process process = new Process() { StartInfo = processStartInfo };
+                    process.Start();
                 } catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }
-                //ProcessStartInfo processStartInfo = new ProcessStartInfo() { FileName = GlobalVariables.ScreenPath, Arguments = "-S autodeploy -p 0 -X stuff \"./run.sh\"\n", UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
-                //Process process = new Process() { StartInfo = processStartInfo };
-                //process.Start();
-                Thread.Sleep(1000);
-                Environment.Exit(0);
             });
             return Ok("Request received successfully");
         }
