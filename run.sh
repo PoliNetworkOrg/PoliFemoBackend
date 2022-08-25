@@ -8,7 +8,7 @@ sudo iptables -t nat -F
 sudo iptables -t mangle -F
 sudo iptables -F
 sudo iptables -X
-wget https://github.com/PoliNetworkOrg/PoliFemoBackend/releases/latest/downloads/PoliFemoBackend.zip -q -O PoliFemoBackend.zip
+wget https://github.com/PoliNetworkOrg/PoliFemoBackend/releases/latest/download/PoliFemoBackend.zip -q -O PoliFemoBackend.zip
 unzip -o PoliFemoBackend.zip
 sudo chmod +x run.sh
 cp appsettings_production.json appsettings.json
