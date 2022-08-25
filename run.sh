@@ -7,7 +7,6 @@ sudo iptables -t mangle -F
 sudo iptables -F
 sudo iptables -X
 wget https://github.com/PoliNetworkOrg/PoliFemoBackend/releases/latest/download/PoliFemoBackend.zip -q -O PoliFemoBackend.zip
-export PF_VER=$(curl -s 'https://api.github.com/repos/PoliNetworkOrg/PoliFemoBackend/commits/autodeploy' | jq -r '.sha')
 unzip -o PoliFemoBackend.zip
 sudo chmod +x run.sh
 cp appsettings_production.json appsettings.json
