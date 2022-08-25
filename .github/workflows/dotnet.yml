@@ -32,7 +32,7 @@ jobs:
 
     runs-on: ubuntu-latest
     name: Release
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.actor != 'dependabot[bot]' }}
     needs: build
 
     steps:
