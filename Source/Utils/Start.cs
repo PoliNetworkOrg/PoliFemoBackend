@@ -16,10 +16,10 @@ public static class Start
         try
         {
             GlobalVariables.SetSecrets(JsonConvert.DeserializeObject<JObject>(File.ReadAllText("secrets.json")));
-            /*ProcessStartInfo processStartInfo = new ProcessStartInfo() { FileName = "/bin/bash", Arguments = "which screen", UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+            ProcessStartInfo processStartInfo = new ProcessStartInfo() { FileName = "/usr/bin/echo", Arguments = "$PF_VER", UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
             Process process = new Process() { StartInfo = processStartInfo };
             process.Start();
-            GlobalVariables.ScreenPath = process.StandardOutput.ReadLine();*/
+            GlobalVariables.LatestHash = process.StandardOutput.ReadToEnd();
         }
         catch (Exception ex)
         {

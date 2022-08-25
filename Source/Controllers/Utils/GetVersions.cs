@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 
 #endregion
@@ -25,7 +26,7 @@ public class GetVersionsController : ControllerBase
     {
         try
         {
-            return Ok(JsonConvert.SerializeObject(new { versions = ApiVersionsManager.ReadApiVersions() },
+            return Ok(JsonConvert.SerializeObject(new { versions = ApiVersionsManager.ReadApiVersions(), repoHash = GlobalVariables.LatestHash  },
                 Formatting.Indented));
         }
         catch (Exception ex)

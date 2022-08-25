@@ -15,7 +15,7 @@ public static class GlobalVariables
     private static JObject? _secrets;
     public static DbConfig? DbConfigVar { get; set; }
     public static MySqlConnection? DbConnection { get; set; }
-    //public static String? ScreenPath { get; set; }
+    public static String? LatestHash { get; set; }
     public static JwtSecurityTokenHandler? TokenHandler { get; set; }
 
     public static JToken? GetSecrets(string? v)
