@@ -33,9 +33,10 @@ public class DeployLatestController : ControllerBase
             Task.Run(() =>
             {
                 GracefullyShutdown.Shutdown();
-                ProcessStartInfo processStartInfo = new ProcessStartInfo() { FileName = GlobalVariables.ScreenPath, Arguments = "-S autodeploy -p 0 -X stuff \"./run.sh\"\n", UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
-                Process process = new Process() { StartInfo = processStartInfo };
-                process.Start();
+                Process.Start("sudo screen ./run.sh");
+                //ProcessStartInfo processStartInfo = new ProcessStartInfo() { FileName = GlobalVariables.ScreenPath, Arguments = "-S autodeploy -p 0 -X stuff \"./run.sh\"\n", UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+                //Process process = new Process() { StartInfo = processStartInfo };
+                //process.Start();
                 Thread.Sleep(1000);
                 Environment.Exit(0);
             });
