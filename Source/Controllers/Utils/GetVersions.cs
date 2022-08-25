@@ -26,7 +26,7 @@ public class GetVersionsController : ControllerBase
     {
         try
         {
-            return Ok(JsonConvert.SerializeObject(new { versions = ApiVersionsManager.ReadApiVersions(), repoHash = GlobalVariables.LatestHash  },
+            return Ok(JsonConvert.SerializeObject(new { versions = ApiVersionsManager.ReadApiVersions() },
                 Formatting.Indented));
         }
         catch (Exception ex)
