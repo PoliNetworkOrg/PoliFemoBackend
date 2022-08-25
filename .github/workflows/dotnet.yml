@@ -10,7 +10,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    name: Build and release
+    name: Build
 
     steps:
     - uses: actions/checkout@v3
@@ -25,7 +25,17 @@ jobs:
       
     - name: Build
       run: dotnet build PoliFemoBackend.csproj /p:DeployOnBuild=true /p:Configuration=Release /p:Platform="x64" /p:PublishProfile=Properties/PublishProfiles/linux-x64.pubxml
-      
+
+
+
+  release:
+
+    runs-on: ubuntu-latest
+    name: Release
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    needs: build
+
+    steps:
     - name: Get current date
       continue-on-error: true
       id: date
@@ -41,12 +51,11 @@ jobs:
   
   deploy:
 
-    needs: build
+    needs: [build, release]
     runs-on: ubuntu-latest
     name: Deploy
       
     steps:
-      
     - name: Deploy
       run: curl -m 10 https://api.polinetwork.org/v1/DeployLatest?token=${{ secrets.TOKEN_UPGRADE }}
 
