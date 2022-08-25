@@ -1,6 +1,7 @@
 #!/bin/sh
 sleep 2
 #screen -S backend -p 0 -X stuff "^C"
+sudo pkill PoliFemoBackend
 sudo iptables -P INPUT ACCEPT
 sudo iptables -P FORWARD ACCEPT
 sudo iptables -P OUTPUT ACCEPT
