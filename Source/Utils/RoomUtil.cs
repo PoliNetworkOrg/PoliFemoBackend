@@ -78,13 +78,14 @@ public static class RoomUtil
 
     private static object GetAula(HtmlNode? node)
     {
-        //Flag to indicate if the room has a power outlet (yes/no)
+        //Flag to indicate if the room has a power outlet (true/false)
         var pwr = RoomWithPower(node);
         var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
         //Getting Room name
         var nome = dove?.ChildNodes.First(x => x.Name == "a")?.InnerText.Trim();
 
-        return new { name = nome, power = pwr };
+        //Builds room object 
+        return new { name = nome, power = pwr};
     }
 
     private static string RoomWithPower(HtmlNode? node)
@@ -103,8 +104,8 @@ public static class RoomUtil
         //Retrieving the list of IDs for the room with power outlets
         var list = data["rwp"]?.Select(x => (int)x).ToArray();
 
-        // Checking whether the room has a power outlet
-        return list != null && list.Contains(idAula) ? "yes" : "no";
+        //Checking whether the room has a power outlet
+        return list != null && list.Contains(idAula) ? "true" : "false";
     }
 
     private static int GetShiftSlotFromTime(DateTime time)
