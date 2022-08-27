@@ -10,7 +10,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    name: Build
+    name: Build and release
 
     steps:
     - uses: actions/checkout@v3
@@ -26,34 +26,28 @@ jobs:
     - name: Build
       run: dotnet build PoliFemoBackend.csproj /p:DeployOnBuild=true /p:Configuration=Release /p:Platform="x64" /p:PublishProfile=Properties/PublishProfiles/linux-x64.pubxml
 
-
-
-  release:
-
-    runs-on: ubuntu-latest
-    name: Release
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    needs: build
-
-    steps:
     - name: Get current date
       continue-on-error: true
       id: date
       run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
-
+      
     - name: Create GitHub Release
+      if: ${{ github.actor != 'dependabot[bot]' }}
       uses: softprops/action-gh-release@v1
       with:
           files: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/Release/net6.0/PoliFemoBackend.zip"
           tag_name: ${{ steps.date.outputs.date }}
           token: ${{ secrets.RELEASES_TOKEN }} 
+
+
   
   
   deploy:
 
-    needs: [build, release]
+    needs: [build]
     runs-on: ubuntu-latest
     name: Deploy
+    if: ${{ github.actor != 'dependabot[bot]' }}
       
     steps:
     - name: Deploy
