@@ -2,6 +2,7 @@
 
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Newtonsoft.Json;
@@ -71,6 +72,7 @@ internal static class Program
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
+                options.DocExpansion(DocExpansion.None);
                 if (app.Services.GetService(typeof(IApiVersionDescriptionProvider)) is IApiVersionDescriptionProvider
                     provider)
                 {

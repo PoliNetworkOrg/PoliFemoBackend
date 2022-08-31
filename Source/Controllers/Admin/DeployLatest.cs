@@ -7,12 +7,13 @@ using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Utils;
+namespace PoliFemoBackend.Source.Controllers.Admin;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
+[ApiExplorerSettings(GroupName = "Admin")]
+[Route("v{version:apiVersion}/admin/deploy")]
+[Route("/admin/deploy")]
 public class DeployLatestController : ControllerBase
 {
     /// <summary>
@@ -21,7 +22,6 @@ public class DeployLatestController : ControllerBase
     /// <returns></returns>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    [HttpPost]
     public ObjectResult DeployLatest(string token)
     {
         try

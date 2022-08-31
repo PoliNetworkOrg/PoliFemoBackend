@@ -51,11 +51,11 @@ jobs:
       
     steps:
     - name: Deploy
-      run: curl -m 10 https://api.polinetwork.org/v1/DeployLatest?token=${{ secrets.TOKEN_UPGRADE }}
+      run: curl -m 10 https://api.polinetwork.org/v1/admin/deploy?token=${{ secrets.TOKEN_UPGRADE }}
 
     - name: Wait
       continue-on-error: true
       run: sleep 20
       
     - name: Check whether the deployment was successful
-      run: UPT=$(curl https://api.polinetwork.org/v1/GetUptime); if [ $UPT -ge 120 ]; then exit 1; else exit 0; fi
+      run: UPT=$(curl https://api.polinetwork.org/v1/admin/uptime); if [ $UPT -ge 120 ]; then exit 1; else exit 0; fi

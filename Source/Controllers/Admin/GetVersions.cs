@@ -1,7 +1,7 @@
 ﻿#region
 
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Data;
+using Newtonsoft.Json;
 using PoliFemoBackend.Source.Utils;
 
 #endregion
@@ -10,22 +10,23 @@ namespace PoliFemoBackend.Source.Controllers.Utils;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
-public class GetUptimeController : ControllerBase
+[ApiExplorerSettings(GroupName = "Admin")]
+[Route("v{version:apiVersion}/admin/versions")]
+[Route("/admin/versions")]
+public class GetVersionsController : ControllerBase
 {
     /// <summary>
-    ///     Shuts the server down and reboots it on the latest release available on GitHub
+    ///     Get the available versions of the API
     /// </summary>
     /// <returns></returns>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    [HttpPost]
-    public ObjectResult GetUptime()
+    public ObjectResult GetVersions()
     {
         try
         {
-            return Ok((DateTime.Now - GlobalVariables.Start).Ticks / 10000000);
+            return Ok(JsonConvert.SerializeObject(new { versions = ApiVersionsManager.ReadApiVersions() },
+                Formatting.Indented));
         }
         catch (Exception ex)
         {
