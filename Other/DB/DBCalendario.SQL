@@ -31,7 +31,7 @@ ALTER TABLE appartiene
 create table Lessons
 (
     id_lesson    int unsigned primary key auto_increment NOT NULL,
-    name_        varchar(100),
+    `name`        varchar(100),
     aula         varchar(100),
     orarioInizio time,
     orarioFine   time,
@@ -51,11 +51,11 @@ create table presente
 create table Exams
 (
     id_exam  int unsigned primary key auto_increment NOT NULL,
-    name_    varchar(50),
+    `name`    varchar(50),
     sede     varchar(100),
     semestre int,
     docente  varchar(500),
-    data     datetime,
+    `data`     datetime,
     giorno   date,
     foreign key (giorno) references Days (giorno)
 )engine innodb;

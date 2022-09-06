@@ -12,8 +12,9 @@ namespace PoliFemoBackend.Source.Controllers.Groups;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
+[ApiExplorerSettings(GroupName = "Groups")]
+[Route("v{version:apiVersion}/groups/search")]
+[Route("/groups/search")]
 public class SearchGroupsController : ControllerBase
 {
     /// <summary>
@@ -32,7 +33,6 @@ public class SearchGroupsController : ControllerBase
     /// <response code="204">No available groups</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    [HttpPost]
     // public async Task<ObjectResult> SearchGroups([BindRequired] string name, string? year, string? degree, string? type,
     //     string? platform, string? language, string? office)
     // {

@@ -9,8 +9,7 @@ DBPolifemo;
 /*tabella utenti*/
 create table Users
 (
-    id_utente varchar(100) primary key,
-    ruoli     int
+    id_utente varchar(100) primary key
 )engine innodb;
 
 
@@ -146,7 +145,7 @@ create table prende
 )engine innodb;
 
 /*tabella collega LOCATION-ARTICLE*/
-create table where_
+create table `where`
 (
     id_location int unsigned,
     foreign key (id_location) references Locations (id_location),
@@ -162,3 +161,24 @@ create table tag
     id_article int unsigned,
     foreign key (id_article) references Articles (id_article)
 )engine innodb;
+
+/*tabella GRANT*/
+create table `Grants`
+(
+    name_grant varchar(100) not null primary key
+)engine innodb;
+
+/*tabella collega UTENTE-GRANT*/
+create table permission
+(
+    id_grant varchar(200) not null,
+    id_user  varchar(100) not null,
+    constraint id_grant
+        foreign key (id_grant) references `grant` (name_grant),
+    constraint id_user
+        foreign key (id_user) references utente (id_utente)
+)engine innodb;
+
+
+
+
