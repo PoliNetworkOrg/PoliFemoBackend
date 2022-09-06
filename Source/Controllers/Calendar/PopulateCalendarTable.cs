@@ -17,7 +17,7 @@ namespace PoliFemoBackend.Source.Controllers.Admin;
 public class PopulateCalendarTable : ControllerBase
 {
     /// <summary>
-    ///     Add groups on Database
+    ///     Adds date on Database
     /// </summary>
     /// <returns>Nothing</returns>
     /// <response code="200">Days Added</response>
