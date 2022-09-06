@@ -69,7 +69,7 @@ public class CodeExchangeController : ControllerBase
                     statusCode = HttpStatusCode.Forbidden
                 });
 
-            var query = "insert ignore into utente values(sha2('" + token.Subject + "', 256), 1)";
+            var query = "INSERT IGNORE INTO Users VALUES(sha2('" + token.Subject + "', 256))";
             var results = Database.Execute(query, GlobalVariables.DbConfigVar);
             return Ok(responseJson);
         }
