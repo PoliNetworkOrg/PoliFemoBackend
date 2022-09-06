@@ -70,6 +70,7 @@ internal static class Program
             GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
             app.UseSwagger();
+            app.UseStaticFiles();
             app.UseSwaggerUI(options =>
             {
                 options.DocExpansion(DocExpansion.None);
@@ -80,6 +81,7 @@ internal static class Program
                     {
                         options.SwaggerEndpoint("/swagger/" + description.GroupName + "/swagger.json",
                             "PoliFemoBackend API " + description.GroupName.ToUpperInvariant());
+                        options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
                         options.RoutePrefix = "swagger";
                     }
                 }
