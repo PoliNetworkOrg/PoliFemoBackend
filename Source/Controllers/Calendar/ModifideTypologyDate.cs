@@ -6,7 +6,7 @@ using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Admin;
+namespace PoliFemoBackend.Source.Controllers.Calendar;
 
 [ApiController]
 [ApiVersion("1.0")]
