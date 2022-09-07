@@ -1,5 +1,6 @@
 #region
 
+using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -39,11 +40,14 @@ public class BackupGroupsController : ControllerBase
             return NoContent();
         }
 
-        var json = JsonConvert.SerializeObject(results, Formatting.Indented);
+        
+        var sg = JsonConvert.SerializeObject(results);
+        HttpContext.Response.ContentType = "application/json";
 
-        var groups = new JObject();
-        groups.Add("gruppi",json );
-        return Ok(groups);
+        var ag = JsonConvert.DeserializeObject(sg) as JArray;
+
+        var o = new JObject { { "groups", ag } };
+        return Ok(o);
         
         
     }
