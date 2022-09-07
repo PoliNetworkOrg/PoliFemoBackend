@@ -12,7 +12,7 @@ create table Days
 create table Types
 (
     id_tipologia int unsigned primary key auto_increment,
-    name_        ENUM ("Festivo", "Esame", "Esame di profitto", "Lauree Magistrali", "Lezione", "Sabato", "Laureee 1 liv")
+    `name`ENUM ("Festivo", "Esame", "Esame di profitto", "Lauree Magistrali", "Lezione", "Sabato", "Lauree 1 liv", "Altre attività", "Vacanza", "Prova in itinere") NOT NULL
 )engine innodb;
 
 /*tabella appartiene*/
@@ -24,8 +24,10 @@ create table appartiene
     foreign key (id_tipologia) references Types (id_tipologia)
 )engine innodb;
 
-ALTER TABLE appartiene
-    ADD PRIMARY KEY (giorno, id_tipologia);
+alter table appartiene
+    add constraint appartiene_pk
+        primary key (giorno, id_tipologia);
+
 
 /*tabella lezione*/
 create table Lessons

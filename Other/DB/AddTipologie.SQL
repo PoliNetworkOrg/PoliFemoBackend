@@ -9,3 +9,4 @@ INSERT INTO Types VALUES (null, "Sabato");                 /*6*/
 INSERT INTO Types VALUES (null, "Lauree 1 liv");           /*7*/
 INSERT INTO Types VALUES (null, "Vacanza");                /*8*/
 INSERT INTO Types VALUES (null, "Altre attività");         /*9*/
+INSERT INTO Types VALUES (null, "Prova in itinere");         /*10*/
