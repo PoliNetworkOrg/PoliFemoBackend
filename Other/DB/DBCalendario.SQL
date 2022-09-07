@@ -53,11 +53,12 @@ create table presente
 create table Exams
 (
     id_exam  int unsigned primary key auto_increment NOT NULL,
-    `name`    varchar(50),
+    insegnamento    varchar(200),
     sede     varchar(100),
     semestre int,
     docente  varchar(500),
-    `data`     datetime,
+    orario     time,
     giorno   date,
-    foreign key (giorno) references Days (giorno)
+    foreign key (giorno) references Days (giorno),
+    lista varchar(1000)
 )engine innodb;
