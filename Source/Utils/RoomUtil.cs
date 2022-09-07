@@ -9,6 +9,8 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class RoomUtil
 {
+    const string ROOM_INFO_URLS = "https://www7.ceda.polimi.it/spazi/spazi/controller/";
+
     internal static List<object?>? GetFreeRooms(HtmlNode? table, DateTime start, DateTime stop)
     {
         if (table?.ChildNodes == null) return null;
@@ -81,14 +83,18 @@ public static class RoomUtil
         //Flag to indicate if the room has a power outlet (true/false)
         var pwr = RoomWithPower(node);
         var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
-        //Getting Room name
+        //Get Room name
         var nome = dove?.ChildNodes.First(x => x.Name == "a")?.InnerText.Trim();
-
+        //Get Building name
+        var edificio = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["title"]?.Value.Split('-')[2].Trim();
+        //get room link
+        var info = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["href"]?.Value;
+        
         //Builds room object 
-        return new { name = nome, power = pwr};
+        return new { name = nome, building = edificio, power = pwr, link = ROOM_INFO_URLS + info};
     }
 
-    private static string RoomWithPower(HtmlNode? node)
+    private static bool RoomWithPower(HtmlNode? node)
     {
         var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
         var a = dove?.ChildNodes.First(x => x.Name == "a");
@@ -105,7 +111,7 @@ public static class RoomUtil
         var list = data["rwp"]?.Select(x => (int)x).ToArray();
 
         //Checking whether the room has a power outlet
-        return list != null && list.Contains(idAula) ? "true" : "false";
+        return list != null && list.Contains(idAula);
     }
 
     private static int GetShiftSlotFromTime(DateTime time)
