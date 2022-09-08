@@ -35,7 +35,7 @@ public class SearchExam : ControllerBase
     /// <response code="204">No available exam</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ActionResult SearchDateDb(string? cod_mat, string? insegnamento, string? sede, int? semestre, string? docente, TimeOnly? orario, DateOnly giorno, string? lista)
+    public ActionResult SearchExamDb(string? cod_mat, string? insegnamento, string? sede, int? semestre, string? docente, string? orario, string? giorno, string? lista)
     {
         var d = new Dictionary<string, object?> { { "@insegnamento", insegnamento } };
         var query = "SELECT cod_mat, insegnamento, sede, docente, orario, giorno FROM Exam WHERE  insegnamento LIKE '%@insegnamento%'";
