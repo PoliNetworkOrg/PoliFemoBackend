@@ -24,20 +24,20 @@ public class ArticleByIdController : ControllerBase
     {
         string userid;
         string sub;
-        string? tempsub = AuthUtil.GetSubject(Request.Headers["Authorization"]);
-        sub = tempsub == null ? "" : ((string)tempsub.ToString());
-        string?[] permissions = AuthUtil.getPermissions(sub);
-        using (SHA256 sha256Hash = SHA256.Create())
-            {
-                //From String to byte array
-                byte[] sourceBytes = Encoding.UTF8.GetBytes(sub);
-                byte[] hashBytes = sha256Hash.ComputeHash(sourceBytes);
-                userid = BitConverter.ToString(hashBytes).Replace("-", String.Empty);
-            }
+        var tempsub = AuthUtil.GetSubject(Request.Headers["Authorization"]);
+        sub = tempsub == null ? "" : (string)tempsub;
+        var permissions = AuthUtil.getPermissions(sub);
+        using (var sha256Hash = SHA256.Create())
+        {
+            //From String to byte array
+            var sourceBytes = Encoding.UTF8.GetBytes(sub);
+            var hashBytes = sha256Hash.ComputeHash(sourceBytes);
+            userid = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
+        }
 
-        return new ObjectResult(new {
-            id = userid.ToLower(),
-            permissions = permissions
+        return new ObjectResult(new
+        {
+            id = userid.ToLower(), permissions
         });
     }
 }

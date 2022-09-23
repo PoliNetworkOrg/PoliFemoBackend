@@ -35,10 +35,15 @@ public class DeployLatestController : ControllerBase
                 GracefullyShutdown.Shutdown();
                 try
                 {
-                    ProcessStartInfo processStartInfo = new ProcessStartInfo() { FileName = "/usr/bin/sudo", Arguments = "service polifemo restart", UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
-                    Process process = new Process() { StartInfo = processStartInfo };
+                    var processStartInfo = new ProcessStartInfo
+                    {
+                        FileName = "/usr/bin/sudo", Arguments = "service polifemo restart", UseShellExecute = false,
+                        RedirectStandardOutput = true, CreateNoWindow = true
+                    };
+                    var process = new Process { StartInfo = processStartInfo };
                     process.Start();
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }

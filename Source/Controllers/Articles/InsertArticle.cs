@@ -1,6 +1,5 @@
 ﻿#region
 
-using iText.Commons.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils;
@@ -29,16 +28,17 @@ public class InsertArticle : ControllerBase
     [HttpGet]
     public ObjectResult InsertArticleDb(string? title, string? content) //todo: da pensare il sistema dei permessi
     {
-        if (AuthUtil.hasPermission(AuthUtil.GetSubject(Request.Headers["Authorization"]), "pubblicare_articoli")) {
+        if (AuthUtil.hasPermission(AuthUtil.GetSubject(Request.Headers["Authorization"]), "pubblicare_articoli"))
+        {
             var result = ArticleUtil.InsertArticle(title, content, null);
             return Ok(result);
         }
-        else {
-            this.HttpContext.Response.StatusCode = 403;
-            return new ObjectResult(new {
-                error = "Insufficient permissions",
-                statusCode = 403
-            });
-        }
+
+        HttpContext.Response.StatusCode = 403;
+        return new ObjectResult(new
+        {
+            error = "Insufficient permissions",
+            statusCode = 403
+        });
     }
 }

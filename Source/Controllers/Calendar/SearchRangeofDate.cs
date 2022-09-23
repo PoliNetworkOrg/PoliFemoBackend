@@ -2,7 +2,6 @@
 
 using System.Data;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
@@ -31,22 +30,19 @@ public class SearchRangeofDate : ControllerBase
     [HttpGet]
     public ActionResult SearchDateDb(DateTime start, DateTime end)
     {
-
-        var query = "SELECT DISTINCT Types.name, Days.giorno FROM Days, appartiene, Types WHERE Days.giorno BETWEEN '@start' AND '@end' AND Days.giorno = appartiene.giorno AND appartiene.id_tipologia = Types.id_tipologia ORDER BY Days.giorno";
+        var query =
+            "SELECT DISTINCT Types.name, Days.giorno FROM Days, appartiene, Types WHERE Days.giorno BETWEEN '@start' AND '@end' AND Days.giorno = appartiene.giorno AND appartiene.id_tipologia = Types.id_tipologia ORDER BY Days.giorno";
         query = query.Replace("@start", start.ToString("yyyy-MM-dd"));
         query = query.Replace("@end", end.ToString("yyyy-MM-dd"));
-        
+
         var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar);
-        
-        if (results == null)
-        {
-            return StatusCode(500);
-        }
+
+        if (results == null) return StatusCode(500);
         if (results.Rows.Count == 0) return NoContent();
-        
+
 
         //crea oggetto Day in json
-       
+
         var days = new JArray();
         foreach (DataRow row in results.Rows)
         {
@@ -58,18 +54,19 @@ public class SearchRangeofDate : ControllerBase
             var exists = false;
             foreach (var d in days)
             {
-                var x = d.Value<string>("date")?? "";
+                var x = d.Value<string>("date") ?? "";
                 if (x.Equals(day.Value<string>("date")))
                 {
                     exists = true;
                     break;
-                }    
+                }
             }
-            if(!exists){
+
+            if (!exists)
+            {
                 day.Add("type", GetArrayString(results, ((DateTime)row["giorno"]).ToString("yyyy-MM-dd")));
                 days.Add(day);
             }
-            
         }
 
         var giorni = new JObject();
@@ -79,19 +76,17 @@ public class SearchRangeofDate : ControllerBase
 
 
     //METHOD RETURN A STRING WITH ALL TYPOLOGIES OF A DAY
-    private static JArray GetArrayString(DataTable results, string date){
+    private static JArray GetArrayString(DataTable results, string date)
+    {
         var array = new JArray();
         foreach (DataRow row in results.Rows)
-        {
-           //evita duplicati
-           
+            //evita duplicati
             //compare 2 string
             if (date.Equals(((DateTime)row["giorno"]).ToString("yyyy-MM-dd")))
             {
                 Console.WriteLine(row["name"]);
                 array.Add(row["name"]);
             }
-        }
 
         return array;
     }

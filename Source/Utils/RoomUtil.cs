@@ -9,7 +9,7 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class RoomUtil
 {
-    const string ROOM_INFO_URLS = "https://www7.ceda.polimi.it/spazi/spazi/controller/";
+    private const string ROOM_INFO_URLS = "https://www7.ceda.polimi.it/spazi/spazi/controller/";
 
     internal static List<object?>? GetFreeRooms(HtmlNode? table, DateTime start, DateTime stop)
     {
@@ -89,9 +89,9 @@ public static class RoomUtil
         var edificio = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["title"]?.Value.Split('-')[2].Trim();
         //get room link
         var info = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["href"]?.Value;
-        
+
         //Builds room object 
-        return new { name = nome, building = edificio, power = pwr, link = ROOM_INFO_URLS + info};
+        return new { name = nome, building = edificio, power = pwr, link = ROOM_INFO_URLS + info };
     }
 
     private static bool RoomWithPower(HtmlNode? node)

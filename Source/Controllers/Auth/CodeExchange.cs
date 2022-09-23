@@ -76,10 +76,10 @@ public class CodeExchangeController : ControllerBase
         catch (MySqlException)
         {
             return new ObjectResult(new
-                {
-                    error = "Database error",
-                    statusCode = HttpStatusCode.InternalServerError
-                });
+            {
+                error = "Database error",
+                statusCode = HttpStatusCode.InternalServerError
+            });
         }
         catch (Exception ex)
         {

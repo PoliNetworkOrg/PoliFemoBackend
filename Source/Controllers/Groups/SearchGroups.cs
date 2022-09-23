@@ -33,7 +33,6 @@ public class SearchGroupsController : ControllerBase
     /// <response code="204">No available groups</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-  
     public ActionResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,
         string? language, string? office)
     {

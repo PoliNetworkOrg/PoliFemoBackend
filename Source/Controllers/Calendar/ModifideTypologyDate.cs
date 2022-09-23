@@ -19,8 +19,10 @@ public class ModifyDateControllers : ControllerBase
     ///     Modifies date on Database
     /// </summary>
     /// <param name="date" example="2022-08-01">Date</param>
-    /// <param name="tipologia_new" example="1">Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
-    ///     5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività</param>
+    /// <param name="tipologia_new" example="1">
+    ///     Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
+    ///     5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività
+    /// </param>
     /// <param name="tipologia_old" example="1">
     ///     Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
     ///     5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività
@@ -32,12 +34,11 @@ public class ModifyDateControllers : ControllerBase
     [HttpPost]
     public ObjectResult ModifiedTypeDateDb(DateTime date, int tipologia_old, int tipologia_new)
     {
-              
         var query = "UPDATE appartiene SET id_tipologia = " + tipologia_new + " WHERE id_giorno = '" +
-        date.ToString("yyyy-MM-dd") + "' AND id_tipologia = " + tipologia_old + " ;";
-        int ?results = Database.Execute(query, GlobalVariables.DbConfigVar);
-        
-        
+                    date.ToString("yyyy-MM-dd") + "' AND id_tipologia = " + tipologia_old + " ;";
+        int? results = Database.Execute(query, GlobalVariables.DbConfigVar);
+
+
         return results switch
         {
             null => Ok("error"),
@@ -51,8 +52,10 @@ public class ModifyDateControllers : ControllerBase
     ///     Adds date on Database
     /// </summary>
     /// <param name="date" example="2022-08-01">Date</param>
-    /// <param name="tipologia" example="1">Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
-    ///     5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività</param>
+    /// <param name="tipologia" example="1">
+    ///     Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
+    ///     5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività
+    /// </param>
     /// <returns>Nothing</returns>
     /// <response code="200">Date added</response>
     /// <response code="500">Can't connect to server or Date not added</response>
@@ -62,7 +65,7 @@ public class ModifyDateControllers : ControllerBase
     {
         var query = "INSERT IGNORE INTO appartiene VALUES ('" + date.ToString("yyyy-MM-dd") + "', " + tipologia + " );";
         int? results = Database.Execute(query, GlobalVariables.DbConfigVar);
-      
+
         return results switch
         {
             null => Ok("error"),
@@ -75,8 +78,10 @@ public class ModifyDateControllers : ControllerBase
     ///     Deletes date from Database
     /// </summary>
     /// <param name="date" example="2022-08-01">Date</param>
-    /// <param name="tipologia" example="1">Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
-    ///     5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività</param>
+    /// <param name="tipologia" example="1">
+    ///     Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
+    ///     5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività
+    /// </param>
     /// <returns>Nothing</returns>
     /// <response code="200">Date removed</response>
     /// <response code="500">Can't connect to server or Date not removed</response>
@@ -85,9 +90,9 @@ public class ModifyDateControllers : ControllerBase
     public ObjectResult RemoveTypeDateDb(DateTime date, int tipologia)
     {
         var query = "DELETE FROM appartiene WHERE id_tipologia = " + tipologia + " AND id_giorno = '" +
-        date.ToString("yyyy-MM-dd") + "';";
-        int ?results = Database.Execute(query, GlobalVariables.DbConfigVar);
-       
+                    date.ToString("yyyy-MM-dd") + "';";
+        int? results = Database.Execute(query, GlobalVariables.DbConfigVar);
+
         return results switch
         {
             null => Ok("error"),

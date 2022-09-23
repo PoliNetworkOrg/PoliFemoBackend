@@ -17,7 +17,7 @@ public static class AuthUtil
         var clientSecret = GlobalVariables.GetSecrets("Azure")?.ToString();
         if (clientSecret == null) return null;
 
-        Dictionary<string, string> formcontent = new Dictionary<string, string>
+        var formcontent = new Dictionary<string, string>
         {
             { "client_id", Constants.AzureClientId },
             { "scope", Constants.AzureScope },
@@ -27,32 +27,37 @@ public static class AuthUtil
         };
 
         //non rimuovere - test
-        if (grantType == GrantTypeEnum.authorization_code) {
-            switch(state) {
-                case 10020: {
-                    formcontent.Add("redirect_uri", "https://francescolf-polinetworkorg-polifemobackend-7rvv557wfpjxp-5500.githubpreview.dev/index.html");
+        if (grantType == GrantTypeEnum.authorization_code)
+            switch (state)
+            {
+                case 10020:
+                {
+                    formcontent.Add("redirect_uri",
+                        "https://francescolf-polinetworkorg-polifemobackend-7rvv557wfpjxp-5500.githubpreview.dev/index.html");
                     break;
                 }
-                
-                default: {
+
+                default:
+                {
                     formcontent.Add("redirect_uri", "https://api.polinetwork.org/v1/auth/code");
                     break;
                 }
             }
-        }
 
-        FormUrlEncodedContent formUrlEncodedContent = new FormUrlEncodedContent(formcontent);
-        return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token", formUrlEncodedContent).Result;
+        var formUrlEncodedContent = new FormUrlEncodedContent(formcontent);
+        return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token",
+            formUrlEncodedContent).Result;
     }
 
     public static string? GetSubject(string token)
-    { 
+    {
         Console.WriteLine(token.Split(' ')[1]);
         return GlobalVariables.TokenHandler?.ReadJwtToken(token.Split(" ")[1]).Subject;
     }
 
 
-    public static bool hasPermission(string? userid, string permission) {
+    public static bool hasPermission(string? userid, string permission)
+    {
         var results = Database.ExecuteSelect(
             "SELECT id_grant FROM permission, Grants, Users WHERE id_utente=sha2('@userid', 256) AND id_grant='@permission'",
             GlobalVariables.DbConfigVar,
@@ -64,7 +69,8 @@ public static class AuthUtil
         return results != null;
     }
 
-    public static string?[] getPermissions(string? userid) {
+    public static string?[] getPermissions(string? userid)
+    {
         var results = Database.ExecuteSelect(
             "SELECT DISTINCT name_grant FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente AND id_utente=sha2('@userid', 256)",
             GlobalVariables.DbConfigVar,
@@ -72,6 +78,6 @@ public static class AuthUtil
             {
                 { "@userid", userid }
             });
-        return results?.AsEnumerable().Select(x => x.Field<string>("name_grant")).ToArray() ?? new string[0];    
+        return results?.AsEnumerable().Select(x => x.Field<string>("name_grant")).ToArray() ?? new string[0];
     }
 }

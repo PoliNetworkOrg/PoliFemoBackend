@@ -68,7 +68,7 @@ public static class Database
 
         var ret = new DataSet();
         var fr = adapter.Fill(ret);
-        
+
         adapter.Dispose();
         connection.Close();
         return fr == 0 ? null : ret.Tables[0];

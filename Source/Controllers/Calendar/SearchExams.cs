@@ -1,6 +1,5 @@
 #region
 
-using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -23,11 +22,11 @@ public class SearchExam : ControllerBase
     /// </summary>
     /// <param name="cod_mat" example="056951">Course code</param>
     /// <param name="insegnamento" example="ALGEBRA LINEARE E GEOMETRIA">Course name</param>
-    ///<param name = "sede" example="MI">Possible values: MI, BV</param>
+    /// <param name="sede" example="MI">Possible values: MI, BV</param>
     /// <param name="semestre" example="2">Possible values: 1, 2</param>
-    ///<param name = "docente" example="LELLA PAOLO">Teacher name</param>
+    /// <param name="docente" example="LELLA PAOLO">Teacher name</param>
     /// <param name="orario" example="15:00:00">Time</param>
-    ///<param name = "giorno" example="17-06-2022">Date</param>
+    /// <param name="giorno" example="17-06-2022">Date</param>
     /// <param name="lista" example="365 - ingegneria matematica">Part of Cds name</param>
     /// <returns>List of exams</returns>
     /// <response code="200">Returns the array of exams</response>
@@ -35,10 +34,12 @@ public class SearchExam : ControllerBase
     /// <response code="204">No available exam</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ActionResult SearchExamDb(string? cod_mat, string? insegnamento, string? sede, int? semestre, string? docente, string? orario, string? giorno, string? lista)
+    public ActionResult SearchExamDb(string? cod_mat, string? insegnamento, string? sede, int? semestre,
+        string? docente, string? orario, string? giorno, string? lista)
     {
         var d = new Dictionary<string, object?> { { "@insegnamento", insegnamento } };
-        var query = "SELECT cod_mat, insegnamento, sede, docente, orario, giorno FROM Exam WHERE  insegnamento LIKE '%@insegnamento%'";
+        var query =
+            "SELECT cod_mat, insegnamento, sede, docente, orario, giorno FROM Exam WHERE  insegnamento LIKE '%@insegnamento%'";
         if (cod_mat != null)
         {
             query += " AND cod_mat = '@cod_mat'";
@@ -74,6 +75,7 @@ public class SearchExam : ControllerBase
             query += " AND giorno = '@giorno'";
             d.Add("@giorno", giorno);
         }
+
         if (lista != null)
         {
             query += " AND lista LIKE '%@lista%';";
@@ -82,10 +84,7 @@ public class SearchExam : ControllerBase
 
         var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
 
-        if (results == null)
-        {
-            return StatusCode(500);
-        }
+        if (results == null) return StatusCode(500);
         if (results.Rows.Count == 0) return NoContent();
 
 
@@ -98,8 +97,5 @@ public class SearchExam : ControllerBase
 
         var o = new JObject { { "groups", ag } };
         return Ok(o);
-
-       
-        
     }
 }

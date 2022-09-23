@@ -1,6 +1,5 @@
 #region
 
-using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -27,20 +26,17 @@ public class BackupGroupsController : ControllerBase
     /// <response code="204">No available groups</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-
     public ActionResult BackupGroupsDb()
     {
         var query = "SELECT * FROM Groups ORDER BY class";
-        var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, null);
-        
+        var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar);
+
         if (results == null)
             return StatusCode(500, "Can't connect to server");
-        
-        if (results.Rows.Count == 0){
-            return NoContent();
-        }
 
-        
+        if (results.Rows.Count == 0) return NoContent();
+
+
         var sg = JsonConvert.SerializeObject(results);
         HttpContext.Response.ContentType = "application/json";
 
@@ -48,7 +44,5 @@ public class BackupGroupsController : ControllerBase
 
         var o = new JObject { { "groups", ag } };
         return Ok(o);
-        
-        
     }
 }
