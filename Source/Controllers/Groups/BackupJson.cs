@@ -28,7 +28,7 @@ public class BackupGroupsController : ControllerBase
     [HttpGet]
     public ActionResult BackupGroupsDb()
     {
-        var query = "SELECT * FROM Groups ORDER BY class";
+        const string query = "SELECT * FROM Groups ORDER BY class";
         var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar);
 
         if (results == null)

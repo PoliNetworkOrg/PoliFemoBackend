@@ -6,7 +6,7 @@ using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Utils;
+namespace PoliFemoBackend.Source.Controllers.Admin;
 
 [ApiController]
 [ApiVersion("1.0")]

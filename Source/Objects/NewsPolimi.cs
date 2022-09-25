@@ -2,9 +2,9 @@
 
 public class NewsPolimi
 {
-    public string? url;
-    public string? title;
-    public string? subtitle;
-    public bool internalNews;
     public List<string> content; //list of html objects (as strings)
+    public bool internalNews;
+    public string? subtitle;
+    public string? title;
+    public string? url;
 }

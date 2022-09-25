@@ -103,9 +103,9 @@ internal static class Program
 
             app.UseMiddleware<PageNotFoundMiddleware>();
 
-            app.UseCors(builder =>
+            app.UseCors(policyBuilder =>
             {
-                builder
+                policyBuilder
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
@@ -127,9 +127,11 @@ internal static class Program
 
     private static async Task OnChallengeMethod(JwtBearerChallengeContext context)
     {
-        var json = new JObject();
-        json.Add("error", "Invalid token. Refresh your current access token or request a new authorization code");
-        json.Add("reason", context.AuthenticateFailure?.Message);
+        var json = new JObject
+        {
+            { "error", "Invalid token. Refresh your current access token or request a new authorization code" },
+            { "reason", context.AuthenticateFailure?.Message }
+        };
         context.Response.StatusCode = 401;
         context.Response.ContentType = "application/json";
 

@@ -78,6 +78,6 @@ public static class AuthUtil
             {
                 { "@userid", userid }
             });
-        return results?.AsEnumerable().Select(x => x.Field<string>("name_grant")).ToArray() ?? new string[0];
+        return results?.AsEnumerable().Select(x => x.Field<string>("name_grant")).ToArray() ?? Array.Empty<string>();
     }
 }

@@ -46,31 +46,23 @@ public class SearchRangeofDate : ControllerBase
         var days = new JArray();
         foreach (DataRow row in results.Rows)
         {
-            var day = new JObject();
-            //evita duplicati
-            day.Add("date", ((DateTime)row["giorno"]).ToString("yyyy-MM-dd"));
+            var day = new JObject
+            {
+                //evita duplicati
+                { "date", ((DateTime)row["giorno"]).ToString("yyyy-MM-dd") }
+            };
 
             //controllare se esiste già un day dentro a days
-            var exists = false;
-            foreach (var d in days)
-            {
-                var x = d.Value<string>("date") ?? "";
-                if (x.Equals(day.Value<string>("date")))
-                {
-                    exists = true;
-                    break;
-                }
-            }
+            var exists = days.Select(d => d.Value<string>("date") ?? "").Any(x => x.Equals(day.Value<string>("date")));
 
-            if (!exists)
-            {
-                day.Add("type", GetArrayString(results, ((DateTime)row["giorno"]).ToString("yyyy-MM-dd")));
-                days.Add(day);
-            }
+            if (exists)
+                continue;
+
+            day.Add("type", GetArrayString(results, ((DateTime)row["giorno"]).ToString("yyyy-MM-dd")));
+            days.Add(day);
         }
 
-        var giorni = new JObject();
-        giorni.Add("giorni", days);
+        var giorni = new JObject { { "giorni", days } };
         return Ok(giorni);
     }
 

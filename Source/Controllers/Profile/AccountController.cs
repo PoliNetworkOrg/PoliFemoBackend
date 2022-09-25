@@ -23,9 +23,8 @@ public class ArticleByIdController : ControllerBase
     public ObjectResult ProfileDetails()
     {
         string userid;
-        string sub;
-        var tempsub = AuthUtil.GetSubject(Request.Headers["Authorization"]);
-        sub = tempsub == null ? "" : (string)tempsub;
+        var tempSub = AuthUtil.GetSubject(Request.Headers["Authorization"]);
+        var sub = tempSub == null ? "" : tempSub;
         var permissions = AuthUtil.getPermissions(sub);
         using (var sha256Hash = SHA256.Create())
         {

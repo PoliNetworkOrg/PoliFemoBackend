@@ -41,8 +41,8 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
             {
                 if (api.GroupName != null) return new[] { api.GroupName };
 
-                var controllerActionDescriptor = api.ActionDescriptor as ControllerActionDescriptor;
-                if (controllerActionDescriptor != null) return new[] { controllerActionDescriptor.ControllerName };
+                if (api.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
+                    return new[] { controllerActionDescriptor.ControllerName };
 
                 throw new InvalidOperationException("Unable to determine tag for endpoint.");
             });
