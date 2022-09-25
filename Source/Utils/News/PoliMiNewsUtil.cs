@@ -24,10 +24,26 @@ public static class PoliMiNewsUtil
         var enumerable = htmlNodes.Select(x => x.Attributes["href"].Value);
         var where = enumerable.Where(x => !string.IsNullOrEmpty(x));
         var url = where.FirstOrDefault("");
-        result.url = url.StartsWith("https://") || url.StartsWith("http://") ? url : "https://www.polimi.it/" + url;
-        ;
+        result.internalNews = !(url.StartsWith("https://") || url.StartsWith("http://"));
+        result.url = !result.internalNews ? url : "https://www.polimi.it/" + url;
         result.title = htmlNode.ChildNodes[0].InnerText.Trim();
-        result.desc = htmlNode.ChildNodes[1].ChildNodes[0].InnerText.Trim();
+        result.subtitle = htmlNode.ChildNodes[1].ChildNodes[0].InnerText.Trim();
+        if (result.internalNews)
+        {
+            GetContent(result);
+        }
+
         return result;
+    }
+
+    private static void GetContent(NewsPolimi result)
+    {
+
+        var web = new HtmlWeb();
+        var doc = web.Load(result.url);
+        //doc.DocumentNode.SelectNodes("//ul/li[@class='no']")
+        var urls = doc.DocumentNode.SelectNodes("//div").First(x => x.GetClasses().Contains("news-single-item"));
+        var p = HtmlUtil.GetElementsByTagAndClassName(urls, "p").Select(x => x.InnerHtml).ToList();
+        result.content = p;
     }
 }
