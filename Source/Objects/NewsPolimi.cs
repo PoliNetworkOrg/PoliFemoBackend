@@ -2,7 +2,7 @@
 
 public class NewsPolimi
 {
-    public List<string> content; //list of html objects (as strings)
+    public List<string>? content; //list of html objects (as strings)
     public bool internalNews;
     public string? subtitle;
     public string? title;

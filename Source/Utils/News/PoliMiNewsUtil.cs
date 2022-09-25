@@ -40,7 +40,7 @@ public static class PoliMiNewsUtil
         var web = new HtmlWeb();
         var doc = web.Load(result.url);
         var urls = doc.DocumentNode.SelectNodes("//div").First(x => x.GetClasses().Contains("news-single-item"));
-        var p = HtmlUtil.GetElementsByTagAndClassName(urls, "p").Select(x => x.InnerHtml).ToList();
+        var p = HtmlUtil.GetElementsByTagAndClassName(urls, "p")?.Select(x => x.InnerHtml).ToList();
         result.content = p;
     }
 }
