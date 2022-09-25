@@ -17,7 +17,7 @@ public static class AuthUtil
         var clientSecret = GlobalVariables.GetSecrets("Azure")?.ToString();
         if (clientSecret == null) return null;
 
-        var formcontent = new Dictionary<string, string>
+        var formContent = new Dictionary<string, string>
         {
             { "client_id", Constants.AzureClientId },
             { "scope", Constants.AzureScope },
@@ -32,19 +32,19 @@ public static class AuthUtil
             {
                 case 10020:
                 {
-                    formcontent.Add("redirect_uri",
+                    formContent.Add("redirect_uri",
                         "https://francescolf-polinetworkorg-polifemobackend-7rvv557wfpjxp-5500.githubpreview.dev/index.html");
                     break;
                 }
 
                 default:
                 {
-                    formcontent.Add("redirect_uri", "https://api.polinetwork.org/v1/auth/code");
+                    formContent.Add("redirect_uri", "https://api.polinetwork.org/v1/auth/code");
                     break;
                 }
             }
 
-        var formUrlEncodedContent = new FormUrlEncodedContent(formcontent);
+        var formUrlEncodedContent = new FormUrlEncodedContent(formContent);
         return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token",
             formUrlEncodedContent).Result;
     }

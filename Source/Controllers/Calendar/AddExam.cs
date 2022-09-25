@@ -28,9 +28,8 @@ public class AddExam : ControllerBase
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         //number of worksheet
-        var n = 0;
         using var package = new ExcelPackage(file[0].OpenReadStream());
-        n = package.Workbook.Worksheets.Count;
+        var n = package.Workbook.Worksheets.Count;
 
         for (var i = 0; i < n; i++)
         {
@@ -42,7 +41,7 @@ public class AddExam : ControllerBase
             for (var j = 5; j <= rows; j++)
             {
                 var query =
-                    "INSERT IGNORE INTO Exams VALUES (null, '@cod_mat', \"@insegmaneto\", '@sede', '@semestre', \"@docente\", '@orario' , '@giorno', \"@lista\" );";
+                    "INSERT IGNORE INTO Exams VALUES (null, '@cod_mat', \"@insegnamento\", '@sede', '@semestre', \"@docente\", '@orario' , '@giorno', \"@lista\" );";
                 for (var k = 1; k <= columns; k++)
                 {
                     var cell = worksheet.Cells[j, k];
@@ -56,7 +55,7 @@ public class AddExam : ControllerBase
                             }
                             case 2:
                             {
-                                query = query.Replace("@insegmaneto", cell.Value.ToString());
+                                query = query.Replace("@insegnamento", cell.Value.ToString());
                                 break;
                             }
                             case 4:

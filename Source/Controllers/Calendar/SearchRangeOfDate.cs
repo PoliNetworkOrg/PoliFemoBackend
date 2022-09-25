@@ -15,14 +15,14 @@ namespace PoliFemoBackend.Source.Controllers.Calendar;
 [ApiExplorerSettings(GroupName = "Calendar")]
 [Route("v{version:apiVersion}/calendar/search/range")]
 [Route("/calendar/search/range")]
-public class SearchRangeofDate : ControllerBase
+public class SearchRangeOfDate : ControllerBase
 {
     /// <summary>
     ///     Searches for available groups
     /// </summary>
     /// <param name="start" example="2022-09-12">Start date</param>
     /// <param name="end" example="2023-06-04">End date</param>
-    /// <returns>A range of date and their tipology</returns>
+    /// <returns>A range of date and their typology</returns>
     /// <response code="200">Returns the array of date</response>
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available date</response>
