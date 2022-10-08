@@ -51,7 +51,6 @@ public static class AuthUtil
 
     public static string? GetSubject(string token)
     {
-        Console.WriteLine(token.Split(' ')[1]);
         return GlobalVariables.TokenHandler?.ReadJwtToken(token.Split(" ")[1]).Subject;
     }
 

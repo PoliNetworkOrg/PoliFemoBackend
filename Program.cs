@@ -1,9 +1,15 @@
 #region
 
 using System.IdentityModel.Tokens.Jwt;
+using App.Metrics;
+using App.Metrics.AspNetCore;
+using App.Metrics.Formatters.Prometheus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Internal;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
@@ -32,6 +38,34 @@ internal static class Program
         try
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
+            builder.Services.Configure<MvcOptions>(options => { options.EnableEndpointRouting = false; });
+
+            builder.Services.AddMvcCore(opts => opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
+            builder.Services.AddLogging();
+
+            var metrics = AppMetrics.CreateDefaultBuilder().Build();
+
+            builder.Services.AddMetrics(metrics);
+
+            builder.Host
+            .ConfigureMetrics(builder =>
+                {
+                    builder.Configuration.Configure(options =>
+                        {
+                            options.DefaultContextLabel = "default";
+                        });
+                })
+            .UseMetricsWebTracking()
+            .UseMetricsEndpoints()
+            .UseMetrics(options =>
+                {
+                    options.EndpointOptions = endpointsOptions =>
+                        {
+                            endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
+                            endpointsOptions.MetricsEndpointEnabled = false;
+                        };
+                });
 
             builder.Services.AddControllers().AddNewtonsoftJson();
 
@@ -100,6 +134,10 @@ internal static class Program
             {
                 Console.WriteLine(ex);
             }
+
+            app.UseMetricsTextEndpoint();
+            app.UseMetricsAllMiddleware();
+            app.UseMvc();
 
             app.UseMiddleware<PageNotFoundMiddleware>();
 

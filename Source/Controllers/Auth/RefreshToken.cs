@@ -18,8 +18,10 @@ public class RefreshTokenController : ControllerBase
 {
     /// <summary>
     ///     Get a new access token from Microsoft
-    ///     The refresh token is sent in the token header
     /// </summary>
+    /// <remarks>
+    ///     The refresh token is sent in the Token header
+    /// </remarks>
     /// <response code="200">Returns the new access token</response>
     /// <response code="400">The refresh token is not valid</response>
     /// <returns>A new access token</returns>
