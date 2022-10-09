@@ -137,7 +137,6 @@ internal static class Program
 
             app.UseMetricsTextEndpoint();
             app.UseMetricsAllMiddleware();
-            app.UseMvc();
 
             app.UseMiddleware<PageNotFoundMiddleware>();
 
