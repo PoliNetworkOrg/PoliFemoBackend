@@ -22,7 +22,7 @@ public class DeployLatestController : ControllerBase
     /// <returns></returns>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ObjectResult DeployLatest(string token)
+    public ObjectResult DeployLatest(string token, Boolean development)
     {
         try
         {
@@ -40,6 +40,11 @@ public class DeployLatestController : ControllerBase
                         FileName = "/usr/bin/sudo", Arguments = "service polifemo restart", UseShellExecute = false,
                         RedirectStandardOutput = true, CreateNoWindow = true
                     };
+
+                    if (development)
+                    {
+                        processStartInfo.Arguments = "service polifemodev restart";
+                    }
                     var process = new Process { StartInfo = processStartInfo };
                     process.Start();
                 }
