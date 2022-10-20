@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ dev ]
 
 jobs:
   build:
@@ -32,12 +32,19 @@ jobs:
       run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
       
     - name: Create GitHub Release
-      if: ${{ github.actor != 'dependabot[bot]' }}
+      if: ${{ github.actor != 'dependabot[bot]' }} && ${{ github.base_ref == 'main' }}
       uses: softprops/action-gh-release@v1
       with:
           files: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/Release/net6.0/PoliFemoBackend.zip"
           tag_name: ${{ steps.date.outputs.date }}
           token: ${{ secrets.RELEASES_TOKEN }} 
+   
+    - name: Create Artifact
+      if: ${{ github.actor != 'dependabot[bot]' }} && ${{ github.base_ref == 'dev' }} && ${{ github.event.action == 'push'}} 
+      uses: actions/upload-artifact@v3
+      with:
+        name: polifemo-dev-build
+        path: /home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/Release/net6.0/PoliFemoBackend.zip
 
 
   
@@ -58,4 +65,5 @@ jobs:
       run: sleep 20
       
     - name: Check whether the deployment was successful
+      if: ${{ github.base_ref == 'main' }}
       run: UPT=$(curl https://api.polinetwork.org/v1/admin/uptime); if [ $UPT -ge 120 ]; then exit 1; else exit 0; fi
