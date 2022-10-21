@@ -32,7 +32,7 @@ jobs:
       run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
       
     - name: Create GitHub Release
-      if: ${{ github.actor != 'dependabot[bot]' && github.base_ref == 'main' && github.event.action == 'push' }}
+      if: ${{ github.actor != 'dependabot[bot]' && github.base_ref == 'main' && github.event_name == 'push' }}
       uses: softprops/action-gh-release@v1
       with:
         files: "/home/runner/work/PoliFemoBackend/PoliFemoBackend/bin/Release/net6.0/PoliFemoBackend.zip"
@@ -40,7 +40,7 @@ jobs:
         token: ${{ secrets.RELEASES_TOKEN }} 
    
     - name: Create Artifact
-      if: ${{ github.actor != 'dependabot[bot]' && github.base_ref == 'dev' && github.event.action == 'push' }} 
+      if: ${{ github.actor != 'dependabot[bot]' && github.base_ref == 'dev' && github.event_name == 'push' }} 
       uses: actions/upload-artifact@v3
       with:
         name: polifemo-dev-build
@@ -54,7 +54,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     name: Deploy
-    if: ${{ github.actor != 'dependabot[bot]' && github.event.action == 'push'}}
+    if: ${{ github.actor != 'dependabot[bot]' && github.event_name == 'push'}}
       
     steps:
     - name: Deploy on production
