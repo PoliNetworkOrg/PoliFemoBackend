@@ -63,7 +63,7 @@ jobs:
 
     - name: Deploy on dev
       if: ${{ github.ref == 'refs/heads/dev' }}
-      run: curl -m 10 https://api.polinetwork.org:446/v1/admin/deploy?token=${{ secrets.TOKEN_UPGRADE }}&development=true
+      run: curl -m 10 https://api.polinetwork.org:446/v1/admin/deploy?token=${{ secrets.TOKEN_UPGRADE }}&env=dev
 
     - name: Wait
       if: ${{ github.ref == 'refs/heads/main' }}
