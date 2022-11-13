@@ -16,8 +16,7 @@ public class MockTimetable : ControllerBase
     [Produces("application/json")]
     public ObjectResult GetMockedTimetable() 
     {
-        string jsonOrario = 
-        @"
+        const string jsonOrario = @"
         [
             {
                 ""event_id"": 52647,
