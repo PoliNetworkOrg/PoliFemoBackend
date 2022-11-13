@@ -1,10 +1,7 @@
 #region
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
 #endregion
 
 namespace PoliFemoBackend.Source.Controllers.Mock;
