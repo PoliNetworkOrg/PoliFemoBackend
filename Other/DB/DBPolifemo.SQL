@@ -1,184 +1,103 @@
-drop
-database if exists DBPolifemo;
-create
-database DBPolifemo;
-use
-DBPolifemo;
-
-
-/*tabella utenti*/
-create table Users
+create or replace table Authors
 (
-    id_utente varchar(100) primary key
-)engine innodb;
+    id_author int(10) auto_increment
+        primary key,
+    name_     varchar(50)  null,
+    link      varchar(200) null,
+    image     varchar(100) null
+);
 
-
-/*tabella gruppo*/
-create table Groups
+create or replace table Days
 (
-    class                    varchar(100),
-    office                   ENUM("Bovisa", "Como", "Cremona", "Lecco", "Leonardo"),
-    id                       varchar(100) primary key,
-    degree                   ENUM("LT", "LM", "LU"),
-    school                   ENUM("ICAT", "DES", "3I", "ICAT+3I", "AUIC"),
-    id_link                  varchar(50),
-    language_                ENUM("ITA", "ENG"),
-    type_                    enum('S', 'C', 'E'),
-    year                     varchar(10),
-    platform                 ENUM("WA", "TG", "FB"),
-    permanent_id             int,
-    LastUpdateInviteLinkTime datetime,
-    Linkfunzionante          ENUM('Y', 'N')
-)engine innodb;
+    giorno date not null
+        primary key
+);
 
-/*tabella rooms*/
-create table Rooms
+create or replace table Grants
 (
-    id      int unsigned primary key auto_increment NOT NULL,
-    numeber int
-)engine innodb;
+    name_grant varchar(100) not null
+        primary key
+);
 
-
-/*tabella hashtag*/
-create table Hashtags
+create or replace table `Groups`
 (
-    id_hashtag int unsigned primary key auto_increment NOT NULL,
-    text_      varchar(50)
-)engine innodb;
+    class                    varchar(100)                                            null,
+    office                   enum ('Bovisa', 'Como', 'Cremona', 'Lecco', 'Leonardo') null,
+    id                       varchar(100)                                            not null
+        primary key,
+    degree                   enum ('LT', 'LM', 'LU')                                 null,
+    school                   enum ('ICAT', 'DES', '3I', 'ICAT+3I', 'AUIC')           null,
+    id_link                  varchar(50)                                             null,
+    language_                enum ('ITA', 'ENG')                                     null,
+    type_                    enum ('S', 'C', 'E')                                    null,
+    year                     varchar(10)                                             null,
+    platform                 enum ('WA', 'TG', 'FB')                                 null,
+    permanent_id             int                                                     null,
+    LastUpdateInviteLinkTime datetime                                                null,
+    Linkfunzionante          enum ('Y', 'N')                                         null
+);
 
-/*tabella territorial*/
-create table Territorials
+create or replace table Tags
 (
-    id_territorial int unsigned primary key auto_increment NOT NULL,
-    name_          varchar(50)
-)engine innodb;
+    name  varchar(100) not null
+        primary key,
+    image varchar(100) null
+);
 
-/*tabella media*/
-create table Medias
+create or replace table Articles
 (
-    id_media int unsigned primary key auto_increment NOT NULL
-)engine innodb;
+    id_article  int unsigned auto_increment
+        primary key,
+    id_tag      varchar(100)  null,
+    title       varchar(100)  not null,
+    subtitle    varchar(200)  null,
+    content     varchar(3000) not null,
+    publishTime datetime      not null,
+    targetTime  datetime      null,
+    latitude    double        null,
+    longitude   double        null,
+    image       varchar(100)  null,
+    id_author   int(10)       null,
+    constraint Author___fk
+        foreign key (id_author) references Authors (id_author),
+    constraint Tags___fk
+        foreign key (id_tag) references Tags (name)
+);
 
-/*tabella link*/
-create table Links
+create or replace table Types
 (
-    id_link  int unsigned primary key auto_increment NOT NULL,
-    link     varchar(100),
-    id_media int unsigned,
-    foreign key (id_media) references Medias (id_media)
-)engine innodb;
+    id_tipologia int unsigned auto_increment
+        primary key,
+    name         enum ('Festivo', 'Esame', 'Esame di profitto', 'Lauree Magistrali', 'Lezione', 'Sabato', 'Lauree 1 liv', 'Altre attività', 'Vacanza', 'Prova in itinere') null
+);
 
-
-/*tabella POINT*/
-create table Points
+create or replace table Users
 (
-    id_point  int unsigned primary key auto_increment NOT NULL,
-    latitude  float,
-    longitude float
-)engine innodb;
+    id_utente varchar(100) not null
+        primary key
+);
 
-/*tabella LOCATION*/
-create table Locations
+create or replace table appartiene
 (
-    id_location int unsigned primary key auto_increment NOT NULL,
-    name_       varchar(50),
-    link        varchar(200),
-    id_point    int unsigned,
-    foreign key (id_point) references Points (id_point)
-)engine innodb;
+    giorno       date         not null,
+    id_tipologia int unsigned not null,
+    primary key (giorno, id_tipologia),
+    constraint appartiene_ibfk_1
+        foreign key (giorno) references Days (giorno),
+    constraint appartiene_ibfk_2
+        foreign key (id_tipologia) references Types (id_tipologia)
+);
 
-/*tabella AUTHOR*/
-create table Authors
-(
-    id_author int unsigned primary key auto_increment NOT NULL,
-    name_     varchar(50),
-    link      varchar(200)
-)engine innodb;
+create or replace index id_tipologia
+    on appartiene (id_tipologia);
 
-/*tabella SOURCE*/
-create table Sources
-(
-    id_source int unsigned primary key auto_increment NOT NULL,
-    name_     varchar(50),
-    link      varchar(200)
-)engine innodb;
-
-/*tabella article*/
-create table Articles
-(
-    id_article  int unsigned primary key auto_increment NOT NULL,
-    title       varchar(100),
-    subtitle    varchar(200),
-    text_       varchar(1000),
-    publishTime datetime,
-    targetTime  datetime,
-    music       varchar(200),
-    id_media    int unsigned,
-    foreign key (id_media) references Medias (id_media)
-)engine innodb;
-
-/*tabella collega AUTHOR-ARTICLE*/
-create table scritto
-(
-    id_author  int unsigned,
-    foreign key (id_author) references Authors (id_author),
-    id_article int unsigned,
-    foreign key (id_article) references Articles (id_article)
-)engine innodb;
-
-/*tabella collega TERRITORIAL-ARTICLE*/
-create table su
-(
-    id_territorial int unsigned,
-    foreign key (id_territorial) references Territorials (id_territorial),
-    id_article     int unsigned,
-    foreign key (id_article) references Articles (id_article)
-)engine innodb;
-
-/*tabella collega SOURCE-ARTICLE*/
-create table prende
-(
-    id_source  int unsigned,
-    foreign key (id_source) references Sources (id_source),
-    id_article int unsigned,
-    foreign key (id_article) references Articles (id_article)
-)engine innodb;
-
-/*tabella collega LOCATION-ARTICLE*/
-create table `where`
-(
-    id_location int unsigned,
-    foreign key (id_location) references Locations (id_location),
-    id_article  int unsigned,
-    foreign key (id_article) references Articles (id_article)
-)engine innodb;
-
-/*tabella collega HASHTAG-ARTICLE*/
-create table tag
-(
-    id_hashtag int unsigned,
-    foreign key (id_hashtag) references Hashtags (id_hashtag),
-    id_article int unsigned,
-    foreign key (id_article) references Articles (id_article)
-)engine innodb;
-
-/*tabella GRANT*/
-create table `Grants`
-(
-    name_grant varchar(100) not null primary key
-)engine innodb;
-
-/*tabella collega UTENTE-GRANT*/
-create table permission
+create or replace table permission
 (
     id_grant varchar(200) not null,
     id_user  varchar(100) not null,
     constraint id_grant
-        foreign key (id_grant) references `grant` (name_grant),
+        foreign key (id_grant) references Grants (name_grant),
     constraint id_user
-        foreign key (id_user) references utente (id_utente)
-)engine innodb;
-
-
-
+        foreign key (id_user) references Users (id_utente)
+);
 
