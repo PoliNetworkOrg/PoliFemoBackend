@@ -5,7 +5,7 @@ using MySql.Data.MySqlClient;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils;
+namespace PoliFemoBackend.Source.Utils.Database;
 
 public static class Database
 {
