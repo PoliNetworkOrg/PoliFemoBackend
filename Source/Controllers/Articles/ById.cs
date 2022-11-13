@@ -14,8 +14,8 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Articles")]
-[Route("v{version:apiVersion}/articles/{id}")]
-[Route("/articles/{id}")]
+[Route("v{version:apiVersion}/articles/{id:int}")]
+[Route("/articles/{id:int}")]
 public class ArticleByIdController : ControllerBase
 {
     /// <summary>
@@ -46,17 +46,21 @@ public class ArticleByIdController : ControllerBase
         if (results.Rows.Count == 0) return NotFound();
 
         //convert results to json
-        var a = new JObject();
-        a.Add("title", results.Rows[0]["title"].ToString());
-        a.Add("subtitle", results.Rows[0]["subtitle"].ToString());
-        a.Add("publishTime", results.Rows[0]["publishTime"].ToString());
-        a.Add("targetTime", results.Rows[0]["targetTime"].ToString());
-        a.Add("content", results.Rows[0]["content"].ToString());
-        var b = new JObject();
-       
-        b.Add("name", results.Rows[0]["name_"].ToString());
-        b.Add("image", results.Rows[0]["image"].ToString());
-        b.Add("link", results.Rows[0]["link"].ToString());
+        var a = new JObject
+        {
+            { "title", results.Rows[0]["title"].ToString() },
+            { "subtitle", results.Rows[0]["subtitle"].ToString() },
+            { "publishTime", results.Rows[0]["publishTime"].ToString() },
+            { "targetTime", results.Rows[0]["targetTime"].ToString() },
+            { "content", results.Rows[0]["content"].ToString() }
+        };
+        var b = new JObject
+        {
+            { "name", results.Rows[0]["name_"].ToString() },
+            { "image", results.Rows[0]["image"].ToString() },
+            { "link", results.Rows[0]["link"].ToString() }
+        };
+
         a.Add("author", b);
         
         return Ok(a);
