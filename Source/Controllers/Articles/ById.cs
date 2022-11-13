@@ -18,7 +18,14 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 [Route("/articles/{id}")]
 public class ArticleByIdController : ControllerBase
 {
-  
+    /// <summary>
+    ///    Search article by id
+    /// </summary>
+    /// <returns>A json of article</returns>
+    /// <response code="200">Returns article</response>
+    /// <response code="500">Can't connect to server</response>
+    /// <response code="404">No available article</response>
+
     [MapToApiVersion("1.0")]
     [HttpGet]
     public ActionResult SearchArticlesById(int id)
@@ -34,7 +41,7 @@ public class ArticleByIdController : ControllerBase
 
 
         //if results is null
-        if (results == null) return GroupsUtil.ErrorInRetrievingGroups();
+        if (results == null) return StatusCode(500);
 
         if (results.Rows.Count == 0) return NotFound();
 
