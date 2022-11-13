@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -43,19 +44,8 @@ public class TagByIdController : ControllerBase
         if (results.Rows.Count == 0) return NotFound();
 
         //convert results to json
-        var a = new JObject();
-        var b = new JArray();
-        foreach(DataRow row in results.Rows)
-        {
-            var c = new JObject();
-            foreach(DataColumn column in results.Columns)
-            {
-                c.Add(column.ColumnName, row[column].ToString());
-            }
-            b.Add(c);
-        }
-        a.Add("tags", b);
-        
+        var a = new JObject { { "tags", HandleDataUtil.GetResultsAsJArray(results) } };
+
         return Ok(a);
         
     }
