@@ -68,6 +68,25 @@ public static class PoliMiNewsUtil
 
     public static void LoopGetNews()
     {
+        const int timeToWait = 1000 * 60 * 30; //30 mins
+        while (true)
+        {
+            Thread.Sleep(timeToWait);
+
+            try
+            {
+                GetNews();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        // ReSharper disable once FunctionNeverReturns
+    }
+
+    private static void GetNews()
+    {
         throw new NotImplementedException();
     }
 }
