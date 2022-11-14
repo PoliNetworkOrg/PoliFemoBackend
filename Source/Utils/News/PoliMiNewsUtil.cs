@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Article;
 using PoliFemoBackend.Source.Objects.Threading;
+using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -103,7 +104,7 @@ public static class PoliMiNewsUtil
     /// <exception cref="Exception">If it can't be found nor created</exception>
     private static int GetPolimiAuthorIdAndCreateItIfNotFound()
     {
-        var dt = Database.ExecuteSelect(
+        var dt = Database.Database.ExecuteSelect(
             "SELECT COUNT(*) FROM Authors WHERE name_ = @name", 
             DbConfig.GetDbConfigNew(), 
             new Dictionary<string, object?>()
@@ -115,7 +116,7 @@ public static class PoliMiNewsUtil
         if (dt == null)
             throw new Exception("[01] Can't detect if PoliMi author is present in authors table.");
 
-        var result = Database.GetFirstValueFromDataTable(dt);
+        var result = Database.Database.GetFirstValueFromDataTable(dt);
         if (result == null)
             throw new Exception("[02] Can't detect if PoliMi author is present in authors table.");
 
@@ -125,7 +126,7 @@ public static class PoliMiNewsUtil
             return GetPolimiAuthorIdBecauseWeKnowItExists();
         }
 
-        Database.Execute("INSERT INTO Authors (name,link) VALUES (@name,@link)", DbConfig.GetDbConfigNew(), new Dictionary<string, object?>()
+        Database.Database.Execute("INSERT INTO Authors (name,link) VALUES (@name,@link)", DbConfig.GetDbConfigNew(), new Dictionary<string, object?>()
         {
             {"@name", PolimiName },
             {"@link", UrlPolimi}
@@ -141,7 +142,7 @@ public static class PoliMiNewsUtil
     /// <exception cref="Exception">If it can't be found nor created</exception>
     private static int GetPolimiAuthorIdBecauseWeKnowItExists()
     {
-        var dt = Database.ExecuteSelect(
+        var dt = Database.Database.ExecuteSelect(
             "SELECT id_author  FROM Authors WHERE name_ = @name", 
             DbConfig.GetDbConfigNew(), 
             new Dictionary<string, object?>()
@@ -153,7 +154,7 @@ public static class PoliMiNewsUtil
         if (dt == null)
             throw new Exception("[03] Can't detect if PoliMi author is present in authors table.");
 
-        var result = Database.GetFirstValueFromDataTable(dt);
+        var result = Database.Database.GetFirstValueFromDataTable(dt);
         if (result == null)
             throw new Exception("[04] Can't detect if PoliMi author is present in authors table.");
 
@@ -188,11 +189,11 @@ public static class PoliMiNewsUtil
         
         const string query = "SELECT COUNT(*) FROM Articles WHERE sourceUrl = @url";
         var args = new Dictionary<string, object?>() { {"@url", url}};
-        var results = Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
+        var results = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
         if (results == null)
             return;
 
-        var result = Database.GetFirstValueFromDataTable(results);
+        var result = Database.Database.GetFirstValueFromDataTable(results);
         if (result == null)
             return;
 
@@ -217,7 +218,7 @@ public static class PoliMiNewsUtil
             {"@text_", newsItem.GetContentAsTextJson()},
             {"@publishTime", DateTime.Now}
         };
-        Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
+        Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
         
         
         var url = newsItem.GetUrl();
@@ -226,11 +227,11 @@ public static class PoliMiNewsUtil
         
         const string query2 = "SELECT id_article FROM Articles WHERE sourceUrl = @url";
         var args2 = new Dictionary<string, object?>() { {"@url", url}};
-        var results = Database.ExecuteSelect(query2, GlobalVariables.GetDbConfig(), args2);
+        var results = Database.Database.ExecuteSelect(query2, GlobalVariables.GetDbConfig(), args2);
         if (results == null)
             return;
 
-        var result = Database.GetFirstValueFromDataTable(results);
+        var result = Database.Database.GetFirstValueFromDataTable(results);
         if (result == null)
             return;
 
@@ -242,7 +243,7 @@ public static class PoliMiNewsUtil
             {"@id_article", idArticle},
             {"@id_author", idPolimiAuthor},
         };
-        Database.Execute(query3, DbConfig.DbConfigVar, args3);
+        Database.Database.Execute(query3, DbConfig.DbConfigVar, args3);
 
     }
 }
