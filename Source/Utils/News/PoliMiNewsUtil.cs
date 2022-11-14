@@ -77,8 +77,6 @@ public static class PoliMiNewsUtil
         const int timeToWait = 1000 * 60 * 30; //30 mins
         while (true)
         {
-            
-
             try
             {
                 GetNews();
@@ -108,14 +106,29 @@ public static class PoliMiNewsUtil
 
     private static void UpdateDbWithNews(NewsPolimi newsItem)
     {
-        const string query = "SELECT * FROM Articles";
-        var results = Database.ExecuteSelect(query, GlobalVariables.GetDbConfig());
+        var url = newsItem.GetUrl();
+        if (string.IsNullOrEmpty(url))
+            return;
+        
+        const string query = "SELECT COUNT(*) FROM Articles WHERE sourceUrl = @url";
+        var args = new Dictionary<string, object?>() { {"@url", url}};
+        var results = Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
         if (results == null)
             return;
 
-        foreach (DataRow dr in results.Rows)
-        {
-            ;
-        }
+        var result = Database.GetFirstValueFromDataTable(results);
+        if (result == null)
+            return;
+
+        var num = Convert.ToInt32(result);
+        if (num > 0)
+            return; //news already in db
+
+        InsertItemInDb(newsItem);
+    }
+
+    private static void InsertItemInDb(NewsPolimi newsItem)
+    {
+        throw new NotImplementedException();
     }
 }
