@@ -1,14 +1,15 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace PoliFemoBackend.Source.Objects.Article;
 
 public class NewsPolimi
 {
-    private List<string>? _content; //list of html objects (as strings)
     private readonly bool _internalNews;
     private readonly string? _subtitle;
     private readonly string? _title;
     private readonly string? _url;
+    private List<string>? _content; //list of html objects (as strings)
 
     public NewsPolimi(bool internalNews, string url, string title, string subtitle)
     {
@@ -23,9 +24,7 @@ public class NewsPolimi
         var contentAsJArray = new JArray();
         if (_content != null)
             foreach (var contentItem in _content)
-            {
                 contentAsJArray.Add(contentItem);
-            }
 
         var jObject = new JObject
         {
@@ -62,8 +61,8 @@ public class NewsPolimi
     {
         if (_content == null)
             return null;
-        
-        var json = Newtonsoft.Json.JsonConvert.SerializeObject(_content);
+
+        var json = JsonConvert.SerializeObject(_content);
         return json;
     }
 }

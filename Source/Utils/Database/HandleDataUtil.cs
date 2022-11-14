@@ -18,12 +18,8 @@ public static class HandleDataUtil
     {
         var rows = new List<DataRow>();
         foreach (var row in dataRowCollection)
-        {
             if (row is DataRow drDataRow)
-            {
                 rows.Add(drDataRow);
-            }
-        }
 
         return rows;
     }
@@ -39,10 +35,8 @@ public static class HandleDataUtil
     {
         var r = new List<DataColumn>();
         foreach (var col in resultsColumns)
-        {
             if (col is DataColumn dataColumn)
                 r.Add(dataColumn);
-        }
 
         return r;
     }

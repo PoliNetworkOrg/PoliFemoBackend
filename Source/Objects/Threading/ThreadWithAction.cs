@@ -2,8 +2,8 @@
 
 public class ThreadWithAction
 {
-    private Thread? _thread;
     private Action? _action;
+    private Thread? _thread;
     public int Failed = 0;
 
 
