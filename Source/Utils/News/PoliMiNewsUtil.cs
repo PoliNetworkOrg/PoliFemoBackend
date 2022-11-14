@@ -177,8 +177,6 @@ public static class PoliMiNewsUtil
             {
                 Console.WriteLine(ex);
             }
-
-            
         }
     }
 
