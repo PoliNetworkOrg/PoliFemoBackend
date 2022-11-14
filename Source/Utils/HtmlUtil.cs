@@ -3,7 +3,7 @@
 using System.Net;
 using System.Text;
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Objects;
+using PoliFemoBackend.Source.Objects.Web;
 
 #endregion
 
