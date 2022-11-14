@@ -65,4 +65,9 @@ public static class PoliMiNewsUtil
             // ignored
         }
     }
+
+    public static void LoopGetNews()
+    {
+        throw new NotImplementedException();
+    }
 }

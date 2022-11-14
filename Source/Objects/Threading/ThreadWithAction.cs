@@ -13,7 +13,14 @@ public class ThreadWithAction
 
     public void Run()
     {
-        this._thread.Start();
+        try
+        {
+            this._thread.Start();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     private void RunThread()
