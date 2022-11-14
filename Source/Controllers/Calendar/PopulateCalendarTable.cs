@@ -3,7 +3,6 @@
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
