@@ -32,7 +32,7 @@ public static class Start
 
         try
         {
-            Utils.Start.ThreadStartUtil.ThreadStartMethod();
+            ThreadStartUtil.ThreadStartMethod();
         }
         catch (Exception ex)
         {
