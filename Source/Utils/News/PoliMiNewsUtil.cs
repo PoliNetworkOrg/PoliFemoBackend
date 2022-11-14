@@ -1,12 +1,9 @@
 ﻿#region
 
-using System.Runtime.CompilerServices;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Objects;
 using PoliFemoBackend.Source.Objects.Article;
 using PoliFemoBackend.Source.Objects.Threading;
-using PoliFemoBackend.Source.Utils.Start;
 
 #endregion
 
