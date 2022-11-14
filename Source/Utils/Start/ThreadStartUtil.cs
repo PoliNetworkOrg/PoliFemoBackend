@@ -8,7 +8,8 @@ public static class ThreadStartUtil
     
     public static void ThreadStartMethod()
     {
-        _getNewsThreadWithAction = new ThreadWithAction(Utils.News.PoliMiNewsUtil.LoopGetNews);
+        _getNewsThreadWithAction = new ThreadWithAction();
+        _getNewsThreadWithAction.SetAction(() => News.PoliMiNewsUtil.LoopGetNews(_getNewsThreadWithAction));
         _getNewsThreadWithAction.Run();
     }
 }

@@ -1,9 +1,12 @@
 ﻿#region
 
+using System.Runtime.CompilerServices;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects;
 using PoliFemoBackend.Source.Objects.Article;
+using PoliFemoBackend.Source.Objects.Threading;
+using PoliFemoBackend.Source.Utils.Start;
 
 #endregion
 
@@ -69,7 +72,8 @@ public static class PoliMiNewsUtil
     /// <summary>
     /// Loops every 30 mins to sync PoliMi news with the app db
     /// </summary>
-    public static void LoopGetNews()
+    /// <param name="threadWithAction">The running thread</param>
+    public static void LoopGetNews(ThreadWithAction threadWithAction)
     {
         const int timeToWait = 1000 * 60 * 30; //30 mins
         while (true)
@@ -82,6 +86,7 @@ public static class PoliMiNewsUtil
             }
             catch (Exception ex)
             {
+                threadWithAction.Failed++;
                 Console.WriteLine(ex);
             }
         }
