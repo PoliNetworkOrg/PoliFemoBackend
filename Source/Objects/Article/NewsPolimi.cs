@@ -47,4 +47,23 @@ public class NewsPolimi
     {
         this._content = list;
     }
+
+    public string? GetTitle()
+    {
+        return _title;
+    }
+
+    public string? GetSubtitle()
+    {
+        return _subtitle;
+    }
+
+    public string? GetContentAsTextJson()
+    {
+        if (this._content == null)
+            return null;
+        
+        var json = Newtonsoft.Json.JsonConvert.SerializeObject(this._content);
+        return json;
+    }
 }

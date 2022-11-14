@@ -129,6 +129,18 @@ public static class PoliMiNewsUtil
 
     private static void InsertItemInDb(NewsPolimi newsItem)
     {
-        throw new NotImplementedException();
+        const string query = "INSERT INTO Articles " +
+                             "(title,subtitle,text_,publishTime,sourceUrl) " +
+                             "VALUES " +
+                             "(@title,@subtitle,@text_,@publishTime,@sourceUrl)";
+        var args = new Dictionary<string, object?>()
+        {
+            {"@sourceUrl", newsItem.GetUrl()},
+            {"@title", newsItem.GetTitle()},
+            {"@subtitle", newsItem.GetSubtitle()},
+            {"@text_", newsItem.GetContentAsTextJson()},
+            {"@publishTime", DateTime.Now}
+        };
+        Database.Execute(query, GlobalVariables.GetDbConfig(), args);
     }
 }
