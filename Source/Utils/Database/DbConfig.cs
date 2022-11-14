@@ -7,7 +7,7 @@ using PoliFemoBackend.Source.Data;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils;
+namespace PoliFemoBackend.Source.Utils.Database;
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]

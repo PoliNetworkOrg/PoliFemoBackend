@@ -118,6 +118,6 @@ public static class ArticleUtil
             { "@content", content },
             { "@rid", idOld }
         };
-        return Database.Execute(q, GlobalVariables.DbConfigVar, paramsDict);
+        return Database.Database.Execute(q, GlobalVariables.DbConfigVar, paramsDict);
     }
 }

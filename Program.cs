@@ -49,9 +49,9 @@ internal static class Program
             builder.Services.AddMetrics(metrics);
 
             builder.Host
-            .ConfigureMetrics(builder =>
+            .ConfigureMetrics(metricsBuilder =>
                 {
-                    builder.Configuration.Configure(options =>
+                    metricsBuilder.Configuration.Configure(options =>
                         {
                             options.DefaultContextLabel = "default";
                         });
