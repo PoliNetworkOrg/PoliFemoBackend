@@ -109,7 +109,7 @@ public static class PoliMiNewsUtil
     private static void UpdateDbWithNews(NewsPolimi newsItem)
     {
         const string query = "SELECT * FROM Articles";
-        var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar);
+        var results = Database.ExecuteSelect(query, GlobalVariables.GetDbConfig());
         if (results == null)
             return;
 

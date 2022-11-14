@@ -26,4 +26,13 @@ public static class GlobalVariables
     {
         _secrets = jObject;
     }
+
+    public static DbConfig? GetDbConfig()
+    {
+        if (DbConfigVar != null)
+            return DbConfigVar;
+        
+        DbConfig.InitializeDbConfig();
+        return DbConfigVar;
+    }
 }
