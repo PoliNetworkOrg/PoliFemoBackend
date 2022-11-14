@@ -107,8 +107,8 @@ public static class PoliMiNewsUtil
         var dt = Database.Database.ExecuteSelect(
             "SELECT COUNT(*) FROM Authors WHERE name_ = @name", 
             DbConfig.GetDbConfigNew(), 
-            new Dictionary<string, object?>()
-                {
+            new Dictionary<string, object?>
+            {
                     {"@name", PolimiName}
                 }
             );
@@ -126,7 +126,7 @@ public static class PoliMiNewsUtil
             return GetPolimiAuthorIdBecauseWeKnowItExists();
         }
 
-        Database.Database.Execute("INSERT INTO Authors (name,link) VALUES (@name,@link)", DbConfig.GetDbConfigNew(), new Dictionary<string, object?>()
+        Database.Database.Execute("INSERT INTO Authors (name,link) VALUES (@name,@link)", DbConfig.GetDbConfigNew(), new Dictionary<string, object?>
         {
             {"@name", PolimiName },
             {"@link", UrlPolimi}
@@ -145,7 +145,7 @@ public static class PoliMiNewsUtil
         var dt = Database.Database.ExecuteSelect(
             "SELECT id_author  FROM Authors WHERE name_ = @name", 
             DbConfig.GetDbConfigNew(), 
-            new Dictionary<string, object?>()
+            new Dictionary<string, object?>
             {
                 {"@name", PolimiName}
             }
@@ -188,7 +188,7 @@ public static class PoliMiNewsUtil
             return;
         
         const string query = "SELECT COUNT(*) FROM Articles WHERE sourceUrl = @url";
-        var args = new Dictionary<string, object?>() { {"@url", url}};
+        var args = new Dictionary<string, object?> { {"@url", url}};
         var results = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
         if (results == null)
             return;
@@ -210,7 +210,7 @@ public static class PoliMiNewsUtil
                              "(title,subtitle,text_,publishTime,sourceUrl) " +
                              "VALUES " +
                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl)";
-        var args1 = new Dictionary<string, object?>()
+        var args1 = new Dictionary<string, object?>
         {
             {"@sourceUrl", newsItem.GetUrl()},
             {"@title", newsItem.GetTitle()},
@@ -226,7 +226,7 @@ public static class PoliMiNewsUtil
             return;
         
         const string query2 = "SELECT id_article FROM Articles WHERE sourceUrl = @url";
-        var args2 = new Dictionary<string, object?>() { {"@url", url}};
+        var args2 = new Dictionary<string, object?> { {"@url", url}};
         var results = Database.Database.ExecuteSelect(query2, GlobalVariables.GetDbConfig(), args2);
         if (results == null)
             return;
@@ -238,10 +238,10 @@ public static class PoliMiNewsUtil
         var idArticle = Convert.ToInt32(result);
 
         const string query3 = "INSERT INTO scritto (id_article,id_author) VALUES (@id_article, @id_author)";
-        var args3 = new Dictionary<string, object?>()
+        var args3 = new Dictionary<string, object?>
         {
             {"@id_article", idArticle},
-            {"@id_author", idPolimiAuthor},
+            {"@id_author", idPolimiAuthor}
         };
         Database.Database.Execute(query3, DbConfig.DbConfigVar, args3);
 

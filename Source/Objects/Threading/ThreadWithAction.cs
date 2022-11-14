@@ -11,7 +11,7 @@ public class ThreadWithAction
     {
         try
         {
-            this._thread?.Start();
+            _thread?.Start();
         }
         catch (Exception ex)
         {
@@ -21,12 +21,12 @@ public class ThreadWithAction
 
     private void RunThread()
     {
-        this._action?.Invoke();
+        _action?.Invoke();
     }
 
     public void SetAction(Action action)
     {
-        this._action = action;
-        this._thread = new Thread(RunThread);
+        _action = action;
+        _thread = new Thread(RunThread);
     }
 }

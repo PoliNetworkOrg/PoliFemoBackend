@@ -12,17 +12,17 @@ public class NewsPolimi
 
     public NewsPolimi(bool internalNews, string url, string title, string subtitle)
     {
-        this._internalNews = internalNews;
-        this._url = url;
-        this._title = title;
-        this._subtitle = subtitle;
+        _internalNews = internalNews;
+        _url = url;
+        _title = title;
+        _subtitle = subtitle;
     }
 
     public JObject ToArticle()
     {
         var contentAsJArray = new JArray();
-        if (this._content != null)
-            foreach (var contentItem in this._content)
+        if (_content != null)
+            foreach (var contentItem in _content)
             {
                 contentAsJArray.Add(contentItem);
             }
@@ -33,19 +33,19 @@ public class NewsPolimi
             ["subtitle"] = _subtitle,
             ["content"] = contentAsJArray,
             ["url"] = _url,
-            ["internalNews"] = this._internalNews
+            ["internalNews"] = _internalNews
         };
         return jObject;
     }
 
     public string? GetUrl()
     {
-        return this._url;
+        return _url;
     }
 
     public void SetContent(List<string> list)
     {
-        this._content = list;
+        _content = list;
     }
 
     public string? GetTitle()
@@ -60,10 +60,10 @@ public class NewsPolimi
 
     public string? GetContentAsTextJson()
     {
-        if (this._content == null)
+        if (_content == null)
             return null;
         
-        var json = Newtonsoft.Json.JsonConvert.SerializeObject(this._content);
+        var json = Newtonsoft.Json.JsonConvert.SerializeObject(_content);
         return json;
     }
 }
