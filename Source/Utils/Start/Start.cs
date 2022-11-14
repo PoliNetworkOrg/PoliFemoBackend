@@ -29,5 +29,14 @@ public static class Start
         {
             Console.WriteLine(ex);
         }
+
+        try
+        {
+            Utils.Start.ThreadStartUtil.ThreadStartMethod();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 }

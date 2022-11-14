@@ -1,6 +1,9 @@
 ﻿namespace PoliFemoBackend.Source.Utils.Start;
 
-public class ThreadStartUtil
+public static class ThreadStartUtil
 {
-    
+    public static void ThreadStartMethod()
+    {
+        
+    }
 }
