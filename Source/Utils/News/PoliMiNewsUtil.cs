@@ -3,6 +3,7 @@
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects;
+using PoliFemoBackend.Source.Objects.Article;
 
 #endregion
 
