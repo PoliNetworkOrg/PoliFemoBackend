@@ -66,6 +66,9 @@ public static class PoliMiNewsUtil
         }
     }
 
+    /// <summary>
+    /// Loops every 30 mins to sync PoliMi news with the app db
+    /// </summary>
     public static void LoopGetNews()
     {
         const int timeToWait = 1000 * 60 * 30; //30 mins
@@ -85,7 +88,19 @@ public static class PoliMiNewsUtil
         // ReSharper disable once FunctionNeverReturns
     }
 
+    /// <summary>
+    /// Get the latest news from PoliMi and stores them in the database
+    /// </summary>
     private static void GetNews()
+    {
+        var news = DownloadCurrentNews();
+        foreach (var newsItem in news)
+        {
+            UpdateDbWithNews(newsItem);
+        }
+    }
+
+    private static void UpdateDbWithNews(NewsPolimi newsItem)
     {
         throw new NotImplementedException();
     }
