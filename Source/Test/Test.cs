@@ -11,7 +11,7 @@ public static class Test
     public static void TestMain()
     {
         Console.WriteLine("Test");
-        var r = PoliMiNewsUtil.DownloadCurrentNews();
+        var r = PoliMiNewsUtil.DownloadCurrentNewsAsArticles();
         Console.WriteLine(r);
     }
 }
