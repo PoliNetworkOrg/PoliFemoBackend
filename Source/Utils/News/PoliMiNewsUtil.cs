@@ -1,7 +1,9 @@
 ﻿#region
 
+using System.Data;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Article;
 using PoliFemoBackend.Source.Objects.Threading;
 
@@ -75,7 +77,7 @@ public static class PoliMiNewsUtil
         const int timeToWait = 1000 * 60 * 30; //30 mins
         while (true)
         {
-            Thread.Sleep(timeToWait);
+            
 
             try
             {
@@ -86,6 +88,8 @@ public static class PoliMiNewsUtil
                 threadWithAction.Failed++;
                 Console.WriteLine(ex);
             }
+            
+            Thread.Sleep(timeToWait);
         }
         // ReSharper disable once FunctionNeverReturns
     }
@@ -104,6 +108,14 @@ public static class PoliMiNewsUtil
 
     private static void UpdateDbWithNews(NewsPolimi newsItem)
     {
-        throw new NotImplementedException();
+        const string query = "SELECT * FROM Articles";
+        var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar);
+        if (results == null)
+            return;
+
+        foreach (DataRow dr in results.Rows)
+        {
+            ;
+        }
     }
 }

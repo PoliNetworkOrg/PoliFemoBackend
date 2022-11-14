@@ -1,6 +1,7 @@
 ﻿#region
 
 using PoliFemoBackend.Source.Utils.News;
+using PoliFemoBackend.Source.Utils.Start;
 
 #endregion
 
@@ -11,7 +12,7 @@ public static class Test
     public static void TestMain()
     {
         Console.WriteLine("Test");
-        var r = PoliMiNewsUtil.DownloadCurrentNewsAsArticles();
-        Console.WriteLine(r);
+        ThreadStartUtil.ThreadStartMethod();
+        Console.WriteLine("Ciao");
     }
 }
