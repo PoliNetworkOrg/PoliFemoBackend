@@ -4,7 +4,6 @@ using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
