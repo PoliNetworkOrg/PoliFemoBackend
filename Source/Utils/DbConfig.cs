@@ -79,4 +79,9 @@ public class DbConfig
             : "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
               Password + "'";
     }
+
+    public static DbConfig? GetDbConfigNew()
+    {
+        return GlobalVariables.GetDbConfig();
+    }
 }

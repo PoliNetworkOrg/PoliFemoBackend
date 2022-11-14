@@ -1,6 +1,5 @@
 ﻿#region
 
-using System.Data;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
@@ -13,6 +12,9 @@ namespace PoliFemoBackend.Source.Utils.News;
 
 public static class PoliMiNewsUtil
 {
+    private const string UrlPolimi = "https://www.polimi.it/in-evidenza";
+    private const string PolimiName = "PoliMi";
+    
     public static List<JObject> DownloadCurrentNewsAsArticles()
     {
         var list = DownloadCurrentNews();
@@ -21,9 +23,9 @@ public static class PoliMiNewsUtil
 
     private static IEnumerable<NewsPolimi> DownloadCurrentNews()
     {
-        const string url = "https://www.polimi.it/in-evidenza";
+ 
         var web = new HtmlWeb();
-        var doc = web.Load(url);
+        var doc = web.Load(UrlPolimi);
         var urls = doc.DocumentNode.SelectNodes("//ul").First(x => x.GetClasses().Contains("ce-menu"));
         return urls.ChildNodes.Select(ExtractNews).ToList();
     }
@@ -74,7 +76,7 @@ public static class PoliMiNewsUtil
     /// <param name="threadWithAction">The running thread</param>
     public static void LoopGetNews(ThreadWithAction threadWithAction)
     {
-        var polimiAuthorId = GetPolimiAuthorId();
+        var polimiAuthorId = GetPolimiAuthorIdAndCreateItIfNotFound();
         
         const int timeToWait = 1000 * 60 * 30; //30 mins
         while (true)
@@ -94,9 +96,69 @@ public static class PoliMiNewsUtil
         // ReSharper disable once FunctionNeverReturns
     }
 
-    private static int GetPolimiAuthorId()
+    /// <summary>
+    /// Gets polimi author id and create if it doesn't exist.
+    /// </summary>
+    /// <returns>PoliMi author id</returns>
+    /// <exception cref="Exception">If it can't be found nor created</exception>
+    private static int GetPolimiAuthorIdAndCreateItIfNotFound()
     {
-        throw new NotImplementedException();
+        var dt = Database.ExecuteSelect(
+            "SELECT COUNT(*) FROM Authors WHERE name_ = @name", 
+            DbConfig.GetDbConfigNew(), 
+            new Dictionary<string, object?>()
+                {
+                    {"@name", PolimiName}
+                }
+            );
+        
+        if (dt == null)
+            throw new Exception("[01] Can't detect if PoliMi author is present in authors table.");
+
+        var result = Database.GetFirstValueFromDataTable(dt);
+        if (result == null)
+            throw new Exception("[02] Can't detect if PoliMi author is present in authors table.");
+
+        var num = Convert.ToInt32(result);
+        if (num > 0)
+        {
+            return GetPolimiAuthorIdBecauseWeKnowItExists();
+        }
+
+        Database.Execute("INSERT INTO Authors (name,link) VALUES (@name,@link)", DbConfig.GetDbConfigNew(), new Dictionary<string, object?>()
+        {
+            {"@name", PolimiName },
+            {"@link", UrlPolimi}
+        });
+
+        return GetPolimiAuthorIdBecauseWeKnowItExists();
+    }
+
+    /// <summary>
+    /// We know that polimi author exists so we retrieve its id
+    /// </summary>
+    /// <returns>Polimi author id</returns>
+    /// <exception cref="Exception">If it can't be found nor created</exception>
+    private static int GetPolimiAuthorIdBecauseWeKnowItExists()
+    {
+        var dt = Database.ExecuteSelect(
+            "SELECT id_author  FROM Authors WHERE name_ = @name", 
+            DbConfig.GetDbConfigNew(), 
+            new Dictionary<string, object?>()
+            {
+                {"@name", PolimiName}
+            }
+        );
+        
+        if (dt == null)
+            throw new Exception("[03] Can't detect if PoliMi author is present in authors table.");
+
+        var result = Database.GetFirstValueFromDataTable(dt);
+        if (result == null)
+            throw new Exception("[04] Can't detect if PoliMi author is present in authors table.");
+
+        var id = Convert.ToInt32(result);
+        return id;
     }
 
     /// <summary>
@@ -157,7 +219,7 @@ public static class PoliMiNewsUtil
             {"@text_", newsItem.GetContentAsTextJson()},
             {"@publishTime", DateTime.Now}
         };
-        Database.Execute(query1, GlobalVariables.GetDbConfig(), args);
+        Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
         
         
         var url = newsItem.GetUrl();
