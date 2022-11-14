@@ -95,16 +95,25 @@ public static class PoliMiNewsUtil
     /// <summary>
     /// Get the latest news from PoliMi and stores them in the database
     /// </summary>
-    private static void GetNews()
+    private static void GetNews(int idPolimiAuthor)
     {
         var news = DownloadCurrentNews();
         foreach (var newsItem in news)
         {
-            UpdateDbWithNews(newsItem);
+            try
+            {
+                UpdateDbWithNews(newsItem, idPolimiAuthor);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            
         }
     }
 
-    private static void UpdateDbWithNews(NewsPolimi newsItem)
+    private static void UpdateDbWithNews(NewsPolimi newsItem, int idPolimiAuthor)
     {
         var url = newsItem.GetUrl();
         if (string.IsNullOrEmpty(url))
@@ -124,16 +133,16 @@ public static class PoliMiNewsUtil
         if (num > 0)
             return; //news already in db
 
-        InsertItemInDb(newsItem);
+        InsertItemInDb(newsItem, idPolimiAuthor);
     }
 
-    private static void InsertItemInDb(NewsPolimi newsItem)
+    private static void InsertItemInDb(NewsPolimi newsItem, int idPolimiAuthor)
     {
-        const string query = "INSERT INTO Articles " +
+        const string query1 = "INSERT INTO Articles " +
                              "(title,subtitle,text_,publishTime,sourceUrl) " +
                              "VALUES " +
                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl)";
-        var args = new Dictionary<string, object?>()
+        var args1 = new Dictionary<string, object?>()
         {
             {"@sourceUrl", newsItem.GetUrl()},
             {"@title", newsItem.GetTitle()},
@@ -141,6 +150,32 @@ public static class PoliMiNewsUtil
             {"@text_", newsItem.GetContentAsTextJson()},
             {"@publishTime", DateTime.Now}
         };
-        Database.Execute(query, GlobalVariables.GetDbConfig(), args);
+        Database.Execute(query1, GlobalVariables.GetDbConfig(), args);
+        
+        
+        var url = newsItem.GetUrl();
+        if (string.IsNullOrEmpty(url))
+            return;
+        
+        const string query2 = "SELECT id_article FROM Articles WHERE sourceUrl = @url";
+        var args2 = new Dictionary<string, object?>() { {"@url", url}};
+        var results = Database.ExecuteSelect(query2, GlobalVariables.GetDbConfig(), args2);
+        if (results == null)
+            return;
+
+        var result = Database.GetFirstValueFromDataTable(results);
+        if (result == null)
+            return;
+
+        var idArticle = Convert.ToInt32(result);
+
+        const string query3 = "INSERT INTO scritto (id_article,id_author) VALUES (@id_article, @id_author)";
+        var args3 = new Dictionary<string, object?>()
+        {
+            {"@id_article", idArticle},
+            {"@id_author", idPolimiAuthor},
+        };
+        Database.Execute(query3, DbConfig.DbConfigVar, args3);
+
     }
 }
