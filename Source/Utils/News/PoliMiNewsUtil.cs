@@ -74,12 +74,14 @@ public static class PoliMiNewsUtil
     /// <param name="threadWithAction">The running thread</param>
     public static void LoopGetNews(ThreadWithAction threadWithAction)
     {
+        var polimiAuthorId = GetPolimiAuthorId();
+        
         const int timeToWait = 1000 * 60 * 30; //30 mins
         while (true)
         {
             try
             {
-                GetNews();
+                GetNews(polimiAuthorId);
             }
             catch (Exception ex)
             {
@@ -90,6 +92,11 @@ public static class PoliMiNewsUtil
             Thread.Sleep(timeToWait);
         }
         // ReSharper disable once FunctionNeverReturns
+    }
+
+    private static int GetPolimiAuthorId()
+    {
+        throw new NotImplementedException();
     }
 
     /// <summary>
