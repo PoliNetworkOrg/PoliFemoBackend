@@ -185,7 +185,11 @@ public static class PoliMiNewsUtil
         if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
             return null;
 
-        if (htmlNews.NodePoliMiHomePage == null)
+        if (htmlNews.NodeInEvidenza == null)
+        {
+            ;
+        }
+        else 
         {
             var selectMany = htmlNews.NodeInEvidenza?.ChildNodes.SelectMany(x => x.ChildNodes);
             var htmlNodes = selectMany?.Where(x => x.Attributes.Contains("href"));
@@ -195,19 +199,19 @@ public static class PoliMiNewsUtil
 
             internalNews = !(url1.StartsWith("https://") || url1.StartsWith("http://"));
             url2 = !(internalNews ?? false) ? url1 : "https://www.polimi.it" + url1;
-            title = htmlNews.NodeInEvidenza?.ChildNodes[0].InnerText.Trim();
-            subtitle = htmlNews.NodeInEvidenza?.ChildNodes[1].ChildNodes[0].InnerText.Trim();
+            var child = htmlNews.NodeInEvidenza?.ChildNodes;
+            ;
+            title = child?[0].InnerText.Trim();
+            subtitle = child?[1].ChildNodes[0].InnerText.Trim();
+
+            if (htmlNews.NodePoliMiHomePage != null)
+            {
+                ;
+            }
             
 
         }
-        else if (htmlNews.NodeInEvidenza == null)
-        {
-            ;
-        }
-        else
-        {
-            ;
-        }
+
 
 
         var result = new NewsPolimi(internalNews ?? false, url2 ?? "", title ?? "", subtitle ?? "");
