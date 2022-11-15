@@ -22,25 +22,7 @@ public class NewsPolimi
         _imgUrl = imgUrl;
     }
 
-    public JObject ToArticle()
-    {
-        var contentAsJArray = new JArray();
-        if (_content != null)
-            foreach (var contentItem in _content)
-            {
-                contentAsJArray.Add(contentItem);
-            }
-
-        var jObject = new JObject
-        {
-            ["title"] = _title,
-            ["subtitle"] = _subtitle,
-            ["content"] = contentAsJArray,
-            ["url"] = _url,
-            ["internalNews"] = _internalNews
-        };
-        return jObject;
-    }
+  
 
     public string? GetUrl()
     {

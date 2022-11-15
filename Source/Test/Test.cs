@@ -12,7 +12,7 @@ public static class Test
     public static void TestMain()
     {
         Console.WriteLine("Test");
-        var r = PoliMiNewsUtil.DownloadCurrentNewsAsArticles();
-        Console.WriteLine(r.Count);
+        var r = PoliMiNewsUtil.DownloadCurrentNews();
+        Console.WriteLine(r.Count());
     }
 }

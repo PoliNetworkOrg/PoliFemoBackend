@@ -15,14 +15,9 @@ public static class PoliMiNewsUtil
     private const string UrlPoliMiNews = "https://www.polimi.it/in-evidenza";
     private const string UrlPoliMiHomePage = "https://www.polimi.it/";
     private const int PoliMiAuthorId = 1;
-    
-    public static List<JObject> DownloadCurrentNewsAsArticles()
-    {
-        var list = DownloadCurrentNews();
-        return list.Select(x => x.ToArticle()).ToList();
-    }
 
-    private static IEnumerable<NewsPolimi> DownloadCurrentNews()
+
+    public static IEnumerable<NewsPolimi> DownloadCurrentNews()
     {
         var docNews = LoadUrl(UrlPoliMiNews);
         var urls = docNews?.DocumentNode.SelectNodes("//ul").First(x => x.GetClasses().Contains("ce-menu"));
