@@ -64,6 +64,6 @@ public class NewsPolimi
             return null;
         
         var json = Newtonsoft.Json.JsonConvert.SerializeObject(_content);
-        return json;
+        return json.Substring(2, json.Length - 2);
     }
 }
