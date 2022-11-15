@@ -135,7 +135,26 @@ public static class PoliMiNewsUtil
         var b_s = b.Split("/");
 
         ;
+
+        var a_s2 = a_s.Where(x => !string.IsNullOrEmpty(x)).ToList();
+        var b_s2 = b_s.Where(x => !string.IsNullOrEmpty(x)).ToList();
+
+        ;
+        if (a_s2.Count != b_s2.Count)
+            return false;
+
+        ;
+
+        int matches = CountMatches(a_s2, b_s2);
+        if (matches >= a_s2.Count / 2 && a_s2[^1] == b_s2[^1])
+            return true;
+        
         return false;
+    }
+
+    private static int CountMatches(IReadOnlyCollection<string> aS2, IReadOnlyList<string> bS2)
+    {
+        return aS2.Count != bS2.Count ? 0 : aS2.Where((t, i) => t == bS2[i]).Count();
     }
 
 
