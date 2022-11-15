@@ -13,7 +13,7 @@ namespace PoliFemoBackend.Source.Utils.News;
 public static class PoliMiNewsUtil
 {
     private const string UrlPolimi = "https://www.polimi.it/in-evidenza";
-    private const int PolimiAuthorId = 1;
+    private const int PoliMiAuthorId = 1;
     
     public static List<JObject> DownloadCurrentNewsAsArticles()
     {
@@ -150,7 +150,7 @@ public static class PoliMiNewsUtil
             {"@subtitle", newsItem.GetSubtitle()?.Replace("'", "’")},
             {"@text_", newsItem.GetContentAsTextJson()?.Replace("'", "’")},
             {"@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")},
-            {"@author_id", PolimiAuthorId}
+            {"@author_id", PoliMiAuthorId}
         };
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
         
