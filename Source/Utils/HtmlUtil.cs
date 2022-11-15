@@ -34,7 +34,7 @@ public static class HtmlUtil
     }
 
     internal static List<HtmlNode>? GetElementsByTagAndClassName(HtmlNode? doc, string tag = "",
-        string className = "", long? limit = null)
+        string? className = "", long? limit = null)
     {
         if (doc == null) return null;
 

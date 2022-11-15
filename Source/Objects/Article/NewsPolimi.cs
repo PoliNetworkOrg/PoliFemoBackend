@@ -9,33 +9,24 @@ public class NewsPolimi
     private readonly string? _subtitle;
     private readonly string? _title;
     private readonly string? _url;
+
     private List<string>? _content; //list of html objects (as strings)
 
-    public NewsPolimi(bool internalNews, string url, string title, string subtitle)
+    private readonly string? _tag;
+    private readonly string? _imgUrl;
+
+
+    public NewsPolimi(bool internalNews, string url, string title, string subtitle, string tag, string imgUrl)
     {
         _internalNews = internalNews;
         _url = url;
         _title = title;
         _subtitle = subtitle;
+        _tag = tag;
+        _imgUrl = imgUrl;
     }
 
-    public JObject ToArticle()
-    {
-        var contentAsJArray = new JArray();
-        if (_content != null)
-            foreach (var contentItem in _content)
-                contentAsJArray.Add(contentItem);
-
-        var jObject = new JObject
-        {
-            ["title"] = _title,
-            ["subtitle"] = _subtitle,
-            ["content"] = contentAsJArray,
-            ["url"] = _url,
-            ["internalNews"] = _internalNews
-        };
-        return jObject;
-    }
+  
 
     public string? GetUrl()
     {
@@ -61,8 +52,8 @@ public class NewsPolimi
     {
         if (_content == null)
             return null;
-
-        var json = JsonConvert.SerializeObject(_content);
-        return json;
+        
+        var json = Newtonsoft.Json.JsonConvert.SerializeObject(_content);
+        return json.Substring(2, json.Length - 2);
     }
 }
