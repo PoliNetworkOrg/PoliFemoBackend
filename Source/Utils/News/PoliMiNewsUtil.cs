@@ -12,7 +12,8 @@ namespace PoliFemoBackend.Source.Utils.News;
 
 public static class PoliMiNewsUtil
 {
-    private const string UrlPolimi = "https://www.polimi.it/in-evidenza";
+    private const string UrlPoliMiNews = "https://www.polimi.it/in-evidenza";
+    private const string UrlPoliMiHomePage = "https://www.polimi.it/";
     private const int PoliMiAuthorId = 1;
     
     public static List<JObject> DownloadCurrentNewsAsArticles()
@@ -23,46 +24,146 @@ public static class PoliMiNewsUtil
 
     private static IEnumerable<NewsPolimi> DownloadCurrentNews()
     {
- 
-        var web = new HtmlWeb();
-        var doc = web.Load(UrlPolimi);
-        var urls = doc.DocumentNode.SelectNodes("//ul").First(x => x.GetClasses().Contains("ce-menu"));
-        return urls.ChildNodes.Select(ExtractNews).ToList();
+        var docNews = LoadUrl(UrlPoliMiNews);
+        var urls = docNews?.DocumentNode.SelectNodes("//ul").First(x => x.GetClasses().Contains("ce-menu"));
+
+        var docPoliMi = LoadUrl(UrlPoliMiHomePage);
+        var newsPolimi = GetNewsPoliMi(docPoliMi);
+        var merged = Merge(urls?.ChildNodes, newsPolimi);
+        
+        var merged2 = merged.Select(ExtractNews).ToList();
+
+        var result = new List<NewsPolimi>();
+        foreach (var item in merged2)
+        {
+            if (item != null)
+                result.Add(item);
+        }
+
+        return result;
     }
 
-    private static NewsPolimi ExtractNews(HtmlNode htmlNode)
+    private static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls, IReadOnlyCollection<HtmlNode>? newsPolimi)
     {
-     
-        var selectMany = htmlNode.ChildNodes.SelectMany(x => x.ChildNodes);
-        var htmlNodes = selectMany.Where(x => x.Attributes.Contains("href"));
-        var enumerable = htmlNodes.Select(x => x.Attributes["href"].Value);
-        var where = enumerable.Where(x => !string.IsNullOrEmpty(x));
-        var url1 = where.FirstOrDefault("");
+        var result = new List<HtmlNews>();
+        switch (urls)
+        {
+            case null when newsPolimi == null:
+                return result;
+            case null:
+            {
+                result.AddRange(newsPolimi.Select(item => new HtmlNews() { NodePoliMiHomePage = item }));
+                return result;
+            }
+            case not null when newsPolimi == null:
+            {
+                result.AddRange(urls.Select(item => new HtmlNews() { NodeInEvidenza = item }));
+                return result;
+            }
+        }
+
+        var nodiPoliMiHomePage = newsPolimi.Select(item => new NodeFlagged() { HtmlNode = item }).ToList();
+        var nodiInEvidenza = urls.Select(item => new NodeFlagged() { HtmlNode = item }).ToList();
+
+        return MergeNotNull(nodiPoliMiHomePage, nodiInEvidenza);
+    }
+
+    private static IEnumerable<HtmlNews> MergeNotNull(IReadOnlyList<NodeFlagged> nodiPoliMiHomePage, IReadOnlyList<NodeFlagged> nodiInEvidenza)
+    {
+        var result = new List<HtmlNews>();
+        foreach (var itemHomePage in nodiPoliMiHomePage)
+        {
+            if (itemHomePage.Flagged) 
+                continue;
+            
+            foreach (var itemInEvidenza in nodiInEvidenza)
+            {
+                var equals = TestIfEqual(itemHomePage, itemInEvidenza);
+                if (!equals)
+                    continue;
+                
+                itemHomePage.Flagged = true;
+                itemInEvidenza.Flagged = true;
+                result.Add(new HtmlNews()
+                    { NodeInEvidenza = itemInEvidenza.HtmlNode, NodePoliMiHomePage = itemHomePage.HtmlNode });
+            }
+        }
+
+        result.AddRange(from t in nodiPoliMiHomePage where t.Flagged == false select new HtmlNews() { NodePoliMiHomePage = t.HtmlNode });
+        result.AddRange(from t in nodiInEvidenza where t.Flagged == false select new HtmlNews() { NodeInEvidenza = t.HtmlNode });
+
+        return result;
+    }
+
+    private static bool TestIfEqual(NodeFlagged itemHomePage, NodeFlagged itemInEvidenza)
+    {
+        ;
+        return false;
+    }
+
+    private static List<HtmlNode>? GetNewsPoliMi(HtmlDocument? docPoliMi)
+    {
+        var slider = HtmlUtil.GetElementsByTagAndClassName(docPoliMi?.DocumentNode, "body", null);
+        var slider2 = HtmlUtil.GetElementsByTagAndClassName(slider?.First(), "section");
+        var slider3 = slider2?.First(x => x.Id == "news");
+        var slider4 = HtmlUtil.GetElementsByTagAndClassName(slider3, "div");
+        var slider5 = slider4?.Where(x => x.GetClasses().Contains("sp-slide")).ToList();
+        return slider5;
+    }
+
+    private static HtmlDocument? LoadUrl(string url)
+    {
+        var web = new HtmlWeb();
+        var doc = web.Load(url);
+        return doc;
+    }
+
+    private static NewsPolimi? ExtractNews(HtmlNews htmlNews)
+    {
+        bool? internalNews = null;
+        string? url2 = null;
+        string? title = null;
+        string? subtitle = null;
+
+        if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
+            return null;
+
+        if (htmlNews.NodePoliMiHomePage == null)
+        {
+            var selectMany = htmlNews.NodeInEvidenza?.ChildNodes.SelectMany(x => x.ChildNodes);
+            var htmlNodes = selectMany?.Where(x => x.Attributes.Contains("href"));
+            var enumerable = htmlNodes?.Select(x => x.Attributes["href"].Value);
+            var where = enumerable?.Where(x => !string.IsNullOrEmpty(x));
+            var url1 = where?.FirstOrDefault("") ?? "";
+
+            internalNews = !(url1.StartsWith("https://") || url1.StartsWith("http://"));
+            url2 = !(internalNews ?? false) ? url1 : "https://www.polimi.it" + url1;
+            title = htmlNews.NodeInEvidenza?.ChildNodes[0].InnerText.Trim();
+            subtitle = htmlNews.NodeInEvidenza?.ChildNodes[1].ChildNodes[0].InnerText.Trim();
+            
+
+        }
+
+  
+        var result = new NewsPolimi(internalNews ?? false, url2 ?? "", title ?? "", subtitle ?? "");
         
-        var internalNews = !(url1.StartsWith("https://") || url1.StartsWith("http://"));
-        var url2 = !internalNews ? url1 : "https://www.polimi.it" + url1;
-        var title = htmlNode.ChildNodes[0].InnerText.Trim();
-        var subtitle = htmlNode.ChildNodes[1].ChildNodes[0].InnerText.Trim();
-        
-        var result = new NewsPolimi(internalNews, url2, title, subtitle);
-        
-        if (internalNews) 
+        if (internalNews ?? false) 
             GetContent(result);
 
         return result;
     }
 
-    private static void GetContent(NewsPolimi result)
+    private static void GetContent(NewsPolimi? result)
     {
         var web = new HtmlWeb();
-        var doc = web.Load(result.GetUrl());
+        var doc = web.Load(result?.GetUrl());
         var urls1 = doc.DocumentNode.SelectNodes("//div");
         try
         {
             var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
             var p = HtmlUtil.GetElementsByTagAndClassName(urls, "p")?.Select(x => x.InnerHtml).ToList();
             if (p != null)
-                result.SetContent(p);
+                result?.SetContent(p);
         }
         catch
         {
@@ -155,4 +256,16 @@ public static class PoliMiNewsUtil
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
         
     }
+}
+
+internal class NodeFlagged
+{
+    public HtmlNode? HtmlNode;
+    public bool Flagged;
+}
+
+internal class HtmlNews
+{
+    public HtmlNode? NodeInEvidenza;
+    public HtmlNode? NodePoliMiHomePage;
 }
