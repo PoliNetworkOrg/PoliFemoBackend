@@ -1,12 +1,10 @@
 ﻿#region
 
 using HtmlAgilityPack;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Article;
 using PoliFemoBackend.Source.Objects.Threading;
-using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -65,7 +63,7 @@ public static class PoliMiNewsUtil
             var p = HtmlUtil.GetElementsByTagAndClassName(urls, "p")?.Select(x => x.InnerHtml).ToList();
             if (p != null)
                 result.SetContent(p);
-            }
+        }
         catch
         {
             // ignored
@@ -156,21 +154,5 @@ public static class PoliMiNewsUtil
         };
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
         
-        
-        var url = newsItem.GetUrl();
-        if (string.IsNullOrEmpty(url))
-            return;
-        
-        const string query2 = "SELECT id_article FROM Articles WHERE sourceUrl = '@url'";
-        var args2 = new Dictionary<string, object?> { {"@url", url}};
-        var results = Database.Database.ExecuteSelect(query2, GlobalVariables.GetDbConfig(), args2);
-        if (results == null)
-            return;
-
-        var result = Database.Database.GetFirstValueFromDataTable(results);
-        if (result == null)
-            return;
-
-        var idArticle = Convert.ToInt32(result);
     }
 }
