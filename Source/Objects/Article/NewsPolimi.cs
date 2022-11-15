@@ -9,13 +9,17 @@ public class NewsPolimi
     private readonly string? _subtitle;
     private readonly string? _title;
     private readonly string? _url;
+    private readonly string? _tag;
+    private readonly string? _imgUrl;
 
-    public NewsPolimi(bool internalNews, string url, string title, string subtitle)
+    public NewsPolimi(bool internalNews, string url, string title, string subtitle, string tag, string imgUrl)
     {
         _internalNews = internalNews;
         _url = url;
         _title = title;
         _subtitle = subtitle;
+        _tag = tag;
+        _imgUrl = imgUrl;
     }
 
     public JObject ToArticle()

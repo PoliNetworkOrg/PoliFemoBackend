@@ -181,6 +181,8 @@ public static class PoliMiNewsUtil
         string? url2 = null;
         string? title = null;
         string? subtitle = null;
+        string? urlImgFinal = null;
+        string? tagFinal = null;
 
         if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
             return null;
@@ -202,10 +204,20 @@ public static class PoliMiNewsUtil
             var child = htmlNews.NodeInEvidenza?.ChildNodes;
             ;
             title = child?[0].InnerText.Trim();
-            subtitle = child?[1].ChildNodes[0].InnerText.Trim();
+            var child2 = child?[1].ChildNodes;
+            ;
+            if (child2?.Count > 0)
+                subtitle = child2?[0].InnerText.Trim();
 
             if (htmlNews.NodePoliMiHomePage != null)
             {
+                ;
+                var img = HtmlUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")?.First().Attributes["src"].Value ?? "";
+                tagFinal = HtmlUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
+                    ?.First(x => x.GetClasses().Contains("newsCategory")).InnerHtml.Trim();
+                urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
+                
+                
                 ;
             }
             
@@ -214,7 +226,7 @@ public static class PoliMiNewsUtil
 
 
 
-        var result = new NewsPolimi(internalNews ?? false, url2 ?? "", title ?? "", subtitle ?? "");
+        var result = new NewsPolimi(internalNews ?? false, url2 ?? "", title ?? "", subtitle ?? "", tagFinal ?? "", urlImgFinal ?? "");
         
         if (internalNews ?? false) 
             GetContent(result);
