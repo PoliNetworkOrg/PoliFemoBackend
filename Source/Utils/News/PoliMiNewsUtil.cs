@@ -121,10 +121,23 @@ public static class PoliMiNewsUtil
         if (string.IsNullOrEmpty(hInHomePage)  || string.IsNullOrEmpty(hInEvidenza) )
             return false;
 
-        return hInHomePage == hInEvidenza;
+        return CheckIfSimilar(hInEvidenza, hInHomePage);
     }
 
-    
+    private static bool CheckIfSimilar(string a, string b)
+    {
+        if (a == b)
+            return true;
+
+        ;
+
+        var a_s = a.Split("/");
+        var b_s = b.Split("/");
+
+        ;
+        return false;
+    }
+
 
     private static List<HtmlNode>? GetNewsPoliMi(HtmlDocument? docPoliMi)
     {
