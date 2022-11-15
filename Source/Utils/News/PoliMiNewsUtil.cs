@@ -143,8 +143,16 @@ public static class PoliMiNewsUtil
             
 
         }
+        else if (htmlNews.NodeInEvidenza == null)
+        {
+            ;
+        }
+        else
+        {
+            ;
+        }
 
-  
+
         var result = new NewsPolimi(internalNews ?? false, url2 ?? "", title ?? "", subtitle ?? "");
         
         if (internalNews ?? false) 
