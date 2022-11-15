@@ -86,6 +86,7 @@ public static class PoliMiNewsUtil
                 itemInEvidenza.Flagged = true;
                 result.Add(new HtmlNews()
                     { NodeInEvidenza = itemInEvidenza.HtmlNode, NodePoliMiHomePage = itemHomePage.HtmlNode });
+                break;
             }
         }
 
@@ -97,9 +98,33 @@ public static class PoliMiNewsUtil
 
     private static bool TestIfEqual(NodeFlagged itemHomePage, NodeFlagged itemInEvidenza)
     {
+        if (itemHomePage.HtmlNode == null || itemInEvidenza.HtmlNode == null)
+            return false;
+
         ;
-        return false;
+        var hrefHomePage = HtmlUtil.GetElementsByTagAndClassName(itemHomePage.HtmlNode, "a")?.First().Attributes;
+        var hrefInEvidenza = HtmlUtil.GetElementsByTagAndClassName(itemInEvidenza.HtmlNode, "a")?.First().Attributes;
+        ;
+
+        if (hrefHomePage == null || hrefInEvidenza == null)
+            return false;
+
+        bool isPresentHrefInHomePage = hrefHomePage.Contains("href");
+        bool isPresentHrefInEvidenza = hrefInEvidenza.Contains("href");
+
+        if (!isPresentHrefInEvidenza || !isPresentHrefInHomePage)
+            return false;
+
+        var hInHomePage = hrefHomePage["href"].Value;
+        var hInEvidenza = hrefInEvidenza["href"].Value;
+
+        if (string.IsNullOrEmpty(hInHomePage)  || string.IsNullOrEmpty(hInEvidenza) )
+            return false;
+
+        return hInHomePage == hInEvidenza;
     }
+
+    
 
     private static List<HtmlNode>? GetNewsPoliMi(HtmlDocument? docPoliMi)
     {
