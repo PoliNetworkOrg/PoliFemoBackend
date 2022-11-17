@@ -44,6 +44,16 @@ public class NewsPolimi
         return _subtitle;
     }
 
+    public string? GetTag()
+    {
+        return _tag;
+    }
+
+    public string? GetImgUrl()
+    {
+        return _imgUrl;
+    }
+
     public string? GetContentAsTextJson()
     {
         if (_content == null)
