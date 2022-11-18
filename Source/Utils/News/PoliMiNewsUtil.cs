@@ -2,6 +2,7 @@
 
 using HtmlAgilityPack;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Article;
 using PoliFemoBackend.Source.Objects.Threading;
 
@@ -16,7 +17,7 @@ public static class PoliMiNewsUtil
     private const int PoliMiAuthorId = 1;
 
 
-    public static IEnumerable<NewsPolimi> DownloadCurrentNews()
+    private static IEnumerable<NewsPolimi> DownloadCurrentNews()
     {
         var docNews = LoadUrl(UrlPoliMiNews);
         var urls = docNews?.DocumentNode.SelectNodes("//ul").First(x => x.GetClasses().Contains("ce-menu"));
@@ -293,11 +294,16 @@ public static class PoliMiNewsUtil
     public static void LoopGetNews(ThreadWithAction threadWithAction)
     {        
         const int timeToWait = 1000 * 60 * 30; //30 mins
+        var count = 0;
         while (true)
         {
             try
             {
-                GetNews();
+                var r = GetNews();
+                count += r;
+
+                threadWithAction.Partial = r;
+                threadWithAction.Total = count;
             }
             catch (Exception ex)
             {
@@ -314,43 +320,49 @@ public static class PoliMiNewsUtil
     /// <summary>
     /// Get the latest news from PoliMi and stores them in the database
     /// </summary>
-    private static void GetNews()
+    public static int GetNews()
     {
         var news = DownloadCurrentNews();
+        int count = 0;
         foreach (var newsItem in news)
         {
             try
             {
-                UpdateDbWithNews(newsItem);
+                var r = UpdateDbWithNews(newsItem);
+                if (r == DoneEnum.DONE)
+                    count++;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
         }
+
+        return count;
     }
 
-    private static void UpdateDbWithNews(NewsPolimi newsItem)
+    private static DoneEnum UpdateDbWithNews(NewsPolimi newsItem)
     {
         var url = newsItem.GetUrl();
         if (string.IsNullOrEmpty(url))
-            return;
+            return DoneEnum.ERROR;
         
         const string query = "SELECT COUNT(*) FROM Articles WHERE sourceUrl = '@url'";
         var args = new Dictionary<string, object?> { {"@url", url}};
         var results = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
         if (results == null)
-            return;
+            return DoneEnum.SKIPPED;
 
         var result = Database.Database.GetFirstValueFromDataTable(results);
         if (result == null)
-            return;
+            return DoneEnum.SKIPPED;
 
         var num = Convert.ToInt32(result);
         if (num > 0)
-            return; //news already in db
+            return DoneEnum.SKIPPED; //news already in db
 
         InsertItemInDb(newsItem);
+        return DoneEnum.DONE;
     }
 
     private static void InsertItemInDb(NewsPolimi newsItem)//11111

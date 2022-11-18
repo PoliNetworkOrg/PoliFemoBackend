@@ -165,7 +165,7 @@ public static class HtmlUtil
         }
     }
 
-    public static IEnumerable<HtmlNode>? GetElementsByTagAndClassName(IEnumerable<HtmlNode> list, string tag)
+    public static IEnumerable<HtmlNode> GetElementsByTagAndClassName(IEnumerable<HtmlNode> list, string tag)
     {
         var results = new List<HtmlNode>();
         foreach (var r in list.Select(x => GetElementsByTagAndClassName(x, tag)) )
