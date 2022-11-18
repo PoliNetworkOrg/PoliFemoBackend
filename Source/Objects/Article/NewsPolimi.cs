@@ -1,15 +1,33 @@
+<<<<<<< HEAD
 ﻿namespace PoliFemoBackend.Source.Objects.Article;
 
 public class NewsPolimi
 {
     private List<string>? _content; //list of html objects (as strings)
+=======
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+public class NewsPolimi
+{
+>>>>>>> dev2
     private readonly bool _internalNews;
     private readonly string? _subtitle;
     private readonly string? _title;
     private readonly string? _url;
+<<<<<<< HEAD
     private readonly string? _tag;
     private readonly string? _imgUrl;
 
+=======
+
+    private List<string>? _content; //list of html objects (as strings)
+
+    private readonly string? _tag;
+    private readonly string? _imgUrl;
+
+
+>>>>>>> dev2
     public NewsPolimi(bool internalNews, string url, string title, string subtitle, string tag, string imgUrl)
     {
         _internalNews = internalNews;
