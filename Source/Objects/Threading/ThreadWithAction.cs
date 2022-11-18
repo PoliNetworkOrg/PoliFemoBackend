@@ -2,7 +2,6 @@
 
 public class ThreadWithAction
 {
-
     private Action? _action;
     private Thread? _thread;
 

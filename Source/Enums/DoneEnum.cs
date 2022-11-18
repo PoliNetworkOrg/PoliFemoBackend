@@ -2,5 +2,7 @@
 
 public enum DoneEnum
 {
-    DONE, SKIPPED, ERROR
+    DONE,
+    SKIPPED,
+    ERROR
 }
