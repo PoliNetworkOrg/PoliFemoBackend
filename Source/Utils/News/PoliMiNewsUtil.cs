@@ -52,18 +52,18 @@ public static class PoliMiNewsUtil
                 return result;
             case null:
             {
-                result.AddRange(newsPolimi.Select(item => new HtmlNews() { NodePoliMiHomePage = item }));
+                result.AddRange(newsPolimi.Select(item => new HtmlNews { NodePoliMiHomePage = item }));
                 return result;
             }
             case not null when newsPolimi == null:
             {
-                result.AddRange(urls.Select(item => new HtmlNews() { NodeInEvidenza = item }));
+                result.AddRange(urls.Select(item => new HtmlNews { NodeInEvidenza = item }));
                 return result;
             }
         }
 
-        var nodiPoliMiHomePage = newsPolimi.Select(item => new NodeFlagged() { HtmlNode = item }).ToList();
-        var nodiInEvidenza = urls.Select(item => new NodeFlagged() { HtmlNode = item }).ToList();
+        var nodiPoliMiHomePage = newsPolimi.Select(item => new NodeFlagged { HtmlNode = item }).ToList();
+        var nodiInEvidenza = urls.Select(item => new NodeFlagged { HtmlNode = item }).ToList();
 
         return MergeNotNull(nodiPoliMiHomePage, nodiInEvidenza);
     }
@@ -84,14 +84,13 @@ public static class PoliMiNewsUtil
                 
                 itemHomePage.Flagged = true;
                 itemInEvidenza.Flagged = true;
-                result.Add(new HtmlNews()
-                    { NodeInEvidenza = itemInEvidenza.HtmlNode, NodePoliMiHomePage = itemHomePage.HtmlNode });
+                result.Add(new HtmlNews { NodeInEvidenza = itemInEvidenza.HtmlNode, NodePoliMiHomePage = itemHomePage.HtmlNode });
                 break;
             }
         }
 
-        result.AddRange(from t in nodiPoliMiHomePage where t.Flagged == false select new HtmlNews() { NodePoliMiHomePage = t.HtmlNode });
-        result.AddRange(from t in nodiInEvidenza where t.Flagged == false select new HtmlNews() { NodeInEvidenza = t.HtmlNode });
+        result.AddRange(from t in nodiPoliMiHomePage where t.Flagged == false select new HtmlNews { NodePoliMiHomePage = t.HtmlNode });
+        result.AddRange(from t in nodiInEvidenza where t.Flagged == false select new HtmlNews { NodeInEvidenza = t.HtmlNode });
 
         return result;
     }
@@ -323,7 +322,7 @@ public static class PoliMiNewsUtil
     public static int GetNews()
     {
         var news = DownloadCurrentNews();
-        int count = 0;
+        var count = 0;
         foreach (var newsItem in news)
         {
             try
