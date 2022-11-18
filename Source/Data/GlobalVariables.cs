@@ -31,11 +31,7 @@ public static class GlobalVariables
     {
         if (DbConfigVar != null)
             return DbConfigVar;
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> dev2
         DbConfig.InitializeDbConfig();
         return DbConfigVar;
     }
