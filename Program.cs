@@ -41,7 +41,8 @@ internal static class Program
             builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             builder.Services.Configure<MvcOptions>(options => { options.EnableEndpointRouting = false; });
 
-            builder.Services.AddMvcCore(opts => opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
+            builder.Services.AddMvcCore(opts =>
+                opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
             builder.Services.AddLogging();
 
             var metrics = AppMetrics.CreateDefaultBuilder().Build();
@@ -49,22 +50,20 @@ internal static class Program
             builder.Services.AddMetrics(metrics);
 
             builder.Host
-            .ConfigureMetrics(metricsBuilder =>
+                .ConfigureMetrics(metricsBuilder =>
                 {
-                    metricsBuilder.Configuration.Configure(options =>
-                        {
-                            options.DefaultContextLabel = "default";
-                        });
+                    metricsBuilder.Configuration.Configure(options => { options.DefaultContextLabel = "default"; });
                 })
-            .UseMetricsWebTracking()
-            .UseMetricsEndpoints()
-            .UseMetrics(options =>
+                .UseMetricsWebTracking()
+                .UseMetricsEndpoints()
+                .UseMetrics(options =>
                 {
                     options.EndpointOptions = endpointsOptions =>
-                        {
-                            endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
-                            endpointsOptions.MetricsEndpointEnabled = false;
-                        };
+                    {
+                        endpointsOptions.MetricsTextEndpointOutputFormatter =
+                            new MetricsPrometheusTextOutputFormatter();
+                        endpointsOptions.MetricsEndpointEnabled = false;
+                    };
                 });
 
             builder.Services.AddControllers().AddNewtonsoftJson();

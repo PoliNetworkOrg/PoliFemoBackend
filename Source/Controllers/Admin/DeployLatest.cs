@@ -41,10 +41,7 @@ public class DeployLatestController : ControllerBase
                         RedirectStandardOutput = true, CreateNoWindow = true
                     };
 
-                    if (env == "dev")
-                    {
-                        processStartInfo.Arguments = "service polifemodev restart";
-                    }
+                    if (env == "dev") processStartInfo.Arguments = "service polifemodev restart";
                     var process = new Process { StartInfo = processStartInfo };
                     process.Start();
                 }
