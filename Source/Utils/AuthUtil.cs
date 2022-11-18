@@ -55,7 +55,7 @@ public static class AuthUtil
     }
 
 
-    public static bool hasPermission(string? userid, string permission)
+    public static bool HasPermission(string? userid, string permission)
     {
         var results = Database.Database.ExecuteSelect(
             "SELECT id_grant FROM permission, Grants, Users WHERE id_utente=sha2('@userid', 256) AND id_grant='@permission'",
@@ -68,7 +68,7 @@ public static class AuthUtil
         return results != null;
     }
 
-    public static string?[] getPermissions(string? userid)
+    public static string?[] GetPermissions(string? userid)
     {
         var results = Database.Database.ExecuteSelect(
             "SELECT DISTINCT name_grant FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente AND id_utente=sha2('@userid', 256)",

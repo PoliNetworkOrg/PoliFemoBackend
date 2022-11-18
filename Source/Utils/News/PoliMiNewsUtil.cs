@@ -2,6 +2,7 @@
 
 using HtmlAgilityPack;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Article;
 using PoliFemoBackend.Source.Objects.Threading;
 
@@ -16,7 +17,7 @@ public static class PoliMiNewsUtil
     private const int PoliMiAuthorId = 1;
 
 
-    public static IEnumerable<NewsPolimi> DownloadCurrentNews()
+    private static IEnumerable<NewsPolimi> DownloadCurrentNews()
     {
         var docNews = LoadUrl(UrlPoliMiNews);
         var urls = docNews?.DocumentNode.SelectNodes("//ul").First(x => x.GetClasses().Contains("ce-menu"));
@@ -24,7 +25,12 @@ public static class PoliMiNewsUtil
         var docPoliMi = LoadUrl(UrlPoliMiHomePage);
         var newsPolimi = GetNewsPoliMi(docPoliMi);
         var merged = Merge(urls?.ChildNodes, newsPolimi);
-        
+
+        return DownloadCurrentNews2(merged);
+    }
+
+    private static IEnumerable<NewsPolimi> DownloadCurrentNews2(IEnumerable<HtmlNews> merged)
+    {
         var merged2 = merged.Select(ExtractNews).ToList();
 
         var result = new List<NewsPolimi>();
@@ -46,18 +52,18 @@ public static class PoliMiNewsUtil
                 return result;
             case null:
             {
-                result.AddRange(newsPolimi.Select(item => new HtmlNews() { NodePoliMiHomePage = item }));
+                result.AddRange(newsPolimi.Select(item => new HtmlNews { NodePoliMiHomePage = item }));
                 return result;
             }
             case not null when newsPolimi == null:
             {
-                result.AddRange(urls.Select(item => new HtmlNews() { NodeInEvidenza = item }));
+                result.AddRange(urls.Select(item => new HtmlNews { NodeInEvidenza = item }));
                 return result;
             }
         }
 
-        var nodiPoliMiHomePage = newsPolimi.Select(item => new NodeFlagged() { HtmlNode = item }).ToList();
-        var nodiInEvidenza = urls.Select(item => new NodeFlagged() { HtmlNode = item }).ToList();
+        var nodiPoliMiHomePage = newsPolimi.Select(item => new NodeFlagged { HtmlNode = item }).ToList();
+        var nodiInEvidenza = urls.Select(item => new NodeFlagged { HtmlNode = item }).ToList();
 
         return MergeNotNull(nodiPoliMiHomePage, nodiInEvidenza);
     }
@@ -78,14 +84,13 @@ public static class PoliMiNewsUtil
                 
                 itemHomePage.Flagged = true;
                 itemInEvidenza.Flagged = true;
-                result.Add(new HtmlNews()
-                    { NodeInEvidenza = itemInEvidenza.HtmlNode, NodePoliMiHomePage = itemHomePage.HtmlNode });
+                result.Add(new HtmlNews { NodeInEvidenza = itemInEvidenza.HtmlNode, NodePoliMiHomePage = itemHomePage.HtmlNode });
                 break;
             }
         }
 
-        result.AddRange(from t in nodiPoliMiHomePage where t.Flagged == false select new HtmlNews() { NodePoliMiHomePage = t.HtmlNode });
-        result.AddRange(from t in nodiInEvidenza where t.Flagged == false select new HtmlNews() { NodeInEvidenza = t.HtmlNode });
+        result.AddRange(from t in nodiPoliMiHomePage where t.Flagged == false select new HtmlNews { NodePoliMiHomePage = t.HtmlNode });
+        result.AddRange(from t in nodiInEvidenza where t.Flagged == false select new HtmlNews { NodeInEvidenza = t.HtmlNode });
 
         return result;
     }
@@ -159,6 +164,9 @@ public static class PoliMiNewsUtil
 
     private static NewsPolimi? ExtractNews(HtmlNews htmlNews)
     {
+        if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
+            return null;
+        
         try
         {
             bool? internalNews = null;
@@ -217,6 +225,9 @@ public static class PoliMiNewsUtil
             if (internalNews ?? false)
                 GetContent(result);
 
+            if (result.IsContentEmpty())
+                GetContent(result);
+
             return result;
         }
         catch (Exception ex)
@@ -243,6 +254,41 @@ public static class PoliMiNewsUtil
         {
             // ignored
         }
+
+        if (!(result?.IsContentEmpty() ?? false)) 
+            return;
+        
+        var urls2 = urls1.Where(x => x.GetClasses().Contains("container")).ToList();
+        SetContent(urls2, result);
+    }
+
+    private static void SetContent(IReadOnlyCollection<HtmlNode> urls2, NewsPolimi newsPolimi)
+    {
+        var urls3 = HtmlUtil.GetElementsByTagAndClassName(urls2, "img");
+        AdaptImages(urls3);
+
+        newsPolimi.SetContent(urls2.Select(x => x.OuterHtml).ToList());
+    }
+
+    private static void AdaptImages(IEnumerable<HtmlNode>? urls3)
+    {
+        if (urls3 == null) return;
+        
+        foreach (var x in urls3)
+        {
+            AdaptImage(x);
+        }
+    }
+
+
+    private static void AdaptImage(HtmlNode htmlNode)
+    {
+        var src = htmlNode.Attributes.Contains("src") ? htmlNode.Attributes["src"].Value : "";
+
+        if (!src.StartsWith("http"))
+            src = "https://polimi.it" + src;
+
+        htmlNode.SetAttributeValue("src", src);
     }
 
     /// <summary>
@@ -252,11 +298,16 @@ public static class PoliMiNewsUtil
     public static void LoopGetNews(ThreadWithAction threadWithAction)
     {        
         const int timeToWait = 1000 * 60 * 30; //30 mins
+        var count = 0;
         while (true)
         {
             try
             {
-                GetNews();
+                var r = GetNews();
+                count += r;
+
+                threadWithAction.Partial = r;
+                threadWithAction.Total = count;
             }
             catch (Exception ex)
             {
@@ -273,49 +324,56 @@ public static class PoliMiNewsUtil
     /// <summary>
     ///     Get the latest news from PoliMi and stores them in the database
     /// </summary>
-    private static void GetNews()
+    public static int GetNews()
     {
         var news = DownloadCurrentNews();
+        var count = 0;
         foreach (var newsItem in news)
             try
             {
-                UpdateDbWithNews(newsItem);
+                var r = UpdateDbWithNews(newsItem);
+                if (r == DoneEnum.DONE)
+                    count++;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        return count;
     }
 
-    private static void UpdateDbWithNews(NewsPolimi newsItem)
+    private static DoneEnum UpdateDbWithNews(NewsPolimi newsItem)
     {
         var url = newsItem.GetUrl();
         if (string.IsNullOrEmpty(url))
-            return;
+            return DoneEnum.ERROR;
         
         const string query = "SELECT COUNT(*) FROM Articles WHERE sourceUrl = '@url'";
         var args = new Dictionary<string, object?> { {"@url", url}};
         var results = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
         if (results == null)
-            return;
+            return DoneEnum.SKIPPED;
 
         var result = Database.Database.GetFirstValueFromDataTable(results);
         if (result == null)
-            return;
+            return DoneEnum.SKIPPED;
 
         var num = Convert.ToInt32(result);
         if (num > 0)
-            return; //news already in db
+            return DoneEnum.SKIPPED; //news already in db
 
         InsertItemInDb(newsItem);
+        return DoneEnum.DONE;
     }
 
     private static void InsertItemInDb(NewsPolimi newsItem)//11111
     {
-        const string query1 = "INSERT INTO Articles " +
-                             "(title,subtitle,content,publishTime,sourceUrl,id_author) " +
+        const string query1 = "INSERT IGNORE INTO Articles " +
+                             "(title,subtitle,content,publishTime,sourceUrl,id_author,image,id_tag) " +
                              "VALUES " +
-                             "('@title','@subtitle','@text_','@publishTime','@sourceUrl', @author_id)";
+                             "('@title','@subtitle','@text_','@publishTime','@sourceUrl', @author_id, '@image', '@tag')";
         var args1 = new Dictionary<string, object?>
         {
             {"@sourceUrl", newsItem.GetUrl()},
@@ -323,7 +381,9 @@ public static class PoliMiNewsUtil
             {"@subtitle", newsItem.GetSubtitle()?.Replace("'", "’")},
             {"@text_", newsItem.GetContentAsTextJson()?.Replace("'", "’")},
             {"@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")},
-            {"@author_id", PoliMiAuthorId}
+            {"@author_id", PoliMiAuthorId},
+            {"@image", newsItem.GetImgUrl()},
+            {"@tag", newsItem.GetTag()?.ToUpper()}
         };
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
         
