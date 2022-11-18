@@ -3,7 +3,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
@@ -26,5 +25,14 @@ public static class GlobalVariables
     public static void SetSecrets(JObject? jObject)
     {
         _secrets = jObject;
+    }
+
+    public static DbConfig? GetDbConfig()
+    {
+        if (DbConfigVar != null)
+            return DbConfigVar;
+        
+        DbConfig.InitializeDbConfig();
+        return DbConfigVar;
     }
 }
