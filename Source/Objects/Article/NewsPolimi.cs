@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace PoliFemoBackend.Source.Objects.Article;
+﻿namespace PoliFemoBackend.Source.Objects.Article;
 
 public class NewsPolimi
 {
@@ -61,5 +59,10 @@ public class NewsPolimi
         
         var json = Newtonsoft.Json.JsonConvert.SerializeObject(_content);
         return json.Substring(2, json.Length - 2);
+    }
+
+    public bool IsContentEmpty()
+    {
+        return _content == null || _content.Count == 0 || _content.All(string.IsNullOrEmpty);
     }
 }

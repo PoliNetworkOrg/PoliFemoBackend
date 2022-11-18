@@ -24,7 +24,12 @@ public static class PoliMiNewsUtil
         var docPoliMi = LoadUrl(UrlPoliMiHomePage);
         var newsPolimi = GetNewsPoliMi(docPoliMi);
         var merged = Merge(urls?.ChildNodes, newsPolimi);
-        
+
+        return DownloadCurrentNews2(merged);
+    }
+
+    private static IEnumerable<NewsPolimi> DownloadCurrentNews2(IEnumerable<HtmlNews> merged)
+    {
         var merged2 = merged.Select(ExtractNews).ToList();
 
         var result = new List<NewsPolimi>();
@@ -159,6 +164,9 @@ public static class PoliMiNewsUtil
 
     private static NewsPolimi? ExtractNews(HtmlNews htmlNews)
     {
+        if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
+            return null;
+        
         try
         {
             bool? internalNews = null;
@@ -167,10 +175,7 @@ public static class PoliMiNewsUtil
             string? subtitle = null;
             string? urlImgFinal = null;
             string? tagFinal = null;
-
-            if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
-                return null;
-
+            
             if (htmlNews.NodeInEvidenza == null)
             {
                 var img = HtmlUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")?.First()
@@ -215,6 +220,9 @@ public static class PoliMiNewsUtil
             if (internalNews ?? false)
                 GetContent(result);
 
+            if (result.IsContentEmpty())
+                GetContent(result);
+
             return result;
         }
         catch (Exception ex)
@@ -241,6 +249,41 @@ public static class PoliMiNewsUtil
         {
             // ignored
         }
+
+        if (!(result?.IsContentEmpty() ?? false)) 
+            return;
+        
+        var urls2 = urls1.Where(x => x.GetClasses().Contains("container")).ToList();
+        SetContent(urls2, result);
+    }
+
+    private static void SetContent(IReadOnlyCollection<HtmlNode> urls2, NewsPolimi newsPolimi)
+    {
+        var urls3 = HtmlUtil.GetElementsByTagAndClassName(urls2, "img");
+        AdaptImages(urls3);
+
+        newsPolimi.SetContent(urls2.Select(x => x.OuterHtml).ToList());
+    }
+
+    private static void AdaptImages(IEnumerable<HtmlNode>? urls3)
+    {
+        if (urls3 == null) return;
+        
+        foreach (var x in urls3)
+        {
+            AdaptImage(x);
+        }
+    }
+
+
+    private static void AdaptImage(HtmlNode htmlNode)
+    {
+        var src = htmlNode.Attributes.Contains("src") ? htmlNode.Attributes["src"].Value : "";
+
+        if (!src.StartsWith("http"))
+            src = "https://polimi.it" + src;
+
+        htmlNode.SetAttributeValue("src", src);
     }
 
     /// <summary>

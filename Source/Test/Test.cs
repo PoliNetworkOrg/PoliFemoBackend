@@ -1,7 +1,6 @@
 ﻿#region
 
 using PoliFemoBackend.Source.Utils.News;
-using PoliFemoBackend.Source.Utils.Start;
 
 #endregion
 
