@@ -1,7 +1,5 @@
 ﻿using PoliFemoBackend.Source.Objects.Threading;
 
-using PoliFemoBackend.Source.Utils.News;
-
 
 namespace PoliFemoBackend.Source.Utils.Start;
 
