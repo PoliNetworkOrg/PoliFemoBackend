@@ -40,25 +40,35 @@ public class ArticleByIdController : ControllerBase
             });
 
 
+
         //if results is null
         if (results == null) return StatusCode(500);
 
         if (results.Rows.Count == 0) return NotFound();
 
         //convert results to json
+        var x =0.0;
         var a = new JObject
         {
             { "title", results.Rows[0]["title"].ToString() },
-            { "subtitle", results.Rows[0]["subtitle"].ToString() },
-            { "publishTime", results.Rows[0]["publishTime"].ToString() },
-            { "targetTime", results.Rows[0]["targetTime"].ToString() },
-            { "content", results.Rows[0]["content"].ToString() }
+            { "subtitle", results.Rows[0]["subtitle"].ToString()== "" ? null : results.Rows[0]["subtitle"].ToString()  },
+            { "latitude", results.Rows[0]["latitude"].ToString()== "" ? null : Double.TryParse(results.Rows[0]["latitude"].ToString(), out x)  },
+            { "longitude", results.Rows[0]["longitude"].ToString()== "" ? null : Double.TryParse(results.Rows[0]["longituide"].ToString(), out x)  },
+            //change format of date
+            { "publish_time", DateTime.Parse(results.Rows[0]["publishTime"].ToString()?? "").ToString("yyyy-MM-dd hh:mm:ss") },
+            //{ "target_time", DateTime.Parse(results.Rows[0]["targetTime"].ToString()?? "").ToString("yyyy-MM-dd hh:mm:ss") },	
+            { "content", results.Rows[0]["content"].ToString() },
+            { "image", results.Rows[0]["image"].ToString() == "" ? null : results.Rows[0]["image"].ToString()},
         };
+
+        if(results.Rows[0]["targetTime"].ToString() == "")
+            a.Add("target_time", null);
+        
         var b = new JObject
         {
             { "name", results.Rows[0]["name_"].ToString() },
-            { "image", results.Rows[0]["image"].ToString() },
-            { "link", results.Rows[0]["link"].ToString() }
+            { "link", results.Rows[0]["link"].ToString() }, 
+            { "image", results.Rows[0]["image1"].ToString()},
         };
 
         a.Add("author", b);
