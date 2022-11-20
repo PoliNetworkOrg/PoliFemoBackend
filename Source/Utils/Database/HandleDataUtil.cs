@@ -20,7 +20,7 @@ public static class HandleDataUtil
         return b;
     }
 
-    private static List<DataRow> GetDataRowList(DataRowCollection dataRowCollection)
+    private static IEnumerable<DataRow> GetDataRowList(DataRowCollection dataRowCollection)
     {
         var rows = new List<DataRow>();
         foreach (var row in dataRowCollection)
@@ -37,7 +37,7 @@ public static class HandleDataUtil
         return c;
     }
 
-    private static List<DataColumn> GetDataColumnList(DataColumnCollection resultsColumns)
+    private static IEnumerable<DataColumn> GetDataColumnList(DataColumnCollection resultsColumns)
     {
         var r = new List<DataColumn>();
         foreach (var col in resultsColumns)
