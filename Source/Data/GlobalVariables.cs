@@ -31,7 +31,7 @@ public static class GlobalVariables
     {
         if (DbConfigVar != null)
             return DbConfigVar;
-        
+
         DbConfig.InitializeDbConfig();
         return DbConfigVar;
     }

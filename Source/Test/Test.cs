@@ -1,6 +1,7 @@
 ﻿#region
 
 using Newtonsoft.Json;
+using PoliFemoBackend.Source.Controllers.Articles;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
@@ -14,7 +15,7 @@ public static class Test
         Console.WriteLine("Test");
 
         DbConfig.InitializeDbConfig();
-        var x = Controllers.Articles.ArticleByIdController.SearchArticlesByIdObject(28);
+        var x = ArticleByIdController.SearchArticlesByIdObject(28);
         var json = JsonConvert.SerializeObject(x);
         Console.WriteLine(json);
     }
