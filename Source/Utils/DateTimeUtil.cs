@@ -1,4 +1,6 @@
-﻿namespace PoliFemoBackend.Source.Utils;
+﻿using Newtonsoft.Json.Linq;
+
+namespace PoliFemoBackend.Source.Utils;
 
 public static class DateTimeUtil
 {
@@ -37,5 +39,10 @@ public static class DateTimeUtil
         {
             return null;
         }
+    }
+
+    public static string? ConvertToMySqlString(DateTime? dateTime)
+    {
+        return dateTime?.ToString("yyyy-MM-dd hh:mm:ss");
     }
 }
