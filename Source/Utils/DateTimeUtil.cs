@@ -43,6 +43,6 @@ public static class DateTimeUtil
 
     public static string? ConvertToMySqlString(DateTime? dateTime)
     {
-        return dateTime?.ToString("yyyy-MM-dd hh:mm:ss");
+        return dateTime?.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
     }
 }
