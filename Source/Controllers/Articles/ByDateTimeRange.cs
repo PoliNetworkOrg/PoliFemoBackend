@@ -1,6 +1,7 @@
 ﻿#region
 
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Database;
 
@@ -21,20 +22,30 @@ public class ArticlesByDateTimeRange : ControllerBase
 {
     [MapToApiVersion("1.0")]
     [HttpGet]
-    [HttpPost]
-    public ObjectResult SearchArticlesByDateRange(string start, string end)
+    public ActionResult SearchArticlesByDateRange(string start, string end)
     {
         var startDateTime = Utils.DateTimeUtil.ConvertToDateTime(start) ?? DateTime.Now;
         var endDateTime = Utils.DateTimeUtil.ConvertToDateTime(end) ?? DateTime.Now;
         var results = Database.ExecuteSelect(
-            "SELECT * FROM Articles WHERE publishTime >= @start AND publishTime <= @end",
+            "SELECT * FROM ArticlesWithAuthors_View WHERE publishTime >= @start AND publishTime <= @end",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
-                { "@start", start },
-                { "@end", end }
+                { "@start", startDateTime },
+                { "@end", endDateTime }
             });
 
-        return Ok(results);
+        if (results == null || results.Rows.Count == 0)
+            return NotFound();
+
+        var resultsJArray = Utils.ArticleUtil.ArticleAuthorsRowsToJArray(results);
+
+        var r = new JObject
+        {
+            ["result"] = resultsJArray,
+            ["start"] = startDateTime,
+            ["end"] = endDateTime
+        };
+        return Ok(r);
     }
 }

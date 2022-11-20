@@ -156,4 +156,14 @@ public static class ArticleUtil
         a.Add("author", b);
         return a;
     }
+
+    public static JArray ArticleAuthorsRowsToJArray(DataTable results)
+    {
+        var r = new JArray();
+        foreach (DataRow dr in results.Rows)
+        {
+            r.Add(ArticleAuthorsRowToJObject(dr));
+        }
+        return r;
+    }
 }
