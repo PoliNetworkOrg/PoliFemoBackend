@@ -12,9 +12,15 @@ public static class Test
     public static void TestMain()
     {
         Console.WriteLine("Test");
+<<<<<<<
         DbConfig.InitializeDbConfig();
         var x = Controllers.Articles.ArticleByIdController.SearchArticlesByIdObject(28);
         var json = JsonConvert.SerializeObject(x);
         Console.WriteLine(json);
+=======
+        //var r = PoliMiNewsUtil.DownloadCurrentNews();
+        var x = PoliMiNewsUtil.GetNews();
+        Console.WriteLine(x);
+>>>>>>>
     }
 }

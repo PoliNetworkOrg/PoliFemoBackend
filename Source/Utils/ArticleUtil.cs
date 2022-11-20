@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Objects;
+using PoliFemoBackend.Source.Objects.Article;
 
 #endregion
 
@@ -117,6 +117,6 @@ public static class ArticleUtil
             { "@content", content },
             { "@rid", idOld }
         };
-        return Database.Execute(q, GlobalVariables.DbConfigVar, paramsDict);
+        return Database.Database.Execute(q, GlobalVariables.DbConfigVar, paramsDict);
     }
 }

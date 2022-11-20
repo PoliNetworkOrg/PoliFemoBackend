@@ -28,7 +28,7 @@ public class InsertArticle : ControllerBase
     [HttpGet]
     public ObjectResult InsertArticleDb(string? title, string? content) //todo: da pensare il sistema dei permessi
     {
-        if (AuthUtil.hasPermission(AuthUtil.GetSubject(Request.Headers["Authorization"]), "pubblicare_articoli"))
+        if (AuthUtil.HasPermission(AuthUtil.GetSubject(Request.Headers["Authorization"]), "pubblicare_articoli"))
         {
             var result = ArticleUtil.InsertArticle(title, content, null);
             return Ok(result);

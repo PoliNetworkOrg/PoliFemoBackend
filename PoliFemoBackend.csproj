@@ -15,12 +15,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="Other\DB\DBPolifemo.SQL"/>
+        <None Remove="Other\DB\DBPolifemo.SQL" />
     </ItemGroup>
 
     <ItemGroup>
-        <_WebToolingArtifacts Remove="Properties\PublishProfiles\linux-x64.pubxml"/>
-        <_WebToolingArtifacts Remove="Properties\PublishProfiles\win-x64.pubxml"/>
+        <_WebToolingArtifacts Remove="Properties\PublishProfiles\linux-x64.pubxml" />
+        <_WebToolingArtifacts Remove="Properties\PublishProfiles\win-x64.pubxml" />
     </ItemGroup>
 
     <ItemGroup>
