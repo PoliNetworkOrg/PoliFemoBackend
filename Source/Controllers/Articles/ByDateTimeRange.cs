@@ -10,9 +10,6 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
-
 [ApiController]
 [ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Articles")]
@@ -20,6 +17,16 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 [Route("/articles/timerange/{start}/{end}")]
 public class ArticlesByDateTimeRange : ControllerBase
 {
+    /// <summary>
+    ///     Search articles by time range.
+    /// </summary>
+    /// <remarks>
+    ///     If one of the parameters is invalid, today's date will be used.
+    /// </remarks>
+    /// <returns>A json list of articles</returns>
+    /// <response code="200">Returns articles</response>
+    /// <response code="500">Can't connect to server</response>
+    /// <response code="404">No available articles</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
     public ActionResult SearchArticlesByDateRange(string? start, string? end)
@@ -48,7 +55,7 @@ public class ArticlesByDateTimeRange : ControllerBase
 
         var r = new JObject
         {
-            ["result"] = resultsJArray,
+            ["results"] = resultsJArray,
             ["start"] = startDateTime,
             ["end"] = endDateTime
         };
