@@ -33,7 +33,7 @@ public class ArticlesByDateTimeRange : ControllerBase
         var startDateTime = Utils.DateTimeUtil.ConvertToMySqlString(Utils.DateTimeUtil.ConvertToDateTime(start) ?? DateTime.Now);
         var endDateTime = Utils.DateTimeUtil.ConvertToMySqlString(Utils.DateTimeUtil.ConvertToDateTime(end) ?? DateTime.Now);
         var results = Database.ExecuteSelect(
-            "SELECT * FROM ArticlesWithAuthors_View WHERE publishTime >= @start AND publishTime <= @end",
+            "SELECT * FROM ArticlesWithAuthors_View WHERE publishTime >= '@start' AND publishTime <= '@end'",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
