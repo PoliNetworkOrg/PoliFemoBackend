@@ -42,21 +42,19 @@ public class ArticleByIdController : ControllerBase
 
 
         //if results is null
-        if (results == null) return StatusCode(500);
-
-        if (results.Rows.Count == 0) return NotFound();
+        if (results == null) return NotFound();
 
         //convert results to json
-        var x =0.0;
+        
         var a = new JObject
         {
             { "title", results.Rows[0]["title"].ToString() },
             { "subtitle", results.Rows[0]["subtitle"].ToString()== "" ? null : results.Rows[0]["subtitle"].ToString()  },
-            { "latitude", results.Rows[0]["latitude"].ToString()== "" ? null : Double.TryParse(results.Rows[0]["latitude"].ToString(), out x)  },
-            { "longitude", results.Rows[0]["longitude"].ToString()== "" ? null : Double.TryParse(results.Rows[0]["longituide"].ToString(), out x)  },
+            { "latitude", results.Rows[0]["latitude"].ToString()== "" ? null : Double.Parse(results.Rows[0]["latitude"].ToString() ?? "")  },
+            { "longitude", results.Rows[0]["longitude"].ToString()== "" ? null : Double.Parse(results.Rows[0]["longituide"].ToString() ?? "")  },
             //change format of date
             { "publish_time", DateTime.Parse(results.Rows[0]["publishTime"].ToString()?? "").ToString("yyyy-MM-dd hh:mm:ss") },
-            //{ "target_time", DateTime.Parse(results.Rows[0]["targetTime"].ToString()?? "").ToString("yyyy-MM-dd hh:mm:ss") },	
+            { "target_time", DateTime.Parse(results.Rows[0]["targetTime"].ToString()?? "").ToString("yyyy-MM-dd hh:mm:ss") },	
             { "content", results.Rows[0]["content"].ToString() },
             { "image", results.Rows[0]["image"].ToString() == "" ? null : results.Rows[0]["image"].ToString()},
         };
