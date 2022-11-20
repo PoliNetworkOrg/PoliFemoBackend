@@ -1,11 +1,6 @@
 ﻿#region
 
 using Microsoft.AspNetCore.Mvc;
-<<<<<<<
-
-=======
-
->>>>>>>
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Database;
@@ -79,12 +74,9 @@ public class ArticleByIdController : ControllerBase
         };
 
         a.Add("author", b);
-<<<<<<<
 
-        return Ok(a);
-=======
 
         return a;
->>>>>>>
+
     }
 }
