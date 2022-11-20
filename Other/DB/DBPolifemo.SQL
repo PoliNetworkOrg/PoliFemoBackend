@@ -1,5 +1,14 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Authors
+=======
+create or replace table Authors
+>>>>>>> dev
+=======
+create
+or replace table Authors
+>>>>>>> dev2
 (
     id_author int(10) auto_increment
         primary key,
@@ -8,22 +17,49 @@ or replace table Authors
     image     varchar(100) null
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Days
+=======
+create or replace table Days
+>>>>>>> dev
+=======
+create
+or replace table Days
+>>>>>>> dev2
 (
     giorno date not null
         primary key
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Grants
+=======
+create or replace table Grants
+>>>>>>> dev
+=======
+create
+or replace table Grants
+>>>>>>> dev2
 (
     name_grant varchar(100) not null
         primary key
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table `Groups`
+=======
+create or replace table `Groups`
+>>>>>>> dev
+=======
+create
+or replace table `Groups`
+>>>>>>> dev2
 (
     class                    varchar(100)                                            null,
     office                   enum ('Bovisa', 'Como', 'Cremona', 'Lecco', 'Leonardo') null,
@@ -41,16 +77,34 @@ or replace table `Groups`
     Linkfunzionante          enum ('Y', 'N')                                         null
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Tags
+=======
+create or replace table Tags
+>>>>>>> dev
+=======
+create
+or replace table Tags
+>>>>>>> dev2
 (
     name  varchar(100) not null
         primary key,
     image varchar(100) null
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Articles
+=======
+create or replace table Articles
+>>>>>>> dev
+=======
+create
+or replace table Articles
+>>>>>>> dev2
 (
     id_article  int unsigned auto_increment
         primary key,
@@ -70,23 +124,50 @@ or replace table Articles
         foreign key (id_tag) references Tags (name)
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Types
+=======
+create or replace table Types
+>>>>>>> dev
+=======
+create
+or replace table Types
+>>>>>>> dev2
 (
     id_tipologia int unsigned auto_increment
         primary key,
     name         enum ('Festivo', 'Esame', 'Esame di profitto', 'Lauree Magistrali', 'Lezione', 'Sabato', 'Lauree 1 liv', 'Altre attività', 'Vacanza', 'Prova in itinere') null
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Users
+=======
+create or replace table Users
+>>>>>>> dev
+=======
+create
+or replace table Users
+>>>>>>> dev2
 (
     id_utente varchar(100) not null
         primary key
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table appartiene
+=======
+create or replace table appartiene
+>>>>>>> dev
+=======
+create
+or replace table appartiene
+>>>>>>> dev2
 (
     giorno       date         not null,
     id_tipologia int unsigned not null,
@@ -97,12 +178,25 @@ or replace table appartiene
         foreign key (id_tipologia) references Types (id_tipologia)
 );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dev2
 create
 or replace index id_tipologia
     on appartiene (id_tipologia);
 
 create
 or replace table permission
+<<<<<<< HEAD
+=======
+create or replace index id_tipologia
+    on appartiene (id_tipologia);
+
+create or replace table permission
+>>>>>>> dev
+=======
+>>>>>>> dev2
 (
     id_grant varchar(200) not null,
     id_user  varchar(100) not null,

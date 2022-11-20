@@ -36,6 +36,7 @@ public class ArticleByIdController : ControllerBase
     public static JObject? SearchArticlesByIdObject(int id)
     {
 
+
         var results = Database.ExecuteSelect(
             "SELECT * FROM Articles, Authors  WHERE id_article = @id AND Articles.id_author = Authors.id_author",
             GlobalVariables.DbConfigVar,
@@ -75,6 +76,7 @@ public class ArticleByIdController : ControllerBase
         };
 
         a.Add("author", b);
+
 
 
 
