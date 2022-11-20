@@ -7,7 +7,6 @@ public static class ThreadStartUtil
 {
     private static ThreadWithAction? _getNewsThreadWithAction;
 
-
     public static void ThreadStartMethod()
     {
         _getNewsThreadWithAction = new ThreadWithAction();

@@ -5,6 +5,7 @@ using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Article;
 using PoliFemoBackend.Source.Objects.Threading;
+using PoliFemoBackend.Source.Objects.Types;
 
 #endregion
 
@@ -32,13 +33,7 @@ public static class PoliMiNewsUtil
     private static IEnumerable<NewsPolimi> DownloadCurrentNews2(IEnumerable<HtmlNews> merged)
     {
         var merged2 = merged.Select(ExtractNews).ToList();
-
-        var result = new List<NewsPolimi>();
-        foreach (var item in merged2)
-            if (item != null)
-                result.Add(item);
-
-        return result;
+        return (from item in merged2 where item.IsPresent select item.GetValue()).ToList();
     }
 
     private static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls, IReadOnlyCollection<HtmlNode>? newsPolimi)
@@ -166,10 +161,10 @@ public static class PoliMiNewsUtil
         return doc;
     }
 
-    private static NewsPolimi? ExtractNews(HtmlNews htmlNews)
+    private static Optional<NewsPolimi> ExtractNews(HtmlNews htmlNews)
     {
         if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
-            return null;
+            return new Optional<NewsPolimi>();
 
         try
         {
@@ -224,14 +219,14 @@ public static class PoliMiNewsUtil
             if (result.IsContentEmpty())
                 GetContent(result);
 
-            return result;
+            return new Optional<NewsPolimi>(result);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
         }
 
-        return null;
+        return new Optional<NewsPolimi>();
     }
 
     private static void GetContent(NewsPolimi? result)
@@ -317,7 +312,7 @@ public static class PoliMiNewsUtil
     /// <summary>
     ///     Get the latest news from PoliMi and stores them in the database
     /// </summary>
-    public static int GetNews()
+    private static int GetNews()
     {
         var news = DownloadCurrentNews();
         var count = 0;

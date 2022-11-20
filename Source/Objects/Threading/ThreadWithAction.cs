@@ -4,7 +4,6 @@ public class ThreadWithAction
 {
     private Action? _action;
     private Thread? _thread;
-
     public int Failed = 0;
     public int Partial = 0;
     public int Total = 0;
