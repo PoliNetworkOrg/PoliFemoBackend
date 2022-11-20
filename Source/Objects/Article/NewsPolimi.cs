@@ -10,6 +10,11 @@ public class NewsPolimi
     private readonly string? _tag;
     private readonly string? _imgUrl;
 
+    public NewsPolimi()
+    {
+        
+    }
+
     public NewsPolimi(bool internalNews, string url, string title, string subtitle, string tag, string imgUrl)
     {
         _internalNews = internalNews;

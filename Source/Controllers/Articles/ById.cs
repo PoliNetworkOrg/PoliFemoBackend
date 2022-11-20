@@ -64,7 +64,7 @@ public class ArticleByIdController : ControllerBase
             { "publish_time", Utils.DateTimeUtil.ConvertToDateTime(row["publishTime"].ToString()?? "")?.ToString("yyyy-MM-dd hh:mm:ss") },
             { "target_time", Utils.DateTimeUtil.ConvertToDateTime(row["targetTime"].ToString()?? "")?.ToString("yyyy-MM-dd hh:mm:ss") },	
             { "content", row["content"].ToString() },
-            { "image", row["image"].ToString() == "" ? null : row["image"].ToString()},
+            { "image", row["image"].ToString() == "" ? null : row["image"].ToString()}
         };
       
         
@@ -72,7 +72,7 @@ public class ArticleByIdController : ControllerBase
         {
             { "name", row["name_"].ToString() },
             { "link", row["link"].ToString() }, 
-            { "image", row["image1"].ToString()},
+            { "image", row["image1"].ToString()}
         };
 
         a.Add("author", b);
