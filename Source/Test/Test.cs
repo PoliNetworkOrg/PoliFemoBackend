@@ -15,7 +15,7 @@ public static class Test
         Console.WriteLine("Test");
 
         DbConfig.InitializeDbConfig();
-        var x = ArticleByIdController.(28);
+        var x = ArticlesByDateTimeRange.SearchArticlesByDateRangeAsJobject(null, null);
         var json = JsonConvert.SerializeObject(x);
         Console.WriteLine(json);
     }

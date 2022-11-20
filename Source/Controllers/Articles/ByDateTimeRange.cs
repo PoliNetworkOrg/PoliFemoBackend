@@ -22,16 +22,16 @@ public class ArticlesByDateTimeRange : ControllerBase
 {
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ActionResult SearchArticlesByDateRange(string start, string end)
+    public ActionResult SearchArticlesByDateRange(string? start, string? end)
     {
         var r = SearchArticlesByDateRangeAsJobject(start, end);
         return r == null ? NotFound() : Ok(r);
     }
 
-    private static JObject? SearchArticlesByDateRangeAsJobject(string start, string end)
+    public static JObject? SearchArticlesByDateRangeAsJobject(string? start, string? end)
     {
-        var startDateTime = Utils.DateTimeUtil.ConvertToDateTime(start) ?? DateTime.Now;
-        var endDateTime = Utils.DateTimeUtil.ConvertToDateTime(end) ?? DateTime.Now;
+        var startDateTime = Utils.DateTimeUtil.ConvertToMySqlString(Utils.DateTimeUtil.ConvertToDateTime(start) ?? DateTime.Now);
+        var endDateTime = Utils.DateTimeUtil.ConvertToMySqlString(Utils.DateTimeUtil.ConvertToDateTime(end) ?? DateTime.Now);
         var results = Database.ExecuteSelect(
             "SELECT * FROM ArticlesWithAuthors_View WHERE publishTime >= @start AND publishTime <= @end",
             GlobalVariables.DbConfigVar,

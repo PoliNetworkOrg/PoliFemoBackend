@@ -33,7 +33,7 @@ public class ArticleByIdController : ControllerBase
         return a == null ? NotFound() : Ok(a);
     }
 
-    public static JObject? SearchArticlesByIdObject(int id)
+    private static JObject? SearchArticlesByIdObject(int id)
     {
         var results = Database.ExecuteSelect(
             "SELECT * FROM ArticlesWithAuthors_View  WHERE id_article = @id",

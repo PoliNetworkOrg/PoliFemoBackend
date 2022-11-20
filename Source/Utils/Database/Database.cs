@@ -37,7 +37,7 @@ public static class Database
         return numberOfRowsAffected ?? -1;
     }
 
-    public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)
+    public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object?> args = null)
     {
         if (dbConfig == null) return default;
 

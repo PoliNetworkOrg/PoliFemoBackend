@@ -135,11 +135,11 @@ public static class ArticleUtil
             //change format of date
             {
                 "publish_time",
-                DateTimeUtil.ConvertToDateTime(row["publishTime"].ToString() ?? "")?.ToString("yyyy-MM-dd hh:mm:ss")
+                 DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["publishTime"].ToString() ?? ""))
             },
             {
                 "target_time",
-                DateTimeUtil.ConvertToDateTime(row["targetTime"].ToString() ?? "")?.ToString("yyyy-MM-dd hh:mm:ss")
+                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["targetTime"].ToString() ?? ""))
             },
             { "content", row["content"].ToString() },
             { "image", row["image"].ToString() == "" ? null : row["image"].ToString() }
