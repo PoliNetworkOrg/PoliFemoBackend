@@ -8,31 +8,24 @@ using PoliFemoBackend.Source.Utils.Database;
 
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
-[ApiController]
-[ApiVersion("1.0")]
+
 [Route("v{version:apiVersion}/[controller]")]
 [Route("[controller]")]
+
+[ApiController]
+[ApiVersion("1.0")]
+[ApiExplorerSettings(GroupName = "Articles")]
+[Route("v{version:apiVersion}/articles/timerange/{start}/{end}")]
+[Route("/articles/timerange/{start}/{end}")]
 public class ArticlesByDateTimeRange : ControllerBase
 {
     [MapToApiVersion("1.0")]
     [HttpGet]
     [HttpPost]
-    // public ObjectResult SearchArticles(DateTime? start, DateTime? end)
-    // {
-    //     try
-    //     {
-    //         var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
-    //         return articlesToSearchInto == null
-    //             ? ResultUtil.ExceptionResult(exception)
-    //             : Ok(ArticleUtil.FilterByDateTimeRange(articlesToSearchInto, start, end));
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         return ResultUtil.ExceptionResult(ex);
-    //     }
-    // }
     public ObjectResult SearchArticlesByDateRange(string start, string end)
     {
+        var startDateTime = Utils.DateTimeUtil.ConvertToDateTime(start) ?? DateTime.Now;
+        var endDateTime = Utils.DateTimeUtil.ConvertToDateTime(end) ?? DateTime.Now;
         var results = Database.ExecuteSelect(
             "SELECT * FROM Articles WHERE publishTime >= @start AND publishTime <= @end",
             GlobalVariables.DbConfigVar,

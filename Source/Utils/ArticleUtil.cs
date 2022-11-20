@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Data;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Article;
@@ -118,5 +119,41 @@ public static class ArticleUtil
             { "@rid", idOld }
         };
         return Database.Database.Execute(q, GlobalVariables.DbConfigVar, paramsDict);
+    }
+
+    public static JObject ArticleAuthorsRowToJObject(DataRow row)
+    {
+        //convert results to json
+        var a = new JObject
+        {
+            { "title", row["title"].ToString() },
+            { "subtitle", row["subtitle"].ToString() == "" ? null : row["subtitle"].ToString() },
+            { "latitude", row["latitude"].ToString() == "" ? null : double.Parse(row["latitude"].ToString() ?? "") },
+            {
+                "longitude", row["longitude"].ToString() == "" ? null : double.Parse(row["longituide"].ToString() ?? "")
+            },
+            //change format of date
+            {
+                "publish_time",
+                DateTimeUtil.ConvertToDateTime(row["publishTime"].ToString() ?? "")?.ToString("yyyy-MM-dd hh:mm:ss")
+            },
+            {
+                "target_time",
+                DateTimeUtil.ConvertToDateTime(row["targetTime"].ToString() ?? "")?.ToString("yyyy-MM-dd hh:mm:ss")
+            },
+            { "content", row["content"].ToString() },
+            { "image", row["image"].ToString() == "" ? null : row["image"].ToString() }
+        };
+
+
+        var b = new JObject
+        {
+            { "name", row["author_name"].ToString() },
+            { "link", row["author_link"].ToString() },
+            { "image", row["author_image"].ToString() }
+        };
+
+        a.Add("author", b);
+        return a;
     }
 }
