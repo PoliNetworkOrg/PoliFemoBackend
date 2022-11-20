@@ -1,9 +1,14 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Authors
 =======
 create or replace table Authors
 >>>>>>> dev
+=======
+create
+or replace table Authors
+>>>>>>> dev2
 (
     id_author int(10) auto_increment
         primary key,
@@ -13,33 +18,48 @@ create or replace table Authors
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Days
 =======
 create or replace table Days
 >>>>>>> dev
+=======
+create
+or replace table Days
+>>>>>>> dev2
 (
     giorno date not null
         primary key
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Grants
 =======
 create or replace table Grants
 >>>>>>> dev
+=======
+create
+or replace table Grants
+>>>>>>> dev2
 (
     name_grant varchar(100) not null
         primary key
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table `Groups`
 =======
 create or replace table `Groups`
 >>>>>>> dev
+=======
+create
+or replace table `Groups`
+>>>>>>> dev2
 (
     class                    varchar(100)                                            null,
     office                   enum ('Bovisa', 'Como', 'Cremona', 'Lecco', 'Leonardo') null,
@@ -58,11 +78,16 @@ create or replace table `Groups`
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Tags
 =======
 create or replace table Tags
 >>>>>>> dev
+=======
+create
+or replace table Tags
+>>>>>>> dev2
 (
     name  varchar(100) not null
         primary key,
@@ -70,11 +95,16 @@ create or replace table Tags
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Articles
 =======
 create or replace table Articles
 >>>>>>> dev
+=======
+create
+or replace table Articles
+>>>>>>> dev2
 (
     id_article  int unsigned auto_increment
         primary key,
@@ -95,11 +125,16 @@ create or replace table Articles
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Types
 =======
 create or replace table Types
 >>>>>>> dev
+=======
+create
+or replace table Types
+>>>>>>> dev2
 (
     id_tipologia int unsigned auto_increment
         primary key,
@@ -107,22 +142,32 @@ create or replace table Types
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table Users
 =======
 create or replace table Users
 >>>>>>> dev
+=======
+create
+or replace table Users
+>>>>>>> dev2
 (
     id_utente varchar(100) not null
         primary key
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 create
 or replace table appartiene
 =======
 create or replace table appartiene
 >>>>>>> dev
+=======
+create
+or replace table appartiene
+>>>>>>> dev2
 (
     giorno       date         not null,
     id_tipologia int unsigned not null,
@@ -134,18 +179,24 @@ create or replace table appartiene
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dev2
 create
 or replace index id_tipologia
     on appartiene (id_tipologia);
 
 create
 or replace table permission
+<<<<<<< HEAD
 =======
 create or replace index id_tipologia
     on appartiene (id_tipologia);
 
 create or replace table permission
 >>>>>>> dev
+=======
+>>>>>>> dev2
 (
     id_grant varchar(200) not null,
     id_user  varchar(100) not null,

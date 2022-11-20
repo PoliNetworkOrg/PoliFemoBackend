@@ -1,21 +1,20 @@
+using Newtonsoft.Json;
+
 namespace PoliFemoBackend.Source.Objects.Article;
 
 public class NewsPolimi
 {
-    private List<string>? _content; //list of html objects (as strings)
-
-
+    private readonly string? _imgUrl;
 
 
     private readonly bool _internalNews;
     private readonly string? _subtitle;
-    private readonly string? _title;
-    private readonly string? _url;
 
     private readonly string? _tag;
-    private readonly string? _imgUrl;
+    private readonly string? _title;
+    private readonly string? _url;
+    private List<string>? _content; //list of html objects (as strings)
 
-    
 
     public NewsPolimi(bool internalNews, string url, string title, string subtitle, string tag, string imgUrl)
     {
@@ -27,7 +26,6 @@ public class NewsPolimi
         _imgUrl = imgUrl;
     }
 
-  
 
     public string? GetUrl()
     {
@@ -63,13 +61,13 @@ public class NewsPolimi
     {
         if (_content == null)
             return null;
-        
-        var json = Newtonsoft.Json.JsonConvert.SerializeObject(_content);
+
+        var json = JsonConvert.SerializeObject(_content);
         return json.Trim();
     }
 
     public bool IsContentEmpty()
-    {   
+    {
         return _content == null || _content.Count == 0 || _content.All(string.IsNullOrEmpty);
     }
 }
