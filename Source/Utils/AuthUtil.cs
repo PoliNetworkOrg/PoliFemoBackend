@@ -68,6 +68,19 @@ public static class AuthUtil
         return results != null;
     }
 
+    public static bool HasGrantAndObjectPermission(string? userid, string permission, int objectid) {
+        var results = Database.Database.ExecuteSelect(
+            "SELECT id_grant FROM permission WHERE id_user='@userid' AND id_grant='@permission'AND id_object=@objectid",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@userid", userid },
+                { "@permission", permission },
+                { "@objectid", objectid }
+            });
+        return results != null;
+    }
+
     public static string?[] GetPermissions(string? userid)
     {
         var results = Database.Database.ExecuteSelect(
