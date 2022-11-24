@@ -1,47 +1,64 @@
 ﻿#region
 
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
+
 [ApiController]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
+[ApiExplorerSettings(GroupName = "Articles")]
+[Route("v{version:apiVersion}/articles/timerange/{start}/{end}")]
+[Route("/articles/timerange/{start}/{end}")]
 public class ArticlesByDateTimeRange : ControllerBase
 {
+    /// <summary>
+    ///     Search articles by time range.
+    /// </summary>
+    /// <remarks>
+    ///     If one of the parameters is invalid, today's date will be used.
+    /// </remarks>
+    /// <returns>A json list of articles</returns>
+    /// <response code="200">Returns articles</response>
+    /// <response code="500">Can't connect to server</response>
+    /// <response code="404">No available articles</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    [HttpPost]
-    // public ObjectResult SearchArticles(DateTime? start, DateTime? end)
-    // {
-    //     try
-    //     {
-    //         var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
-    //         return articlesToSearchInto == null
-    //             ? ResultUtil.ExceptionResult(exception)
-    //             : Ok(ArticleUtil.FilterByDateTimeRange(articlesToSearchInto, start, end));
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         return ResultUtil.ExceptionResult(ex);
-    //     }
-    // }
-    public ObjectResult SearchArticlesByDateRange(string start, string end)
+    public ActionResult SearchArticlesByDateRange(string? start, string? end)
     {
+        var r = SearchArticlesByDateRangeAsJobject(start, end);
+        return r == null ? NotFound() : Ok(r);
+    }
+
+    public static JObject? SearchArticlesByDateRangeAsJobject(string? start, string? end)
+    {
+        var startDateTime = Utils.DateTimeUtil.ConvertToMySqlString(Utils.DateTimeUtil.ConvertToDateTime(start) ?? DateTime.Now);
+        var endDateTime = Utils.DateTimeUtil.ConvertToMySqlString(Utils.DateTimeUtil.ConvertToDateTime(end) ?? DateTime.Now);
         var results = Database.ExecuteSelect(
-            "SELECT * FROM Articles WHERE publishTime >= @start AND publishTime <= @end",
+            "SELECT * FROM ArticlesWithAuthors_View WHERE publishTime >= '@start' AND publishTime <= '@end'",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
-                { "@start", start },
-                { "@end", end }
+                { "@start", startDateTime },
+                { "@end", endDateTime }
             });
 
-        return Ok(results);
+        if (results == null || results.Rows.Count == 0)
+            return null;
+
+        var resultsJArray = Utils.ArticleUtil.ArticleAuthorsRowsToJArray(results);
+
+        var r = new JObject
+        {
+            ["results"] = resultsJArray,
+            ["start"] = startDateTime,
+            ["end"] = endDateTime
+        };
+        return r;
     }
 }

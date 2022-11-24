@@ -1,3 +1,4 @@
 # PoliFemoBackend
 
-Scritto in C#
+* Scritto in C#
+* Backend dell'app https://github.com/PoliNetworkOrg/PoliFemo

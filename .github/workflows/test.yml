@@ -1,0 +1,25 @@
+name: .NET Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    name: Build (Test)
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build PoliFemoBackend.csproj /p:DeployOnBuild=true /p:Configuration=Release /p:Platform="x64" /p:PublishProfile=Properties/PublishProfiles/linux-x64.pubxml

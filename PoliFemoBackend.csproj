@@ -36,18 +36,18 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="4.3.0" />
-        <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.3.0" />
-        <PackageReference Include="EPPlus" Version="6.0.8" />
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.10" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
-        <PackageReference Include="Mysql.Data" Version="8.0.31" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.24.0" />
+        <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="4.3.0"/>
+        <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.3.0"/>
+        <PackageReference Include="EPPlus" Version="6.1.1"/>
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.46"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.10"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0"/>
+        <PackageReference Include="Mysql.Data" Version="8.0.31"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.0"/>
     </ItemGroup>
 
     <ItemGroup>

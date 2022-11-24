@@ -3,7 +3,7 @@
 using System.Net;
 using System.Text;
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Objects;
+using PoliFemoBackend.Source.Objects.Web;
 
 #endregion
 
@@ -34,7 +34,7 @@ public static class HtmlUtil
     }
 
     internal static List<HtmlNode>? GetElementsByTagAndClassName(HtmlNode? doc, string tag = "",
-        string className = "", long? limit = null)
+        string? className = "", long? limit = null)
     {
         if (doc == null) return null;
 
@@ -163,5 +163,15 @@ public static class HtmlUtil
             default:
                 return null;
         }
+    }
+
+    public static IEnumerable<HtmlNode> GetElementsByTagAndClassName(IEnumerable<HtmlNode> list, string tag)
+    {
+        var results = new List<HtmlNode>();
+        foreach (var r in list.Select(x => GetElementsByTagAndClassName(x, tag)))
+            if (r != null)
+                results.AddRange(r);
+
+        return results;
     }
 }

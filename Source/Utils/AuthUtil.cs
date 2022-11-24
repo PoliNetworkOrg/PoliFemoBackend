@@ -55,9 +55,9 @@ public static class AuthUtil
     }
 
 
-    public static bool hasPermission(string? userid, string permission)
+    public static bool HasPermission(string? userid, string permission)
     {
-        var results = Database.ExecuteSelect(
+        var results = Database.Database.ExecuteSelect(
             "SELECT id_grant FROM permission, Grants, Users WHERE id_utente=sha2('@userid', 256) AND id_grant='@permission'",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
@@ -68,9 +68,21 @@ public static class AuthUtil
         return results != null;
     }
 
-    public static string?[] getPermissions(string? userid)
+    public static bool HasGrantAndObjectPermission(string? userid, string permission, int objectid) {
+        var results = Database.Database.ExecuteSelect("SELECT id_grant FROM permission WHERE id_user=sha2('@userid', 256) AND id_grant='@permission' AND id_object=@objectid",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@userid", userid },
+                { "@permission", permission },
+                { "@objectid", objectid }
+            });
+        return results != null;
+    }
+
+    public static string?[] GetPermissions(string? userid)
     {
-        var results = Database.ExecuteSelect(
+        var results = Database.Database.ExecuteSelect(
             "SELECT DISTINCT name_grant FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente AND id_utente=sha2('@userid', 256)",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>

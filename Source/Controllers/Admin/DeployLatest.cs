@@ -22,7 +22,7 @@ public class DeployLatestController : ControllerBase
     /// <returns></returns>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ObjectResult DeployLatest(string token, Boolean development)
+    public ObjectResult DeployLatest(string token, string env = "prod")
     {
         try
         {
@@ -41,10 +41,7 @@ public class DeployLatestController : ControllerBase
                         RedirectStandardOutput = true, CreateNoWindow = true
                     };
 
-                    if (development)
-                    {
-                        processStartInfo.Arguments = "service polifemodev restart";
-                    }
+                    if (env == "dev") processStartInfo.Arguments = "service polifemodev restart";
                     var process = new Process { StartInfo = processStartInfo };
                     process.Start();
                 }

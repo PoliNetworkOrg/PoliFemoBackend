@@ -11,7 +11,7 @@ if [ "$1" = "dev" ]
     echo "Downloading dev build..."
     GH_PAT=$(cat secrets.json | jq -r '.GitHubToken')
     ARTIFACT_URL=$(curl -s https://api.github.com/repos/PoliNetworkOrg/PoliFemoBackend/actions/artifacts | jq -r ".artifacts[0].archive_download_url")
-    wget --header="Authorization: Bearer $GH_PAT" $ARTIFACT_URL -q
+    wget --header="Authorization: Bearer $GH_PAT" $ARTIFACT_URL -q -O zip
     unzip -o zip
   else
     echo "Downloading prod build..."
