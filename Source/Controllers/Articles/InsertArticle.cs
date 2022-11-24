@@ -2,8 +2,10 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Database;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Utils;
+
 
 #endregion
 
@@ -29,6 +31,7 @@ public class InsertArticle : ControllerBase
     /// <param name="longitude">longitude of the event's position, must be provided with latitude</param>
     /// <param name="image">the image url</param>
     /// <param name="id_author">the author's id, must be a valid id</param>
+    /// <param name="user_id">the user_id relative to author id</param>
     /// <param name="sourceUrl">the source url?</param>
     /// <response code="200">Returns the article object</response>
     /// <response code="403">The user does not have enough permissions</response>
@@ -36,78 +39,89 @@ public class InsertArticle : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpPost]
     [HttpGet]
-    
-    public ObjectResult InsertArticleDb(string? id_tag, string title, string? subtitle, string content, DateTime? targetTime, double? latitude, double? longitude, string? image, int? id_author, string? sourceUrl) //todo: da pensare il sistema dei permessi
-    {
-        if(hasPermissions()){//check permission
-            if(title == null|| subtitle == null)
-                return new ObjectResult("handle error");
-            else{
-                if(id_tag != null){
-                    var isValidTag = Database.ExecuteSelect($"SELECT * FROM Tags WHERE name = '{id_tag}'", GlobalVariables.DbConfigVar);
-                    if(isValidTag == null)
-                        return new BadRequestObjectResult("the tag provided is not valid");
-                }
-                if(id_author != null){
-                    var isValidAuthor = Database.ExecuteSelect($"SELECT * FROM Authors WHERE id_author = '{id_author}'", GlobalVariables.DbConfigVar);
-                    if(isValidAuthor == null)
-                        return new BadRequestObjectResult("the author id provided is not valid");
-                }
 
-                if(latitude != null && longitude == null || latitude == null && longitude != null)
-                    return new BadRequestObjectResult("location must be provided with both latitude and longitude");
-                if(latitude != null && (!(latitude >= -90.0 && latitude <= 90.0) || !(longitude >= -180.0 && longitude <= 180.0)))
-                    return new BadRequestObjectResult("latitude or longitude isn't valid");
-                
-                string publishTime = DateTime.Now.ToString("yyyy-MM-dd");
-                var targetTimeConverted = targetTime == null ? "null" : targetTime.Value.ToString("yyyy-MM-dd");
-                
-                var insertQuery = @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
-                VALUES (@id_tag, @title, @subtitle, @content, @publishTime, @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
-                
-                //OBBLIGATORI
-                insertQuery = insertQuery.Replace("@title", $"'{title}'");
-                insertQuery = insertQuery.Replace("@content", $"'{content}'");
-                insertQuery = insertQuery.Replace("@publishTime", $"'{publishTime}'");
-                //OPZIONALI
-                insertQuery = insertQuery.Replace("@latitude", this.getStringOrNull(latitude));
-                insertQuery = insertQuery.Replace("@longitude", this.getStringOrNull(longitude));
-                insertQuery = insertQuery.Replace("@image", this.getStringOrNull(image));
-                insertQuery = insertQuery.Replace("@id_author", this.getStringOrNull(id_author));
-                insertQuery = insertQuery.Replace("@sourceUrl", this.getStringOrNull(sourceUrl));
-                insertQuery = insertQuery.Replace("@id_tag", this.getStringOrNull(id_tag));
-                insertQuery = insertQuery.Replace("@subtitle", this.getStringOrNull(subtitle));
-                //PRECALCOLATO
-                insertQuery = insertQuery.Replace("@targetTimeConverted", targetTimeConverted);
-                
-                
-                var result = Database.Execute(insertQuery, GlobalVariables.DbConfigVar);
-                if(result == -1){
-                    Response.StatusCode = 500;
-                    return new ObjectResult("Internal error");
-                }
-                else
-                    return Ok(result);     
-            }
+    public ObjectResult InsertArticleDb(
+        string? id_tag, string title, string? subtitle, string content, DateTime? targetTime,
+        double? latitude, double? longitude, string? image, int? id_author, string? user_id,
+        string? sourceUrl
+    )
+    {
+        if (id_tag != null)
+        {
+            var isValidTag = Database.ExecuteSelect($"SELECT * FROM Tags WHERE name = '{id_tag}'", GlobalVariables.DbConfigVar);
+            if (isValidTag == null)
+                return new BadRequestObjectResult("the tag provided is not valid");
         }
-        else{
-            Response.StatusCode = 403;
-            return new ObjectResult("you don't have enough permissions");
+
+        if (id_author != null)
+        {
+            if (user_id == null)
+                return new BadRequestObjectResult("user_id must be provided with author id");
+
+            var isValidAuthor = Database.ExecuteSelect($"SELECT * FROM Authors WHERE id_author = '{id_author}'", GlobalVariables.DbConfigVar);
+            if (isValidAuthor == null)
+                return new BadRequestObjectResult("the author id provided is not valid");
+
+
+            if (!AuthUtil.HasGrantAndObjectPermission(user_id, "autori", id_author.Value))
+                return new BadRequestObjectResult("you don't have the permission for the user_id specified");
         }
+
+        if (latitude != null && longitude == null || latitude == null && longitude != null)
+            return new BadRequestObjectResult("location must be provided with both latitude and longitude");
+        if (latitude != null && (!(latitude >= -90.0 && latitude <= 90.0) || !(longitude >= -180.0 && longitude <= 180.0)))
+            return new BadRequestObjectResult("latitude or longitude isn't valid");
+
+        string publishTime = DateTime.Now.ToString("yyyy-MM-dd");
+        var targetTimeConverted = targetTime == null ? "null" : targetTime.Value.ToString("yyyy-MM-dd");
+
+        var insertQuery = @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
+            VALUES (@id_tag, @title, @subtitle, @content, @publishTime, @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
+
+        //OBBLIGATORI
+        insertQuery = insertQuery.Replace("@title", $"'{title}'");
+        insertQuery = insertQuery.Replace("@content", $"'{content}'");
+        insertQuery = insertQuery.Replace("@publishTime", $"'{publishTime}'");
+        //OPZIONALI
+        insertQuery = insertQuery.Replace("@latitude", this.getStringOrNull(latitude));
+        insertQuery = insertQuery.Replace("@longitude", this.getStringOrNull(longitude));
+        insertQuery = insertQuery.Replace("@image", this.getStringOrNull(image));
+        insertQuery = insertQuery.Replace("@id_author", this.getStringOrNull(id_author));
+        insertQuery = insertQuery.Replace("@sourceUrl", this.getStringOrNull(sourceUrl));
+        insertQuery = insertQuery.Replace("@id_tag", this.getStringOrNull(id_tag));
+        insertQuery = insertQuery.Replace("@subtitle", this.getStringOrNull(subtitle));
+        //PRECALCOLATO
+        insertQuery = insertQuery.Replace("@targetTimeConverted", targetTimeConverted);
+
+
+        var result = Database.Execute(insertQuery, GlobalVariables.DbConfigVar);
+        if (result == -1)
+        {
+            Response.StatusCode = 500;
+            return new ObjectResult("Internal error");
+        }
+        else
+            return Ok(result);
     }
-    private string getStringOrNull(string? v){
+
+
+    private string getStringOrNull(string? v)
+    {
         return v == null ? "null" : $"'{v}'";
     }
 
-    private string getStringOrNull(double? v){
+    private string getStringOrNull(double? v)
+    {
         return v == null ? "null" : $"{v}";
     }
 
-    private string getStringOrNull(int? v){
+    private string getStringOrNull(int? v)
+    {
         return v == null ? "null" : $"{v}";
     }
 
-    private bool hasPermissions(){
+    private bool hasPermissions()
+    {
         return true;
     }
 }
