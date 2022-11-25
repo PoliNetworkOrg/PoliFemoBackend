@@ -135,7 +135,7 @@ public static class ArticleUtil
             //change format of date
             {
                 "publish_time",
-                 DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["publishTime"].ToString() ?? ""))
+                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["publishTime"].ToString() ?? ""))
             },
             {
                 "target_time",
@@ -160,10 +160,7 @@ public static class ArticleUtil
     public static JArray ArticleAuthorsRowsToJArray(DataTable results)
     {
         var r = new JArray();
-        foreach (DataRow dr in results.Rows)
-        {
-            r.Add(ArticleAuthorsRowToJObject(dr));
-        }
+        foreach (DataRow dr in results.Rows) r.Add(ArticleAuthorsRowToJObject(dr));
         return r;
     }
 }

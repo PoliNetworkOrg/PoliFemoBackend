@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace PoliFemoBackend.Source.Objects.Article;
 
@@ -76,21 +75,21 @@ public class NewsPolimi
 
     public List<string>? GetContentAsList()
     {
-        return this._content;
+        return _content;
     }
 
     public void FixContent()
     {
-        if (this._content == null)
+        if (_content == null)
             return;
 
-        for (int i = 0; i < this._content.Count; i++)
+        for (var i = 0; i < _content.Count; i++)
         {
-            var x = this._content[i];
+            var x = _content[i];
             x = x.Replace("\n", "<br>");
             x = x.Replace("<br>", "<br />");
             x = x.Replace("<br /><br />", "<br />");
-            this._content[i] = x;
+            _content[i] = x;
         }
     }
 }
