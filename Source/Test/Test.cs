@@ -1,8 +1,8 @@
 ﻿#region
 
 using Newtonsoft.Json;
-using PoliFemoBackend.Source.Controllers.Articles;
 using PoliFemoBackend.Source.Utils.Database;
+using PoliFemoBackend.Source.Utils.News.PoliMi;
 
 #endregion
 
@@ -15,7 +15,7 @@ public static class Test
         Console.WriteLine("Test");
 
         DbConfig.InitializeDbConfig();
-        var x = ArticlesByDateTimeRange.SearchArticlesByDateRangeAsJobject("2022-11-10", null);
+        var x = DownloadNewsUtil.DownloadCurrentNews().ToList();
         var json = JsonConvert.SerializeObject(x);
         Console.WriteLine(json);
     }
