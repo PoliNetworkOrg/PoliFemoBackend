@@ -35,7 +35,7 @@ public class ArticlesByDateTimeRange : ControllerBase
         return r == null ? NotFound() : Ok(r);
     }
 
-    public static JObject? SearchArticlesByDateRangeAsJobject(string? start, string? end)
+    private static JObject? SearchArticlesByDateRangeAsJobject(string? start, string? end)
     {
         var startDateTime = DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(start) ?? DateTime.Now);
         var endDateTime = DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(end) ?? DateTime.Now);
