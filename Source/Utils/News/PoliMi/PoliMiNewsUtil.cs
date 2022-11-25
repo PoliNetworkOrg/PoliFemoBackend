@@ -9,7 +9,7 @@ using PoliFemoBackend.Source.Objects.Types;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils.News;
+namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
 public static class PoliMiNewsUtil
 {
