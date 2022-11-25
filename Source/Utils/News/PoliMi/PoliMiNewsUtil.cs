@@ -13,30 +13,14 @@ namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
 public static class PoliMiNewsUtil
 {
-    private const string UrlPoliMiNews = "https://www.polimi.it/in-evidenza";
-    private const string UrlPoliMiHomePage = "https://www.polimi.it/";
+    internal const string UrlPoliMiNews = "https://www.polimi.it/in-evidenza";
+    internal const string UrlPoliMiHomePage = "https://www.polimi.it/";
     private const int PoliMiAuthorId = 1;
 
 
-    private static IEnumerable<NewsPolimi> DownloadCurrentNews()
-    {
-        var docNews = LoadUrl(UrlPoliMiNews);
-        var urls = docNews?.DocumentNode.SelectNodes("//ul").First(x => x.GetClasses().Contains("ce-menu"));
+    
 
-        var docPoliMi = LoadUrl(UrlPoliMiHomePage);
-        var newsPolimi = GetNewsPoliMi(docPoliMi);
-        var merged = Merge(urls?.ChildNodes, newsPolimi);
-
-        return DownloadCurrentNews2(merged);
-    }
-
-    private static IEnumerable<NewsPolimi> DownloadCurrentNews2(IEnumerable<HtmlNews> merged)
-    {
-        var merged2 = merged.Select(ExtractNews).ToList();
-        return (from item in merged2 where item.IsPresent select item.GetValue()).ToList();
-    }
-
-    private static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls, IReadOnlyCollection<HtmlNode>? newsPolimi)
+    internal static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls, IReadOnlyCollection<HtmlNode>? newsPolimi)
     {
         var result = new List<HtmlNews>();
         switch (urls)
@@ -144,7 +128,7 @@ public static class PoliMiNewsUtil
     }
 
 
-    private static List<HtmlNode>? GetNewsPoliMi(HtmlDocument? docPoliMi)
+    internal static List<HtmlNode>? GetNewsPoliMi(HtmlDocument? docPoliMi)
     {
         var slider = HtmlUtil.GetElementsByTagAndClassName(docPoliMi?.DocumentNode, "body", null);
         var slider2 = HtmlUtil.GetElementsByTagAndClassName(slider?.First(), "section");
@@ -154,14 +138,14 @@ public static class PoliMiNewsUtil
         return slider5;
     }
 
-    private static HtmlDocument? LoadUrl(string url)
+    internal static HtmlDocument? LoadUrl(string url)
     {
         var web = new HtmlWeb();
         var doc = web.Load(url);
         return doc;
     }
 
-    private static Optional<NewsPolimi> ExtractNews(HtmlNews htmlNews)
+    internal static Optional<NewsPolimi> ExtractNews(HtmlNews htmlNews)
     {
         if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
             return new Optional<NewsPolimi>();
@@ -314,7 +298,7 @@ public static class PoliMiNewsUtil
     /// </summary>
     private static int GetNews()
     {
-        var news = DownloadCurrentNews();
+        var news = News.PoliMi.DownloadNewsUtil.DownloadCurrentNews();
         var count = 0;
         foreach (var newsItem in news)
             try
