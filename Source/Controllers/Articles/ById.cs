@@ -42,7 +42,7 @@ public class ArticleByIdController : ControllerBase
             {
                 { "@id", id }
             });
-        
+
         var row = results?.Rows[0];
         return row == null ? null : ArticleUtil.ArticleAuthorsRowToJObject(row);
     }

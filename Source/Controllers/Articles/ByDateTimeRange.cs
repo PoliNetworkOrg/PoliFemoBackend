@@ -3,12 +3,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
 namespace PoliFemoBackend.Source.Controllers.Articles;
-
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -37,8 +37,8 @@ public class ArticlesByDateTimeRange : ControllerBase
 
     public static JObject? SearchArticlesByDateRangeAsJobject(string? start, string? end)
     {
-        var startDateTime = Utils.DateTimeUtil.ConvertToMySqlString(Utils.DateTimeUtil.ConvertToDateTime(start) ?? DateTime.Now);
-        var endDateTime = Utils.DateTimeUtil.ConvertToMySqlString(Utils.DateTimeUtil.ConvertToDateTime(end) ?? DateTime.Now);
+        var startDateTime = DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(start) ?? DateTime.Now);
+        var endDateTime = DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(end) ?? DateTime.Now);
         var results = Database.ExecuteSelect(
             "SELECT * FROM ArticlesWithAuthors_View WHERE publishTime >= '@start' AND publishTime <= '@end'",
             GlobalVariables.DbConfigVar,
@@ -51,7 +51,7 @@ public class ArticlesByDateTimeRange : ControllerBase
         if (results == null || results.Rows.Count == 0)
             return null;
 
-        var resultsJArray = Utils.ArticleUtil.ArticleAuthorsRowsToJArray(results);
+        var resultsJArray = ArticleUtil.ArticleAuthorsRowsToJArray(results);
 
         var r = new JObject
         {
