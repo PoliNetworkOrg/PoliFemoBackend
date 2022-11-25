@@ -2,6 +2,7 @@
 
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Utils.Database;
+using PoliFemoBackend.Source.Utils.News.PoliMi;
 
 #endregion
 
@@ -14,7 +15,7 @@ public static class Test
         Console.WriteLine("Test");
 
         DbConfig.InitializeDbConfig();
-        var x = Utils.News.PoliMi.DownloadNewsUtil.DownloadCurrentNews().ToList();
+        var x = DownloadNewsUtil.DownloadCurrentNews().ToList();
         var json = JsonConvert.SerializeObject(x);
         Console.WriteLine(json);
     }

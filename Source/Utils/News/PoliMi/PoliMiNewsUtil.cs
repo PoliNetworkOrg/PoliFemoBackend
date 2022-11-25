@@ -5,7 +5,6 @@ using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Article;
 using PoliFemoBackend.Source.Objects.Threading;
-using PoliFemoBackend.Source.Objects.Types;
 
 #endregion
 
@@ -17,8 +16,6 @@ public static class PoliMiNewsUtil
     internal const string UrlPoliMiHomePage = "https://www.polimi.it/";
     private const int PoliMiAuthorId = 1;
 
-
-    
 
     internal static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls, IReadOnlyCollection<HtmlNode>? newsPolimi)
     {
@@ -231,7 +228,7 @@ public static class PoliMiNewsUtil
     /// </summary>
     private static int GetNews()
     {
-        var news = News.PoliMi.DownloadNewsUtil.DownloadCurrentNews();
+        var news = DownloadNewsUtil.DownloadCurrentNews();
         var count = 0;
         foreach (var newsItem in news)
             try
