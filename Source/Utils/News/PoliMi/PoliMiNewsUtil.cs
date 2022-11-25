@@ -291,6 +291,11 @@ public static class PoliMiNewsUtil
         };
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
     }
+
+    public static void FixContent(NewsPolimi result)
+    {
+        result.FixContent();
+    }
 }
 
 internal class NodeFlagged

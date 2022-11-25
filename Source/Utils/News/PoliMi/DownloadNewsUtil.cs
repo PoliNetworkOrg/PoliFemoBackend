@@ -82,6 +82,8 @@ public static class DownloadNewsUtil
             if (result.IsContentEmpty())
                 PoliMiNewsUtil.GetContent(result);
 
+            PoliMiNewsUtil.FixContent(result);
+
             return new Optional<NewsPolimi>(result);
         }
         catch (Exception ex)
