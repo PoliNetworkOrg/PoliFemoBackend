@@ -3,16 +3,16 @@ using PoliFemoBackend.Source.Objects.Types;
 
 namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
-public class DownloadNewsUtil
+public static class DownloadNewsUtil
 {
     internal static IEnumerable<NewsPolimi> DownloadCurrentNews()
     {
-        var docNews = News.PoliMi.PoliMiNewsUtil.LoadUrl(News.PoliMi.PoliMiNewsUtil.UrlPoliMiNews);
+        var docNews = PoliMiNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
         var urls = docNews?.DocumentNode.SelectNodes("//ul").First(x => x.GetClasses().Contains("ce-menu"));
 
-        var docPoliMi = News.PoliMi.PoliMiNewsUtil.LoadUrl(News.PoliMi.PoliMiNewsUtil.UrlPoliMiHomePage);
-        var newsPolimi = News.PoliMi.PoliMiNewsUtil.GetNewsPoliMi(docPoliMi);
-        var merged = News.PoliMi.PoliMiNewsUtil.Merge(urls?.ChildNodes, newsPolimi);
+        var docPoliMi = PoliMiNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiHomePage);
+        var newsPolimi = PoliMiNewsUtil.GetNewsPoliMi(docPoliMi);
+        var merged = PoliMiNewsUtil.Merge(urls?.ChildNodes, newsPolimi);
 
         return DownloadCurrentNews2(merged);
     }
@@ -22,9 +22,9 @@ public class DownloadNewsUtil
         var merged2 = merged.Select(ExtractNews).ToList();
         return (from item in merged2 where item.IsPresent select item.GetValue()).ToList();
     }
-    
-    
-    internal static Optional<NewsPolimi> ExtractNews(HtmlNews htmlNews)
+
+
+    private static Optional<NewsPolimi> ExtractNews(HtmlNews htmlNews)
     {
         if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
             return new Optional<NewsPolimi>();
@@ -77,10 +77,10 @@ public class DownloadNewsUtil
                 urlImgFinal ?? "");
 
             if (internalNews ?? false)
-                News.PoliMi.PoliMiNewsUtil.GetContent(result);
+                PoliMiNewsUtil.GetContent(result);
 
             if (result.IsContentEmpty())
-                News.PoliMi.PoliMiNewsUtil.GetContent(result);
+                PoliMiNewsUtil.GetContent(result);
 
             return new Optional<NewsPolimi>(result);
         }
