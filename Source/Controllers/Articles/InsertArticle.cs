@@ -1,14 +1,14 @@
 ﻿#region
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Utils.Database;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
-using Microsoft.AspNetCore.Authorization;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-// ReSharper disable InconsistentNaming
+using PoliFemoBackend.Source.Utils.Database;
 
+// ReSharper disable InconsistentNaming
 
 #endregion
 
@@ -47,11 +47,12 @@ public class InsertArticle : ControllerBase
     {
         if (id_tag != null)
         {
-            var isValidTag = Database.ExecuteSelect($"SELECT * FROM Tags WHERE name = '{id_tag}'", GlobalVariables.DbConfigVar);
+            var isValidTag = Database.ExecuteSelect($"SELECT * FROM Tags WHERE name = '{id_tag}'",
+                GlobalVariables.DbConfigVar);
             if (isValidTag == null)
                 return new BadRequestObjectResult(new JObject
                 {
-                    {"error", "Invalid tag"}
+                    { "error", "Invalid tag" }
                 });
         }
 
@@ -59,38 +60,41 @@ public class InsertArticle : ControllerBase
 
         if (id_author != null)
         {
-            var isValidAuthor = Database.ExecuteSelect($"SELECT * FROM Authors WHERE id_author = '{id_author}'", GlobalVariables.DbConfigVar);
+            var isValidAuthor = Database.ExecuteSelect($"SELECT * FROM Authors WHERE id_author = '{id_author}'",
+                GlobalVariables.DbConfigVar);
             if (isValidAuthor == null)
-                return new BadRequestObjectResult(new JObject()
+                return new BadRequestObjectResult(new JObject
                 {
-                    {"error", "Invalid author"}
+                    { "error", "Invalid author" }
                 });
 
 
-            if (!AuthUtil.HasGrantAndObjectPermission(sub, "autori", id_author.Value)) {
+            if (!AuthUtil.HasGrantAndObjectPermission(sub, "autori", id_author.Value))
+            {
                 Response.StatusCode = 403;
-                return new ObjectResult(new JObject()
+                return new ObjectResult(new JObject
                 {
-                    {"error", "You don't have enough permissions"}
+                    { "error", "You don't have enough permissions" }
                 });
             }
         }
 
-        if (latitude != null && longitude == null || latitude == null && longitude != null)
-            return new BadRequestObjectResult(new JObject()
+        if ((latitude != null && longitude == null) || (latitude == null && longitude != null))
+            return new BadRequestObjectResult(new JObject
             {
-                {"error", "You must provide both latitude and longitude"}
+                { "error", "You must provide both latitude and longitude" }
             });
         if (latitude != null && (latitude is not (>= -90.0 and <= 90.0) || longitude is not (>= -180.0 and <= 180.0)))
-            return new BadRequestObjectResult(new JObject()
+            return new BadRequestObjectResult(new JObject
             {
-                {"error", "Invalid latitude or longitude"}
+                { "error", "Invalid latitude or longitude" }
             });
 
         var publishTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         var targetTimeConverted = targetTime == null ? "null" : targetTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
 
-        var insertQuery = @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
+        var insertQuery =
+            @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
             VALUES (@id_tag, @title, @subtitle, @content, @publishTime, @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
 
         var conarray = new JArray { content };
@@ -115,13 +119,13 @@ public class InsertArticle : ControllerBase
         if (result == -1)
         {
             Response.StatusCode = 500;
-            return new ObjectResult(new JObject()
+            return new ObjectResult(new JObject
             {
-                {"error", "Internal server error"}
+                { "error", "Internal server error" }
             });
         }
-        else
-            return Ok("");
+
+        return Ok("");
     }
 
 

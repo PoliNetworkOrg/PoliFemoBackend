@@ -50,13 +50,13 @@ public static class AuthUtil
     }
 
     /// <summary>
-    /// Get user/subject from HttpRequest
+    ///     Get user/subject from HttpRequest
     /// </summary>
     /// <param name="httpRequest">HttpRequest containing the token</param>
     /// <returns>Subject/User</returns>
     public static string? GetSubjectFromHttpRequest(HttpRequest httpRequest)
     {
-        var token = httpRequest.Headers[Source.Data.Constants.Authorization];
+        var token = httpRequest.Headers[Constants.Authorization];
         return GetSubjectFromToken(token);
     }
 
