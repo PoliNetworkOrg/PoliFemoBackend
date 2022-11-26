@@ -2,6 +2,8 @@
 
 namespace PoliFemoBackend.Source.Objects.Article;
 
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
 public class NewsPolimi
 {
     private readonly string? _imgUrl;
@@ -69,5 +71,25 @@ public class NewsPolimi
     public bool IsContentEmpty()
     {
         return _content == null || _content.Count == 0 || _content.All(string.IsNullOrEmpty);
+    }
+
+    public List<string>? GetContentAsList()
+    {
+        return _content;
+    }
+
+    public void FixContent()
+    {
+        if (_content == null)
+            return;
+
+        for (var i = 0; i < _content.Count; i++)
+        {
+            var x = _content[i];
+            x = x.Replace("\n", "<br>");
+            x = x.Replace("<br>", "<br />");
+            x = x.Replace("<br /><br />", "<br />");
+            _content[i] = x;
+        }
     }
 }
