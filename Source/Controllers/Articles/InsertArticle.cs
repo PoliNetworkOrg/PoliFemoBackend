@@ -1,6 +1,5 @@
 ﻿#region
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils.Database;
 using PoliFemoBackend.Source.Data;
@@ -50,7 +49,7 @@ public class InsertArticle : ControllerBase
                 return new BadRequestObjectResult("the tag provided is not valid");
         }
 
-        var user_id = Utils.AuthUtil.GetCurrentUser(this);
+        var user_id = AuthUtil.GetCurrentUser(this);
 
         if (id_author != null)
         {
@@ -117,10 +116,5 @@ public class InsertArticle : ControllerBase
     private static string GetStringOrNull(int? v)
     {
         return v == null ? "null" : $"{v}";
-    }
-
-    private bool HasPermissions()
-    {
-        return true;
     }
 }
