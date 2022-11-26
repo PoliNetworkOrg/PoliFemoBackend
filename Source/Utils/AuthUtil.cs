@@ -98,6 +98,7 @@ public static class AuthUtil
 
     public static string? GetCurrentUser(ControllerBase controllerBase)
     {
+        var x = controllerBase.Request.Headers;
         return null; //todo
     }
 }
