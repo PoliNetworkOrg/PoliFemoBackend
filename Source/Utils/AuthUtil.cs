@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Data;
+using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Controllers.Articles;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
@@ -95,7 +96,7 @@ public static class AuthUtil
         return results?.AsEnumerable().Select(x => x.Field<string>("name_grant")).ToArray() ?? Array.Empty<string>();
     }
 
-    public static string? GetCurrentUser(InsertArticle insertArticle)
+    public static string? GetCurrentUser(ControllerBase controllerBase)
     {
         return null; //todo
     }
