@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils.Database;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
+// ReSharper disable InconsistentNaming
 
 
 #endregion
@@ -31,7 +32,6 @@ public class InsertArticle : ControllerBase
     /// <param name="longitude">longitude of the event's position, must be provided with latitude</param>
     /// <param name="image">the image url</param>
     /// <param name="id_author">the author's id, must be a valid id</param>
-    /// <param name="user_id">the user_id relative to author id</param>
     /// <param name="sourceUrl">the source url?</param>
     /// <response code="200">Returns the article object</response>
     /// <response code="403">The user does not have enough permissions</response>
@@ -40,8 +40,7 @@ public class InsertArticle : ControllerBase
     [HttpPost]
     public ObjectResult InsertArticleDb(
         string? id_tag, string title, string? subtitle, string content, DateTime? targetTime,
-        double? latitude, double? longitude, string? image, int? id_author, string? user_id,
-        string? sourceUrl
+        double? latitude, double? longitude, string? image, int? id_author, string? sourceUrl
     )
     {
         if (id_tag != null)
@@ -67,7 +66,7 @@ public class InsertArticle : ControllerBase
 
         if (latitude != null && longitude == null || latitude == null && longitude != null)
             return new BadRequestObjectResult("location must be provided with both latitude and longitude");
-        if (latitude != null && (!(latitude >= -90.0 && latitude <= 90.0) || !(longitude >= -180.0 && longitude <= 180.0)))
+        if (latitude != null && (latitude is not (>= -90.0 and <= 90.0) || longitude is not (>= -180.0 and <= 180.0)))
             return new BadRequestObjectResult("latitude or longitude isn't valid");
 
         string publishTime = DateTime.Now.ToString("yyyy-MM-dd");
@@ -81,13 +80,13 @@ public class InsertArticle : ControllerBase
         insertQuery = insertQuery.Replace("@content", $"'{content}'");
         insertQuery = insertQuery.Replace("@publishTime", $"'{publishTime}'");
         //OPZIONALI
-        insertQuery = insertQuery.Replace("@latitude", this.getStringOrNull(latitude));
-        insertQuery = insertQuery.Replace("@longitude", this.getStringOrNull(longitude));
-        insertQuery = insertQuery.Replace("@image", this.getStringOrNull(image));
-        insertQuery = insertQuery.Replace("@id_author", this.getStringOrNull(id_author));
-        insertQuery = insertQuery.Replace("@sourceUrl", this.getStringOrNull(sourceUrl));
-        insertQuery = insertQuery.Replace("@id_tag", this.getStringOrNull(id_tag));
-        insertQuery = insertQuery.Replace("@subtitle", this.getStringOrNull(subtitle));
+        insertQuery = insertQuery.Replace("@latitude", GetStringOrNull(latitude));
+        insertQuery = insertQuery.Replace("@longitude", GetStringOrNull(longitude));
+        insertQuery = insertQuery.Replace("@image", GetStringOrNull(image));
+        insertQuery = insertQuery.Replace("@id_author", GetStringOrNull(id_author));
+        insertQuery = insertQuery.Replace("@sourceUrl", GetStringOrNull(sourceUrl));
+        insertQuery = insertQuery.Replace("@id_tag", GetStringOrNull(id_tag));
+        insertQuery = insertQuery.Replace("@subtitle", GetStringOrNull(subtitle));
         //PRECALCOLATO
         insertQuery = insertQuery.Replace("@targetTimeConverted", targetTimeConverted);
 
@@ -103,22 +102,22 @@ public class InsertArticle : ControllerBase
     }
 
 
-    private string getStringOrNull(string? v)
+    private static string GetStringOrNull(string? v)
     {
         return v == null ? "null" : $"'{v}'";
     }
 
-    private string getStringOrNull(double? v)
+    private static string GetStringOrNull(double? v)
     {
         return v == null ? "null" : $"{v}";
     }
 
-    private string getStringOrNull(int? v)
+    private static string GetStringOrNull(int? v)
     {
         return v == null ? "null" : $"{v}";
     }
 
-    private bool hasPermissions()
+    private bool HasPermissions()
     {
         return true;
     }
