@@ -172,9 +172,9 @@ internal static class Program
         context.Response.ContentType = "application/json";
 
 
-        if (!context.Request.Headers.ContainsKey("Authorization"))
+        if (!context.Request.Headers.ContainsKey(Constants.Authorization))
             json["reason"] = "Missing Authorization header";
-        else if (!context.Request.Headers["Authorization"].ToString().StartsWith("Bearer "))
+        else if (!context.Request.Headers[Constants.Authorization].ToString().StartsWith("Bearer "))
             json["reason"] = "Not a Bearer token";
 
         context.HandleResponse();

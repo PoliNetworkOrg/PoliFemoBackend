@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -31,7 +32,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description = "Access token using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                Name = "Authorization",
+                Name = Constants.Authorization,
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.ApiKey,
                 Scheme = "Bearer"
