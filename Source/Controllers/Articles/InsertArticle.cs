@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Utils.Database;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
+using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 // ReSharper disable InconsistentNaming
 
 
@@ -14,9 +17,8 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Articles")]
-[Route("v{version:apiVersion}/articles/add/")]
-[Route("/articles/add/")]
-//[Authorize]
+[Route("v{version:apiVersion}/articles")]
+[Route("/articles")]
 public class InsertArticle : ControllerBase
 {
     /// <summary>
@@ -31,14 +33,15 @@ public class InsertArticle : ControllerBase
     /// <param name="longitude">longitude of the event's position, must be provided with latitude</param>
     /// <param name="image">the image url</param>
     /// <param name="id_author">the author's id, must be a valid id</param>
-    /// <param name="sourceUrl">the source url?</param>
-    /// <response code="200">Returns the article object</response>
+    /// <param name="sourceUrl">the source url (only for polimi news)</param>
+    /// <response code="200">Article inserted successfully</response>
     /// <response code="403">The user does not have enough permissions</response>
-    /// <returns>An article object</returns>
+    /// <response code="500">Can't connect to server</response>
     [MapToApiVersion("1.0")]
     [HttpPost]
+    [Authorize]
     public ObjectResult InsertArticleDb(
-        string? id_tag, string title, string? subtitle, string content, DateTime? targetTime,
+        string? id_tag, string title, string? subtitle, [FromBody] string content, DateTime? targetTime,
         double? latitude, double? longitude, string? image, int? id_author, string? sourceUrl
     )
     {
@@ -46,39 +49,56 @@ public class InsertArticle : ControllerBase
         {
             var isValidTag = Database.ExecuteSelect($"SELECT * FROM Tags WHERE name = '{id_tag}'", GlobalVariables.DbConfigVar);
             if (isValidTag == null)
-                return new BadRequestObjectResult("the tag provided is not valid");
+                return new BadRequestObjectResult(new JObject
+                {
+                    {"error", "Invalid tag"}
+                });
         }
 
-        var user_id = AuthUtil.GetCurrentUser(this);
+        var sub = AuthUtil.GetSubject(Request.Headers["Authorization"]);
 
         if (id_author != null)
         {
-            if (user_id == null)
-                return new BadRequestObjectResult("user_id must be provided with author id");
-
             var isValidAuthor = Database.ExecuteSelect($"SELECT * FROM Authors WHERE id_author = '{id_author}'", GlobalVariables.DbConfigVar);
             if (isValidAuthor == null)
-                return new BadRequestObjectResult("the author id provided is not valid");
+                return new BadRequestObjectResult(new JObject()
+                {
+                    {"error", "Invalid author"}
+                });
 
 
-            if (!AuthUtil.HasGrantAndObjectPermission(user_id, "autori", id_author.Value))
-                return new BadRequestObjectResult("you don't have the permission for the user_id specified");
+            if (!AuthUtil.HasGrantAndObjectPermission(sub, "autori", id_author.Value)) {
+                Response.StatusCode = 403;
+                return new ObjectResult(new JObject()
+                {
+                    {"error", "You don't have enough permissions"}
+                });
+            }
         }
 
         if (latitude != null && longitude == null || latitude == null && longitude != null)
-            return new BadRequestObjectResult("location must be provided with both latitude and longitude");
+            return new BadRequestObjectResult(new JObject()
+            {
+                {"error", "You must provide both latitude and longitude"}
+            });
         if (latitude != null && (latitude is not (>= -90.0 and <= 90.0) || longitude is not (>= -180.0 and <= 180.0)))
-            return new BadRequestObjectResult("latitude or longitude isn't valid");
+            return new BadRequestObjectResult(new JObject()
+            {
+                {"error", "Invalid latitude or longitude"}
+            });
 
-        string publishTime = DateTime.Now.ToString("yyyy-MM-dd");
-        var targetTimeConverted = targetTime == null ? "null" : targetTime.Value.ToString("yyyy-MM-dd");
+        string publishTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        var targetTimeConverted = targetTime == null ? "null" : targetTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
 
         var insertQuery = @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
             VALUES (@id_tag, @title, @subtitle, @content, @publishTime, @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
 
+        var conarray = new JArray();
+        conarray.Add(content);
+
         //OBBLIGATORI
         insertQuery = insertQuery.Replace("@title", $"'{title}'");
-        insertQuery = insertQuery.Replace("@content", $"'{content}'");
+        insertQuery = insertQuery.Replace("@content", $"'{JsonConvert.SerializeObject(conarray)}'");
         insertQuery = insertQuery.Replace("@publishTime", $"'{publishTime}'");
         //OPZIONALI
         insertQuery = insertQuery.Replace("@latitude", GetStringOrNull(latitude));
@@ -96,10 +116,13 @@ public class InsertArticle : ControllerBase
         if (result == -1)
         {
             Response.StatusCode = 500;
-            return new ObjectResult("Internal error");
+            return new ObjectResult(new JObject()
+            {
+                {"error", "Internal server error"}
+            });
         }
         else
-            return Ok(result);
+            return Ok("");
     }
 
 

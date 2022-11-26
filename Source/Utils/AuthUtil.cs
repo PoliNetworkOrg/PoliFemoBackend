@@ -95,10 +95,4 @@ public static class AuthUtil
             });
         return results?.AsEnumerable().Select(x => x.Field<string>("name_grant")).ToArray() ?? Array.Empty<string>();
     }
-
-    public static string? GetCurrentUser(ControllerBase controllerBase)
-    {
-        var x = controllerBase.Request.Headers;
-        return null; //todo
-    }
 }
