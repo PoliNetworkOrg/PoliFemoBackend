@@ -50,6 +50,8 @@ public class InsertArticle : ControllerBase
                 return new BadRequestObjectResult("the tag provided is not valid");
         }
 
+        var user_id = Utils.AuthUtil.GetCurrentUser(this);
+
         if (id_author != null)
         {
             if (user_id == null)

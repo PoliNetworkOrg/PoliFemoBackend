@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Data;
+using PoliFemoBackend.Source.Controllers.Articles;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 
@@ -92,5 +93,10 @@ public static class AuthUtil
                 { "@userid", userid }
             });
         return results?.AsEnumerable().Select(x => x.Field<string>("name_grant")).ToArray() ?? Array.Empty<string>();
+    }
+
+    public static string? GetCurrentUser(InsertArticle insertArticle)
+    {
+        return null; //todo
     }
 }
