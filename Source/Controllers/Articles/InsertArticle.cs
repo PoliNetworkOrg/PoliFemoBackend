@@ -55,7 +55,7 @@ public class InsertArticle : ControllerBase
                 });
         }
 
-        var sub = AuthUtil.GetSubjectFromHttpRequest(this.Request);
+        var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
 
         if (id_author != null)
         {
@@ -87,14 +87,13 @@ public class InsertArticle : ControllerBase
                 {"error", "Invalid latitude or longitude"}
             });
 
-        string publishTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        var publishTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         var targetTimeConverted = targetTime == null ? "null" : targetTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
 
         var insertQuery = @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
             VALUES (@id_tag, @title, @subtitle, @content, @publishTime, @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
 
-        var conarray = new JArray();
-        conarray.Add(content);
+        var conarray = new JArray { content };
 
         //OBBLIGATORI
         insertQuery = insertQuery.Replace("@title", $"'{title}'");
