@@ -31,7 +31,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description = "Access token using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                Name = "Authorization",
+                Name = Source.Data.Constants.Authorization,
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.ApiKey,
                 Scheme = "Bearer"

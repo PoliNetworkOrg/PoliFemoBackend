@@ -55,7 +55,7 @@ public class InsertArticle : ControllerBase
                 });
         }
 
-        var sub = AuthUtil.GetSubject(Request.Headers["Authorization"]);
+        var sub = AuthUtil.GetSubjectFromHttpRequest(this.Request);
 
         if (id_author != null)
         {

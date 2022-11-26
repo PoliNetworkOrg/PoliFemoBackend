@@ -1,8 +1,6 @@
 ﻿#region
 
 using System.Data;
-using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Controllers.Articles;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 
@@ -51,9 +49,29 @@ public static class AuthUtil
             formUrlEncodedContent).Result;
     }
 
-    public static string? GetSubject(string token)
+    /// <summary>
+    /// Get user/subject from HttpRequest
+    /// </summary>
+    /// <param name="httpRequest">HttpRequest containing the token</param>
+    /// <returns>Subject/User</returns>
+    public static string? GetSubjectFromHttpRequest(HttpRequest httpRequest)
     {
-        return GlobalVariables.TokenHandler?.ReadJwtToken(token.Split(" ")[1]).Subject;
+        var token = httpRequest.Headers[Source.Data.Constants.Authorization];
+        return GetSubjectFromToken(token);
+    }
+
+    private static string? GetSubjectFromToken(string token)
+    {
+        if (string.IsNullOrEmpty(token))
+            return null;
+
+        var strings = token.Split(" ");
+        if (strings.Length < 2)
+            return null;
+
+        var s = strings[1];
+        var jwtSecurityToken = GlobalVariables.TokenHandler?.ReadJwtToken(s);
+        return jwtSecurityToken?.Subject;
     }
 
 
