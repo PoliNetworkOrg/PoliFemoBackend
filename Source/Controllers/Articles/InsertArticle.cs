@@ -14,8 +14,8 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Articles")]
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
+[Route("v{version:apiVersion}/articles/add/")]
+[Route("/articles/add/")]
 //[Authorize]
 public class InsertArticle : ControllerBase
 {
@@ -38,8 +38,6 @@ public class InsertArticle : ControllerBase
     /// <returns>An article object</returns>
     [MapToApiVersion("1.0")]
     [HttpPost]
-    [HttpGet]
-
     public ObjectResult InsertArticleDb(
         string? id_tag, string title, string? subtitle, string content, DateTime? targetTime,
         double? latitude, double? longitude, string? image, int? id_author, string? user_id,
