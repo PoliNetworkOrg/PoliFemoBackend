@@ -23,9 +23,9 @@ public class ArticleByIdController : ControllerBase
     public ObjectResult ProfileDetails()
     {
         string userid;
-        var tempSub = AuthUtil.GetSubject(Request.Headers["Authorization"]);
+        var tempSub = AuthUtil.GetSubjectFromHttpRequest(Request);
         var sub = tempSub ?? "";
-        var permissions = AuthUtil.getPermissions(sub);
+        var permissions = AuthUtil.GetPermissions(sub);
         using (var sha256Hash = SHA256.Create())
         {
             //From String to byte array

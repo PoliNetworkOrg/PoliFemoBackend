@@ -3,10 +3,11 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils;
+namespace PoliFemoBackend.Source.Utils.Start;
 
 public static class Start
 {
@@ -24,6 +25,15 @@ public static class Start
         try
         {
             DbConfig.InitializeDbConfig();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        try
+        {
+            ThreadStartUtil.ThreadStartMethod();
         }
         catch (Exception ex)
         {

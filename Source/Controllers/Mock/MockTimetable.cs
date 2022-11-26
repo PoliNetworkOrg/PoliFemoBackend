@@ -1,5 +1,8 @@
 #region
+
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+
 #endregion
 
 namespace PoliFemoBackend.Source.Controllers.Mock;
@@ -14,10 +17,9 @@ public class MockTimetable : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpGet]
     [Produces("application/json")]
-    public ObjectResult GetMockedTimetable() 
+    public ObjectResult GetMockedTimetable()
     {
-        string jsonOrario = 
-        @"
+        const string jsonOrario = @"
         [
             {
                 ""event_id"": 52647,
@@ -3209,7 +3211,7 @@ public class MockTimetable : ControllerBase
             }
         ]
         ";
-        var orarioObj = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonOrario);
+        var orarioObj = JsonConvert.DeserializeObject(jsonOrario);
         return Ok(orarioObj);
     }
 }

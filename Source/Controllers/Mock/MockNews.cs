@@ -1,10 +1,7 @@
 #region
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
 #endregion
 
 namespace PoliFemoBackend.Source.Controllers.Mock;
@@ -20,7 +17,7 @@ public class MockNews : ControllerBase
     [HttpGet]
     public ObjectResult GetMockNews()
     {
-        var jsonNews = @"
+        const string jsonNews = @"
     
  [
 {
@@ -185,6 +182,5 @@ public class MockNews : ControllerBase
 }
 ]";
         return Ok(jsonNews);
-
     }
 }
