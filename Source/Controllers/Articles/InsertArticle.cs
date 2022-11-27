@@ -97,11 +97,11 @@ public class InsertArticle : ControllerBase
             @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
             VALUES (@id_tag, @title, @subtitle, @content, @publishTime, @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
 
-        var conarray = new JArray { content };
+        var contentArray = Utils.ArticleUtil.EncodeStringList(new List<string>() { content });
 
         //OBBLIGATORI
         insertQuery = insertQuery.Replace("@title", $"'{title}'");
-        insertQuery = insertQuery.Replace("@content", $"'{JsonConvert.SerializeObject(conarray)}'");
+        insertQuery = insertQuery.Replace("@content", $"'{JsonConvert.SerializeObject(contentArray)}'");
         insertQuery = insertQuery.Replace("@publishTime", $"'{publishTime}'");
         //OPZIONALI
         insertQuery = insertQuery.Replace("@latitude", GetStringOrNull(latitude));

@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Data;
+using System.Web;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Article;
@@ -162,5 +163,15 @@ public static class ArticleUtil
         var r = new JArray();
         foreach (DataRow dr in results.Rows) r.Add(ArticleAuthorsRowToJObject(dr));
         return r;
+    }
+
+    public static JArray EncodeStringList(List<string> list)
+    {
+        var j = new JArray();
+        foreach (var item in list)
+        {
+            j.Add(HttpUtility.UrlEncode(item));
+        }
+        return j;
     }
 }
