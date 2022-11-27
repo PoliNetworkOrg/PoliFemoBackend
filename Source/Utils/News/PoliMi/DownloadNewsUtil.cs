@@ -1,4 +1,4 @@
-﻿using PoliFemoBackend.Source.Objects.Article;
+﻿using PoliFemoBackend.Source.Objects.Article.News;
 using PoliFemoBackend.Source.Objects.Types;
 
 namespace PoliFemoBackend.Source.Utils.News.PoliMi;

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace PoliFemoBackend.Source.Objects.Article;
+namespace PoliFemoBackend.Source.Objects.Article.News;
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]

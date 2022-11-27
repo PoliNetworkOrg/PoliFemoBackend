@@ -3,7 +3,7 @@
 using HtmlAgilityPack;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
-using PoliFemoBackend.Source.Objects.Article;
+using PoliFemoBackend.Source.Objects.Article.News;
 using PoliFemoBackend.Source.Objects.Threading;
 
 #endregion
@@ -293,16 +293,4 @@ public static class PoliMiNewsUtil
     {
         result.FixContent();
     }
-}
-
-internal class NodeFlagged
-{
-    public bool Flagged;
-    public HtmlNode? HtmlNode;
-}
-
-internal class HtmlNews
-{
-    public HtmlNode? NodeInEvidenza;
-    public HtmlNode? NodePoliMiHomePage;
 }
