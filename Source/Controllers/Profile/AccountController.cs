@@ -36,13 +36,13 @@ public class ArticleByIdController : ControllerBase
         }
 
         var permarray = new JArray();
-        for (var i = 0; i < permissions.Length-1; i+=2)
+        foreach (var t in permissions)
             permarray.Add(new JObject
             {
-                {"grant", permissions[i]},
-                {"object_id", permissions[i+1] == "" ? null : permissions[i+1]}
+                { "grant", t.name_grant },
+                { "object_id", t.id_object == "" ? null : t.id_object }
             });
-        
+
         return new ObjectResult(new
         {
             id = userid.ToLower(),

@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Data;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
+using PoliFemoBackend.Source.Objects.Permission;
 
 #endregion
 
@@ -102,7 +102,7 @@ public static class AuthUtil
         return results != null;
     }
 
-    public static string?[] GetPermissions(string? userid)
+    public static List<PermissionGrantObject> GetPermissions(string? userid)
     {
         var results = Database.Database.ExecuteSelect(
             "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente AND id_utente=sha2('@userid', 256)",
@@ -111,16 +111,19 @@ public static class AuthUtil
             {
                 { "@userid", userid }
             });
-        var array = new string?[results?.Rows.Count * 2 ?? 0];
+        var array = new List<PermissionGrantObject>();
         for (var i = 0; i < results?.Rows.Count; i++)
-        {
-            array[i * 2] = results.Rows[i]["name_grant"].ToString();
-            array[i * 2 + 1] = results.Rows[i]["id_object"].ToString();
-        }
+            array.Add(
+                new PermissionGrantObject(
+                    results.Rows[i]["name_grant"].ToString(),
+                    results.Rows[i]["id_object"].ToString()
+                )
+            );
         return array;
     }
 
-    public static string?[] GetAuthorizedAuthors(string? userid) {
+    public static string?[] GetAuthorizedAuthors(string? userid)
+    {
         var results = Database.Database.ExecuteSelect(
             "SELECT a.* FROM Authors a, permission p WHERE p.id_user = sha2('@userid', 256) AND a.id_author = p.id_object AND p.id_grant = 'autori'",
             GlobalVariables.DbConfigVar,
@@ -129,11 +132,7 @@ public static class AuthUtil
                 { "@userid", userid }
             });
         var array = new string?[results?.Rows.Count ?? 0];
-        for (var i = 0; i < results?.Rows.Count; i++)
-        {
-            array[i] = results.Rows[i]["name_"].ToString();
-        }
+        for (var i = 0; i < results?.Rows.Count; i++) array[i] = results.Rows[i]["name_"].ToString();
         return array;
-
     }
 }

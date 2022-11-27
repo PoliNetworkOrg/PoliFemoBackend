@@ -116,7 +116,7 @@ public class InsertArticle : ControllerBase
 
 
         var result = Database.Execute(insertQuery, GlobalVariables.DbConfigVar);
-        if (result == -1)
+        if (result < 0)
         {
             Response.StatusCode = 500;
             return new ObjectResult(new JObject
