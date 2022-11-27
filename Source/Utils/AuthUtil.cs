@@ -125,7 +125,7 @@ public static class AuthUtil
     public static string?[] GetAuthorizedAuthors(string? userid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT a.* FROM Authors a, permission p WHERE p.id_user = sha2('@userid', 256) AND a.id_author = p.id_object AND p.id_grant = 'autori'",
+            "SELECT a.* FROM Authors a, permission p WHERE p.id_user = sha2('@userid', 256) AND a.id_author = p.id_object AND p.id_grant = 'authors'",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
