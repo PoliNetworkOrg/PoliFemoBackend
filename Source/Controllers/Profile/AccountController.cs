@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils;
 
 #endregion
@@ -34,9 +35,19 @@ public class ArticleByIdController : ControllerBase
             userid = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
         }
 
+        var permarray = new JArray();
+        for (var i = 0; i < permissions.Length-1; i+=2)
+            permarray.Add(new JObject
+            {
+                {"grant", permissions[i]},
+                {"object_id", permissions[i+1] == "" ? null : permissions[i+1]}
+            });
+        
         return new ObjectResult(new
         {
-            id = userid.ToLower(), permissions
+            id = userid.ToLower(),
+            permissions = permarray,
+            authorized_authors = AuthUtil.GetAuthorizedAuthors(sub)
         });
     }
 }

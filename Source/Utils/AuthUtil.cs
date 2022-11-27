@@ -105,12 +105,35 @@ public static class AuthUtil
     public static string?[] GetPermissions(string? userid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT DISTINCT name_grant FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente AND id_utente=sha2('@userid', 256)",
+            "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente AND id_utente=sha2('@userid', 256)",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
                 { "@userid", userid }
             });
-        return results?.AsEnumerable().Select(x => x.Field<string>("name_grant")).ToArray() ?? Array.Empty<string>();
+        var array = new string?[results?.Rows.Count * 2 ?? 0];
+        for (var i = 0; i < results?.Rows.Count; i++)
+        {
+            array[i * 2] = results.Rows[i]["name_grant"].ToString();
+            array[i * 2 + 1] = results.Rows[i]["id_object"].ToString();
+        }
+        return array;
+    }
+
+    public static string?[] GetAuthorizedAuthors(string? userid) {
+        var results = Database.Database.ExecuteSelect(
+            "SELECT a.* FROM Authors a, permission p WHERE p.id_user = sha2('@userid', 256) AND a.id_author = p.id_object AND p.id_grant = 'autori'",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@userid", userid }
+            });
+        var array = new string?[results?.Rows.Count ?? 0];
+        for (var i = 0; i < results?.Rows.Count; i++)
+        {
+            array[i] = results.Rows[i]["name_"].ToString();
+        }
+        return array;
+
     }
 }

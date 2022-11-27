@@ -284,7 +284,7 @@ public static class PoliMiNewsUtil
             { "@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "@author_id", PoliMiAuthorId },
             { "@image", newsItem.GetImgUrl() },
-            { "@tag", newsItem.GetTag()?.ToUpper() }
+            { "@tag", newsItem.GetTag()?.ToUpper() == "" ? "ALTRO" : newsItem.GetTag()?.ToUpper() }
         };
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
     }
