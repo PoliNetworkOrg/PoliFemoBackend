@@ -269,18 +269,18 @@ public static class PoliMiNewsUtil
         return DoneEnum.DONE;
     }
 
-    private static void InsertItemInDb(NewsPolimi newsItem) //11111
+    public static void InsertItemInDb(NewsPolimi newsItem) //11111
     {
         const string query1 = "INSERT IGNORE INTO Articles " +
                               "(title,subtitle,content,publishTime,sourceUrl,id_author,image,id_tag) " +
                               "VALUES " +
-                              "('@title','@subtitle','@text_','@publishTime','@sourceUrl', @author_id, '@image', '@tag')";
+                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl,@author_id,@image,@tag)";
         var args1 = new Dictionary<string, object?>
         {
             { "@sourceUrl", newsItem.GetUrl() },
-            { "@title", newsItem.GetTitle()?.Replace("'", "’") },
-            { "@subtitle", newsItem.GetSubtitle()?.Replace("'", "’") },
-            { "@text_", newsItem.GetContentAsTextJson()?.Replace("'", "’") },
+            { "@title", newsItem.GetTitle() },
+            { "@subtitle", newsItem.GetSubtitle() },
+            { "@text_", newsItem.GetContentAsTextJson() },
             { "@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "@author_id", PoliMiAuthorId },
             { "@image", newsItem.GetImgUrl() },
