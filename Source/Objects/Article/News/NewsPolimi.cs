@@ -18,7 +18,7 @@ public class NewsPolimi
     {
     }
 
-    public NewsPolimi(bool internalNews, string url, string title, string subtitle, string tag, string imgUrl)
+    public NewsPolimi(bool internalNews, string url, string title, string subtitle, string? tag, string? imgUrl)
     {
         _internalNews = internalNews;
         _url = url;

@@ -1,6 +1,7 @@
 ﻿#region
 
 using Newtonsoft.Json;
+using PoliFemoBackend.Source.Objects.Article.News;
 using PoliFemoBackend.Source.Utils.Database;
 using PoliFemoBackend.Source.Utils.News.PoliMi;
 
@@ -15,8 +16,7 @@ public static class Test
         Console.WriteLine("Test");
 
         DbConfig.InitializeDbConfig();
-        var x = DownloadNewsUtil.DownloadCurrentNews().ToList();
-        var json = JsonConvert.SerializeObject(x);
-        Console.WriteLine(json);
+        Utils.Temp.Migrate.ArticleContentUpgrade.ArticleContentUpgradeMethod();
+        
     }
 }
