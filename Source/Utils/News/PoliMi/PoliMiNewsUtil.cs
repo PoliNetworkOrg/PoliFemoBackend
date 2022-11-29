@@ -274,7 +274,7 @@ public static class PoliMiNewsUtil
         const string query1 = "INSERT IGNORE INTO Articles " +
                               "(title,subtitle,content,publishTime,sourceUrl,id_author,image,id_tag) " +
                               "VALUES " +
-                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl,@author_id,@image,@tag)";
+                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl, @author_id, @image, @tag)";
         var args1 = new Dictionary<string, object?>
         {
             { "@sourceUrl", newsItem.GetUrl() },

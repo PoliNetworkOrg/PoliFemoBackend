@@ -131,7 +131,7 @@ public static class ArticleUtil
             { "subtitle", row["subtitle"].ToString() == "" ? null : row["subtitle"].ToString() },
             { "latitude", row["latitude"].ToString() == "" ? null : double.Parse(row["latitude"].ToString() ?? "") },
             {
-                "longitude", row["longitude"].ToString() == "" ? null : double.Parse(row["longituide"].ToString() ?? "")
+                "longitude", row["longitude"].ToString() == "" ? null : double.Parse(row["longitude"].ToString() ?? "")
             },
             //change format of date
             {
