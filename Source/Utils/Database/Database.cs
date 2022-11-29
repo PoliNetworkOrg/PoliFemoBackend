@@ -16,11 +16,6 @@ public static class Database
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
-
-        if (args != null)
-            foreach (var (key, value) in args)
-                query = query.Replace(key, value == null ? "[null]" : value.ToString());
-
         Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery);
         var cmd = new MySqlCommand(query, connection);
 
@@ -40,11 +35,7 @@ public static class Database
     public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)
     {
         if (dbConfig == null) return default;
-
-        if (args != null)
-            foreach (var (key, value) in args)
-                query = query.Replace(key, value == null ? "[null]" : value.ToString());
-
+        
         Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery);
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
