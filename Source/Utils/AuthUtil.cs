@@ -91,7 +91,7 @@ public static class AuthUtil
     public static bool HasGrantAndObjectPermission(string? userid, string permission, int objectid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT id_grant FROM permission WHERE id_user=sha2('@userid', 256) AND id_grant='@permission' AND id_object=@objectid",
+            "SELECT id_grant FROM permission WHERE id_user=sha2(@userid, 256) AND id_grant=@permission AND id_object=@objectid",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -105,7 +105,7 @@ public static class AuthUtil
     public static List<PermissionGrantObject> GetPermissions(string? userid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente AND id_utente=sha2('@userid', 256)",
+            "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente AND id_utente=sha2(@userid, 256)",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -125,7 +125,7 @@ public static class AuthUtil
     public static string?[] GetAuthorizedAuthors(string? userid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT a.* FROM Authors a, permission p WHERE p.id_user = sha2('@userid', 256) AND a.id_author = p.id_object AND p.id_grant = 'authors'",
+            "SELECT a.* FROM Authors a, permission p WHERE p.id_user = sha2(@userid, 256) AND a.id_author = p.id_object AND p.id_grant = 'authors'",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {

@@ -251,7 +251,7 @@ public static class PoliMiNewsUtil
         if (string.IsNullOrEmpty(url))
             return DoneEnum.ERROR;
 
-        const string query = "SELECT COUNT(*) FROM Articles WHERE sourceUrl = '@url'";
+        const string query = "SELECT COUNT(*) FROM Articles WHERE sourceUrl = @url";
         var args = new Dictionary<string, object?> { { "@url", url } };
         var results = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
         if (results == null)
