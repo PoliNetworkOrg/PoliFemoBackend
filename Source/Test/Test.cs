@@ -1,9 +1,6 @@
 ﻿#region
 
-using Newtonsoft.Json;
-using PoliFemoBackend.Source.Objects.Article.News;
 using PoliFemoBackend.Source.Utils.Database;
-using PoliFemoBackend.Source.Utils.News.PoliMi;
 
 #endregion
 

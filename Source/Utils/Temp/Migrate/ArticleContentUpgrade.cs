@@ -16,7 +16,7 @@ public static class ArticleContentUpgrade
         }
         catch
         {
-            ;
+            // ignored
         }
 
         if (x == null || x.Rows.Count == 0)
@@ -43,7 +43,7 @@ public static class ArticleContentUpgrade
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 
@@ -80,7 +80,7 @@ public static class ArticleContentUpgrade
         }
         catch
         {
-            ;
+            // ignored
         }
 
         if (!done)

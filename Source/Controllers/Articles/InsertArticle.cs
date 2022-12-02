@@ -60,10 +60,10 @@ public class InsertArticle : ControllerBase
             subtitle = data["subtitle"]?.ToString();
             content = data["content"]?.ToString();
             targetTime = data["target_time"]?.ToObject<DateTime>();
-            latitude = Double.Parse(data["latitude"]?.ToString() ?? "0");
-            longitude = Double.Parse(data["longitude"]?.ToString() ?? "0");
+            latitude = double.Parse(data["latitude"]?.ToString() ?? "0");
+            longitude = double.Parse(data["longitude"]?.ToString() ?? "0");
             image = data["image"]?.ToString();
-            id_author = Int32.Parse(data["author_id"]?.ToString() ?? "0");
+            id_author = int.Parse(data["author_id"]?.ToString() ?? "0");
             sourceUrl = data["source_url"]?.ToString();
         } catch (Exception e) {
             return new BadRequestObjectResult(new
@@ -130,7 +130,7 @@ public class InsertArticle : ControllerBase
             @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
             VALUES (@id_tag, @title, @subtitle, @content, NOW(), @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
 
-        var contentArray = Utils.ArticleUtil.EncodeStringList(new List<string>() { content });
+        var contentArray = ArticleUtil.EncodeStringList(new List<string>() { content });
 
         var result = Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>()
