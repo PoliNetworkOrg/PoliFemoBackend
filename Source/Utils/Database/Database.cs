@@ -16,7 +16,12 @@ public static class Database
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
-        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery);
+        var queryWithValues = query;
+        if (args != null)
+            foreach (var (key, value) in args)
+                queryWithValues = queryWithValues.Replace(key, value?.ToString() ?? "NULL");
+        Logger.WriteLine(queryWithValues, LogSeverityLevel.DatabaseQuery);
+
         var cmd = new MySqlCommand(query, connection);
 
         if (args != null)

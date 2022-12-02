@@ -29,8 +29,8 @@ public class InsertArticle : ControllerBase
     ///     The following parameters are required:
     ///     - title: String
     ///     - content: String
-    ///     - id_author: Integer
-    ///     - id_tag: String
+    ///     - author_id: Integer
+    ///     - tag_id: String
     ///     <br />
     ///     <br />
     ///     The following parameters are optional:
@@ -55,7 +55,7 @@ public class InsertArticle : ControllerBase
         int id_author;
         double latitude, longitude;
         try {
-            id_tag = data["id_tag"]?.ToString();
+            id_tag = data["tag_id"]?.ToString();
             title = data["title"]?.ToString();
             subtitle = data["subtitle"]?.ToString();
             content = data["content"]?.ToString();
@@ -63,8 +63,8 @@ public class InsertArticle : ControllerBase
             latitude = Double.Parse(data["latitude"]?.ToString() ?? "0");
             longitude = Double.Parse(data["longitude"]?.ToString() ?? "0");
             image = data["image"]?.ToString();
-            id_author = Int32.Parse(data["id_author"]?.ToString() ?? "0");
-            sourceUrl = data["sourceUrl"]?.ToString();
+            id_author = Int32.Parse(data["author_id"]?.ToString() ?? "0");
+            sourceUrl = data["source_url"]?.ToString();
         } catch (Exception e) {
             return new BadRequestObjectResult(new
             {
@@ -73,7 +73,7 @@ public class InsertArticle : ControllerBase
             });
         }
 
-        if (id_tag == null || title == null || subtitle == null || content == null || id_author == 0)
+        if (id_tag == null || title == null || content == null || id_author == 0)
             return new BadRequestObjectResult(new
             {
                 error = "Missing parameters"
@@ -126,30 +126,25 @@ public class InsertArticle : ControllerBase
                 { "error", "Invalid latitude or longitude" }
             });
 
-        var publishTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        var targetTimeConverted = targetTime == null ? "null" : targetTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
-
         var insertQuery =
             @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
-            VALUES (@id_tag, @title, @subtitle, @content, @publishTime, @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
+            VALUES (@id_tag, @title, @subtitle, @content, NOW(), @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
 
         var contentArray = Utils.ArticleUtil.EncodeStringList(new List<string>() { content });
-
 
         var result = Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>()
             {
-                {"@title", GetStringOrNull(title)},
-                {"@content", "'" + JsonConvert.SerializeObject(contentArray) + "'"},
-                {"@publishTime", GetStringOrNull(publishTime)},
-                {"@latitude", latitude == 0 ? "null" : $"'{latitude}'"},
-                {"@longitude", longitude == 0 ? "null" : $"'{longitude}'"},
-                {"@image", GetStringOrNull(image)},
-                {"@id_author", GetStringOrNull(id_author)},
-                {"@sourceUrl", GetStringOrNull(sourceUrl)},
-                {"@id_tag", GetStringOrNull(id_tag)},
-                {"@subtitle", GetStringOrNull(subtitle)},
-                {"@targetTimeConverted", targetTimeConverted}
+                {"@title", GetValueOrNull(title)},
+                {"@content", JsonConvert.SerializeObject(contentArray)},
+                {"@latitude", latitude == 0 ? null : latitude},
+                {"@longitude", longitude == 0 ? null : longitude},
+                {"@image", GetValueOrNull(image)},
+                {"@id_author", GetValueOrNull(id_author)},
+                {"@sourceUrl", GetValueOrNull(sourceUrl)},
+                {"@id_tag", GetValueOrNull(id_tag)},
+                {"@subtitle", GetValueOrNull(subtitle)},
+                {"@targetTimeConverted", GetValueOrNull(targetTime)}
             }
         );
         if (result < 0)
@@ -165,18 +160,8 @@ public class InsertArticle : ControllerBase
     }
 
 
-    private static string GetStringOrNull(string? v)
+    private static object? GetValueOrNull(object? v)
     {
-        return v == null ? "null" : $"'{v}'";
-    }
-
-    private static string GetStringOrNull(double? v)
-    {
-        return v == null ? "null" : $"{v}";
-    }
-
-    private static string GetStringOrNull(int? v)
-    {
-        return v == null ? "null" : $"{v}";
+        return v == null ? null : v;
     }
 }

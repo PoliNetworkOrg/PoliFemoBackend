@@ -49,6 +49,17 @@ internal static class Program
 
             builder.Services.AddMetrics(metrics);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "policy",
+                                policy  =>
+                                {
+                                    policy.AllowAnyOrigin()
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod();
+                                });
+            });
+
             builder.Host
                 .ConfigureMetrics(metricsBuilder =>
                 {
