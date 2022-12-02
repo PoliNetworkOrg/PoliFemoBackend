@@ -33,7 +33,7 @@ public class DeleteArticle : ControllerBase
     public ObjectResult DeleteArticleDb(int id)
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        var article = Database.ExecuteSelect($"SELECT id_author from Articles WHERE id_article=@id",
+        var article = Database.ExecuteSelect("SELECT id_author from Articles WHERE id_article=@id",
         GlobalVariables.DbConfigVar,
         new Dictionary<string, object?>
         {
@@ -49,13 +49,13 @@ public class DeleteArticle : ControllerBase
                 { "error","You don't have enough permissions" }
             });
         }
-        var result = Database.Execute($"DELETE FROM Articles WHERE id_article=@id",
+        var result = Database.Execute("DELETE FROM Articles WHERE id_article=@id",
         GlobalVariables.DbConfigVar,
         new Dictionary<string, object?>
         {
             {"@id", id}
         });
-        if(result == -1){
+        if(result < 0){
             Response.StatusCode = 500;
             return new ObjectResult(new JObject
             {

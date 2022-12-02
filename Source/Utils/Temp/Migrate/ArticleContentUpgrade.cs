@@ -35,7 +35,7 @@ public static class ArticleContentUpgrade
         {
             var newContent = FixContent(content.ToString());
             Utils.Database.Database.Execute("UPDATE Articles SET content = @content WHERE id_article = @id_article",
-                DbConfig.DbConfigVar, new Dictionary<string, object?>()
+                DbConfig.DbConfigVar, new Dictionary<string, object?>
                 {
                     { "@content", newContent },
                     { "@id_article", idArticle }

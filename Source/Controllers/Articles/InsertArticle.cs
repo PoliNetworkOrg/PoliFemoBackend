@@ -126,14 +126,13 @@ public class InsertArticle : ControllerBase
                 { "error", "Invalid latitude or longitude" }
             });
 
-        var insertQuery =
-            @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
+        const string insertQuery = @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
             VALUES (@id_tag, @title, @subtitle, @content, NOW(), @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
 
-        var contentArray = ArticleUtil.EncodeStringList(new List<string>() { content });
+        var contentArray = ArticleUtil.EncodeStringList(new List<string> { content });
 
         var result = Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
-            new Dictionary<string, object?>()
+            new Dictionary<string, object?>
             {
                 {"@title", title},
                 {"@content", JsonConvert.SerializeObject(contentArray)},
