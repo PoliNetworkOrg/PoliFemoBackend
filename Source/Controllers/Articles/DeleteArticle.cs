@@ -16,8 +16,8 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Articles")]
-[Route("v{version:apiVersion}/articles/{id}")]
-[Route("/articles/{id}")]
+[Route("v{version:apiVersion}/articles/{id:int}")]
+[Route("/articles/{id:int}")]
 public class DeleteArticle : ControllerBase
 {
     /// <summary>
