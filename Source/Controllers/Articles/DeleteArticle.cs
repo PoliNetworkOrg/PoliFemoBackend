@@ -39,8 +39,8 @@ public class DeleteArticle : ControllerBase
             });
         if (article == null)
             return new NotFoundObjectResult("");
-        var id_author = Convert.ToInt32(Database.GetFirstValueFromDataTable(article));
-        if (!AuthUtil.HasGrantAndObjectPermission(sub, "authors", id_author))
+        var idAuthor = Convert.ToInt32(Database.GetFirstValueFromDataTable(article));
+        if (!AuthUtil.HasGrantAndObjectPermission(sub, "authors", idAuthor))
         {
             Response.StatusCode = 403;
             return new UnauthorizedObjectResult(new JObject
