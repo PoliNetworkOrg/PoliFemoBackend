@@ -1,9 +1,7 @@
 ﻿#region
 
-using Newtonsoft.Json;
-using PoliFemoBackend.Source.Objects.Article.News;
 using PoliFemoBackend.Source.Utils.Database;
-using PoliFemoBackend.Source.Utils.News.PoliMi;
+using PoliFemoBackend.Source.Utils.Temp.Migrate;
 
 #endregion
 
@@ -16,7 +14,6 @@ public static class Test
         Console.WriteLine("Test");
 
         DbConfig.InitializeDbConfig();
-        Utils.Temp.Migrate.ArticleContentUpgrade.ArticleContentUpgradeMethod();
-        
+        ArticleContentUpgrade.ArticleContentUpgradeMethod();
     }
 }

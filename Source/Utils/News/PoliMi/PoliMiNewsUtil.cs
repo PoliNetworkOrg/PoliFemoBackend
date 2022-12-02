@@ -269,7 +269,7 @@ public static class PoliMiNewsUtil
         return DoneEnum.DONE;
     }
 
-    public static void InsertItemInDb(NewsPolimi newsItem) //11111
+    private static void InsertItemInDb(NewsPolimi newsItem) //11111
     {
         const string query1 = "INSERT IGNORE INTO Articles " +
                               "(title,subtitle,content,publishTime,sourceUrl,id_author,image,id_tag) " +

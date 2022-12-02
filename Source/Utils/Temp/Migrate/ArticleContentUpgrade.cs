@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Web;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils.Database;
 
@@ -12,21 +13,18 @@ public static class ArticleContentUpgrade
         DataTable? x = null;
         try
         {
-            x = Utils.Database.Database.ExecuteSelect("SELECT id_article, content FROM Articles", DbConfig.DbConfigVar);
+            x = Database.Database.ExecuteSelect("SELECT id_article, content FROM Articles", DbConfig.DbConfigVar);
         }
         catch
         {
-            ;
+            // ignored
         }
 
         if (x == null || x.Rows.Count == 0)
             return;
 
 
-        foreach (DataRow dr in x.Rows)
-        {
-            FixArticleContent(dr["id_article"], dr["content"]);
-        }
+        foreach (DataRow dr in x.Rows) FixArticleContent(dr["id_article"], dr["content"]);
     }
 
     private static void FixArticleContent(object idArticle, object content)
@@ -34,8 +32,8 @@ public static class ArticleContentUpgrade
         try
         {
             var newContent = FixContent(content.ToString());
-            Utils.Database.Database.Execute("UPDATE Articles SET content = @content WHERE id_article = @id_article",
-                DbConfig.DbConfigVar, new Dictionary<string, object?>()
+            Database.Database.Execute("UPDATE Articles SET content = @content WHERE id_article = @id_article",
+                DbConfig.DbConfigVar, new Dictionary<string, object?>
                 {
                     { "@content", newContent },
                     { "@id_article", idArticle }
@@ -43,7 +41,7 @@ public static class ArticleContentUpgrade
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 
@@ -52,17 +50,14 @@ public static class ArticleContentUpgrade
         if (toString == null)
             return null;
 
-        var x = (JArray?)Newtonsoft.Json.JsonConvert.DeserializeObject(toString);
+        var x = (JArray?)JsonConvert.DeserializeObject(toString);
         if (x == null)
             return null;
 
         var res = new JArray();
-        foreach (var y in x)
-        {
-            AddValueFix(res, y);
-        }
+        foreach (var y in x) AddValueFix(res, y);
 
-        var result = Newtonsoft.Json.JsonConvert.SerializeObject(res);
+        var result = JsonConvert.SerializeObject(res);
         return result;
     }
 
@@ -80,13 +75,10 @@ public static class ArticleContentUpgrade
         }
         catch
         {
-            ;
+            // ignored
         }
 
-        if (!done)
-        {
-            res.Add(z);
-        }
+        if (!done) res.Add(z);
     }
 
     private static string? FixSingleItem(JValue jValue)

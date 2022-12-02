@@ -17,7 +17,7 @@ public static class Database
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
         Logger.LogQuery(query, args);
-        
+
         var cmd = new MySqlCommand(query, connection);
 
         if (args != null)
@@ -36,9 +36,9 @@ public static class Database
     public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)
     {
         if (dbConfig == null) return default;
-        
+
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
-        
+
         Logger.LogQuery(query, args);
 
         var cmd = new MySqlCommand(query, connection);

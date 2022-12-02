@@ -168,10 +168,7 @@ public static class ArticleUtil
     public static JArray EncodeStringList(List<string> list)
     {
         var j = new JArray();
-        foreach (var item in list)
-        {
-            j.Add(HttpUtility.UrlEncode(item));
-        }
+        foreach (var item in list) j.Add(HttpUtility.UrlEncode(item));
         return j;
     }
 }

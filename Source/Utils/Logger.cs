@@ -74,7 +74,7 @@ public static class Logger
         if (args != null)
             foreach (var (key, value) in args)
                 query = query.Replace(key, value?.ToString() ?? "NULL");
-        
+
         WriteLine(query, LogSeverityLevel.DatabaseQuery);
     }
 }

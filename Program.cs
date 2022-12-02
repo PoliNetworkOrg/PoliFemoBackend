@@ -51,13 +51,13 @@ internal static class Program
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy(name: "policy",
-                                policy  =>
-                                {
-                                    policy.AllowAnyOrigin()
-                                        .AllowAnyHeader()
-                                        .AllowAnyMethod();
-                                });
+                options.AddPolicy("policy",
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
             });
 
             builder.Host
