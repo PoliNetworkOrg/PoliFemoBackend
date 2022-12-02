@@ -135,16 +135,16 @@ public class InsertArticle : ControllerBase
         var result = Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>()
             {
-                {"@title", GetValueOrNull(title)},
+                {"@title", title},
                 {"@content", JsonConvert.SerializeObject(contentArray)},
                 {"@latitude", latitude == 0 ? null : latitude},
                 {"@longitude", longitude == 0 ? null : longitude},
-                {"@image", GetValueOrNull(image)},
-                {"@id_author", GetValueOrNull(id_author)},
-                {"@sourceUrl", GetValueOrNull(sourceUrl)},
-                {"@id_tag", GetValueOrNull(id_tag)},
-                {"@subtitle", GetValueOrNull(subtitle)},
-                {"@targetTimeConverted", GetValueOrNull(targetTime)}
+                {"@image", image},
+                {"@id_author", id_author},
+                {"@sourceUrl", sourceUrl},
+                {"@id_tag", id_tag},
+                {"@subtitle", subtitle},
+                {"@targetTimeConverted", targetTime}
             }
         );
         if (result < 0)
@@ -157,11 +157,5 @@ public class InsertArticle : ControllerBase
         }
 
         return Ok("");
-    }
-
-
-    private static object? GetValueOrNull(object? v)
-    {
-        return v == null ? null : v;
     }
 }
