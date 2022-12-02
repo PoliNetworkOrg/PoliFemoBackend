@@ -1,6 +1,7 @@
 ﻿#region
 
 using PoliFemoBackend.Source.Utils.Database;
+using PoliFemoBackend.Source.Utils.Temp.Migrate;
 
 #endregion
 
@@ -13,7 +14,6 @@ public static class Test
         Console.WriteLine("Test");
 
         DbConfig.InitializeDbConfig();
-        Utils.Temp.Migrate.ArticleContentUpgrade.ArticleContentUpgradeMethod();
-        
+        ArticleContentUpgrade.ArticleContentUpgradeMethod();
     }
 }

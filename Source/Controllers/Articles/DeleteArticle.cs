@@ -7,8 +7,6 @@ using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
 
-
-
 #endregion
 
 namespace PoliFemoBackend.Source.Controllers.Articles;
@@ -34,37 +32,38 @@ public class DeleteArticle : ControllerBase
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
         var article = Database.ExecuteSelect("SELECT id_author from Articles WHERE id_article=@id",
-        GlobalVariables.DbConfigVar,
-        new Dictionary<string, object?>
-        {
-            {"@id", id}
-        });
-        if(article == null)
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@id", id }
+            });
+        if (article == null)
             return new NotFoundObjectResult("");
         var id_author = Convert.ToInt32(Database.GetFirstValueFromDataTable(article));
-        if(!AuthUtil.HasGrantAndObjectPermission(sub, "authors", id_author)){
+        if (!AuthUtil.HasGrantAndObjectPermission(sub, "authors", id_author))
+        {
             Response.StatusCode = 403;
             return new UnauthorizedObjectResult(new JObject
             {
-                { "error","You don't have enough permissions" }
+                { "error", "You don't have enough permissions" }
             });
         }
+
         var result = Database.Execute("DELETE FROM Articles WHERE id_article=@id",
-        GlobalVariables.DbConfigVar,
-        new Dictionary<string, object?>
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@id", id }
+            });
+        if (result < 0)
         {
-            {"@id", id}
-        });
-        if(result < 0){
             Response.StatusCode = 500;
             return new ObjectResult(new JObject
             {
-                { "error","Internal server error" }
+                { "error", "Internal server error" }
             });
         }
+
         return Ok("");
     }
-
-
-  
 }

@@ -54,7 +54,8 @@ public class InsertArticle : ControllerBase
         DateTime? targetTime;
         int id_author;
         double latitude, longitude;
-        try {
+        try
+        {
             id_tag = data["tag_id"]?.ToString();
             title = data["title"]?.ToString();
             subtitle = data["subtitle"]?.ToString();
@@ -65,7 +66,9 @@ public class InsertArticle : ControllerBase
             image = data["image"]?.ToString();
             id_author = int.Parse(data["author_id"]?.ToString() ?? "0");
             sourceUrl = data["source_url"]?.ToString();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             return new BadRequestObjectResult(new
             {
                 error = "Invalid parameters",
@@ -108,7 +111,9 @@ public class InsertArticle : ControllerBase
                     { "error", "You don't have enough permissions" }
                 });
             }
-        } else {
+        }
+        else
+        {
             return new BadRequestObjectResult(new JObject
             {
                 { "error", "Invalid author" }
@@ -126,7 +131,8 @@ public class InsertArticle : ControllerBase
                 { "error", "Invalid latitude or longitude" }
             });
 
-        const string insertQuery = @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
+        const string insertQuery =
+            @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
             VALUES (@id_tag, @title, @subtitle, @content, NOW(), @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
 
         var contentArray = ArticleUtil.EncodeStringList(new List<string> { content });
@@ -134,16 +140,16 @@ public class InsertArticle : ControllerBase
         var result = Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
-                {"@title", title},
-                {"@content", JsonConvert.SerializeObject(contentArray)},
-                {"@latitude", latitude == 0 ? null : latitude},
-                {"@longitude", longitude == 0 ? null : longitude},
-                {"@image", image},
-                {"@id_author", id_author},
-                {"@sourceUrl", sourceUrl},
-                {"@id_tag", id_tag},
-                {"@subtitle", subtitle},
-                {"@targetTimeConverted", targetTime}
+                { "@title", title },
+                { "@content", JsonConvert.SerializeObject(contentArray) },
+                { "@latitude", latitude == 0 ? null : latitude },
+                { "@longitude", longitude == 0 ? null : longitude },
+                { "@image", image },
+                { "@id_author", id_author },
+                { "@sourceUrl", sourceUrl },
+                { "@id_tag", id_tag },
+                { "@subtitle", subtitle },
+                { "@targetTimeConverted", targetTime }
             }
         );
         if (result < 0)

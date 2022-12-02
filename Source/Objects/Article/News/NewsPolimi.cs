@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PoliFemoBackend.Source.Utils;
 
 namespace PoliFemoBackend.Source.Objects.Article.News;
 
@@ -64,7 +65,7 @@ public class NewsPolimi
         if (_content == null)
             return null;
 
-        var json = JsonConvert.SerializeObject(Utils.ArticleUtil.EncodeStringList(_content));
+        var json = JsonConvert.SerializeObject(ArticleUtil.EncodeStringList(_content));
         return json.Trim();
     }
 
