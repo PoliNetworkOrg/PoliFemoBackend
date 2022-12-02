@@ -34,7 +34,7 @@ public class ArticlesByDateTimeRange : ControllerBase
     /// <response code="404">No available articles</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag,int? author_id, int? limit)
+    public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id, int? limit)
     {
         if (start == null && end == null && tag == null && author_id == null)
         {
@@ -52,7 +52,7 @@ public class ArticlesByDateTimeRange : ControllerBase
     {
         var startDateTime = DateTimeUtil.ConvertToMySqlString(start ?? null);
         var endDateTime = DateTimeUtil.ConvertToMySqlString(end ?? null);
-        var query = "SELECT * FROM ArticlesWithAuthors_View WHERE "; //rifare la view
+        var query = "SELECT * FROM ArticlesWithAuthors_View WHERE ";
         Console.WriteLine(query);
         if (start != null) {
             query += "publishTime >= @start AND ";
@@ -68,8 +68,7 @@ public class ArticlesByDateTimeRange : ControllerBase
         }
 
         query = query.Substring(0, query.Length - 4);
-        query += " LIMIT " + (limit ?? 30);
-        Console.WriteLine(query);
+        query += " LIMIT " + ((limit == null || limit < 1 || limit > 100) ? 30 : limit);
         var results = Database.ExecuteSelect(
             query,  // Remove last AND
             GlobalVariables.DbConfigVar,
