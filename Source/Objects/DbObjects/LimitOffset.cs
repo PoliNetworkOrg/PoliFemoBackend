@@ -2,23 +2,23 @@
 
 public class LimitOffset
 {
-    public uint limit;
-    public uint offset;
-
-
+    private readonly uint _limit;
+    private readonly uint _pageOffset;
+    
     private const int MaxLimit = 100;
 
-    public LimitOffset(uint? limit, uint? offset)
+    public LimitOffset(uint? limitParam, uint? pageOffsetParam)
     {
-        this.limit = limit ?? MaxLimit;
-        this.offset = offset ?? 0;
+        _limit = limitParam ?? MaxLimit;
+        _pageOffset = pageOffsetParam ?? 0;
         
         //fix values
-        this.limit = Math.Max(1, this.limit); //almeno 1 dev'esserci
+        _limit = Math.Max(1, _limit); //almeno 1 dev'esserci
+        _limit = Math.Min(_limit, MaxLimit); //non si può chiedere più di MaxLimit
     }
 
     public string GetLimitQuery()
     {
-        return "LIMIT " + ((limit < 1 || limit > 100) ? 30 : limit);
+        return $"LIMIT {_pageOffset * _limit},{_limit}";
     }
 }

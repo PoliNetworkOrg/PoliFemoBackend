@@ -27,7 +27,7 @@ public class ArticlesByParameters : ControllerBase
     /// <param name="author_id" example="1">Author id</param>
     /// <param name="title" example="Titolo...">Article title</param>
     /// <param name="limit" example="30">Limit of results (can be null)</param>
-    /// <param name="offset">Offset for limit (can be null)</param>
+    /// <param name="pageOffset">Offset page for limit (can be null)</param>
     /// <remarks>
     ///     At least one of the parameters must be specified.
     /// </remarks>
@@ -37,7 +37,7 @@ public class ArticlesByParameters : ControllerBase
     /// <response code="404">No available articles</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, uint? limit, uint? offset)
+    public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, uint? limit, uint? pageOffset)
     {
         if (start == null && end == null && tag == null && author_id == null)
         {
@@ -47,7 +47,7 @@ public class ArticlesByParameters : ControllerBase
             });
         }
         
-        var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, new LimitOffset(limit, offset));
+        var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, new LimitOffset(limit, pageOffset));
         return r == null ? new NotFoundObjectResult("") : Ok(r);
     }
 
