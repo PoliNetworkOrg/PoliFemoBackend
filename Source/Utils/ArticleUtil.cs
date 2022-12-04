@@ -127,6 +127,7 @@ public static class ArticleUtil
         //convert results to json
         var a = new JObject
         {
+            { "id", Convert.ToInt32(row["id_article"]) },
             { "tag_id", row["id_tag"].ToString() },
             { "title", row["title"].ToString() },
             { "subtitle", row["subtitle"].ToString() == "" ? null : row["subtitle"].ToString() },
