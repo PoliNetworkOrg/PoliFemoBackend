@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Objects.DbObjects;
 using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
 
@@ -35,7 +36,7 @@ public class ArticlesByParameters : ControllerBase
     /// <response code="404">No available articles</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, int? limit)
+    public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, int? limit, int? offset)
     {
         if (start == null && end == null && tag == null && author_id == null)
         {
@@ -45,11 +46,11 @@ public class ArticlesByParameters : ControllerBase
             });
         }
 
-        var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, limit);
+        var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, new LimitOffset(limit, offset));
         return r == null ? new NotFoundObjectResult("") : Ok(r);
     }
 
-    private static JObject? SearchArticlesByParamsAsJobject(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, int? limit)
+    private static JObject? SearchArticlesByParamsAsJobject(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, LimitOffset? limitOffset)
     {
         var startDateTime = DateTimeUtil.ConvertToMySqlString(start ?? null);
         var endDateTime = DateTimeUtil.ConvertToMySqlString(end ?? null);
@@ -70,8 +71,13 @@ public class ArticlesByParameters : ControllerBase
             query += "title LIKE @title AND ";
         }
 
-        query = query.Substring(0, query.Length - 4);
-        query += "LIMIT " + ((limit == null || limit < 1 || limit > 100) ? 30 : limit);
+        query = query[..^4]; // remove last "and"
+
+        if (limitOffset != null)
+        {
+            query += limitOffset.getLimitQuery();
+        }
+        
         var results = Database.ExecuteSelect(
             query,  // Remove last AND
             GlobalVariables.DbConfigVar,
