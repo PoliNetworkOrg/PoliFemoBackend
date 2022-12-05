@@ -3,7 +3,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Objects.Permission;
 using PoliFemoBackend.Source.Utils;
 
 // ReSharper disable InconsistentNaming
@@ -52,13 +51,24 @@ public class GetPermissions : ControllerBase
         {
             var name_grant = t.name_grant;
             var id_object = t.id_object;
-            if (name_grant == null || id_object == null)
+            if (string.IsNullOrEmpty(name_grant) || string.IsNullOrEmpty(id_object))
                 continue;
             
             if(!indexed.ContainsKey(name_grant))
-                indexed.Add(name_grant, (new List<string>()));
+                indexed.Add(name_grant, new List<string>());
+            
             indexed[name_grant].Add(id_object);
-        }  
+        }
+
+        if (indexed.Keys.Count == 0)
+        {
+            Response.StatusCode = 404;
+            return new NotFoundObjectResult(new JObject
+            {
+                { "error", "No permissions found" }
+            });
+        }
+
 
         return Ok(
             new ObjectResult(indexed).Value
