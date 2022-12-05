@@ -130,9 +130,9 @@ public static class ArticleUtil
             { "tag_id", row["id_tag"].ToString() },
             { "title", row["title"].ToString() },
             { "subtitle", row["subtitle"].ToString() == "" ? null : row["subtitle"].ToString() },
-            { "latitude", row["latitude"].ToString() == "" ? null : double.Parse(row["latitude"].ToString() ?? "") },
+            { "latitude", GetValue(row["latitude"]) },
             {
-                "longitude", row["longitude"].ToString() == "" ? null : double.Parse(row["longitude"].ToString() ?? "")
+                "longitude", GetValue(row["longitude"])
             },
             //change format of date
             {
@@ -157,6 +157,11 @@ public static class ArticleUtil
 
         a.Add("author", b);
         return a;
+    }
+
+    private static JToken? GetValue(object? o)
+    {
+        return o == null ? null : new JValue(o);
     }
 
     public static JArray ArticleAuthorsRowsToJArray(DataTable results)
