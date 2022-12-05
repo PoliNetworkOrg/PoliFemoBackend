@@ -10,7 +10,7 @@ using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Articles;
+namespace PoliFemoBackend.Source.Controllers.Permissions;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -38,7 +38,7 @@ public class GetPermissions : ControllerBase
     public ObjectResult GetPermission()
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        List<PermissionGrantObject> perms = AuthUtil.GetPermissions(sub);
+        var perms = AuthUtil.GetPermissions(sub);
         if(perms == null){
             Response.StatusCode = 500;
             return new BadRequestObjectResult(new JObject
@@ -47,15 +47,17 @@ public class GetPermissions : ControllerBase
             });
         }
         
-        Dictionary<string, List<string>> indexed = new Dictionary<string, List<string>>();
-        for(int i = 0;i < perms.Count;i++){
-            var name_grant = perms[i].name_grant;
-            var id_object = perms[i].id_object;
-            if(name_grant != null && id_object != null){
-                if(!indexed.ContainsKey(name_grant))
-                    indexed.Add(name_grant, (new List<string>()));
-                indexed[name_grant].Add(id_object);
-            }
+        var indexed = new Dictionary<string, List<string>>();
+        foreach (var t in perms)
+        {
+            var name_grant = t.name_grant;
+            var id_object = t.id_object;
+            if (name_grant == null || id_object == null)
+                continue;
+            
+            if(!indexed.ContainsKey(name_grant))
+                indexed.Add(name_grant, (new List<string>()));
+            indexed[name_grant].Add(id_object);
         }  
 
         return Ok(
