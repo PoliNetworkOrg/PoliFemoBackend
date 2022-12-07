@@ -1,6 +1,5 @@
 #region
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils;
@@ -9,13 +8,13 @@ using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Permissions;
+namespace PoliFemoBackend.Source.Controllers.Profile;
 
 [ApiController]
 [ApiVersion("1.0")]
-[ApiExplorerSettings(GroupName = "Permissions")]
-[Route("v{version:apiVersion}/permissions")]
-[Route("/permissions")]
+[ApiExplorerSettings(GroupName = "Account")]
+[Route("v{version:apiVersion}/accounts/{id}/permissions")]
+[Route("accounts/{id}/permissions")]
 public class GetPermissions : ControllerBase
 {
     /// <summary>
@@ -29,15 +28,14 @@ public class GetPermissions : ControllerBase
     /// ......
     /// }
     /// </remarks>
+    /// <param name="id">id of the user</param>
     /// <response code="200">Permissions returned successfully</response>
     /// <response code="500">Can't connect to server</response>
     [MapToApiVersion("1.0")]
-    [HttpGet]
-    [Authorize]
-    public ObjectResult GetPermission()
+    [HttpPost]
+    public ObjectResult GetPermission(string id)
     {
-        var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        var perms = AuthUtil.GetPermissions(sub);
+        var perms = AuthUtil.GetPermissions(id);
         if(perms == null){
             Response.StatusCode = 500;
             return new BadRequestObjectResult(new JObject
@@ -68,7 +66,6 @@ public class GetPermissions : ControllerBase
                 { "error", "No permissions found" }
             });
         }
-
 
         return Ok(
             new ObjectResult(indexed).Value
