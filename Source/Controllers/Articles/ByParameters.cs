@@ -28,6 +28,7 @@ public class ArticlesByParameters : ControllerBase
     /// <param name="title" example="Titolo...">Article title</param>
     /// <param name="limit" example="30">Limit of results (can be null)</param>
     /// <param name="pageOffset">Offset page for limit (can be null)</param>
+    /// <param name="sort" example="date">Sort by column</param>
     /// <remarks>
     ///     At least one of the parameters must be specified.
     /// </remarks>
@@ -37,7 +38,7 @@ public class ArticlesByParameters : ControllerBase
     /// <response code="404">No available articles</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, uint? limit, uint? pageOffset)
+    public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, uint? limit, uint? pageOffset, string? sort)
     {
         if (start == null && end == null && tag == null && author_id == null)
         {
@@ -47,11 +48,11 @@ public class ArticlesByParameters : ControllerBase
             });
         }
         
-        var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, new LimitOffset(limit, pageOffset));
+        var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, new LimitOffset(limit, pageOffset), sort);
         return r == null ? new NotFoundObjectResult("") : Ok(r);
     }
 
-    private static JObject? SearchArticlesByParamsAsJobject(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, LimitOffset limitOffset)
+    private static JObject? SearchArticlesByParamsAsJobject(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, LimitOffset limitOffset, string? sort)
     {
         var startDateTime = DateTimeUtil.ConvertToMySqlString(start ?? null);
         var endDateTime = DateTimeUtil.ConvertToMySqlString(end ?? null);
@@ -73,6 +74,10 @@ public class ArticlesByParameters : ControllerBase
         }
 
         query = query[..^4]; // remove last "and"
+
+        if (sort == "date") {
+            query += "ORDER BY publishTime DESC ";
+        }
 
         query += limitOffset.GetLimitQuery();
 
