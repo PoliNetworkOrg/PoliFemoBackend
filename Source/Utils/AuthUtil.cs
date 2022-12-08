@@ -102,10 +102,14 @@ public static class AuthUtil
         return results != null;
     }
 
-    public static List<PermissionGrantObject> GetPermissions(string? userid)
+    public static List<PermissionGrantObject> GetPermissions(string? userid, bool convert = true)
     {
+        var query = "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente ";
+        if (convert) query += "AND id_utente=sha2(@userid, 256)";
+        else query += "AND id_utente=@userid";
+
         var results = Database.Database.ExecuteSelect(
-            "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente AND id_utente=sha2(@userid, 256)",
+            query,
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
