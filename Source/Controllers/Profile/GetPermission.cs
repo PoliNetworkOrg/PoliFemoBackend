@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils;
-
+using Microsoft.AspNetCore.Authorization;
 // ReSharper disable InconsistentNaming
 
 #endregion
@@ -15,27 +15,20 @@ namespace PoliFemoBackend.Source.Controllers.Profile;
 [ApiExplorerSettings(GroupName = "Account")]
 [Route("v{version:apiVersion}/accounts/{id}/permissions")]
 [Route("accounts/{id}/permissions")]
+[Authorize]
 public class GetPermissions : ControllerBase
 {
     /// <summary>
     ///     Returns the permissions of the user
     /// </summary>
-    /// <remarks>
-    /// returns the permissions in the following format: 
-    /// {
-    /// "permission1" : [object_id1, object_id2, ...],
-    /// "permission2" : [object_id1, object_id2, ...]
-    /// ......
-    /// }
-    /// </remarks>
     /// <param name="id">id of the user</param>
     /// <response code="200">Permissions returned successfully</response>
     /// <response code="500">Can't connect to server</response>
     [MapToApiVersion("1.0")]
-    [HttpPost]
+    [HttpGet]
     public ObjectResult GetPermission(string id)
     {
-        var perms = AuthUtil.GetPermissions(id);
+        var perms = AuthUtil.GetPermissions(id, false);
         if(perms == null){
             Response.StatusCode = 500;
             return new BadRequestObjectResult(new JObject
@@ -43,22 +36,8 @@ public class GetPermissions : ControllerBase
                 { "error", "Internal server error" }
             });
         }
-        
-        var indexed = new Dictionary<string, List<string>>();
-        foreach (var t in perms)
-        {
-            var name_grant = t.name_grant;
-            var id_object = t.id_object;
-            if (string.IsNullOrEmpty(name_grant) || string.IsNullOrEmpty(id_object))
-                continue;
-            
-            if(!indexed.ContainsKey(name_grant))
-                indexed.Add(name_grant, new List<string>());
-            
-            indexed[name_grant].Add(id_object);
-        }
 
-        if (indexed.Keys.Count == 0)
+        if (perms.Count == 0)
         {
             Response.StatusCode = 404;
             return new NotFoundObjectResult(new JObject
@@ -67,8 +46,21 @@ public class GetPermissions : ControllerBase
             });
         }
 
+        var formattedPerms = new List<JObject>();
+        foreach(var t in perms){
+            formattedPerms.Add(new JObject{
+                {"grant", t.name_grant},
+                {"object_id", t.id_object}
+            });
+        }
+
         return Ok(
-            new ObjectResult(indexed).Value
+            
+                new JObject
+                {
+                    { "permissions", JToken.FromObject(formattedPerms) }
+                }
+            
         );
 
     }
