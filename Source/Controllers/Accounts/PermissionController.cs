@@ -9,9 +9,9 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
 [ApiVersion("1.0")]
-[ApiExplorerSettings(GroupName = "Permissions")]
-[Route("v{version:apiVersion}/permissions/")]
-[Route("/permissions/")]
+[ApiExplorerSettings(GroupName = "Accounts")]
+[Route("v{version:apiVersion}/accounts/{idGrant}/permissions")]
+[Route("/accounts/{idGrant}/permissions")]
 public class GrantPermissionController : ControllerBase
 {
     [MapToApiVersion("1.0")]
