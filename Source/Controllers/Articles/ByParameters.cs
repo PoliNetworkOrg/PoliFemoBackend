@@ -38,51 +38,40 @@ public class ArticlesByParameters : ControllerBase
     /// <response code="404">No available articles</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, uint? limit, uint? pageOffset, string? sort)
+    public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id,
+        string? title, uint? limit, uint? pageOffset, string? sort)
     {
         if (start == null && end == null && tag == null && author_id == null)
-        {
             return new BadRequestObjectResult(new
             {
                 error = "Invalid parameters"
             });
-        }
-        
-        var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, new LimitOffset(limit, pageOffset), sort);
+
+        var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, new LimitOffset(limit, pageOffset),
+            sort);
         return r == null ? new NotFoundObjectResult("") : Ok(r);
     }
 
-    private static JObject? SearchArticlesByParamsAsJobject(DateTime? start, DateTime? end, string? tag, int? author_id, string? title, LimitOffset limitOffset, string? sort)
+    private static JObject? SearchArticlesByParamsAsJobject(DateTime? start, DateTime? end, string? tag, int? author_id,
+        string? title, LimitOffset limitOffset, string? sort)
     {
         var startDateTime = DateTimeUtil.ConvertToMySqlString(start ?? null);
         var endDateTime = DateTimeUtil.ConvertToMySqlString(end ?? null);
         var query = "SELECT * FROM ArticlesWithAuthors_View WHERE ";
-        if (start != null) {
-            query += "publishTime >= @start AND ";
-        }
-        if (end != null) {
-            query += "publishTime <= @end AND ";
-        }
-        if (tag != null) {
-            query += "id_tag = @tag AND ";
-        }
-        if (author_id != null) {
-            query += "id_author = @author_id AND ";
-        }
-        if (title != null) {
-            query += "title LIKE @title AND ";
-        }
+        if (start != null) query += "publishTime >= @start AND ";
+        if (end != null) query += "publishTime <= @end AND ";
+        if (tag != null) query += "id_tag = @tag AND ";
+        if (author_id != null) query += "id_author = @author_id AND ";
+        if (title != null) query += "title LIKE @title AND ";
 
         query = query[..^4]; // remove last "and"
 
-        if (sort == "date") {
-            query += "ORDER BY publishTime DESC ";
-        }
+        if (sort == "date") query += "ORDER BY publishTime DESC ";
 
         query += limitOffset.GetLimitQuery();
 
         var results = Database.ExecuteSelect(
-            query,  // Remove last AND
+            query, // Remove last AND
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
