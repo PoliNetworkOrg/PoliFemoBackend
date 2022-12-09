@@ -9,14 +9,14 @@ namespace PoliFemoBackend.Source.Controllers.Permissions;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Permissions")]
-[Route("v{version:apiVersion}/permissions/grant")]
-[Route("/permissions/grant")]
-public class GrantPermissionController : ControllerBase
+[Route("v{version:apiVersion}/permissions/revoke")]
+[Route("/permissions/revoke")]
+public class RevokePermissionController : ControllerBase
 {
     [MapToApiVersion("1.0")]
     [HttpPost]
     [Authorize]
-    public ObjectResult GrantPermission(string idGrant, string idUser, long idObject)
+    public ObjectResult RevokePermission(string idGrant, string idUser, long idObject)
     {
         var canRevokePermissions = AuthUtil.GetCanRevokePermissions(AuthUtil.GetSubjectFromHttpRequest(Request));
         if (!canRevokePermissions)
@@ -28,7 +28,7 @@ public class GrantPermissionController : ControllerBase
             });
         }
         
-        const string q = "INSERT INTO permission (id_grant, id_user, id_object) VALUES (@id_grant, @id_user, @id_object)";
+        const string q = "DELETE FROM  permission WHERE id_grant= @id_grant AND id_user = @id_user AND id_object = @id_object";
         var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>()
         {
             {"@id_grant",idGrant},
@@ -41,7 +41,7 @@ public class GrantPermissionController : ControllerBase
         
         return new BadRequestObjectResult(new JObject
         {
-            { "error", "Grant failed" }
+            { "error", "Revoke failed" }
         });
     }
 }
