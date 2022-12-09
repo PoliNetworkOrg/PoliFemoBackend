@@ -16,12 +16,8 @@ public static class Database
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
+        Logger.LogQuery(query, args);
 
-        if (args != null)
-            foreach (var (key, value) in args)
-                query = query.Replace(key, value == null ? "[null]" : value.ToString());
-
-        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery);
         var cmd = new MySqlCommand(query, connection);
 
         if (args != null)
@@ -41,12 +37,9 @@ public static class Database
     {
         if (dbConfig == null) return default;
 
-        if (args != null)
-            foreach (var (key, value) in args)
-                query = query.Replace(key, value == null ? "[null]" : value.ToString());
-
-        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery);
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
+
+        Logger.LogQuery(query, args);
 
         var cmd = new MySqlCommand(query, connection);
 

@@ -1,13 +1,21 @@
-﻿namespace PoliFemoBackend.Source.Objects.Permission;
+﻿using Newtonsoft.Json.Linq;
+
+namespace PoliFemoBackend.Source.Objects.Permission;
 
 public class PermissionGrantObject
 {
-    public readonly string? id_object;
-    public readonly string? name_grant;
+    private readonly string? _idObject;
+    private readonly string? _nameGrant;
 
-    public PermissionGrantObject(string? name_grant, string? id_object)
+    public PermissionGrantObject(string? nameGrant, string? idObject)
     {
-        this.name_grant = name_grant;
-        this.id_object = id_object;
+        _nameGrant = nameGrant;
+        _idObject = idObject;
+    }
+
+    public static List<JObject> GetFormattedPerms(IEnumerable<PermissionGrantObject> perms)
+    {
+        return perms.Select(t => new JObject
+            { { "grant", t._nameGrant }, { "object_id", t._idObject == "" ? null : t._idObject } }).ToList();
     }
 }
