@@ -9,12 +9,13 @@ public class PermissionGrantObject
 
     public PermissionGrantObject(string? nameGrant, string? idObject)
     {
-        this._nameGrant = nameGrant;
-        this._idObject = idObject;
+        _nameGrant = nameGrant;
+        _idObject = idObject;
     }
 
     public static List<JObject> GetFormattedPerms(IEnumerable<PermissionGrantObject> perms)
     {
-        return perms.Select(t => new JObject { { "grant", t._nameGrant }, { "object_id", t._idObject == "" ? null : t._idObject } }).ToList();
+        return perms.Select(t => new JObject
+            { { "grant", t._nameGrant }, { "object_id", t._idObject == "" ? null : t._idObject } }).ToList();
     }
 }

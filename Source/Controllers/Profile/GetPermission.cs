@@ -1,10 +1,10 @@
 #region
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Utils;
-using Microsoft.AspNetCore.Authorization;
 using PoliFemoBackend.Source.Objects.Permission;
+using PoliFemoBackend.Source.Utils;
 
 // ReSharper disable InconsistentNaming
 
@@ -31,7 +31,8 @@ public class GetPermissions : ControllerBase
     public ObjectResult GetPermission(string id)
     {
         var perms = AuthUtil.GetPermissions(id, false);
-        if(perms == null){
+        if (perms == null)
+        {
             Response.StatusCode = 500;
             return new BadRequestObjectResult(new JObject
             {
@@ -51,13 +52,10 @@ public class GetPermissions : ControllerBase
         var formattedPerms = PermissionGrantObject.GetFormattedPerms(perms);
 
         return Ok(
-            
-                new JObject
-                {
-                    { "permissions", JToken.FromObject(formattedPerms) }
-                }
-            
+            new JObject
+            {
+                { "permissions", JToken.FromObject(formattedPerms) }
+            }
         );
-
     }
 }
