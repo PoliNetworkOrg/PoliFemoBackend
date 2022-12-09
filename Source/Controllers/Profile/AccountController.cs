@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Objects.Permission;
 using PoliFemoBackend.Source.Utils;
 
 #endregion
@@ -35,13 +36,7 @@ public class ArticleByIdController : ControllerBase
             userid = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
         }
 
-        var permarray = new JArray();
-        foreach (var t in permissions)
-            permarray.Add(new JObject
-            {
-                { "grant", t.name_grant },
-                { "object_id", t.id_object == "" ? null : t.id_object }
-            });
+        var permarray = PermissionGrantObject.GetFormattedPerms(permissions);
 
         return new ObjectResult(new
         {

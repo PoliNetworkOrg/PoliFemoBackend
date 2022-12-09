@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils;
 using Microsoft.AspNetCore.Authorization;
+using PoliFemoBackend.Source.Objects.Permission;
+
 // ReSharper disable InconsistentNaming
 
 #endregion
@@ -46,13 +48,7 @@ public class GetPermissions : ControllerBase
             });
         }
 
-        var formattedPerms = new List<JObject>();
-        foreach(var t in perms){
-            formattedPerms.Add(new JObject{
-                {"grant", t.name_grant},
-                {"object_id", t.id_object}
-            });
-        }
+        var formattedPerms = PermissionGrantObject.GetFormattedPerms(perms);
 
         return Ok(
             
