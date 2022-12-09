@@ -134,7 +134,7 @@ public class InsertArticle : ControllerBase
         const string insertQuery =
             @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
             VALUES (@id_tag, @title, @subtitle, @content, NOW(), @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
-        
+
 
         var result = Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>

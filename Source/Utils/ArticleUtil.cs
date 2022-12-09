@@ -170,6 +170,4 @@ public static class ArticleUtil
         foreach (DataRow dr in results.Rows) r.Add(ArticleAuthorsRowToJObject(dr));
         return r;
     }
-
-
 }
