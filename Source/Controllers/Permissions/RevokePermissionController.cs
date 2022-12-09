@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
 
@@ -18,7 +19,8 @@ public class RevokePermissionController : ControllerBase
     [Authorize]
     public ObjectResult RevokePermission(string idGrant, string idUser, long idObject)
     {
-        var canRevokePermissions = AuthUtil.GetCanRevokePermissions(AuthUtil.GetSubjectFromHttpRequest(Request));
+        var canRevokePermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
+            Constants.Permissions.PermissionsConst);
         if (!canRevokePermissions)
         {
             Response.StatusCode = 403;

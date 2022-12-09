@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
 
@@ -18,7 +19,8 @@ public class GrantPermissionController : ControllerBase
     [Authorize]
     public ObjectResult GrantPermission(string idGrant, string idUser, long idObject)
     {
-        var canGrantPermissions = AuthUtil.GetCanGrantPermissions(AuthUtil.GetSubjectFromHttpRequest(Request));
+        var canGrantPermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
+            Constants.Permissions.PermissionsConst);
         if (!canGrantPermissions)
         {
             Response.StatusCode = 403;

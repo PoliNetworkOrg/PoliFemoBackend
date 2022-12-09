@@ -140,14 +140,5 @@ public static class AuthUtil
         for (var i = 0; i < results?.Rows.Count; i++) array[i] = results.Rows[i]["name_"].ToString();
         return array;
     }
-
-    public static bool GetCanRevokePermissions(string? subject)
-    {
-        return HasPermission(subject, Constants.Permissions.PermissionsConst);
-    }
-
-    public static bool GetCanGrantPermissions(string? subject)
-    {
-        return HasPermission(subject, Constants.Permissions.PermissionsConst);
-    }
+ 
 }
