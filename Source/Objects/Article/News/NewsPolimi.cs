@@ -65,7 +65,7 @@ public class NewsPolimi
         if (_content == null)
             return null;
 
-        var json = JsonConvert.SerializeObject(ArticleUtil.EncodeStringList(_content));
+        var json = JsonConvert.SerializeObject(_content);
         return json.Trim();
     }
 
