@@ -4,25 +4,17 @@ namespace PoliFemoBackend.Source.Objects.Permission;
 
 public class PermissionGrantObject
 {
-    private readonly string? id_object;
-    private readonly string? name_grant;
+    private readonly string? _idObject;
+    private readonly string? _nameGrant;
 
-    public PermissionGrantObject(string? name_grant, string? id_object)
+    public PermissionGrantObject(string? nameGrant, string? idObject)
     {
-        this.name_grant = name_grant;
-        this.id_object = id_object;
+        this._nameGrant = nameGrant;
+        this._idObject = idObject;
     }
 
-    public static List<JObject> GetFormattedPerms(List<PermissionGrantObject> perms)
+    public static List<JObject> GetFormattedPerms(IEnumerable<PermissionGrantObject> perms)
     {
-        var formattedPerms = new List<JObject>();
-        foreach(var t in perms){
-            formattedPerms.Add(new JObject{
-                { "grant", t.name_grant },
-                { "object_id", t.id_object == "" ? null : t.id_object }
-            });
-        }
-
-        return formattedPerms;
+        return perms.Select(t => new JObject { { "grant", t._nameGrant }, { "object_id", t._idObject == "" ? null : t._idObject } }).ToList();
     }
 }
