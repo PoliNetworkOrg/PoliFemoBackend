@@ -17,7 +17,7 @@ public class GrantPermissionController : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpPut]
     [Authorize]
-    public ObjectResult GrantPermission(string grant, string idUser, long idObject)
+    public ObjectResult GrantPermission(string grant, string idUser, long? id_object = null)
     {
         var canGrantPermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
             Constants.Permissions.PermissionsConst);
@@ -36,7 +36,7 @@ public class GrantPermissionController : ControllerBase
         {
             { "@id_grant", grant },
             { "@id_user", idUser },
-            { "@id_object", idObject },
+            { "@id_object", id_object },
         });
 
         if (count > 0)
@@ -51,7 +51,7 @@ public class GrantPermissionController : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpDelete]
     [Authorize]
-    public ObjectResult RevokePermission(string grant, string idUser, long idObject)
+    public ObjectResult RevokePermission(string grant, string idUser, long? id_object = null)
     {
         var canRevokePermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
             Constants.Permissions.PermissionsConst);
@@ -70,7 +70,7 @@ public class GrantPermissionController : ControllerBase
         {
             { "@id_grant", grant },
             { "@id_user", idUser },
-            { "@id_object", idObject },
+            { "@id_object", id_object },
         });
 
         if (count > 0)
