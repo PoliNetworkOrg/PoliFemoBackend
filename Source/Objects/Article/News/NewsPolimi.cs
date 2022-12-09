@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using PoliFemoBackend.Source.Utils;
 
 namespace PoliFemoBackend.Source.Objects.Article.News;
 
