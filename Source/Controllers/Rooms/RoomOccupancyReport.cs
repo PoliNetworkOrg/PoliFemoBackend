@@ -21,7 +21,7 @@ public class RoomOccupancyReport : ControllerBase
     {
         var whenReported = DateTime.Now;
 
-        var user = AuthUtil.GetSubjectFromHttpRequest(this.Request);
+        var user = AuthUtil.GetSubjectFromHttpRequest(Request);
         if (string.IsNullOrEmpty(user))
             return new ObjectResult(new JObject
             {
@@ -75,7 +75,6 @@ public class RoomOccupancyReport : ControllerBase
 
     [MapToApiVersion("1.0")]
     [HttpGet]
-    [Authorize]
     public ObjectResult GetReportedOccupancy(string room)
     {
         const string q = "SELECT SUM(x.w * x.rate)/SUM(x.w) " +
