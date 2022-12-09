@@ -10,14 +10,14 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Accounts")]
-[Route("v{version:apiVersion}/accounts/{idGrant}/permissions")]
-[Route("/accounts/{idGrant}/permissions")]
+[Route("v{version:apiVersion}/accounts/{grant}/permissions")]
+[Route("/accounts/{grant}/permissions")]
 public class GrantPermissionController : ControllerBase
 {
     [MapToApiVersion("1.0")]
     [HttpPut]
     [Authorize]
-    public ObjectResult GrantPermission(string idGrant, string idUser, long idObject)
+    public ObjectResult GrantPermission(string grant, string idUser, long idObject)
     {
         var canGrantPermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
             Constants.Permissions.PermissionsConst);
@@ -29,28 +29,29 @@ public class GrantPermissionController : ControllerBase
                 { "error", "You don't have enough permissions" }
             });
         }
-        
-        const string q = "INSERT INTO permission (id_grant, id_user, id_object) VALUES (@id_grant, @id_user, @id_object)";
+
+        const string q =
+            "INSERT INTO permission (id_grant, id_user, id_object) VALUES (@id_grant, @id_user, @id_object)";
         var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>()
         {
-            {"@id_grant",idGrant},
-            {"@id_user",idUser},
-            {"@id_object",idObject},
+            { "@id_grant", grant },
+            { "@id_user", idUser },
+            { "@id_object", idObject },
         });
-        
+
         if (count > 0)
             return Ok("");
-        
+
         return new BadRequestObjectResult(new JObject
         {
             { "error", "Grant failed" }
         });
     }
-    
+
     [MapToApiVersion("1.0")]
     [HttpDelete]
     [Authorize]
-    public ObjectResult RevokePermission(string idGrant, string idUser, long idObject)
+    public ObjectResult RevokePermission(string grant, string idUser, long idObject)
     {
         var canRevokePermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
             Constants.Permissions.PermissionsConst);
@@ -62,18 +63,19 @@ public class GrantPermissionController : ControllerBase
                 { "error", "You don't have enough permissions" }
             });
         }
-        
-        const string q = "DELETE FROM  permission WHERE id_grant= @id_grant AND id_user = @id_user AND id_object = @id_object";
+
+        const string q =
+            "DELETE FROM  permission WHERE id_grant= @id_grant AND id_user = @id_user AND id_object = @id_object";
         var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>()
         {
-            {"@id_grant",idGrant},
-            {"@id_user",idUser},
-            {"@id_object",idObject},
+            { "@id_grant", grant },
+            { "@id_user", idUser },
+            { "@id_object", idObject },
         });
-        
+
         if (count > 0)
             return Ok("");
-        
+
         return new BadRequestObjectResult(new JObject
         {
             { "error", "Revoke failed" }
