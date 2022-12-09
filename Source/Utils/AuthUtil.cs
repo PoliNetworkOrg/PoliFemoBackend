@@ -145,4 +145,9 @@ public static class AuthUtil
     {
         return true; //TODO
     }
+
+    public static bool GetCanGrantPermissions(string? subject)
+    {
+        return true; //TODO
+    }
 }

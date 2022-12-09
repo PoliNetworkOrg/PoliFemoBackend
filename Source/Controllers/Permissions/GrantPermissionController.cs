@@ -18,8 +18,8 @@ public class GrantPermissionController : ControllerBase
     [Authorize]
     public ObjectResult GrantPermission(string idGrant, string idUser, long idObject)
     {
-        var canRevokePermissions = AuthUtil.GetCanRevokePermissions(AuthUtil.GetSubjectFromHttpRequest(Request));
-        if (!canRevokePermissions)
+        var canGrantPermissions = AuthUtil.GetCanGrantPermissions(AuthUtil.GetSubjectFromHttpRequest(Request));
+        if (!canGrantPermissions)
         {
             Response.StatusCode = 403;
             return new ObjectResult(new JObject
