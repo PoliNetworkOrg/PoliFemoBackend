@@ -57,7 +57,7 @@ public class CodeExchangeController : ControllerBase
                 });
 
             var token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
-            var domain = token?.Payload["upn"].ToString();
+            var domain = AuthUtil.GetDomainFromToken(token);
             if (domain == null || token?.Subject == null)
                 return new ObjectResult(new
                 {

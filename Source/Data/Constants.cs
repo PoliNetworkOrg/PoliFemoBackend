@@ -22,4 +22,6 @@ public static class Constants
     public const string AzureIssuer = "https://sts.windows.net/0a17712b-6df3-425d-808e-309df28a5eeb/";
 
     public const string Authorization = "Authorization";
+    public const double MaxRate = 5;
+    public const double MinRate = 1;
 }
