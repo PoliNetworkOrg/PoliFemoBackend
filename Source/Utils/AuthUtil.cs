@@ -143,11 +143,11 @@ public static class AuthUtil
 
     public static bool GetCanRevokePermissions(string? subject)
     {
-        return true; //TODO
+        return HasPermission(subject, Constants.Permissions.PermissionsConst);
     }
 
     public static bool GetCanGrantPermissions(string? subject)
     {
-        return true; //TODO
+        return HasPermission(subject, Constants.Permissions.PermissionsConst);
     }
 }
