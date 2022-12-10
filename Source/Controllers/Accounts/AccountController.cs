@@ -9,12 +9,12 @@ using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Profile;
+namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
 [ApiVersion("1.0")]
 [Authorize]
-[ApiExplorerSettings(GroupName = "Account")]
+[ApiExplorerSettings(GroupName = "Accounts")]
 [Route("v{version:apiVersion}/accounts/me")]
 [Route("accounts/me")]
 public class ArticleByIdController : ControllerBase

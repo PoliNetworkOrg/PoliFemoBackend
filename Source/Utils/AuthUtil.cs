@@ -78,7 +78,7 @@ public static class AuthUtil
     public static bool HasPermission(string? userid, string permission)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT id_grant FROM permission, Grants, Users WHERE id_utente=sha2('@userid', 256) AND id_grant='@permission'",
+            "SELECT id_grant FROM permission, Grants, Users WHERE id_utente=sha2(@userid, 256) AND id_grant=@permission",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
