@@ -31,14 +31,6 @@ public class GetPermissions : ControllerBase
     public ObjectResult GetPermission(string id)
     {
         var perms = AuthUtil.GetPermissions(id, false);
-        if (perms == null)
-        {
-            Response.StatusCode = 500;
-            return new BadRequestObjectResult(new JObject
-            {
-                { "error", "Internal server error" }
-            });
-        }
 
         if (perms.Count == 0)
         {
