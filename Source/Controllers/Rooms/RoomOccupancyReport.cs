@@ -29,23 +29,19 @@ public class RoomOccupancyReport : ControllerBase
             });
 
         if (string.IsNullOrEmpty(room))
-        {
             return new ObjectResult(new JObject
             {
                 { "error", "Room can't be empty" }
             });
-        }
 
         if (rate < Constants.MinRate || rate > Constants.MaxRate)
-        {
             return new ObjectResult(new JObject
             {
                 { "error", "Rate must between " + Constants.MinRate + " and " + Constants.MaxRate }
             });
-        }
 
         //check dominio = polimi
-        var domain = AuthUtil.GetDomainFromHttpRequest(this.Request);
+        var domain = AuthUtil.GetDomainFromHttpRequest(Request);
         if (domain != "polimi.it")
             return new ObjectResult(new JObject
             {
@@ -54,7 +50,7 @@ public class RoomOccupancyReport : ControllerBase
 
         var q =
             "REPLACE INTO RoomOccupancyReport (id_room, id_user, rate, when_reported) VALUES (@id_room, @id_user, @rate, @when_reported)";
-        var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>()
+        var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id_room", room },
             { "@id_user", user },
@@ -63,12 +59,10 @@ public class RoomOccupancyReport : ControllerBase
         });
 
         if (count <= 0)
-        {
             return new ObjectResult(new JObject
             {
                 { "error", "Report failed." }
             });
-        }
 
         return Ok("");
     }
@@ -83,7 +77,7 @@ public class RoomOccupancyReport : ControllerBase
                          "FROM RoomOccupancyReport " +
                          "WHERE room = @room AND when_reported >= @yesterday" +
                          ") x ";
-        var dict = new Dictionary<string, object?>()
+        var dict = new Dictionary<string, object?>
         {
             { "@id_room", room },
             { "@yesterday", DateTime.Now.AddDays(-1) }
