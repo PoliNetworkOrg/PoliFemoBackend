@@ -10,11 +10,11 @@ using PoliFemoBackend.Source.Utils;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Profile;
+namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
 [ApiVersion("1.0")]
-[ApiExplorerSettings(GroupName = "Account")]
+[ApiExplorerSettings(GroupName = "Accounts")]
 [Route("v{version:apiVersion}/accounts/{id}/permissions")]
 [Route("accounts/{id}/permissions")]
 [Authorize]
@@ -31,14 +31,6 @@ public class GetPermissions : ControllerBase
     public ObjectResult GetPermission(string id)
     {
         var perms = AuthUtil.GetPermissions(id, false);
-        if (perms == null)
-        {
-            Response.StatusCode = 500;
-            return new BadRequestObjectResult(new JObject
-            {
-                { "error", "Internal server error" }
-            });
-        }
 
         if (perms.Count == 0)
         {

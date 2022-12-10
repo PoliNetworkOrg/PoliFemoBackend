@@ -24,4 +24,9 @@ public static class Constants
     public const string Authorization = "Authorization";
     public const double MaxRate = 5;
     public const double MinRate = 1;
+
+    public static class Permissions
+    {
+        public const string PermissionsConst = "permissions";
+    }
 }
