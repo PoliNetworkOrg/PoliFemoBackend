@@ -15,22 +15,22 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 public class EditPermissions : ControllerBase
 {
     /// <summary>
-    ///     Edits the permissions of a user
+    ///      Grants a permission to a user
     /// </summary>
     /// <remarks>
-    ///     The body is an array of objects with the following structure:
+    ///     The body is a grant object with the following structure:
     ///     - grant: String
     ///     - object_id: Integer
     /// </remarks>
     /// <param name="id">The id of the user</param>
-    /// <param name="data">The array of permissions</param>
+    /// <param name="grant">The grant object</param>
     /// <response code="200">Permissions updated successfully</response>
     /// <response code="403">The user does not have enough permissions</response>
     /// <response code="400">A received grant is not valid</response>
     [MapToApiVersion("1.0")]
-    [HttpPut]
+    [HttpPost]
     [Authorize]
-    public ObjectResult EditPermissionsController(string id, [FromBody] JArray data)
+    public ObjectResult GrantPermission(string id, [FromBody] JObject grant)
     {
         var canGrantPermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
             Constants.Permissions.PermissionsConst);
@@ -43,39 +43,62 @@ public class EditPermissions : ControllerBase
             });
         }
 
-        var q = "DELETE FROM permission WHERE id_user = @id_user";
-        Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>
-        {
-            { "@id_user", id }
-        }); 
-
-        foreach (var grant in data)
-        {
-            var idGrant = grant["grant"]?.ToString();
-            var idObject = grant["object_id"]?.ToString();
-            if (idGrant == null || idObject == null)
-                return new BadRequestObjectResult(new JObject
-                {
-                    { "error", "Invalid request" }
-                });
-            
-            q = "INSERT INTO permission (id_user, id_grant, id_object) VALUES (@id_user, @id_grant, @id_object)";
-            try {
-                var r = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>
-                {
-                    { "@id_user", id },
-                    { "@id_grant", idGrant },
-                    { "@id_object", idObject == "" ? null : idObject }
-                });
-            } catch (Exception) {
-                return new BadRequestObjectResult(new JObject
-                {
-                    { "error", "An error occurred while updating the permissions, make sure the grants are valid" }
-                });
-            }
-
-
+        const string q =
+            "INSERT INTO permission (id_grant, id_user, id_object) VALUES (@id_grant, @id_user, @id_object)";
+        try {
+            var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>()
+            {
+                { "@id_grant", grant["grant"] },
+                { "@id_user", id },
+                { "@id_object", grant["object_id"] },
+            });
+        } catch (Exception) {
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "An error occurred while granting the permission. Make sure the grant is valid"}
+            });
         }
+        return Ok("");
+    } 
+
+
+
+    /// <summary>
+    ///      Revokes a permission from a user
+    /// </summary>
+    /// <remarks>
+    ///     The body is a grant object with the following structure:
+    ///     - grant: String
+    ///     - object_id: Integer
+    /// </remarks>
+    /// <param name="id">The id of the user</param>
+    /// <param name="grant">The grant object</param>
+    /// <response code="200">Permissions updated successfully</response>
+    /// <response code="403">The user does not have enough permissions</response>
+    [MapToApiVersion("1.0")]
+    [HttpDelete]
+    [Authorize]
+    public ObjectResult RevokePermission(string id, [FromBody] JObject grant)
+    {
+        var canRevokePermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
+            Constants.Permissions.PermissionsConst);
+        if (!canRevokePermissions)
+        {
+            Response.StatusCode = 403;
+            return new ObjectResult(new JObject
+            {
+                { "error", "You don't have enough permissions" }
+            });
+        }
+
+        const string q =
+            "DELETE FROM  permission WHERE id_grant= @id_grant AND id_user = @id_user AND id_object = @id_object";
+        var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>()
+        {
+            { "@id_grant", grant["grant"] },
+            { "@id_user", id },
+            { "@id_object", grant["object_id"] },
+        });
         return Ok("");
     }
 }
