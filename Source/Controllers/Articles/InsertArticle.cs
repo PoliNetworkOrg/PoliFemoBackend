@@ -140,7 +140,7 @@ public class InsertArticle : ControllerBase
             new Dictionary<string, object?>
             {
                 { "@title", title },
-                { "@content", JsonConvert.SerializeObject(content) },
+                { "@content", new JArray(content).ToString(Formatting.None) },
                 { "@latitude", latitude == 0 ? null : latitude },
                 { "@longitude", longitude == 0 ? null : longitude },
                 { "@image", image },
