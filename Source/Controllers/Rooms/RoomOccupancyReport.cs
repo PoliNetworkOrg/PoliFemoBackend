@@ -17,7 +17,7 @@ public class RoomOccupancyReport : ControllerBase
     [MapToApiVersion("1.0")]
     [HttpPost]
     [Authorize]
-    public ObjectResult ReportOccupancy(string room, float rate)
+    public ObjectResult ReportOccupancy(uint room, float rate)
     {
         var whenReported = DateTime.Now;
 
@@ -26,12 +26,6 @@ public class RoomOccupancyReport : ControllerBase
             return new ObjectResult(new JObject
             {
                 { "error", "You don't have enough permissions" }
-            });
-
-        if (string.IsNullOrEmpty(room))
-            return new ObjectResult(new JObject
-            {
-                { "error", "Room can't be empty" }
             });
 
         if (rate < Constants.MinRate || rate > Constants.MaxRate)
@@ -69,13 +63,13 @@ public class RoomOccupancyReport : ControllerBase
 
     [MapToApiVersion("1.0")]
     [HttpGet]
-    public ObjectResult GetReportedOccupancy(string room)
+    public ObjectResult GetReportedOccupancy(uint room)
     {
         const string q = "SELECT SUM(x.w * x.rate)/SUM(x.w) " +
                          "FROM (" +
                          "SELECT TIMESTAMPDIFF(SECOND, NOW(), when_reported) w, rate " +
                          "FROM RoomOccupancyReport " +
-                         "WHERE room = @room AND when_reported >= @yesterday" +
+                         "WHERE id_room = @room AND when_reported >= @yesterday" +
                          ") x ";
         var dict = new Dictionary<string, object?>
         {
