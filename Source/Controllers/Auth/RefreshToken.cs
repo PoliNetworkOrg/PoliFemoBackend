@@ -1,7 +1,7 @@
 #region
 
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils;
 
@@ -45,7 +45,14 @@ public class RefreshTokenController : ControllerBase
 
             var responseBody = response.Content.ReadAsStringAsync().Result;
             Response.ContentType = "application/json";
-            return Ok(JsonConvert.DeserializeObject(responseBody));
+
+            JObject responseJson = JObject.Parse(responseBody);
+            JObject resultJson = new JObject();
+            resultJson["access_token"] = responseJson["id_token"];
+            resultJson["refresh_token"] = responseJson["refresh_token"];
+            resultJson["expires_in"] = responseJson["expires_in"];
+
+            return new ObjectResult(resultJson); 
         }
         catch (Exception ex)
         {
