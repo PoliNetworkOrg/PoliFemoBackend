@@ -55,9 +55,10 @@ public class CodeExchangeController : ControllerBase
                     error = "Error while exchanging code for token",
                     reason = responseJson.Value<string>("error"),
                 });
-
+            
             string subject, acctype;
             JwtSecurityToken? token;
+
 
             try {
                 token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
@@ -102,8 +103,7 @@ public class CodeExchangeController : ControllerBase
             };
             var results = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
 
-            JObject responseObject;
-            responseObject = new JObject
+            var responseObject = new JObject
             {
                 {"access_token", responseJson["id_token"]},
                 {"refresh_token", responseJson["refresh_token"]},
