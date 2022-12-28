@@ -20,7 +20,6 @@ public static class AuthUtil
         var formContent = new Dictionary<string, string>
         {
             { "client_id", Constants.AzureClientId },
-            { "scope", Constants.AzureScope },
             { "client_secret", clientSecret },
             { grantType == GrantTypeEnum.authorization_code ? "code" : "refresh_token", code },
             { "grant_type", grantType.ToString() }
@@ -45,7 +44,7 @@ public static class AuthUtil
             }
 
         var formUrlEncodedContent = new FormUrlEncodedContent(formContent);
-        return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token",
+        return httpClient.PostAsync("https://login.microsoftonline.com/common/oauth2/v2.0/token",
             formUrlEncodedContent).Result;
     }
 
