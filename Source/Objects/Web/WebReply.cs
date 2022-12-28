@@ -4,7 +4,7 @@ using System.Net;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Objects;
+namespace PoliFemoBackend.Source.Objects.Web;
 
 public class WebReply
 {

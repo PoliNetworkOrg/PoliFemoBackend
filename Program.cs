@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Test;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Start;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 #endregion
@@ -41,30 +41,40 @@ internal static class Program
             builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             builder.Services.Configure<MvcOptions>(options => { options.EnableEndpointRouting = false; });
 
-            builder.Services.AddMvcCore(opts => opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
+            builder.Services.AddMvcCore(opts =>
+                opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
             builder.Services.AddLogging();
 
             var metrics = AppMetrics.CreateDefaultBuilder().Build();
 
             builder.Services.AddMetrics(metrics);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("policy",
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
             builder.Host
-            .ConfigureMetrics(builder =>
+                .ConfigureMetrics(metricsBuilder =>
                 {
-                    builder.Configuration.Configure(options =>
-                        {
-                            options.DefaultContextLabel = "default";
-                        });
+                    metricsBuilder.Configuration.Configure(options => { options.DefaultContextLabel = "default"; });
                 })
-            .UseMetricsWebTracking()
-            .UseMetricsEndpoints()
-            .UseMetrics(options =>
+                .UseMetricsWebTracking()
+                .UseMetricsEndpoints()
+                .UseMetrics(options =>
                 {
                     options.EndpointOptions = endpointsOptions =>
-                        {
-                            endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
-                            endpointsOptions.MetricsEndpointEnabled = false;
-                        };
+                    {
+                        endpointsOptions.MetricsTextEndpointOutputFormatter =
+                            new MetricsPrometheusTextOutputFormatter();
+                        endpointsOptions.MetricsEndpointEnabled = false;
+                    };
                 });
 
             builder.Services.AddControllers().AddNewtonsoftJson();
@@ -89,8 +99,8 @@ internal static class Program
             }).AddJwtBearer(options =>
             {
                 options.Authority = Constants.AzureAuthority;
-                options.TokenValidationParameters.ValidAudience = Constants.AzureAudience;
-                options.TokenValidationParameters.ValidIssuer = Constants.AzureIssuer;
+                options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
+                options.TokenValidationParameters.ValidIssuers = new[] { Constants.AzureCommonIssuer, Constants.AzureOrgIssuer };
                 options.Events = new JwtBearerEvents
                 {
                     OnChallenge = async context => { await OnChallengeMethod(context); }
@@ -173,9 +183,9 @@ internal static class Program
         context.Response.ContentType = "application/json";
 
 
-        if (!context.Request.Headers.ContainsKey("Authorization"))
+        if (!context.Request.Headers.ContainsKey(Constants.Authorization))
             json["reason"] = "Missing Authorization header";
-        else if (!context.Request.Headers["Authorization"].ToString().StartsWith("Bearer "))
+        else if (!context.Request.Headers[Constants.Authorization].ToString().StartsWith("Bearer "))
             json["reason"] = "Not a Bearer token";
 
         context.HandleResponse();

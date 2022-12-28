@@ -7,7 +7,7 @@ using PoliFemoBackend.Source.Data;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils;
+namespace PoliFemoBackend.Source.Utils.Database;
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
@@ -74,7 +74,14 @@ public class DbConfig
 
     public string GetConnectionString()
     {
-        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
-               Password + "'";
+        return string.IsNullOrEmpty(Password)
+            ? "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port
+            : "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
+              Password + "'";
+    }
+
+    public static DbConfig? GetDbConfigNew()
+    {
+        return GlobalVariables.GetDbConfig();
     }
 }

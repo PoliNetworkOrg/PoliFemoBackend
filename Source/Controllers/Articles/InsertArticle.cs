@@ -2,7 +2,13 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Database;
+
+// ReSharper disable InconsistentNaming
 
 #endregion
 
@@ -10,35 +16,150 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
-[Authorize]
+[ApiExplorerSettings(GroupName = "Articles")]
+[Route("v{version:apiVersion}/articles")]
+[Route("/articles")]
 public class InsertArticle : ControllerBase
 {
     /// <summary>
     ///     Adds a new article to the database
     /// </summary>
-    /// <param name="title">The title of the article</param>
-    /// <param name="content">The content of the article</param>
-    /// <response code="200">Returns the article object</response>
+    /// <remarks>
+    ///     All parameters must be passed in the body of the request formatted as a JSON object.
+    ///     The following parameters are required:
+    ///     - title: String
+    ///     - content: String
+    ///     - author_id: Integer
+    ///     - tag_id: String
+    ///     <br />
+    ///     <br />
+    ///     The following parameters are optional:
+    ///     - subtitle: String
+    ///     - image: String
+    ///     - target_time: DateTime
+    ///     - latitude: Double
+    ///     - longitude: Double
+    /// </remarks>
+    /// <response code="200">Article inserted successfully</response>
     /// <response code="403">The user does not have enough permissions</response>
-    /// <returns>An article object</returns>
+    /// <response code="500">Can't connect to server</response>
     [MapToApiVersion("1.0")]
     [HttpPost]
-    [HttpGet]
-    public ObjectResult InsertArticleDb(string? title, string? content) //todo: da pensare il sistema dei permessi
+    [Authorize]
+    public ObjectResult InsertArticleDb(
+        [FromBody] JObject data
+    )
     {
-        if (AuthUtil.hasPermission(AuthUtil.GetSubject(Request.Headers["Authorization"]), "pubblicare_articoli"))
+        string? id_tag, title, content, subtitle, image, sourceUrl;
+        DateTime? targetTime;
+        int id_author;
+        double latitude, longitude;
+        try
         {
-            var result = ArticleUtil.InsertArticle(title, content, null);
-            return Ok(result);
+            id_tag = data["tag_id"]?.ToString();
+            title = data["title"]?.ToString();
+            subtitle = data["subtitle"]?.ToString();
+            content = data["content"]?.ToString();
+            targetTime = data["target_time"]?.ToObject<DateTime>();
+            latitude = double.Parse(data["latitude"]?.ToString() ?? "0");
+            longitude = double.Parse(data["longitude"]?.ToString() ?? "0");
+            image = data["image"]?.ToString();
+            id_author = int.Parse(data["author_id"]?.ToString() ?? "0");
+            sourceUrl = data["source_url"]?.ToString();
+        }
+        catch (Exception e)
+        {
+            return new BadRequestObjectResult(new
+            {
+                error = "Invalid parameters",
+                message = e.Message
+            });
         }
 
-        HttpContext.Response.StatusCode = 403;
-        return new ObjectResult(new
+        if (id_tag == null || title == null || content == null || id_author == 0)
+            return new BadRequestObjectResult(new
+            {
+                error = "Missing parameters"
+            });
+
+        var isValidTag = Database.ExecuteSelect($"SELECT * FROM Tags WHERE name = '{id_tag}'",
+            GlobalVariables.DbConfigVar);
+        if (isValidTag == null)
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "Invalid tag" }
+            });
+
+        var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
+
+        if (id_author != 0)
         {
-            error = "Insufficient permissions",
-            statusCode = 403
-        });
+            var isValidAuthor = Database.ExecuteSelect($"SELECT * FROM Authors WHERE id_author = '{id_author}'",
+                GlobalVariables.DbConfigVar);
+            if (isValidAuthor == null)
+                return new BadRequestObjectResult(new JObject
+                {
+                    { "error", "Invalid author" }
+                });
+
+
+            if (!AuthUtil.HasGrantAndObjectPermission(sub, "authors", id_author))
+            {
+                Response.StatusCode = 403;
+                return new ObjectResult(new JObject
+                {
+                    { "error", "You don't have enough permissions" }
+                });
+            }
+        }
+        else
+        {
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "Invalid author" }
+            });
+        }
+
+        if ((latitude != 0 && longitude == 0) || (latitude == 0 && longitude != 0))
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "You must provide both latitude and longitude" }
+            });
+        if (latitude != 0 && (latitude is not (>= -90.0 and <= 90.0) || longitude is not (>= -180.0 and <= 180.0)))
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "Invalid latitude or longitude" }
+            });
+
+        const string insertQuery =
+            @"INSERT INTO Articles(id_tag, title, subtitle, content, publishTime, targetTime, latitude, longitude, image, id_author, sourceUrl) 
+            VALUES (@id_tag, @title, @subtitle, @content, NOW(), @targetTimeConverted, @latitude, @longitude, @image, @id_author, @sourceUrl)";
+
+
+        var result = Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@title", title },
+                { "@content", new JArray(content).ToString(Formatting.None) },
+                { "@latitude", latitude == 0 ? null : latitude },
+                { "@longitude", longitude == 0 ? null : longitude },
+                { "@image", image },
+                { "@id_author", id_author },
+                { "@sourceUrl", sourceUrl },
+                { "@id_tag", id_tag },
+                { "@subtitle", subtitle },
+                { "@targetTimeConverted", targetTime }
+            }
+        );
+        if (result < 0)
+        {
+            Response.StatusCode = 500;
+            return new ObjectResult(new JObject
+            {
+                { "error", "Internal server error" }
+            });
+        }
+
+        return Ok("");
     }
 }

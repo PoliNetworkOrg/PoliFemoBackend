@@ -1,8 +1,10 @@
 ﻿#region
 
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -10,37 +12,38 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
+[ApiExplorerSettings(GroupName = "Articles")]
+[Route("v{version:apiVersion}/articles/{id:int}")]
+[Route("/articles/{id:int}")]
 public class ArticleByIdController : ControllerBase
 {
-    // public ObjectResult SearchArticles(uint id)
-    // {
-    //     try
-    //     {
-    //         var (articlesToSearchInto, exception) = ArticleUtil.GetArticles();
-    //         return articlesToSearchInto == null
-    //             ? ResultUtil.ExceptionResult(exception)
-    //             : Ok(articlesToSearchInto.GetArticleById(id));
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         return ResultUtil.ExceptionResult(ex);
-    //     }
-    // }
+    /// <summary>
+    ///     Search article by id
+    /// </summary>
+    /// <returns>A json of article</returns>
+    /// <response code="200">Returns article</response>
+    /// <response code="500">Can't connect to server</response>
+    /// <response code="404">No available article</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    [HttpPost]
-    public ObjectResult SearchArticlesById(uint id)
+    public ActionResult SearchArticlesById(int id)
+    {
+        Console.WriteLine(id);
+        var a = SearchArticlesByIdObject(id);
+        return a == null ? NotFound() : Ok(a);
+    }
+
+    private static JObject? SearchArticlesByIdObject(int id)
     {
         var results = Database.ExecuteSelect(
-            "SELECT * FROM Articles WHERE id_article = @id",
+            "SELECT * FROM ArticlesWithAuthors_View  WHERE id_article = @id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
                 { "@id", id }
             });
 
-        return Ok(results);
+        var row = results?.Rows[0];
+        return row == null ? null : ArticleUtil.ArticleAuthorsRowToJObject(row);
     }
 }

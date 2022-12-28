@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Data;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
+using PoliFemoBackend.Source.Objects.Permission;
 
 #endregion
 
@@ -20,7 +20,6 @@ public static class AuthUtil
         var formContent = new Dictionary<string, string>
         {
             { "client_id", Constants.AzureClientId },
-            { "scope", Constants.AzureScope },
             { "client_secret", clientSecret },
             { grantType == GrantTypeEnum.authorization_code ? "code" : "refresh_token", code },
             { "grant_type", grantType.ToString() }
@@ -45,20 +44,40 @@ public static class AuthUtil
             }
 
         var formUrlEncodedContent = new FormUrlEncodedContent(formContent);
-        return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token",
+        return httpClient.PostAsync("https://login.microsoftonline.com/common/oauth2/v2.0/token",
             formUrlEncodedContent).Result;
     }
 
-    public static string? GetSubject(string token)
+    /// <summary>
+    ///     Get user/subject from HttpRequest
+    /// </summary>
+    /// <param name="httpRequest">HttpRequest containing the token</param>
+    /// <returns>Subject/User</returns>
+    public static string? GetSubjectFromHttpRequest(HttpRequest httpRequest)
     {
-        return GlobalVariables.TokenHandler?.ReadJwtToken(token.Split(" ")[1]).Subject;
+        var token = httpRequest.Headers[Constants.Authorization];
+        return GetSubjectFromToken(token);
+    }
+
+    private static string? GetSubjectFromToken(string token)
+    {
+        if (string.IsNullOrEmpty(token))
+            return null;
+
+        var strings = token.Split(" ");
+        if (strings.Length < 2)
+            return null;
+
+        var s = strings[1];
+        var jwtSecurityToken = GlobalVariables.TokenHandler?.ReadJwtToken(s);
+        return jwtSecurityToken?.Subject;
     }
 
 
-    public static bool hasPermission(string? userid, string permission)
+    public static bool HasPermission(string? userid, string permission)
     {
-        var results = Database.ExecuteSelect(
-            "SELECT id_grant FROM permission, Grants, Users WHERE id_utente=sha2('@userid', 256) AND id_grant='@permission'",
+        var results = Database.Database.ExecuteSelect(
+            "SELECT id_grant FROM permission, Grants, Users WHERE id_utente=sha2(@userid, 256) AND id_grant=@permission",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -68,15 +87,56 @@ public static class AuthUtil
         return results != null;
     }
 
-    public static string?[] getPermissions(string? userid)
+    public static bool HasGrantAndObjectPermission(string? userid, string permission, int objectid)
     {
-        var results = Database.ExecuteSelect(
-            "SELECT DISTINCT name_grant FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente AND id_utente=sha2('@userid', 256)",
+        var results = Database.Database.ExecuteSelect(
+            "SELECT id_grant FROM permission WHERE id_user=sha2(@userid, 256) AND id_grant=@permission AND id_object=@objectid",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@userid", userid },
+                { "@permission", permission },
+                { "@objectid", objectid }
+            });
+        return results != null;
+    }
+
+    public static List<PermissionGrantObject> GetPermissions(string? userid, bool convert = true)
+    {
+        var query =
+            "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente ";
+        if (convert) query += "AND id_utente=sha2(@userid, 256)";
+        else query += "AND id_utente=@userid";
+
+        var results = Database.Database.ExecuteSelect(
+            query,
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
                 { "@userid", userid }
             });
-        return results?.AsEnumerable().Select(x => x.Field<string>("name_grant")).ToArray() ?? Array.Empty<string>();
+        var array = new List<PermissionGrantObject>();
+        for (var i = 0; i < results?.Rows.Count; i++)
+            array.Add(
+                new PermissionGrantObject(
+                    results.Rows[i]["name_grant"].ToString(),
+                    results.Rows[i]["id_object"].ToString()
+                )
+            );
+        return array;
+    }
+
+    public static string?[] GetAuthorizedAuthors(string? userid)
+    {
+        var results = Database.Database.ExecuteSelect(
+            "SELECT a.* FROM Authors a, permission p WHERE p.id_user = sha2(@userid, 256) AND a.id_author = p.id_object AND p.id_grant = 'authors'",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@userid", userid }
+            });
+        var array = new string?[results?.Rows.Count ?? 0];
+        for (var i = 0; i < results?.Rows.Count; i++) array[i] = results.Rows[i]["name_"].ToString();
+        return array;
     }
 }

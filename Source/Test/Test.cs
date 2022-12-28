@@ -1,6 +1,7 @@
 ﻿#region
 
-using PoliFemoBackend.Source.Utils.News;
+using PoliFemoBackend.Source.Utils.Database;
+using PoliFemoBackend.Source.Utils.Temp.Migrate;
 
 #endregion
 
@@ -11,7 +12,8 @@ public static class Test
     public static void TestMain()
     {
         Console.WriteLine("Test");
-        var r = PoliMiNewsUtil.DownloadCurrentNews();
-        Console.WriteLine(r);
+
+        DbConfig.InitializeDbConfig();
+        ArticleContentUpgrade.ArticleContentUpgradeMethod();
     }
 }

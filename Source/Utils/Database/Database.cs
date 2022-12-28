@@ -5,7 +5,7 @@ using MySql.Data.MySqlClient;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils;
+namespace PoliFemoBackend.Source.Utils.Database;
 
 public static class Database
 {
@@ -14,14 +14,9 @@ public static class Database
     {
         if (dbConfig == null) return default;
 
-        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery); //todo metti gli args
-
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
-
-        if (args != null)
-            foreach (var (key, value) in args)
-                query = query.Replace(key, value == null ? "[null]" : value.ToString());
+        Logger.LogQuery(query, args);
 
         var cmd = new MySqlCommand(query, connection);
 
@@ -42,12 +37,9 @@ public static class Database
     {
         if (dbConfig == null) return default;
 
-        if (args != null)
-            foreach (var (key, value) in args)
-                query = query.Replace(key, value == null ? "[null]" : value.ToString());
-
-        Logger.WriteLine(query, LogSeverityLevel.DatabaseQuery);
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
+
+        Logger.LogQuery(query, args);
 
         var cmd = new MySqlCommand(query, connection);
 

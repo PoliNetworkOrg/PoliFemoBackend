@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -35,7 +36,7 @@ public class InsertArticleOverAnOldOne : ControllerBase
             { "@rid", idOld }
         };
         var result2 = Database.ExecuteSelect(q2, GlobalVariables.DbConfigVar, paramsDict2);
-        if (result2 != null && result2.Rows.Count > 0)
+        if (result2 is { Rows.Count: > 0 })
             return new BadRequestObjectResult(
                 "Id of the old article is invalid. That article has been already overwritten.");
 

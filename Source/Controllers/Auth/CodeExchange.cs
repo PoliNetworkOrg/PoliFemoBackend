@@ -1,5 +1,6 @@
 #region
 
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
@@ -7,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -48,33 +50,66 @@ public class CodeExchangeController : ControllerBase
             var responseJson = JToken.Parse(response.Content.ReadAsStringAsync().Result);
 
             if (!response.IsSuccessStatusCode)
-                return new ObjectResult(new
+                return new BadRequestObjectResult(new
                 {
                     error = "Error while exchanging code for token",
                     reason = responseJson.Value<string>("error"),
-                    statusCode = response.StatusCode
                 });
 
-            var token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
-            var domain = token?.Payload["upn"].ToString();
-            if (domain == null || token?.Subject == null)
-                return new ObjectResult(new
-                {
-                    error =
-                        "The received code is not a valid organization code. Request a new authorization code and login with your PoliMi account",
-                    statusCode = HttpStatusCode.BadRequest
-                });
+            string subject, acctype;
+            JwtSecurityToken? token;
 
-            if (!domain.Contains("polimi.it"))
-                return new ObjectResult(new
-                {
-                    error = "Only PoliMi students are allowed",
-                    statusCode = HttpStatusCode.Forbidden
-                });
+            try {
+                token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
+                var domain = token?.Payload["upn"].ToString();
+                if (domain == null || token?.Subject == null)
+                    return new ObjectResult(new
+                    {
+                        error =
+                            "The received code is not a valid organization code. Request a new authorization code and login again.",
+                        statusCode = HttpStatusCode.BadRequest
+                    });
 
-            var query = "INSERT IGNORE INTO Users VALUES(sha2('" + token.Subject + "', 256))";
-            var results = Database.Execute(query, GlobalVariables.DbConfigVar);
-            return Ok(responseJson);
+                if (!domain.Contains("polimi.it"))
+                    return new ForbidResult(
+                        new JObject {
+                            {"error", "A PoliMi email is required"},
+                        }.ToString()
+                    );
+
+                subject = token.Subject;
+                acctype = "POLIMI";
+
+            } catch (ArgumentException) {
+                token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["id_token"]?.ToString());
+                subject = token?.Subject ?? throw new Exception("The received code is invalid. Request a new authorization code and login again.");
+                acctype = "PERSONAL";
+                
+            } catch (Exception ex) {
+                return new BadRequestObjectResult(
+                    new JObject {
+                        {"error", "The received code is invalid. Request a new authorization code and login again."},
+                        {"reason", ex.Message},
+                    }.ToString()
+                );
+            }
+
+            var query = "INSERT IGNORE INTO Users VALUES(sha2(@subject, 256), @acctype);";
+            var parameters = new Dictionary<string, object?>
+            {
+                {"@subject", subject},
+                {"@acctype", acctype}
+            };
+            var results = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
+
+            JObject responseObject;
+            responseObject = new JObject
+            {
+                {"access_token", responseJson["id_token"]},
+                {"refresh_token", responseJson["refresh_token"]},
+                {"expires_in", responseJson["expires_in"]}
+            };
+            return Ok(responseObject);
         }
         catch (MySqlException)
         {

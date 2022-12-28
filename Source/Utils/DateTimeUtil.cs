@@ -6,6 +6,15 @@ public static class DateTimeUtil
     {
         if (string.IsNullOrEmpty(s)) return null;
 
+        try
+        {
+            return DateTime.Parse(s);
+        }
+        catch
+        {
+            // ignored
+        }
+
         //2022-01-01T23:59:59.999
 
         try
@@ -28,5 +37,10 @@ public static class DateTimeUtil
         {
             return null;
         }
+    }
+
+    public static string? ConvertToMySqlString(DateTime? dateTime)
+    {
+        return dateTime?.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
     }
 }
