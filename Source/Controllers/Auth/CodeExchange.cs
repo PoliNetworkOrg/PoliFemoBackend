@@ -55,25 +55,14 @@ public class CodeExchangeController : ControllerBase
                     error = "Error while exchanging code for token",
                     reason = responseJson.Value<string>("error"),
                 });
-
-<<<<<<<
-            var token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
-            var domain = AuthUtil.GetDomainFromToken(token);
-            if (domain == null || token?.Subject == null)
-                return new ObjectResult(new
-                {
-                    error =
-                        "The received code is not a valid organization code. Request a new authorization code and login with your PoliMi account",
-                    statusCode = HttpStatusCode.BadRequest
-                });
-=======
+            
             string subject, acctype;
             JwtSecurityToken? token;
->>>>>>>
+
 
             try {
                 token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
-                var domain = token?.Payload["upn"].ToString();
+                var domain = AuthUtil.GetDomainFromToken(token);
                 if (domain == null || token?.Subject == null)
                     return new ObjectResult(new
                     {
@@ -114,8 +103,7 @@ public class CodeExchangeController : ControllerBase
             };
             var results = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
 
-            JObject responseObject;
-            responseObject = new JObject
+            var responseObject = new JObject
             {
                 {"access_token", responseJson["id_token"]},
                 {"refresh_token", responseJson["refresh_token"]},
