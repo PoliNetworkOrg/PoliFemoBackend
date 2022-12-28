@@ -147,15 +147,15 @@ public static class AuthUtil
         return array;
     }
 
-    public static string? GetDomainFromToken(JwtSecurityToken? token)
+    public static string GetAccountType(JwtSecurityToken jwtSecurityToken)
     {
-        return token?.Payload["upn"].ToString();
-    }
-
-    public static string? GetDomainFromHttpRequest(HttpRequest httpRequest)
-    {
-        var token = httpRequest.Headers[Constants.Authorization];
-        var jwtSecurityToken = GetJwtSecurityTokenFromStringToken(token);
-        return GetDomainFromToken(jwtSecurityToken);
+        var results = Database.Database.ExecuteSelect(
+            "SELECT account_type FROM Users WHERE id_utente = sha2(@userid, 256)",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@userid", jwtSecurityToken.Subject }
+            });
+        return results?.Rows[0]["account_type"].ToString() ?? "NONE";
     }
 }
