@@ -99,8 +99,8 @@ internal static class Program
             }).AddJwtBearer(options =>
             {
                 options.Authority = Constants.AzureAuthority;
-                options.TokenValidationParameters.ValidAudience = Constants.AzureAudience;
-                options.TokenValidationParameters.ValidIssuer = Constants.AzureIssuer;
+                options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
+                options.TokenValidationParameters.ValidIssuers = new[] { Constants.AzureCommonIssuer, Constants.AzureOrgIssuer };
                 options.Events = new JwtBearerEvents
                 {
                     OnChallenge = async context => { await OnChallengeMethod(context); }

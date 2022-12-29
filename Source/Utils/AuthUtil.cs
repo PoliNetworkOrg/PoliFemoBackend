@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.IdentityModel.Tokens.Jwt;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Permission;
@@ -20,7 +21,6 @@ public static class AuthUtil
         var formContent = new Dictionary<string, string>
         {
             { "client_id", Constants.AzureClientId },
-            { "scope", Constants.AzureScope },
             { "client_secret", clientSecret },
             { grantType == GrantTypeEnum.authorization_code ? "code" : "refresh_token", code },
             { "grant_type", grantType.ToString() }
@@ -45,7 +45,7 @@ public static class AuthUtil
             }
 
         var formUrlEncodedContent = new FormUrlEncodedContent(formContent);
-        return httpClient.PostAsync("https://login.microsoftonline.com/organizations/oauth2/v2.0/token",
+        return httpClient.PostAsync("https://login.microsoftonline.com/common/oauth2/v2.0/token",
             formUrlEncodedContent).Result;
     }
 
@@ -62,6 +62,12 @@ public static class AuthUtil
 
     private static string? GetSubjectFromToken(string token)
     {
+        var jwtSecurityToken = GetJwtSecurityTokenFromStringToken(token);
+        return jwtSecurityToken?.Subject;
+    }
+
+    private static JwtSecurityToken? GetJwtSecurityTokenFromStringToken(string token)
+    {
         if (string.IsNullOrEmpty(token))
             return null;
 
@@ -71,7 +77,7 @@ public static class AuthUtil
 
         var s = strings[1];
         var jwtSecurityToken = GlobalVariables.TokenHandler?.ReadJwtToken(s);
-        return jwtSecurityToken?.Subject;
+        return jwtSecurityToken;
     }
 
 
@@ -139,5 +145,17 @@ public static class AuthUtil
         var array = new string?[results?.Rows.Count ?? 0];
         for (var i = 0; i < results?.Rows.Count; i++) array[i] = results.Rows[i]["name_"].ToString();
         return array;
+    }
+
+    public static string GetAccountType(JwtSecurityToken jwtSecurityToken)
+    {
+        var results = Database.Database.ExecuteSelect(
+            "SELECT account_type FROM Users WHERE id_utente = sha2(@userid, 256)",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@userid", jwtSecurityToken.Subject }
+            });
+        return results?.Rows[0]["account_type"].ToString() ?? "NONE";
     }
 }
