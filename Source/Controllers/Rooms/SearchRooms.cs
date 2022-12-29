@@ -11,8 +11,9 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
+[ApiExplorerSettings(GroupName = "Rooms")]
+[Route("v{version:apiVersion}/rooms/search")]
+[Route("/rooms/search")]
 public class SearchRoomsController : ControllerBase
 {
     /// <summary>
