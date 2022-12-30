@@ -29,7 +29,6 @@ public class SearchRoomsController : ControllerBase
     /// <response code="204">No available rooms</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    [HttpPost]
     public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] DateTime hourStart,
         [BindRequired] DateTime hourStop)
     {
