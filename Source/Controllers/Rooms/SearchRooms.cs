@@ -4,15 +4,17 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PoliFemoBackend.Source.Utils;
-
+using Newtonsoft.Json.Linq;
 #endregion
 
 namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
-[Route("[controller]")]
+[ApiExplorerSettings(GroupName = "Rooms")]
+[Route("v{version:apiVersion}/rooms/search")]
+[Route("/rooms/search")]
+
 public class SearchRoomsController : ControllerBase
 {
     /// <summary>
@@ -27,7 +29,6 @@ public class SearchRoomsController : ControllerBase
     /// <response code="204">No available rooms</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
-    [HttpPost]
     public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] DateTime hourStart,
         [BindRequired] DateTime hourStop)
     {
@@ -41,13 +42,21 @@ public class SearchRoomsController : ControllerBase
                 StatusCode = (int)HttpStatusCode.InternalServerError
             };
         }
-
         var t4 = RoomUtil.GetFreeRooms(t3[0], hourStart, hourStop);
         if (t4 is null || t4.Count == 0) return NoContent();
-
-        var json = new { freeRooms = t4 };
-
-
-        return Ok(json);
+        var results = new JArray();
+        foreach(var room in t4)
+            if(room != null){
+                JObject formattedRoom = JObject.FromObject(room);
+                var roomLink = formattedRoom.GetValue("link");
+                if(roomLink != null){
+                    int roomId = Int32.Parse(roomLink.ToString().Split("idaula=")[1]);
+                    formattedRoom.Add(new JProperty("room_id", roomId));
+                }
+                results.Add(formattedRoom);
+            }
+            
+        var json = new { freeRooms = results };
+        return Ok(new JObject(new JProperty("freeRooms", results)));
     }
 }
