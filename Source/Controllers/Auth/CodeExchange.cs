@@ -95,7 +95,7 @@ public class CodeExchangeController : ControllerBase
                 );
             }
 
-            var query = "INSERT IGNORE INTO Users VALUES(sha2(@subject, 256), @acctype);";
+            var query = "INSERT IGNORE INTO Users VALUES(sha2(@subject, 256), @acctype, NOW());";
             var parameters = new Dictionary<string, object?>
             {
                 {"@subject", subject},

@@ -16,6 +16,7 @@ using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Test;
 using PoliFemoBackend.Source.Utils.Start;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using PoliFemoBackend.UserActivityMiddleware;
 
 #endregion
 
@@ -161,6 +162,8 @@ internal static class Program
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseUserActivityMiddleware();
 
             app.MapControllers();
 
