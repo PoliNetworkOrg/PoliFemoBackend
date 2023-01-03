@@ -12,11 +12,12 @@ using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Configure;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Middleware;
 using PoliFemoBackend.Source.Test;
 using PoliFemoBackend.Source.Utils.Start;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using PoliFemoBackend.UserActivityMiddleware;
 
 #endregion
 
@@ -101,7 +102,8 @@ internal static class Program
             {
                 options.Authority = Constants.AzureAuthority;
                 options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
-                options.TokenValidationParameters.ValidIssuers = new[] { Constants.AzureCommonIssuer, Constants.AzureOrgIssuer };
+                options.TokenValidationParameters.ValidIssuers =
+                    new[] { Constants.AzureCommonIssuer, Constants.AzureOrgIssuer };
                 options.Events = new JwtBearerEvents
                 {
                     OnChallenge = async context => { await OnChallengeMethod(context); }

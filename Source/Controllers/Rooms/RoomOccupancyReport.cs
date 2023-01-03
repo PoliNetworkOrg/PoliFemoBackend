@@ -19,7 +19,7 @@ public class RoomOccupancyReport : ControllerBase
     ///     Send a report about the occupancy of a room
     /// </summary>
     /// <remarks>
-    ///   The rate must be between 1 and 5  
+    ///     The rate must be between 1 and 5
     /// </remarks>
     /// <param name="room">The room ID</param>
     /// <param name="rate">The occupancy rate</param>

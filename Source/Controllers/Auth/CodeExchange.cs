@@ -53,14 +53,15 @@ public class CodeExchangeController : ControllerBase
                 return new BadRequestObjectResult(new
                 {
                     error = "Error while exchanging code for token",
-                    reason = responseJson.Value<string>("error"),
+                    reason = responseJson.Value<string>("error")
                 });
-            
+
             string subject, acctype;
             JwtSecurityToken? token;
 
 
-            try {
+            try
+            {
                 token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
                 var domain = token?.Payload["upn"].ToString();
                 if (domain == null || token?.Subject == null)
@@ -73,24 +74,30 @@ public class CodeExchangeController : ControllerBase
 
                 if (!domain.Contains("polimi.it"))
                     return new ForbidResult(
-                        new JObject {
-                            {"error", "A PoliMi email is required"},
+                        new JObject
+                        {
+                            { "error", "A PoliMi email is required" }
                         }.ToString()
                     );
 
                 subject = token.Subject;
                 acctype = "POLIMI";
-
-            } catch (ArgumentException) {
+            }
+            catch (ArgumentException)
+            {
                 token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["id_token"]?.ToString());
-                subject = token?.Subject ?? throw new Exception("The received code is invalid. Request a new authorization code and login again.");
+                subject = token?.Subject ??
+                          throw new Exception(
+                              "The received code is invalid. Request a new authorization code and login again.");
                 acctype = "PERSONAL";
-                
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return new BadRequestObjectResult(
-                    new JObject {
-                        {"error", "The received code is invalid. Request a new authorization code and login again."},
-                        {"reason", ex.Message},
+                    new JObject
+                    {
+                        { "error", "The received code is invalid. Request a new authorization code and login again." },
+                        { "reason", ex.Message }
                     }.ToString()
                 );
             }
@@ -98,16 +105,16 @@ public class CodeExchangeController : ControllerBase
             var query = "INSERT IGNORE INTO Users VALUES(sha2(@subject, 256), @acctype, NOW());";
             var parameters = new Dictionary<string, object?>
             {
-                {"@subject", subject},
-                {"@acctype", acctype}
+                { "@subject", subject },
+                { "@acctype", acctype }
             };
             var results = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
 
             var responseObject = new JObject
             {
-                {"access_token", responseJson["id_token"]},
-                {"refresh_token", responseJson["refresh_token"]},
-                {"expires_in", responseJson["expires_in"]}
+                { "access_token", responseJson["id_token"] },
+                { "refresh_token", responseJson["refresh_token"] },
+                { "expires_in", responseJson["expires_in"] }
             };
             return Ok(responseObject);
         }
