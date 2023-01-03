@@ -19,7 +19,7 @@ public class RoomOccupancyReport : ControllerBase
     ///     Send a report about the occupancy of a room
     /// </summary>
     /// <remarks>
-    ///   The rate must be between 1 and 5  
+    ///     The rate must be between 1 and 5
     /// </remarks>
     /// <param name="room">The room ID</param>
     /// <param name="rate">The occupancy rate</param>
@@ -49,7 +49,7 @@ public class RoomOccupancyReport : ControllerBase
             });
 
         var q =
-            "REPLACE INTO RoomOccupancyReport (id_room, id_user, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
+            "REPLACE INTO RoomOccupancyReports (id_room, id_user, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
         var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id_room", room },
@@ -82,7 +82,7 @@ public class RoomOccupancyReport : ControllerBase
         const string q = "SELECT SUM(x.w * x.rate)/SUM(x.w) " +
                          "FROM (" +
                          "SELECT TIMESTAMPDIFF(SECOND, NOW(), when_reported) w, rate " +
-                         "FROM RoomOccupancyReport " +
+                         "FROM RoomOccupancyReports " +
                          "WHERE id_room = @id_room AND when_reported >= @yesterday" +
                          ") x ";
         var dict = new Dictionary<string, object?>

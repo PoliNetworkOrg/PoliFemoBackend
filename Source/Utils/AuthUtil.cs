@@ -84,7 +84,7 @@ public static class AuthUtil
     public static bool HasPermission(string? userid, string permission)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT id_grant FROM permission, Grants, Users WHERE id_utente=sha2(@userid, 256) AND id_grant=@permission",
+            "SELECT id_grant FROM permission, Grants, Users WHERE id_user=sha2(@userid, 256) AND id_grant=@permission",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -111,9 +111,9 @@ public static class AuthUtil
     public static List<PermissionGrantObject> GetPermissions(string? userid, bool convert = true)
     {
         var query =
-            "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_utente ";
-        if (convert) query += "AND id_utente=sha2(@userid, 256)";
-        else query += "AND id_utente=@userid";
+            "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_user ";
+        if (convert) query += "AND id_user=sha2(@userid, 256)";
+        else query += "AND id_user=@userid";
 
         var results = Database.Database.ExecuteSelect(
             query,
@@ -150,7 +150,7 @@ public static class AuthUtil
     public static string GetAccountType(JwtSecurityToken jwtSecurityToken)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT account_type FROM Users WHERE id_utente = sha2(@userid, 256)",
+            "SELECT account_type FROM Users WHERE id_user = sha2(@userid, 256)",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
