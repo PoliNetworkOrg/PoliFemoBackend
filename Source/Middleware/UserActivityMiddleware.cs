@@ -17,9 +17,9 @@ public class UserActivityMiddleware
     {
         var endpointMetadataCollection = httpContext.GetEndpoint()?.Metadata;
         var authorizeAttribute = endpointMetadataCollection?.GetMetadata<AuthorizeAttribute>();
-
+        
         var done = TryUpdateLastActivity(httpContext, authorizeAttribute);
-
+        
         if (!done)
         {
             //send an error message
