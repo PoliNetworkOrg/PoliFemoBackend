@@ -15,10 +15,7 @@ public class UserActivityMiddleware
 
     public async Task Invoke(HttpContext httpContext)
     {
-        var endpointMetadataCollection = httpContext.GetEndpoint()?.Metadata;
-        var authorizeAttribute = endpointMetadataCollection?.GetMetadata<AuthorizeAttribute>();
-
-        var done = TryUpdateLastActivity(httpContext, authorizeAttribute);
+        var done = TryUpdateLastActivity(httpContext);
 
         if (!done)
         {
@@ -36,21 +33,29 @@ public class UserActivityMiddleware
         }
     }
 
-    private static bool TryUpdateLastActivity(HttpContext httpContext, AuthorizeAttribute? authorizeAttribute)
+    private static bool TryUpdateLastActivity(HttpContext httpContext)
     {
+        var endpointMetadataCollection = httpContext.GetEndpoint()?.Metadata;
+        var authorizeAttribute = endpointMetadataCollection?.GetMetadata<AuthorizeAttribute>();
+
         if (authorizeAttribute == null)
             return true;
 
         var token = httpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
         var handler = GlobalVariables.TokenHandler?.ReadJwtToken(token);
+        var handlerSubject = handler?.Subject;
+
+        if (string.IsNullOrEmpty(handlerSubject))
+            return false;
 
         const string query = "UPDATE Users SET last_activity = NOW() WHERE id_user = SHA2(@subject, 256)";
         var parameters = new Dictionary<string, object?>
         {
-            { "@subject", handler?.Subject }
+            { "@subject", handlerSubject }
         };
+        
         var results = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
-        return results != 0;
+        return results > 0;
     }
 }
 
