@@ -69,9 +69,9 @@ jobs:
           STAGE_ENV: 'dev'
         with:
           inlineScript: |
-            $line = Get-Content app-${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
-            $content = Get-Content app-${{ env.STAGE_ENV }}/bot-deployment.yaml
-            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content app-${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $line = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
+            $content = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
+            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
           azPSVersion: "latest"
           
       - name: Update image name in manifest file
@@ -82,15 +82,15 @@ jobs:
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            $line = Get-Content app-${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
-            $content = Get-Content app-${{ env.STAGE_ENV }}/bot-deployment.yaml
-            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content app-${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $line = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
+            $content = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
+            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
           azPSVersion: "latest"
       
       - name: Commit changes in manifest to repo
         run: | 
           git config user.name "GitHub Actions Bot"
           git config user.email ""
-          git add */bot-deployment.yaml
+          git add */app-deployment.yaml
           git commit -m "Update image version in K8s Deployment manifests file"
           git push origin
