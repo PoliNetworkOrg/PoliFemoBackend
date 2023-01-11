@@ -20,7 +20,7 @@ public static class Logger
         {
             Console.WriteLine(logSeverityLevel + " | " + log);
             var log1 = log.ToString();
-            Directory.CreateDirectory("../data/");
+            Directory.CreateDirectory(Constants.DataPath);
 
             if (!File.Exists(Constants.DataLogPath))
             {

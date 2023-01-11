@@ -22,7 +22,7 @@ public class DbConfig
 
     public static void InitializeDbConfig()
     {
-        if (!Directory.Exists("../config/")) Directory.CreateDirectory("../config/");
+        if (!Directory.Exists(Constants.ConfigPath)) Directory.CreateDirectory(Constants.ConfigPath);
 
         if (File.Exists(Constants.DbConfig))
         {
