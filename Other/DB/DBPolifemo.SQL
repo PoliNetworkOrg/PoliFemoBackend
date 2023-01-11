@@ -1,26 +1,30 @@
-create table Authors
+create or replace table Authors
 (
-    id_author int(10) auto_increment primary key,
+    id_author int(10) auto_increment
+        primary key,
     name_     varchar(50)  null,
     link      varchar(200) null,
     image     varchar(100) null
-)engine = InnoDB;
+);
 
-create table Days
+create or replace table Days
 (
-    giorno date not null primary key
-)engine = InnoDB;
+    giorno date not null
+        primary key
+);
 
-create table Grants
+create or replace table Grants
 (
-    name_grant varchar(100) not null primary key
-)engine = InnoDB;
+    name_grant varchar(100) not null
+        primary key
+);
 
-create table `Groups`
+create or replace table `Groups`
 (
     class                    varchar(100)                                            null,
     office                   enum ('Bovisa', 'Como', 'Cremona', 'Lecco', 'Leonardo') null,
-    id                       varchar(100)                                            not null primary key,
+    id                       varchar(100)                                            not null
+        primary key,
     degree                   enum ('LT', 'LM', 'LU')                                 null,
     school                   enum ('ICAT', 'DES', '3I', 'ICAT+3I', 'AUIC')           null,
     id_link                  varchar(50)                                             null,
@@ -31,17 +35,19 @@ create table `Groups`
     permanent_id             int                                                     null,
     LastUpdateInviteLinkTime datetime                                                null,
     Linkfunzionante          enum ('Y', 'N')                                         null
-)engine = InnoDB;
+);
 
-create table Tags
+create or replace table Tags
 (
-    name  varchar(100) not null primary key,
+    name  varchar(100) not null
+        primary key,
     image varchar(100) null
-)engine = InnoDB;
+);
 
-create table Articles
+create or replace table Articles
 (
-    id_article  int unsigned auto_increment primary key,
+    id_article  int unsigned auto_increment
+        primary key,
     id_tag      varchar(100)  null,
     title       varchar(100)  not null,
     subtitle    varchar(200)  null,
@@ -57,34 +63,49 @@ create table Articles
         foreign key (id_author) references Authors (id_author),
     constraint Tags___fk
         foreign key (id_tag) references Tags (name)
-)engine = InnoDB;
+);
 
-create table Types
+create or replace table Types
 (
-    id_tipologia int unsigned auto_increment primary key,
+    id_tipologia int unsigned auto_increment
+        primary key,
     name         enum ('Festivo', 'Esame', 'Esame di profitto', 'Lauree Magistrali', 'Lezione', 'Sabato', 'Lauree 1 liv', 'Altre attività', 'Vacanza', 'Prova in itinere') null
-)engine = InnoDB;
+);
 
-create table Users
+create or replace table Users
 (
-    id_utente varchar(100) not null primary key
-)engine = InnoDB;
+    id_user       varchar(100)                               not null
+        primary key,
+    account_type  enum ('POLIMI', 'POLINETWORK', 'PERSONAL') not null,
+    last_activity datetime                                   not null
+);
 
-create table appartiene
+create or replace table RoomOccupancyReports
+(
+    id_room       int default 0 not null,
+    id_user       varchar(100)  not null,
+    rate          float         not null,
+    when_reported datetime      not null,
+    primary key (id_room, id_user),
+    constraint RoomOccupancyReport_Users_id_utente_fk
+        foreign key (id_user) references Users (id_user)
+);
+
+create or replace table appartiene
 (
     giorno       date         not null,
-    id_tipologia int unsigned not null, 
+    id_tipologia int unsigned not null,
     primary key (giorno, id_tipologia),
     constraint appartiene_ibfk_1
         foreign key (giorno) references Days (giorno),
     constraint appartiene_ibfk_2
         foreign key (id_tipologia) references Types (id_tipologia)
-)engine = InnoDB;
+);
 
 create or replace index id_tipologia
     on appartiene (id_tipologia);
 
-create table permission
+create or replace table permission
 (
     id_grant  varchar(200) not null,
     id_user   varchar(100) not null,
@@ -92,8 +113,8 @@ create table permission
     constraint id_grant
         foreign key (id_grant) references Grants (name_grant),
     constraint id_user
-        foreign key (id_user) references Users (id_utente)
-)engine = InnoDB;
+        foreign key (id_user) references Users (id_user)
+);
 
 create or replace definer = root@`%` view ArticlesWithAuthors_View as
 select `art`.`id_article`  AS `id_article`,
@@ -114,4 +135,29 @@ select `art`.`id_article`  AS `id_article`,
 from (`DBPolifemo`.`Articles` `art` join `DBPolifemo`.`Authors` `aut`)
 where `art`.`id_author` = `aut`.`id_author`;
 
+create or replace
+    definer = root@`%` function deleteUser(userid varchar(100)) returns int
+BEGIN
+
+    DELETE FROM permission WHERE id_user=userid;
+    DELETE FROM RoomOccupancyReports WHERE id_user=userid;
+    DELETE FROM Users WHERE id_user=userid;
+
+    RETURN 0;
+
+END;
+
+create or replace definer = root@`%` event if not exists auto_purge_users on schedule
+    every '1' DAY
+        starts '2023-01-01 04:00:00'
+    enable
+    do
+    BEGIN
+
+    CREATE TEMPORARY TABLE IF NOT EXISTS UsersToDelete(userid VARCHAR(100));
+    INSERT INTO UsersToDelete SELECT id_user from Users where last_activity < NOW() - INTERVAL 1 YEAR;
+    SELECT deleteUser(userid) FROM UsersToDelete;
+    DROP TABLE UsersToDelete;
+
+END;
 
