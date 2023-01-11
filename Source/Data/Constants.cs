@@ -10,8 +10,10 @@ public static class Constants
     public const string DbConfig = ConfigPath + "/dbconfig.json";
 
     public const string DataLogPath = LogsPath + "/backend.log";
+    
+    public const string SecretJson = ConfigPath + "/secrets.json";
 
-    public const string ConfigPath = "./config";
+    public const string ConfigPath = "/config";
 
     public const string DataPath = "./data";
 
