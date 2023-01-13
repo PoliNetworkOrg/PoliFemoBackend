@@ -17,7 +17,7 @@ COPY --from=build-env /App/out .
 RUN sh -c 'rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime;'
 RUN date
 
-EXPOSE 443
+EXPOSE 5000
 
 # Change executer to non user
 RUN useradd -u 7999 appexecuter
