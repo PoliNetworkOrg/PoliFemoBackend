@@ -76,9 +76,12 @@ jobs:
     
       - name: Set foobar to cool
         if: ${{ github.ref == 'refs/heads/dev' }}
+        env:
+          DOCKER_REPO: 'dev'
+          STAGE_ENV: 'dev'
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers[0].image = "polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"' app-dev/app-deployment.yaml 
+          cmd: yq -i '.spec.template.spec.containers[0].image = "polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"' app-${{ env.STAGE_ENV }}/app-deployment.yaml 
           
       - name: Update image name in manifest file
         if: ${{ github.ref == 'refs/heads/main' }}
