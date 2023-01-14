@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -28,6 +29,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
         {
             var info = CreateVersionInfo(description);
             options.SwaggerDoc(description.GroupName, info);
+            options.MapType<JToken>(() => new OpenApiSchema { Type = typeof(JToken).Name });
             options.OperationFilter<AuthOperationsFilter>();
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
