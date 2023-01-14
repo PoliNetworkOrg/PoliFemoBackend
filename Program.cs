@@ -141,7 +141,7 @@ internal static class Program
 
             try
             {
-                Start.StartThings();
+                //Start.StartThings();
             }
             catch (Exception ex)
             {
