@@ -29,9 +29,9 @@ public class CodeExchangeController : ControllerBase
     /// </remarks>
     /// <param name="code">The authorization code</param>
     /// <param name="state">App ID</param>
-    /// <response code="200">Returns the access token and refresh token</response>
+    /// <response code="200">Request completed successfully</response>
     /// <response code="400">The code is not valid</response>
-    /// <response code="403">The user is not using a PoliMi email</response>
+    /// <response code="403">The user is not using a PoliMi org email</response>
     /// <returns>An access and a refresh token</returns>
     [MapToApiVersion("1.0")]
     [HttpGet]

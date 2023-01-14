@@ -15,18 +15,20 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 public class EditPermissions : ControllerBase
 {
     /// <summary>
-    ///     Grants a permission to a user
+    ///     Grant a permission to a user
     /// </summary>
     /// <remarks>
     ///     The body is a grant object with the following structure:
     ///     - grant: String
     ///     - object_id: Integer
     /// </remarks>
-    /// <param name="id">The id of the user</param>
+    /// <param name="id">User ID</param>
     /// <param name="grant">The grant object</param>
-    /// <response code="200">Permissions updated successfully</response>
+    /// <response code="200">Request completed successfully</response>
+    /// <response code="401">Authorization error</response>
     /// <response code="403">The user does not have enough permissions</response>
     /// <response code="400">A received grant is not valid</response>
+    /// <response code="500">Can't connect to the server</response>
     [MapToApiVersion("1.0")]
     [HttpPost]
     [Authorize]
@@ -67,7 +69,7 @@ public class EditPermissions : ControllerBase
 
 
     /// <summary>
-    ///     Revokes a permission from a user
+    ///     Revoke a permission from a user
     /// </summary>
     /// <remarks>
     ///     The body is a grant object with the following structure:

@@ -21,12 +21,13 @@ public class RoomOccupancyReport : ControllerBase
     /// <remarks>
     ///     The rate must be between 1 and 5
     /// </remarks>
-    /// <param name="room">The room ID</param>
-    /// <param name="rate">The occupancy rate</param>
-    /// <response code="200">Report sent successfully</response>
+    /// <param name="room">Room ID</param>
+    /// <param name="rate">Occupancy rate</param>
+    /// <response code="200">Request completed successfully</response>
     /// <response code="400">The rate is not valid</response>
-    /// <response code="401">Insufficient permissions</response>
-    /// <response code="500">Database error</response>
+    /// <response code="401">Authorization error</response>
+    /// <response code="403">The user does not have enough permissions</response>
+    /// <response code="500">Can't connect to the server</response>
     [MapToApiVersion("1.0")]
     [HttpPost]
     [Authorize]
@@ -71,9 +72,9 @@ public class RoomOccupancyReport : ControllerBase
     /// <summary>
     ///     Get the occupancy rate of a room
     /// </summary>
-    /// <param name="room">The room ID</param>
-    /// <response code="200">Request successful</response>
-    /// <response code="400">The room is not valid</response>
+    /// <param name="room">Room ID</param>
+    /// <response code="200">Request completed successfully</response>
+    /// <response code="400">The room ID is not valid</response>
     /// <returns>The occupancy rate and the room ID</returns>
     [MapToApiVersion("1.0")]
     [HttpGet]

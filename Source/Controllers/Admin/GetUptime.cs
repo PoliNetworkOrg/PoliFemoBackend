@@ -16,7 +16,7 @@ namespace PoliFemoBackend.Source.Controllers.Admin;
 public class GetUptimeController : ControllerBase
 {
     /// <summary>
-    ///     Returns the uptime of the backend server
+    ///     Get the uptime of the backend server
     /// </summary>
     /// <returns></returns>
     [MapToApiVersion("1.0")]
