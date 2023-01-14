@@ -41,7 +41,7 @@ jobs:
         run: echo "DOCKER_REPO=$(echo prod)" >> $GITHUB_ENV
 
       - name: Set env
-        if: ${{ github.ref == 'refs/heads/dev' }}
+        if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/k8s_testing' }}
         run: echo "DOCKER_REPO=$(echo dev)" >> $GITHUB_ENV
       
       - name: Build and push Docker image
