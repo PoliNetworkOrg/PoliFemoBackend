@@ -15,7 +15,7 @@ public static class Start
     {
         try
         {
-            GlobalVariables.SetSecrets(JsonConvert.DeserializeObject<JObject>(File.ReadAllText("secrets.json")));
+            GlobalVariables.SetSecrets(JsonConvert.DeserializeObject<JObject>(File.ReadAllText("./config/secrets.json")));
         }
         catch (Exception ex)
         {
