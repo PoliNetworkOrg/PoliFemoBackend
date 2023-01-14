@@ -81,7 +81,7 @@ jobs:
           STAGE_ENV: 'dev'
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers[0].image = "polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"' app-${{ env.STAGE_ENV }}/app-deployment.yaml 
+          cmd: yq -i '.spec|=select(.selector.matchLabels.app=="app-dev").template.spec.containers[0].image = "polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"' app-${{ env.STAGE_ENV }}/app-deployment.yaml 
           
       - name: Update image name in manifest file
         if: ${{ github.ref == 'refs/heads/main' }}
