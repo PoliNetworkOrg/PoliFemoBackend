@@ -13,11 +13,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /App
 COPY --from=build-env /App/out .
 
-# Change executer to non user
-RUN useradd -u 7999 appexecuter
-RUN chown -R appexecuter .
-USER appexecuter
-
 EXPOSE 80
 
 ENTRYPOINT ["dotnet", "PoliFemoBackend.dll"]
