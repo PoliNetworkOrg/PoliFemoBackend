@@ -13,13 +13,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /App
 COPY --from=build-env /App/out .
 
-# Set timezone to Italy
-RUN sh -c 'rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime;'
-RUN date
-
 # Change executer to non user
 RUN useradd -u 7999 appexecuter
 RUN chown -R appexecuter .
 USER appexecuter
 
-ENTRYPOINT ["sh", "-c", "dotnet PoliFemoBackend.dll 2"]
+EXPOSE 5000
+
+ENTRYPOINT ["dotnet", "PoliFemoBackend.dll"]

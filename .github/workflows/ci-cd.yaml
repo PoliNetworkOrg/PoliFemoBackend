@@ -7,7 +7,7 @@ jobs:
   build:
     name: Docker Build
     runs-on: ubuntu-latest
-    if: ${{ github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main' }}
+    if: ${{ github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/k8s_testing' }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -20,7 +20,7 @@ jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/k8s_testing' }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -41,7 +41,7 @@ jobs:
         run: echo "DOCKER_REPO=$(echo prod)" >> $GITHUB_ENV
 
       - name: Set env
-        if: ${{ github.ref == 'refs/heads/dev' }}
+        if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/k8s_testing' }}
         run: echo "DOCKER_REPO=$(echo dev)" >> $GITHUB_ENV
       
       - name: Build and push Docker image
@@ -61,18 +61,27 @@ jobs:
           repository: polinetworkorg/polinetwork-cd
           ssh-key: ${{ secrets.CD_DEPLOY_KEY }}
 
-      - name: Update image name in manifest file
-        if: ${{ github.ref == 'refs/heads/dev' }}
-        uses: azure/powershell@v1
+#       - name: Update image name in manifest file
+#         if: ${{ github.ref == 'refs/heads/dev' }}
+#         uses: azure/powershell@v1
+#         env:
+#           DOCKER_REPO: 'dev'
+#           STAGE_ENV: 'dev'
+#         with:
+#           inlineScript: |
+#             $line = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
+#             $content = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
+#             $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
+#           azPSVersion: "latest"
+    
+      - name: Set foobar to cool
+        if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/k8s_testing' }}
         env:
           DOCKER_REPO: 'dev'
           STAGE_ENV: 'dev'
+        uses: mikefarah/yq@master
         with:
-          inlineScript: |
-            $line = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
-            $content = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
-            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
-          azPSVersion: "latest"
+          cmd: yq -i '.spec|=select(.selector.matchLabels.app=="app-dev").template.spec.containers[0].image = "polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"' app-${{ env.STAGE_ENV }}/app-deployment.yaml 
           
       - name: Update image name in manifest file
         if: ${{ github.ref == 'refs/heads/main' }}

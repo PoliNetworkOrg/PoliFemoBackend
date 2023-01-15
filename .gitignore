@@ -10,3 +10,4 @@ bin/*
 /secrets.json
 /config
 /logs
+out/*
