@@ -7,7 +7,6 @@ public class Grant
 {
     public int? object_id { get; set; }
 
-    [JsonProperty(Required = Required.DisallowNull)]
     public string grant { get; set; }
 
     public Grant(string nameGrant, int? idObject)
