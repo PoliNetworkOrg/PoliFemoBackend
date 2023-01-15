@@ -251,7 +251,7 @@ public static class PoliMiNewsUtil
         if (string.IsNullOrEmpty(url))
             return DoneEnum.ERROR;
 
-        const string query = "SELECT COUNT(*) FROM Articles WHERE sourceUrl = @url";
+        const string query = "SELECT COUNT(*) FROM Articles WHERE source_url = @url";
         var args = new Dictionary<string, object?> { { "@url", url } };
         var results = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
         if (results == null)
@@ -272,7 +272,7 @@ public static class PoliMiNewsUtil
     private static void InsertItemInDb(NewsPolimi newsItem) //11111
     {
         const string query1 = "INSERT IGNORE INTO Articles " +
-                              "(title,subtitle,content,publishTime,sourceUrl,id_author,image,id_tag) " +
+                              "(title,subtitle,content,publish_time,source_url,author_id,image,tag_id) " +
                               "VALUES " +
                               "(@title,@subtitle,@text_,@publishTime,@sourceUrl, @author_id, @image, @tag)";
         var args1 = new Dictionary<string, object?>

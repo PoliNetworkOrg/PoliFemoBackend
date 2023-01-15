@@ -44,7 +44,7 @@ public class ArticlesByAuthorController : ControllerBase
     public ObjectResult SearchArticlesDb(string author)
     {
         var results = Database.ExecuteSelect(
-            "SELECT Articles.id_article, Articles.title, Articles.subtitle, Articles.text_, Articles.publishTime, Articles.targetTime, Articles.music, Articles.id_media " +
+            "SELECT Articles.article_id, Articles.title, Articles.subtitle, Articles.text_, Articles.publishTime, Articles.targetTime, Articles.music, Articles.id_media " +
             "FROM Authors, Articles, scritto " +
             " WHERE scritto.id_article = Articles.id_article AND scritto.id_author = Authors.id_author AND Authors.name = @author",
             GlobalVariables.DbConfigVar,

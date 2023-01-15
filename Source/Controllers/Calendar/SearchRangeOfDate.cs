@@ -31,7 +31,7 @@ public class SearchRangeOfDate : ControllerBase
     public ActionResult SearchDateDb(DateTime start, DateTime end)
     {
         var query =
-            "SELECT DISTINCT Types.name, Days.giorno FROM Days, appartiene, Types WHERE Days.giorno BETWEEN '@start' AND '@end' AND Days.giorno = appartiene.giorno AND appartiene.id_tipologia = Types.id_tipologia ORDER BY Days.giorno";
+            "SELECT DISTINCT Types.name, Days.giorno FROM Days, belongsTo, Types WHERE Days.giorno BETWEEN '@start' AND '@end' AND Days.giorno = belongsTo.giorno AND belongsTo.id_tipologia = Types.id_tipologia ORDER BY Days.giorno";
         query = query.Replace("@start", start.ToString("yyyy-MM-dd"));
         query = query.Replace("@end", end.ToString("yyyy-MM-dd"));
 
