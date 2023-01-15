@@ -22,18 +22,18 @@ public class AddGroupsController : ControllerBase
     /// <response code="200">Group Added</response>
     /// <response code="500">Can't connect to server or Group not Added</response>
     [MapToApiVersion("1.0")]
-    [HttpPut]
+    [HttpPost]
     public ObjectResult AddGroupsDb(string name, string? year, string id, string? degree, string? type,
-        string? platform, string language, string? office, string? school, string idLink)
+        string? platform, string language, string? office, string? school, string link_id)
     {
         var d = new Dictionary<string, object?> { { "@name", name } };
 
-        var query = "INSERT IGNORE INTO Groups VALUES ( '@name', ";
+        var query = "INSERT IGNORE INTO Groups VALUES ( @name, ";
 
         //office
         if (office != null)
         {
-            query += "'@office',";
+            query += "@office,";
             d.Add("@office", office);
         }
         else
@@ -44,14 +44,14 @@ public class AddGroupsController : ControllerBase
         //id
         if (!string.IsNullOrEmpty(id))
         {
-            query += "'@id',";
+            query += "@id,";
             d.Add("@id", id);
         }
 
         //degree
         if (degree != null)
         {
-            query += "'@degree',";
+            query += "@degree,";
             d.Add("@degree", degree);
         }
         else
@@ -62,7 +62,7 @@ public class AddGroupsController : ControllerBase
         //school
         if (school != null)
         {
-            query += "'@school', ";
+            query += "@school, ";
             d.Add("@school", school);
         }
         else
@@ -71,23 +71,24 @@ public class AddGroupsController : ControllerBase
         }
 
         //id_link
-        if (!string.IsNullOrEmpty(idLink))
+        if (!string.IsNullOrEmpty(link_id))
         {
-            query += "'@id_link',";
-            d.Add("@id_link", idLink);
+            query += "@id_link,";
+            d.Add("@id_link", link_id);
         }
+        
 
         //language
         if (!string.IsNullOrEmpty(language))
         {
-            query += "'@language',";
+            query += "@language,";
             d.Add("@language", language);
         }
 
         //type
         if (type != null)
         {
-            query += "'@type',";
+            query += "@type,";
             d.Add("@type", type);
         }
         else
@@ -98,7 +99,7 @@ public class AddGroupsController : ControllerBase
         //year
         if (year != null)
         {
-            query += "'@year', ";
+            query += "@year, ";
             d.Add("@year", year);
         }
         else
@@ -109,7 +110,7 @@ public class AddGroupsController : ControllerBase
         //platform
         if (platform != null)
         {
-            query += "'@platform',";
+            query += "@platform,";
             d.Add("@platform", platform);
         }
         else
