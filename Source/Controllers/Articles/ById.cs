@@ -37,7 +37,7 @@ public class ArticleByIdController : ControllerBase
     private static JObject? SearchArticlesByIdObject(int id)
     {
         var results = Database.ExecuteSelect(
-            "SELECT * FROM ArticlesWithAuthors_View  WHERE id_article = @id",
+            "SELECT * FROM ArticlesWithAuthors_View  WHERE article_id = @id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {

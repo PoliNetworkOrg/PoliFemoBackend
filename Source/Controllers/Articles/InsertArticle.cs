@@ -95,7 +95,7 @@ public class InsertArticle : ControllerBase
 
         if (id_author != 0)
         {
-            var isValidAuthor = Database.ExecuteSelect($"SELECT * FROM Authors WHERE id_author = '{id_author}'",
+            var isValidAuthor = Database.ExecuteSelect($"SELECT * FROM Authors WHERE author_id = '{id_author}'",
                 GlobalVariables.DbConfigVar);
             if (isValidAuthor == null)
                 return new BadRequestObjectResult(new JObject

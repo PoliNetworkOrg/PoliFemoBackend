@@ -84,7 +84,7 @@ public static class AuthUtil
     public static bool HasPermission(string? userid, string permission)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT grant_id FROM permission, Grants, Users WHERE id_user=sha2(@userid, 256) AND id_grant=@permission",
+            "SELECT id_grant FROM permissions, Grants, Users WHERE Users.id_user=sha2(@userid, 256) AND id_grant=@permission",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -97,7 +97,7 @@ public static class AuthUtil
     public static bool HasGrantAndObjectPermission(string? userid, string permission, int objectid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT id_grant FROM permission WHERE id_user=sha2(@userid, 256) AND id_grant=@permission AND id_object=@objectid",
+            "SELECT id_grant FROM permissions WHERE id_user=sha2(@userid, 256) AND id_grant=@permission AND id_object=@objectid",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -111,7 +111,7 @@ public static class AuthUtil
     public static List<Grant> GetPermissions(string? userid, bool convert = true)
     {
         var query =
-            "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_user ";
+            "SELECT DISTINCT name_grant, id_object FROM Grants, permissions, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_user ";
         if (convert) query += "AND Users.id_user=sha2(@userid, 256)";
         else query += "AND Users.id_user=@userid";
 
@@ -136,21 +136,21 @@ public static class AuthUtil
     public static string?[] GetAuthorizedAuthors(string? userid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT a.* FROM Authors a, permission p WHERE p.id_user = sha2(@userid, 256) AND a.id_author = p.id_object AND p.id_grant = 'authors'",
+            "SELECT a.* FROM Authors a, permissions p WHERE p.user_id = sha2(@userid, 256) AND a.author_id = p.object_id AND p.grant_id = 'authors'",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
                 { "@userid", userid }
             });
         var array = new string?[results?.Rows.Count ?? 0];
-        for (var i = 0; i < results?.Rows.Count; i++) array[i] = results.Rows[i]["name_"].ToString();
+        for (var i = 0; i < results?.Rows.Count; i++) array[i] = results.Rows[i]["name"].ToString();
         return array;
     }
 
     public static string GetAccountType(JwtSecurityToken jwtSecurityToken)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT account_type FROM Users WHERE id_user = sha2(@userid, 256)",
+            "SELECT account_type FROM Users WHERE user_id = sha2(@userid, 256)",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
