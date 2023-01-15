@@ -40,30 +40,134 @@ internal static class Program
         try
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
+            builder.Services.Configure<MvcOptions>(options => { options.EnableEndpointRouting = false; });
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddMvcCore(opts =>
+                opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
+            builder.Services.AddLogging();
+
+            var metrics = AppMetrics.CreateDefaultBuilder().Build();
+
+            builder.Services.AddMetrics(metrics);
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("policy",
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
+            builder.Host
+                .ConfigureMetrics(metricsBuilder =>
+                {
+                    metricsBuilder.Configuration.Configure(options => { options.DefaultContextLabel = "default"; });
+                })
+                .UseMetricsWebTracking()
+                .UseMetricsEndpoints()
+                .UseMetrics(options =>
+                {
+                    options.EndpointOptions = endpointsOptions =>
+                    {
+                        endpointsOptions.MetricsTextEndpointOutputFormatter =
+                            new MetricsPrometheusTextOutputFormatter();
+                        endpointsOptions.MetricsEndpointEnabled = false;
+                    };
+                });
+
+            builder.Services.AddControllers().AddNewtonsoftJson();
+
+            builder.Services.AddApiVersioning(setup =>
+            {
+                setup.DefaultApiVersion = new ApiVersion(1, 0);
+                setup.AssumeDefaultVersionWhenUnspecified = true;
+                setup.ReportApiVersions = true;
+            });
+            builder.Services.AddVersionedApiExplorer(setup =>
+            {
+                setup.GroupNameFormat = "'v'VVV";
+                setup.SubstituteApiVersionInUrl = true;
+            });
+
+            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = Constants.AzureAuthority;
+                options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
+                options.TokenValidationParameters.ValidIssuers =
+                    new[] { Constants.AzureCommonIssuer, Constants.AzureOrgIssuer };
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = async context => { await OnChallengeMethod(context); }
+                };
+            });
+
+            builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
+
+            app.UseSwagger();
+            app.UseStaticFiles();
+            app.UseSwaggerUI(options =>
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                options.DocExpansion(DocExpansion.None);
+                if (app.Services.GetService(typeof(IApiVersionDescriptionProvider)) is IApiVersionDescriptionProvider
+                    provider)
+                {
+                    foreach (var description in provider.ApiVersionDescriptions)
+                    {
+                        options.SwaggerEndpoint("/swagger/" + description.GroupName + "/swagger.json",
+                            "PoliFemoBackend API " + description.GroupName.ToUpperInvariant());
+                        options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+                        options.RoutePrefix = "swagger";
+                    }
+                }
+                else
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "PoliFemoBackend API V1");
+                    options.RoutePrefix = "swagger";
+                }
+            });
+
+            try
+            {
+                Start.StartThings();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseMetricsTextEndpoint();
+            app.UseMetricsAllMiddleware();
 
-            app.UseRouting();
+            app.UseMiddleware<PageNotFoundMiddleware>();
+
+            app.UseCors(policyBuilder =>
+            {
+                policyBuilder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.UseUserActivityMiddleware();
+
+            app.MapControllers();
 
             app.Run();
         }
