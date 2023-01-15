@@ -22,7 +22,7 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 public class InsertArticle : ControllerBase
 {
     /// <summary>
-    ///     Adds a new article to the database
+    ///     Add a new article
     /// </summary>
     /// <remarks>
     ///     All parameters must be passed in the body of the request formatted as a JSON object.
@@ -40,9 +40,10 @@ public class InsertArticle : ControllerBase
     ///     - latitude: Double
     ///     - longitude: Double
     /// </remarks>
-    /// <response code="200">Article inserted successfully</response>
+    /// <response code="200">Request completed successfully</response>
+    /// <response code="401">Authorization error</response>
     /// <response code="403">The user does not have enough permissions</response>
-    /// <response code="500">Can't connect to server</response>
+    /// <response code="500">Can't connect to the server</response>
     [MapToApiVersion("1.0")]
     [HttpPost]
     [Authorize]

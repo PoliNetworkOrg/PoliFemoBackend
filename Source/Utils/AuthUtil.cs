@@ -3,7 +3,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
-using PoliFemoBackend.Source.Objects.Permission;
+using PoliFemoBackend.Source.Objects.Permissions;
 
 #endregion
 
@@ -108,12 +108,12 @@ public static class AuthUtil
         return results != null;
     }
 
-    public static List<PermissionGrantObject> GetPermissions(string? userid, bool convert = true)
+    public static List<Grant> GetPermissions(string? userid, bool convert = true)
     {
         var query =
             "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_user ";
-        if (convert) query += "AND id_user=sha2(@userid, 256)";
-        else query += "AND id_user=@userid";
+        if (convert) query += "AND Users.id_user=sha2(@userid, 256)";
+        else query += "AND Users.id_user=@userid";
 
         var results = Database.Database.ExecuteSelect(
             query,
@@ -122,12 +122,12 @@ public static class AuthUtil
             {
                 { "@userid", userid }
             });
-        var array = new List<PermissionGrantObject>();
+        var array = new List<Grant>();
         for (var i = 0; i < results?.Rows.Count; i++)
             array.Add(
-                new PermissionGrantObject(
-                    results.Rows[i]["name_grant"].ToString(),
-                    results.Rows[i]["id_object"].ToString()
+                new Grant(
+                    results.Rows[i]["name_grant"].ToString() ?? "",
+                    int.TryParse(results.Rows[i]["id_object"].ToString(), out var idObject) ? idObject : null
                 )
             );
         return array;

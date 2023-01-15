@@ -18,12 +18,13 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 public class ArticleByIdController : ControllerBase
 {
     /// <summary>
-    ///     Search article by id
+    ///     Search an article by ID
     /// </summary>
-    /// <returns>A json of article</returns>
-    /// <response code="200">Returns article</response>
-    /// <response code="500">Can't connect to server</response>
-    /// <response code="404">No available article</response>
+    /// <returns>A JSON object of article</returns>
+    /// <response code="200">Request completed successfully</response>
+    /// <response code="404">No available articles</response>
+    /// <response code="500">Can't connect to the server</response>
+
     [MapToApiVersion("1.0")]
     [HttpGet]
     public ActionResult SearchArticlesById(int id)
