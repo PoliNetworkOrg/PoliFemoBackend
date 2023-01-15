@@ -29,6 +29,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
         {
             var info = CreateVersionInfo(description);
             options.SwaggerDoc(description.GroupName, info);
+            options.SupportNonNullableReferenceTypes();
             options.MapType<JToken>(() => new OpenApiSchema { Type = typeof(JToken).Name });
             options.OperationFilter<AuthOperationsFilter>();
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

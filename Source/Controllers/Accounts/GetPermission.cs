@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Objects.Permission;
+using PoliFemoBackend.Source.Objects.Permissions;
 using PoliFemoBackend.Source.Utils;
 
 // ReSharper disable InconsistentNaming
@@ -42,7 +42,7 @@ public class GetPermissions : ControllerBase
             });
         }
 
-        var formattedPerms = PermissionGrantObject.GetFormattedPerms(perms);
+        var formattedPerms = Grant.GetFormattedPerms(perms);
 
         return Ok(
             new JObject

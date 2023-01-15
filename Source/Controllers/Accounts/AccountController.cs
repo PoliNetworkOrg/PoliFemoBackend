@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Objects.Permission;
+using PoliFemoBackend.Source.Objects.Permissions;
 using PoliFemoBackend.Source.Utils;
 
 #endregion
@@ -44,7 +44,7 @@ public class ArticleByIdController : ControllerBase
             userid = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
         }
 
-        var permarray = PermissionGrantObject.GetFormattedPerms(permissions);
+        var permarray = Grant.GetFormattedPerms(permissions);
 
         return new ObjectResult(new
         {
