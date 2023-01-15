@@ -9,3 +9,4 @@ bin/*
 .vscode/*
 /config
 /logs
+out/*
