@@ -18,15 +18,15 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 public class SearchRoomsController : ControllerBase
 {
     /// <summary>
-    ///     Searches for available rooms in a given time range
+    ///     Search for available rooms in a given time range
     /// </summary>
     /// <param name="sede" example="MIA">Possible values: MIA, MIB</param>
     /// <param name="hourStart" example="2022-05-18T12:15:00Z">Start time</param>
     /// <param name="hourStop" example="2022-05-18T14:15:00Z">End time</param>
-    /// <returns>An array of free rooms</returns>
-    /// <response code="200">Returns the array of free rooms</response>
-    /// <response code="500">Can't connect to poli servers</response>
+    /// <returns>A JSON array of free rooms</returns>
+    /// <response code="200">Request completed successfully</response>
     /// <response code="204">No available rooms</response>
+    /// <response code="500">Can't connect to poli servers</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
     public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] DateTime hourStart,

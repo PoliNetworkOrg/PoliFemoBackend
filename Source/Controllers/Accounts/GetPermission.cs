@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Objects.Permission;
+using PoliFemoBackend.Source.Objects.Permissions;
 using PoliFemoBackend.Source.Utils;
 
 // ReSharper disable InconsistentNaming
@@ -21,11 +21,12 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 public class GetPermissions : ControllerBase
 {
     /// <summary>
-    ///     Returns the permissions of the user
+    ///     Get the permissions of the user
     /// </summary>
-    /// <param name="id">id of the user</param>
-    /// <response code="200">Permissions returned successfully</response>
-    /// <response code="500">Can't connect to server</response>
+    /// <param name="id">User ID</param>
+    /// <response code="200">Request completed successfully</response>
+    /// <response code="401">Authorization error</response>
+    /// <response code="500">Can't connect to the server</response>
     [MapToApiVersion("1.0")]
     [HttpGet]
     public ObjectResult GetPermission(string id)
@@ -41,7 +42,7 @@ public class GetPermissions : ControllerBase
             });
         }
 
-        var formattedPerms = PermissionGrantObject.GetFormattedPerms(perms);
+        var formattedPerms = Grant.GetFormattedPerms(perms);
 
         return Ok(
             new JObject

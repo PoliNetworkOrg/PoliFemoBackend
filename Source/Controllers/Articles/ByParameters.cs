@@ -19,12 +19,12 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 public class ArticlesByParameters : ControllerBase
 {
     /// <summary>
-    ///     Search articles by parameters.
+    ///     Search articles by parameters
     /// </summary>
     /// <param name="start" example="2022-05-18T12:15:00Z">Start time</param>
     /// <param name="end" example="2022-05-18T12:15:00Z">End time</param>
     /// <param name="tag" example="STUDENTI">Tag name</param>
-    /// <param name="author_id" example="1">Author id</param>
+    /// <param name="author_id" example="1">Author ID</param>
     /// <param name="title" example="Titolo...">Article title</param>
     /// <param name="limit" example="30">Limit of results (can be null)</param>
     /// <param name="pageOffset">Offset page for limit (can be null)</param>
@@ -32,10 +32,11 @@ public class ArticlesByParameters : ControllerBase
     /// <remarks>
     ///     At least one of the parameters must be specified.
     /// </remarks>
-    /// <returns>A json list of articles</returns>
-    /// <response code="200">Articles found</response>
-    /// <response code="500">Can't connect to server</response>
+    /// <returns>A JSON list of articles</returns>
+    /// <response code="200">Request completed successfully</response>
     /// <response code="404">No available articles</response>
+    /// <response code="500">Can't connect to the server</response>
+
     [MapToApiVersion("1.0")]
     [HttpGet]
     public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id,

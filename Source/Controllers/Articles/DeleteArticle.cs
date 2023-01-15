@@ -19,12 +19,13 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 public class DeleteArticle : ControllerBase
 {
     /// <summary>
-    ///     Removes an article from database
+    ///     Remove an article
     /// </summary>
-    /// <param name="id">ID of the article to be deleted</param>
-    /// <response code="200">Article deleted successfully</response>
+    /// <param name="id">Article ID</param>
+    /// <response code="200">Request completed successfully</response>
+    /// <response code="401">Authorization error</response>
     /// <response code="403">The user does not have enough permissions</response>
-    /// <response code="500">Can't connect to server</response>
+    /// <response code="500">Can't connect to the server</response>
     [MapToApiVersion("1.0")]
     [HttpDelete]
     [Authorize]
