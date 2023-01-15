@@ -7,7 +7,7 @@ jobs:
   build:
     name: Docker Build
     runs-on: ubuntu-latest
-    if: ${{ github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main' }}
+    if: ${{ github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/k8s_testing' }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -20,7 +20,7 @@ jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/k8s_testing' }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -41,7 +41,7 @@ jobs:
         run: echo "DOCKER_REPO=$(echo prod)" >> $GITHUB_ENV
 
       - name: Set env
-        if: ${{ github.ref == 'refs/heads/dev' }}
+        if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/k8s_testing' }}
         run: echo "DOCKER_REPO=$(echo dev)" >> $GITHUB_ENV
       
       - name: Build and push Docker image
@@ -75,7 +75,7 @@ jobs:
 #           azPSVersion: "latest"
     
       - name: Set foobar to cool
-        if: ${{ github.ref == 'refs/heads/dev' }}
+        if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/k8s_testing' }}
         env:
           DOCKER_REPO: 'dev'
           STAGE_ENV: 'dev'
