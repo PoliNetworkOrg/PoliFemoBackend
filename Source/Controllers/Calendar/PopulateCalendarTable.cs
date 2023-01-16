@@ -10,10 +10,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Calendar;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Calendar")]
-[Route("v{version:apiVersion}/calendar")]
 [Route("/calendar")]
+
 public class PopulateCalendarTable : ControllerBase
 {
     /// <summary>
@@ -22,7 +21,7 @@ public class PopulateCalendarTable : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Days Added</response>
     /// <response code="500">Can't connect to server or Days not Added</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpPut]
     public ObjectResult AddCalendarDb2(List<IFormFile> file, string year)
     {

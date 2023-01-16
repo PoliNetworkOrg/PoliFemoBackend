@@ -11,10 +11,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Articles")]
-[Route("v{version:apiVersion}/articles/{id:int}")]
 [Route("/articles/{id:int}")]
+
 public class ArticleByIdController : ControllerBase
 {
     /// <summary>
@@ -24,8 +23,7 @@ public class ArticleByIdController : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="404">No available articles</response>
     /// <response code="500">Can't connect to the server</response>
-
-    [MapToApiVersion("1.0")]
+ 
     [HttpGet]
     public ActionResult SearchArticlesById(int id)
     {

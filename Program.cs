@@ -6,7 +6,6 @@ using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Prometheus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -121,22 +120,8 @@ internal static class Program
             app.UseSwaggerUI(options =>
             {
                 options.DocExpansion(DocExpansion.None);
-                if (app.Services.GetService(typeof(IApiVersionDescriptionProvider)) is IApiVersionDescriptionProvider
-                    provider)
-                {
-                    foreach (var description in provider.ApiVersionDescriptions)
-                    {
-                        options.SwaggerEndpoint("/swagger/" + description.GroupName + "/swagger.json",
-                            "PoliFemoBackend API " + description.GroupName.ToUpperInvariant());
-                        options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
-                        options.RoutePrefix = "swagger";
-                    }
-                }
-                else
-                {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "PoliFemoBackend API V1");
-                    options.RoutePrefix = "swagger";
-                }
+                options.SwaggerEndpoint("/swagger/definitions/swagger.json", "PoliFemo API");
+                options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
             });
 
             try

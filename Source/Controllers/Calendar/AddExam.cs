@@ -10,9 +10,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Calendar;
 
 [ApiController]
-[ApiVersion("1.0")]
+
 [ApiExplorerSettings(GroupName = "Calendar")]
-[Route("v{version:apiVersion}/calendar/exam")]
+
 [Route("/calendar/exam")]
 public class AddExam : ControllerBase
 {
@@ -22,7 +22,7 @@ public class AddExam : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Exams Added</response>
     /// <response code="500">Can't connect to server or Exams not Added</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpPut]
     public ObjectResult AddExamDb(List<IFormFile> file)
     {

@@ -11,9 +11,7 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Rooms")]
-[Route("v{version:apiVersion}/rooms/search")]
 [Route("/rooms/search")]
 public class SearchRoomsController : ControllerBase
 {
@@ -27,7 +25,7 @@ public class SearchRoomsController : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="204">No available rooms</response>
     /// <response code="500">Can't connect to poli servers</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpGet]
     public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] DateTime hourStart,
         [BindRequired] DateTime hourStop)

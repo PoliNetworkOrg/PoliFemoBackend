@@ -12,10 +12,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Articles")]
-[Route("v{version:apiVersion}/articles")]
 [Route("/articles")]
+
 public class ArticlesByParameters : ControllerBase
 {
     /// <summary>
@@ -37,7 +36,6 @@ public class ArticlesByParameters : ControllerBase
     /// <response code="404">No available articles</response>
     /// <response code="500">Can't connect to the server</response>
 
-    [MapToApiVersion("1.0")]
     [HttpGet]
     public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id,
         string? title, uint? limit, uint? pageOffset, string? sort)

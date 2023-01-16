@@ -12,10 +12,8 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
-[ApiVersion("1.0")]
 [Authorize]
 [ApiExplorerSettings(GroupName = "Accounts")]
-[Route("v{version:apiVersion}/accounts/me")]
 [Route("accounts/me")]
 public class ArticleByIdController : ControllerBase
 {
@@ -28,7 +26,7 @@ public class ArticleByIdController : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="401">Authorization error</response>
     /// <response code="500">Can't connect to the server</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpGet]
     public ObjectResult ProfileDetails()
     {
