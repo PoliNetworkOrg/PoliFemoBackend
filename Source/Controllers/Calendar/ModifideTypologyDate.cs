@@ -34,7 +34,7 @@ public class ModifyDateControllers : ControllerBase
     [HttpPost]
     public ObjectResult ModifiedTypeDateDb(DateTime date, int tipologia_old, int tipologia_new)
     {
-        var query = "UPDATE appartiene SET id_tipologia = " + tipologia_new + " WHERE id_giorno = '" +
+        var query = "UPDATE belongsTo SET id_tipologia = " + tipologia_new + " WHERE id_giorno = '" +
                     date.ToString("yyyy-MM-dd") + "' AND id_tipologia = " + tipologia_old + " ;";
         int? results = Database.Execute(query, GlobalVariables.DbConfigVar);
 
@@ -63,7 +63,7 @@ public class ModifyDateControllers : ControllerBase
     [HttpPut]
     public ObjectResult AddTypeDateDb(DateTime date, int tipologia)
     {
-        var query = "INSERT IGNORE INTO appartiene VALUES ('" + date.ToString("yyyy-MM-dd") + "', " + tipologia + " );";
+        var query = "INSERT IGNORE INTO belongsTo VALUES ('" + date.ToString("yyyy-MM-dd") + "', " + tipologia + " );";
         int? results = Database.Execute(query, GlobalVariables.DbConfigVar);
 
         return results switch
@@ -89,7 +89,7 @@ public class ModifyDateControllers : ControllerBase
     [HttpDelete]
     public ObjectResult RemoveTypeDateDb(DateTime date, int tipologia)
     {
-        var query = "DELETE FROM appartiene WHERE id_tipologia = " + tipologia + " AND id_giorno = '" +
+        var query = "DELETE FROM belongsTo WHERE id_tipologia = " + tipologia + " AND id_giorno = '" +
                     date.ToString("yyyy-MM-dd") + "';";
         int? results = Database.Execute(query, GlobalVariables.DbConfigVar);
 

@@ -29,7 +29,6 @@ public class ArticleByIdController : ControllerBase
     [HttpGet]
     public ActionResult SearchArticlesById(int id)
     {
-        Console.WriteLine(id);
         var a = SearchArticlesByIdObject(id);
         return a == null ? NotFound() : Ok(a);
     }
@@ -37,7 +36,7 @@ public class ArticleByIdController : ControllerBase
     private static JObject? SearchArticlesByIdObject(int id)
     {
         var results = Database.ExecuteSelect(
-            "SELECT * FROM ArticlesWithAuthors_View  WHERE id_article = @id",
+            "SELECT * FROM ArticlesWithAuthors_View  WHERE article_id = @id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {

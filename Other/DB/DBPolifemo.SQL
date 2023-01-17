@@ -1,25 +1,30 @@
-create or replace table Authors
+-- Uncomment the following line to enable the routine to delete old users
+-- SET GLOBAL event_scheduler = ON;
+
+-- Tables, routines and events --
+
+create table if not exists Authors
 (
-    id_author int(10) auto_increment
+    author_id int(10) auto_increment
         primary key,
-    name_     varchar(50)  null,
+    `name`     varchar(50)  null,
     link      varchar(200) null,
     image     varchar(100) null
 );
 
-create or replace table Days
+create table if not exists Days
 (
-    giorno date not null
+    `day` date not null
         primary key
 );
 
-create or replace table Grants
+create table if not exists Grants
 (
-    name_grant varchar(100) not null
+    grant_name varchar(100) not null
         primary key
 );
 
-create or replace table `Groups`
+create table if not exists `Groups`
 (
     class                    varchar(100)                                            null,
     office                   enum ('Bovisa', 'Como', 'Cremona', 'Lecco', 'Leonardo') null,
@@ -28,126 +33,127 @@ create or replace table `Groups`
     degree                   enum ('LT', 'LM', 'LU')                                 null,
     school                   enum ('ICAT', 'DES', '3I', 'ICAT+3I', 'AUIC')           null,
     id_link                  varchar(50)                                             null,
-    language_                enum ('ITA', 'ENG')                                     null,
+    `language`                enum ('ITA', 'ENG')                                     null,
     type_                    enum ('S', 'C', 'E')                                    null,
-    year                     varchar(10)                                             null,
+    `year`                    varchar(10)                                             null,
     platform                 enum ('WA', 'TG', 'FB')                                 null,
     permanent_id             int                                                     null,
-    LastUpdateInviteLinkTime datetime                                                null,
-    Linkfunzionante          enum ('Y', 'N')                                         null
+    last_updated             datetime                                                null,
+    link_is_working          enum ('Y', 'N')                                         null
 );
 
-create or replace table Tags
+create table if not exists Tags
 (
-    name  varchar(100) not null
+    `name`  varchar(100) not null
         primary key,
     image varchar(100) null
 );
 
-create or replace table Articles
+create table if not exists Articles
 (
-    id_article  int unsigned auto_increment
+    article_id  int unsigned auto_increment
         primary key,
-    id_tag      varchar(100)  null,
+    tag_id      varchar(100)  null,
     title       varchar(100)  not null,
     subtitle    varchar(200)  null,
     content     text          not null,
-    publishTime datetime      not null,
-    targetTime  datetime      null,
+    publish_time datetime      not null,
+    target_time  datetime      null,
     latitude    double        null,
     longitude   double        null,
     image       varchar(200)  null,
-    id_author   int(10)       not null,
-    sourceUrl   varchar(1000) null,
+    author_id   int(10)       not null,
+    source_url   varchar(1000) null,
     constraint Author___fk
-        foreign key (id_author) references Authors (id_author),
+        foreign key (author_id) references Authors (author_id),
     constraint Tags___fk
-        foreign key (id_tag) references Tags (name)
+        foreign key (tag_id) references Tags (`name`)
 );
 
-create or replace table Types
+create table if not exists Types
 (
-    id_tipologia int unsigned auto_increment
+    type_id int unsigned auto_increment
         primary key,
-    name         enum ('Festivo', 'Esame', 'Esame di profitto', 'Lauree Magistrali', 'Lezione', 'Sabato', 'Lauree 1 liv', 'Altre attività', 'Vacanza', 'Prova in itinere') null
+    `name`      enum ('Festivo', 'Esame', 'Esame di profitto', 'Lauree Magistrali', 'Lezione', 'Sabato', 'Lauree 1 liv', 'Altre attività', 'Vacanza', 'Prova in itinere') null
 );
 
-create or replace table Users
+create table if not exists Users
 (
-    id_user       varchar(100)                               not null
+    user_id       varchar(100)                               not null
         primary key,
     account_type  enum ('POLIMI', 'POLINETWORK', 'PERSONAL') not null,
     last_activity datetime                                   not null
 );
 
-create or replace table RoomOccupancyReports
+create table if not exists RoomOccupancyReports
 (
-    id_room       int default 0 not null,
-    id_user       varchar(100)  not null,
+    room_id       int default 0 not null,
+    user_id       varchar(100)  not null,
     rate          float         not null,
     when_reported datetime      not null,
-    primary key (id_room, id_user),
-    constraint RoomOccupancyReport_Users_id_utente_fk
-        foreign key (id_user) references Users (id_user)
+    primary key (room_id, user_id),
+    constraint RoomOccupancyReport_Users_user_id_fk
+        foreign key (user_id) references Users (user_id)
 );
 
-create or replace table appartiene
+create table if not exists belongsTo
 (
-    giorno       date         not null,
-    id_tipologia int unsigned not null,
-    primary key (giorno, id_tipologia),
-    constraint appartiene_ibfk_1
-        foreign key (giorno) references Days (giorno),
-    constraint appartiene_ibfk_2
-        foreign key (id_tipologia) references Types (id_tipologia)
+    `day`       date         not null,
+    type_id int unsigned not null,
+    primary key (`day`, type_id),
+    constraint belongsTo_ibfk_1
+        foreign key (`day`) references Days (`day`),
+    constraint belongsTo_ibfk_2
+        foreign key (type_id) references Types (type_id)
 );
 
-create or replace index id_tipologia
-    on appartiene (id_tipologia);
+create or replace index type_id
+    on belongsTo (type_id);
 
-create or replace table permission
+create table if not exists permission
 (
-    id_grant  varchar(200) not null,
-    id_user   varchar(100) not null,
-    id_object int          null,
-    constraint id_grant
-        foreign key (id_grant) references Grants (name_grant),
-    constraint id_user
-        foreign key (id_user) references Users (id_user)
+    grant_id  varchar(200) not null,
+    user_id   varchar(100) not null,
+    object_id int          null,
+    constraint grant_id
+        foreign key (grant_id) references Grants (grant_name),
+    constraint user_id
+        foreign key (user_id) references Users (user_id)
 );
 
-create or replace definer = root@`%` view ArticlesWithAuthors_View as
-select `art`.`id_article`  AS `id_article`,
-       `art`.`id_tag`      AS `id_tag`,
+create view if not exists ArticlesWithAuthors_View as
+select `art`.`article_id`  AS `article_id`,
+       `art`.`tag_id`      AS `tag_id`,
        `art`.`title`       AS `title`,
        `art`.`subtitle`    AS `subtitle`,
        `art`.`content`     AS `content`,
-       `art`.`publishTime` AS `publishTime`,
-       `art`.`targetTime`  AS `targetTime`,
+       `art`.`publish_time` AS `publish_time`,
+       `art`.`target_time`  AS `target_time`,
        `art`.`latitude`    AS `latitude`,
        `art`.`longitude`   AS `longitude`,
        `art`.`image`       AS `image`,
-       `art`.`id_author`   AS `id_author`,
-       `art`.`sourceUrl`   AS `sourceUrl`,
-       `aut`.`name_`       AS `author_name`,
+       `art`.`author_id`   AS `author_id`,
+       `art`.`source_url`   AS `source_url`,
+       `aut`.`name`       AS `author_name`,
        `aut`.`link`        AS `author_link`,
        `aut`.`image`       AS `author_image`
-from (`DBPolifemo`.`Articles` `art` join `DBPolifemo`.`Authors` `aut`)
-where `art`.`id_author` = `aut`.`id_author`;
+from (`Articles` `art` join `Authors` `aut`)
+where `art`.`author_id` = `aut`.`author_id`;
 
-create or replace
-    definer = root@`%` function deleteUser(userid varchar(100)) returns int
+create
+    function if not exists deleteUser(userid varchar(100)) returns int
 BEGIN
 
-    DELETE FROM permission WHERE id_user=userid;
-    DELETE FROM RoomOccupancyReports WHERE id_user=userid;
-    DELETE FROM Users WHERE id_user=userid;
+    DELETE FROM permission WHERE user_id=userid;
+    DELETE FROM RoomOccupancyReports WHERE user_id=userid;
+    DELETE FROM Users WHERE user_id=userid;
 
     RETURN 0;
 
 END;
 
-create or replace definer = root@`%` event if not exists auto_purge_users on schedule
+create
+    event if not exists auto_purge_users on schedule
     every '1' DAY
         starts '2023-01-01 04:00:00'
     enable
@@ -155,9 +161,18 @@ create or replace definer = root@`%` event if not exists auto_purge_users on sch
     BEGIN
 
     CREATE TEMPORARY TABLE IF NOT EXISTS UsersToDelete(userid VARCHAR(100));
-    INSERT INTO UsersToDelete SELECT id_user from Users where last_activity < NOW() - INTERVAL 1 YEAR;
+    INSERT INTO UsersToDelete SELECT user_id from Users where last_activity < NOW() - INTERVAL 1 YEAR;
     SELECT deleteUser(userid) FROM UsersToDelete;
     DROP TABLE UsersToDelete;
 
 END;
 
+
+
+-- Minimal rows for the database to work --
+
+insert ignore into Authors values(null, "Politecnico di Milano", "https://www.polimi.it/", "https://techcamp.polimi.it/wp-content/uploads/2018/11/LogoPolimi-bianco-h324.png");
+insert ignore into Tags values("ALTRO", null);
+insert ignore into Tags values("ATENEO", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg");
+insert ignore into Tags values("RICERCA E INNOVAZIONE", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg");
+insert ignore into Tags values("STUDENTI", "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop");

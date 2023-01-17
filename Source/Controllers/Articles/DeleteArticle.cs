@@ -32,7 +32,7 @@ public class DeleteArticle : ControllerBase
     public ObjectResult DeleteArticleDb(int id)
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        var article = Database.ExecuteSelect("SELECT id_author from Articles WHERE id_article=@id",
+        var article = Database.ExecuteSelect("SELECT author_id from Articles WHERE article_id=@id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -50,7 +50,7 @@ public class DeleteArticle : ControllerBase
             });
         }
 
-        var result = Database.Execute("DELETE FROM Articles WHERE id_article=@id",
+        var result = Database.Execute("DELETE FROM Articles WHERE article_id=@id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
