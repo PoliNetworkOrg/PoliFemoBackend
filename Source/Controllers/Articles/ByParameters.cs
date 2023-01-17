@@ -57,15 +57,15 @@ public class ArticlesByParameters : ControllerBase
         var startDateTime = DateTimeUtil.ConvertToMySqlString(start ?? null);
         var endDateTime = DateTimeUtil.ConvertToMySqlString(end ?? null);
         var query = "SELECT * FROM ArticlesWithAuthors_View WHERE ";
-        if (start != null) query += "publishTime >= @start AND ";
-        if (end != null) query += "publishTime <= @end AND ";
-        if (tag != null) query += "id_tag = @tag AND ";
-        if (author_id != null) query += "id_author = @author_id AND ";
+        if (start != null) query += "publish_time >= @start AND ";
+        if (end != null) query += "publish_time <= @end AND ";
+        if (tag != null) query += "tag_id = @tag AND ";
+        if (author_id != null) query += "author_id = @author_id AND ";
         if (title != null) query += "title LIKE @title AND ";
 
         query = query[..^4]; // remove last "and"
 
-        if (sort == "date") query += "ORDER BY publishTime DESC ";
+        if (sort == "date") query += "ORDER BY publish_time DESC ";
 
         query += limitOffset.GetLimitQuery();
 
@@ -87,7 +87,7 @@ public class ArticlesByParameters : ControllerBase
 
         var r = new JObject
         {
-            ["results"] = resultsJArray,
+            ["articles"] = resultsJArray,
             ["start"] = startDateTime,
             ["end"] = endDateTime,
             ["tag"] = tag,

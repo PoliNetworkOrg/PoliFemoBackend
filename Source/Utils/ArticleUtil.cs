@@ -37,8 +37,8 @@ public static class ArticleUtil
         //convert results to json
         var a = new JObject
         {
-            { "id", Convert.ToInt32(row["id_article"]) },
-            { "tag_id", row["id_tag"].ToString() },
+            { "id", Convert.ToInt32(row["article_id"]) },
+            { "tag_id", row["tag_id"].ToString() },
             { "title", row["title"].ToString() },
             { "subtitle", row["subtitle"].ToString() == "" ? null : row["subtitle"].ToString() },
             { "latitude", GetValue(row["latitude"]) },
@@ -48,11 +48,11 @@ public static class ArticleUtil
             //change format of date
             {
                 "publish_time",
-                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["publishTime"].ToString() ?? ""))
+                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["publish_time"].ToString() ?? ""))
             },
             {
                 "target_time",
-                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["targetTime"].ToString() ?? ""))
+                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["target_time"].ToString() ?? ""))
             },
             { "content", row["content"].ToString() },
             { "image", row["image"].ToString() == "" ? null : row["image"].ToString() }

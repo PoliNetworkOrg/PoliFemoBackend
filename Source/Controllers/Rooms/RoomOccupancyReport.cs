@@ -49,7 +49,7 @@ public class RoomOccupancyReport : ControllerBase
             });
 
         var q =
-            "REPLACE INTO RoomOccupancyReports (id_room, id_user, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
+            "REPLACE INTO RoomOccupancyReports (room_id, user_id, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
         var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id_room", room },

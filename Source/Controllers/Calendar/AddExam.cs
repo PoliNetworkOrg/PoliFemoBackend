@@ -100,7 +100,6 @@ public class AddExam : ControllerBase
                         }
                 }
 
-                Console.WriteLine(query);
                 var results = Database.Execute(query, GlobalVariables.DbConfigVar);
             }
         }

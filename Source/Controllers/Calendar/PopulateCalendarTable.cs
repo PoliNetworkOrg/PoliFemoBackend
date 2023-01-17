@@ -50,56 +50,56 @@ public class PopulateCalendarTable : ControllerBase
             {
                 case "FFFF0000": //festività
                 {
-                    query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 1);";
+                    query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 1);";
                     Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
                 }
                 case "FFC5DFB3": //esame di profitto
                 {
-                    query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 3);";
+                    query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 3);";
                     Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
                 }
                 case "FFAC75D4":
                 case "FF9E5ECE": //laurea Magistrale
                 {
-                    query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 4);";
+                    query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 4);";
                     Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
                 }
                 case null: //lezione
                 {
-                    query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 5);";
+                    query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 5);";
                     Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
                 }
                 case "FFD9D9D9": //sabato
                 {
-                    query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 6);";
+                    query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 6);";
                     Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
                 }
                 case "FFFFFF00": //laureee di 1 livello
                 {
-                    query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 7);";
+                    query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 7);";
                     Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
                 }
                 case "FFFFC000": //vacanze
                 {
-                    query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 8);";
+                    query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 8);";
                     Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
                 }
                 case "FFBCD5ED": //altre attività
                 {
-                    query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 9);";
+                    query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 9);";
                     Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
                 }
                 case "FFFAE3D4": //prove in itinere
                 {
-                    query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 10);";
+                    query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 10);";
                     Database.Execute(query, GlobalVariables.DbConfigVar);
                     break;
                 }
@@ -124,55 +124,55 @@ public class PopulateCalendarTable : ControllerBase
                 {
                     case "FFFF0000": //festività
                     {
-                        query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 1);";
+                        query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 1);";
                         Database.Execute(query, GlobalVariables.DbConfigVar);
                         break;
                     }
                     case "FFC5DFB3": //esame di profitto
                     {
-                        query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 3);";
+                        query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 3);";
                         Database.Execute(query, GlobalVariables.DbConfigVar);
                         break;
                     }
                     case "FFAC75D4": //laurea Magistrale
                     {
-                        query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 4);";
+                        query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 4);";
                         Database.Execute(query, GlobalVariables.DbConfigVar);
                         break;
                     }
                     case null: //lezione
                     {
-                        query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 5);";
+                        query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 5);";
                         Database.Execute(query, GlobalVariables.DbConfigVar);
                         break;
                     }
                     case "FFD9D9D9": //sabato
                     {
-                        query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 6);";
+                        query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 6);";
                         Database.Execute(query, GlobalVariables.DbConfigVar);
                         break;
                     }
                     case "FFFFFF00": //laureee di 1 livello
                     {
-                        query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 7);";
+                        query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 7);";
                         Database.Execute(query, GlobalVariables.DbConfigVar);
                         break;
                     }
                     case "FFFFC000": //vacanze
                     {
-                        query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 8);";
+                        query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 8);";
                         Database.Execute(query, GlobalVariables.DbConfigVar);
                         break;
                     }
                     case "FFBCD5ED": //altre attività
                     {
-                        query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 9);";
+                        query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 9);";
                         Database.Execute(query, GlobalVariables.DbConfigVar);
                         break;
                     }
                     case "FFFAE3D4": //prove in itinere
                     {
-                        query = "INSERT IGNORE INTO appartiene VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 10);";
+                        query = "INSERT IGNORE INTO belongsTo VALUES ('" + d.ToString("yyyy-MM-dd") + "' , 10);";
                         Database.Execute(query, GlobalVariables.DbConfigVar);
                         break;
                     }
@@ -183,8 +183,5 @@ public class PopulateCalendarTable : ControllerBase
         }
 
         return Ok("OK");
-
-        //Console.WriteLine(sb.ToString());
-        //Console.ReadKey();
     }
 }
