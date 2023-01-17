@@ -29,7 +29,6 @@ public class ArticleByIdController : ControllerBase
     [HttpGet]
     public ActionResult SearchArticlesById(int id)
     {
-        Console.WriteLine(id);
         var a = SearchArticlesByIdObject(id);
         return a == null ? NotFound() : Ok(a);
     }

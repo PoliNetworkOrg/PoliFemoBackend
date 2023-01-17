@@ -184,8 +184,5 @@ public class PopulateCalendarTable : ControllerBase
         }
 
         return Ok("OK");
-
-        //Console.WriteLine(sb.ToString());
-        //Console.ReadKey();
     }
 }

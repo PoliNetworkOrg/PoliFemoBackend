@@ -19,9 +19,9 @@ public static class Constants
 
     public const string LogsPath = "./logs";
 
-    public const string AzureClientId = "92602f24-dd8e-448e-a378-b1c575310f9d";
+    public const string SqlCommandsPath = "./Other/DB/DBPolifemo.sql";
 
-    public const string AzureScope = "api://92602f24-dd8e-448e-a378-b1c575310f9d/PoliFemoApi.Use";
+    public const string AzureClientId = "92602f24-dd8e-448e-a378-b1c575310f9d";
 
     public const string AzureAuthority = "https://login.microsoftonline.com/common/v2.0";
 

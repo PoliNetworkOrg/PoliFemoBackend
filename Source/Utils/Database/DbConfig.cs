@@ -13,7 +13,7 @@ namespace PoliFemoBackend.Source.Utils.Database;
 [JsonObject(MemberSerialization.Fields)]
 public class DbConfig
 {
-    public string? Database;
+    public string? DatabaseName;
     public string? Host;
     public string? Password;
     public int Port;
@@ -51,11 +51,16 @@ public class DbConfig
         {
             GlobalVariables.DbConnection.Open();
             if (GlobalVariables.DbConnection.State == ConnectionState.Open)
-                Console.WriteLine("Connection to db on start works!");
+                Logger.WriteLine("Connection to db on start works! Performing table checks...", LogSeverityLevel.Info);
+                var sql = File.ReadAllText(Constants.SqlCommandsPath);
+                Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
+                Logger.WriteLine("Table checks completed! Starting application...", LogSeverityLevel.Info);
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            Logger.WriteLine("An error occurred while initializing the database. Check the details and try again.", LogSeverityLevel.Critical);
+            Logger.WriteLine(ex.Message, LogSeverityLevel.Critical);
+            System.Environment.Exit(1);
         }
     }
 
@@ -75,8 +80,8 @@ public class DbConfig
     public string GetConnectionString()
     {
         return string.IsNullOrEmpty(Password)
-            ? "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port
-            : "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
+            ? "server='" + Host + "';user='" + User + "';database='" + DatabaseName + "';port=" + Port
+            : "server='" + Host + "';user='" + User + "';database='" + DatabaseName + "';port=" + Port + ";password='" +
               Password + "'";
     }
 

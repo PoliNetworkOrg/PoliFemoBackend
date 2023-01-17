@@ -89,7 +89,7 @@ public class ArticlesByParameters : ControllerBase
 
         var r = new JObject
         {
-            ["results"] = resultsJArray,
+            ["articles"] = resultsJArray,
             ["start"] = startDateTime,
             ["end"] = endDateTime,
             ["tag"] = tag,

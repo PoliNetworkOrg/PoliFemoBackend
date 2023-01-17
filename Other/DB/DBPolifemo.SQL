@@ -1,3 +1,8 @@
+-- Uncomment the following line to enable the routine to delete old users
+-- SET GLOBAL event_scheduler = ON;
+
+-- Tables, routines and events --
+
 create table if not exists Authors
 (
     author_id int(10) auto_increment
@@ -116,7 +121,7 @@ create table if not exists permission
         foreign key (user_id) references Users (user_id)
 );
 
-create or replace definer = root@`%` view ArticlesWithAuthors_View as
+create view if not exists ArticlesWithAuthors_View as
 select `art`.`article_id`  AS `article_id`,
        `art`.`tag_id`      AS `tag_id`,
        `art`.`title`       AS `title`,
@@ -132,11 +137,11 @@ select `art`.`article_id`  AS `article_id`,
        `aut`.`name`       AS `author_name`,
        `aut`.`link`        AS `author_link`,
        `aut`.`image`       AS `author_image`
-from (`DBPolifemo`.`Articles` `art` join `DBPolifemo`.`Authors` `aut`)
+from (`Articles` `art` join `Authors` `aut`)
 where `art`.`author_id` = `aut`.`author_id`;
 
 create
-    definer = root@`%` function if not exists deleteUser(userid varchar(100)) returns int
+    function if not exists deleteUser(userid varchar(100)) returns int
 BEGIN
 
     DELETE FROM permission WHERE user_id=userid;
@@ -148,7 +153,7 @@ BEGIN
 END;
 
 create
-    definer = root@`%` event if not exists auto_purge_users on schedule
+    event if not exists auto_purge_users on schedule
     every '1' DAY
         starts '2023-01-01 04:00:00'
     enable
@@ -161,3 +166,13 @@ create
     DROP TABLE UsersToDelete;
 
 END;
+
+
+
+-- Minimal rows for the database to work --
+
+insert ignore into Authors values(null, "Politecnico di Milano", "https://www.polimi.it/", "https://techcamp.polimi.it/wp-content/uploads/2018/11/LogoPolimi-bianco-h324.png");
+insert ignore into Tags values("ALTRO", null);
+insert ignore into Tags values("ATENEO", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg");
+insert ignore into Tags values("RICERCA E INNOVAZIONE", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg");
+insert ignore into Tags values("STUDENTI", "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop");
