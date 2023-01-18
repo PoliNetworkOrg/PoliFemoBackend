@@ -36,7 +36,7 @@ internal static class Program
             return;
         }
 
-        var basePath = args.FirstOrDefault(arg => arg.StartsWith("--base-path="))?.Split('=')[1] ?? "/";
+        GlobalVariables.BasePath = args.FirstOrDefault(arg => arg.StartsWith("--base-path="))?.Split('=')[1] ?? "/";
         var useNews = !args.Any(arg => arg == "--no-news");
 
         try
@@ -118,14 +118,14 @@ internal static class Program
 
             GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
-            app.UsePathBase(basePath);
+            app.UsePathBase(GlobalVariables.BasePath);
             app.UseRouting();
             app.UseSwagger();
             app.UseStaticFiles();
             app.UseSwaggerUI(options =>
             {
                 options.DocExpansion(DocExpansion.None);
-                options.SwaggerEndpoint(basePath + "/swagger/definitions/swagger.json", "PoliFemo API");
+                options.SwaggerEndpoint(GlobalVariables.BasePath + "/swagger/definitions/swagger.json", "PoliFemo API");
                 options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
             });
 

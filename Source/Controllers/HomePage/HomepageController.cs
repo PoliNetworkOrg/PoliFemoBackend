@@ -1,6 +1,7 @@
 ﻿#region
 
 using Microsoft.AspNetCore.Mvc;
+using PoliFemoBackend.Source.Data;
 
 #endregion
 
@@ -14,6 +15,6 @@ public class HomepageByIdController : ControllerBase
     [HttpGet]
     public RedirectResult Index()
     {
-        return Redirect("/swagger");
+        return Redirect(GlobalVariables.BasePath + "/swagger" ?? "/swagger");
     }
 }
