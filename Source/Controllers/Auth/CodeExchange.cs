@@ -16,7 +16,7 @@ namespace PoliFemoBackend.Source.Controllers.Auth;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Auth")]
-[Route("auth/code")]
+[Route("/auth/code")]
 
 public class CodeExchangeController : ControllerBase
 {

@@ -11,7 +11,7 @@ namespace PoliFemoBackend.Source.Controllers.Auth;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Auth")]
-[Route("auth/refresh")]
+[Route("/auth/refresh")]
 
 public class RefreshTokenController : ControllerBase
 {

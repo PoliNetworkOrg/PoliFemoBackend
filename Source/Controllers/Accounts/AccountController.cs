@@ -14,7 +14,7 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 [ApiController]
 [Authorize]
 [ApiExplorerSettings(GroupName = "Accounts")]
-[Route("accounts/me")]
+[Route("/accounts/me")]
 public class ArticleByIdController : ControllerBase
 {
     /// <summary>
