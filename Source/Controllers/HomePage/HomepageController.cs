@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Accounts;
+namespace PoliFemoBackend.Source.Controllers.HomePage;
 
+[ApiExplorerSettings(IgnoreApi = true)]
 [ApiController]
 [Route("/")]
 public class HomepageByIdController : ControllerBase
 {
     [HttpGet]
-    public string Index()
+    public RedirectResult Index()
     {
-        return "I'm up";
+        return Redirect("/swagger");
     }
 }

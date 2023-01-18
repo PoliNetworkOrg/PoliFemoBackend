@@ -115,6 +115,7 @@ internal static class Program
 
             GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
+            app.UsePathBase(Environment.GetEnvironmentVariable("BASE_PATH"));
             app.UseSwagger();
             app.UseStaticFiles();
             app.UseSwaggerUI(options =>
