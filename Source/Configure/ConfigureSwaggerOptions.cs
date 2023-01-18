@@ -34,7 +34,6 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
             {
                 Name = "PoliFemo",
                 Email = "dsd"
-                
             }
         });
 

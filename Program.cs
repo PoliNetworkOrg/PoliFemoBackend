@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -38,7 +39,8 @@ internal static class Program
 
         GlobalVariables.BasePath = args.FirstOrDefault(arg => arg.StartsWith("--base-path="))?.Split('=')[1] ?? "/";
         var useNews = !args.Any(arg => arg == "--no-news");
-
+        GlobalVariables.LogLevel = int.Parse(args.FirstOrDefault(arg => arg.StartsWith("--log-level="))?.Split('=')[1] ?? "4");
+ 
         try
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -85,6 +87,7 @@ internal static class Program
 
             builder.Services.AddApiVersioning(setup =>
             {
+                setup.ApiVersionReader = new UrlSegmentApiVersionReader();
                 setup.DefaultApiVersion = new ApiVersion(1, 0);
                 setup.AssumeDefaultVersionWhenUnspecified = true;
                 setup.ReportApiVersions = true;

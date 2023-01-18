@@ -84,7 +84,7 @@ public static class AuthUtil
     public static bool HasPermission(string? userid, string permission)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT id_grant FROM permissions, Grants, Users WHERE Users.id_user=sha2(@userid, 256) AND id_grant=@permission",
+            "SELECT grant_id FROM permissions, Grants, Users WHERE Users.user_id=sha2(@userid, 256) AND grant_id=@permission",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -97,7 +97,7 @@ public static class AuthUtil
     public static bool HasGrantAndObjectPermission(string? userid, string permission, int objectid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT id_grant FROM permissions WHERE id_user=sha2(@userid, 256) AND id_grant=@permission AND id_object=@objectid",
+            "SELECT grant_id FROM permissions WHERE user_id=sha2(@userid, 256) AND grant_id=@permission AND object_id=@objectid",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
