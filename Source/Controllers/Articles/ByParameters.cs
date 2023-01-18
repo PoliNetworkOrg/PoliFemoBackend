@@ -33,7 +33,6 @@ public class ArticlesByParameters : ControllerBase
     /// </remarks>
     /// <returns>A JSON list of articles</returns>
     /// <response code="200">Request completed successfully</response>
-    /// <response code="404">No available articles</response>
     /// <response code="500">Can't connect to the server</response>
 
     [HttpGet]
@@ -48,7 +47,7 @@ public class ArticlesByParameters : ControllerBase
 
         var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, new LimitOffset(limit, pageOffset),
             sort);
-        return r == null ? new NotFoundObjectResult("") : Ok(r);
+        return Ok(r);
     }
 
     private static JObject? SearchArticlesByParamsAsJobject(DateTime? start, DateTime? end, string? tag, int? author_id,
@@ -63,11 +62,12 @@ public class ArticlesByParameters : ControllerBase
         if (author_id != null) query += "author_id = @author_id AND ";
         if (title != null) query += "title LIKE @title AND ";
 
-        query = query[..^4]; // remove last "and"
+        query = query[..^4]; // removes last "and"
 
         if (sort == "date") query += "ORDER BY publish_time DESC ";
 
         query += limitOffset.GetLimitQuery();
+        JArray resultsJArray = new(); 
 
         var results = Database.ExecuteSelect(
             query, // Remove last AND
@@ -80,10 +80,8 @@ public class ArticlesByParameters : ControllerBase
                 { "@author_id", author_id },
                 { "@title", "%" + title + "%" }
             });
-        if (results == null || results.Rows.Count == 0)
-            return null;
-
-        var resultsJArray = ArticleUtil.ArticleAuthorsRowsToJArray(results);
+        if (results != null)
+            resultsJArray = ArticleUtil.ArticleAuthorsRowsToJArray(results);
 
         var r = new JObject
         {
