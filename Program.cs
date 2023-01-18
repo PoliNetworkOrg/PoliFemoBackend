@@ -130,7 +130,7 @@ internal static class Program
             {
                 options.DocExpansion(DocExpansion.None);
                 options.SwaggerEndpoint(GlobalVariables.BasePath + "swagger/definitions/swagger.json", "PoliFemo API");
-                options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+                options.InjectStylesheet(GlobalVariables.BasePath + "swagger-ui/SwaggerDark.css");
             });
 
             try
