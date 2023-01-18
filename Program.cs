@@ -118,14 +118,18 @@ internal static class Program
 
             GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
-            app.UsePathBase(GlobalVariables.BasePath);
-            app.UseRouting();
+            if (GlobalVariables.BasePath != "/")
+            {
+                app.UsePathBase(GlobalVariables.BasePath);
+                app.UseRouting();
+            }
+
             app.UseSwagger();
             app.UseStaticFiles();
             app.UseSwaggerUI(options =>
             {
                 options.DocExpansion(DocExpansion.None);
-                options.SwaggerEndpoint(GlobalVariables.BasePath + "/swagger/definitions/swagger.json", "PoliFemo API");
+                options.SwaggerEndpoint(GlobalVariables.BasePath + "swagger/definitions/swagger.json", "PoliFemo API");
                 options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
             });
 

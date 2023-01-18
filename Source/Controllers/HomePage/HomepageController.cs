@@ -15,6 +15,7 @@ public class HomepageByIdController : ControllerBase
     [HttpGet]
     public RedirectResult Index()
     {
-        return Redirect(GlobalVariables.BasePath + "/swagger" ?? "/swagger");
+        var url = $"{Request.Scheme}://{Request.Host}" + GlobalVariables.BasePath + "swagger";
+        return Redirect(url);
     }
 }
