@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Objects.Permissions;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
@@ -15,25 +16,24 @@ namespace PoliFemoBackend.Source.Controllers.Groups;
 public class AddGroupsController : ControllerBase
 {
     /// <summary>
-    ///     Add groups on Database
+    ///     Add a new group
     /// </summary>
-    /// <returns>Nothing</returns>
-    /// <response code="200">Group Added</response>
-    /// <response code="500">Can't connect to server or Group not Added</response>
-    
-    [HttpPut]
-    public ObjectResult AddGroupsDb(string name, string? year, string id, string? degree, string? type,
-        string? platform, string language, string? office, string? school, string idLink)
+    /// <returns>An array of Group objects</returns>
+    /// <response code="200">Request completed succesfully</response>
+    /// <response code="500">Can't connect to server</response>
+    [MapToApiVersion("1.0")]
+    [HttpPost]
+    public ObjectResult AddGroupsDb(Group group)
     {
-        var d = new Dictionary<string, object?> { { "@name", name } };
+        var d = new Dictionary<string, object?> { { "@name", group.name } };
 
-        var query = "INSERT IGNORE INTO Groups VALUES ( '@name', ";
+        var query = "INSERT IGNORE INTO Groups VALUES ( @name, ";
 
         //office
-        if (office != null)
+        if (group.office != null)
         {
-            query += "'@office',";
-            d.Add("@office", office);
+            query += "@office,";
+            d.Add("@office", group.office);
         }
         else
         {
@@ -41,17 +41,17 @@ public class AddGroupsController : ControllerBase
         }
 
         //id
-        if (!string.IsNullOrEmpty(id))
+        if (!string.IsNullOrEmpty(group.id))
         {
-            query += "'@id',";
-            d.Add("@id", id);
+            query += "@id,";
+            d.Add("@id", group.id);
         }
 
         //degree
-        if (degree != null)
+        if (group.degree != null)
         {
-            query += "'@degree',";
-            d.Add("@degree", degree);
+            query += "@degree,";
+            d.Add("@degree", group.degree);
         }
         else
         {
@@ -59,10 +59,10 @@ public class AddGroupsController : ControllerBase
         }
 
         //school
-        if (school != null)
+        if (group.school != null)
         {
-            query += "'@school', ";
-            d.Add("@school", school);
+            query += "@school, ";
+            d.Add("@school", group.school);
         }
         else
         {
@@ -70,24 +70,25 @@ public class AddGroupsController : ControllerBase
         }
 
         //id_link
-        if (!string.IsNullOrEmpty(idLink))
+        if (!string.IsNullOrEmpty(group.link_id))
         {
-            query += "'@id_link',";
-            d.Add("@id_link", idLink);
+            query += "@id_link,";
+            d.Add("@id_link", group.link_id);
         }
+        
 
         //language
-        if (!string.IsNullOrEmpty(language))
+        if (!string.IsNullOrEmpty(group.language))
         {
-            query += "'@language',";
-            d.Add("@language", language);
+            query += "@language,";
+            d.Add("@language", group.language);
         }
 
         //type
-        if (type != null)
+        if (group.type != null)
         {
-            query += "'@type',";
-            d.Add("@type", type);
+            query += "@type,";
+            d.Add("@type", group.type);
         }
         else
         {
@@ -95,10 +96,10 @@ public class AddGroupsController : ControllerBase
         }
 
         //year
-        if (year != null)
+        if (group.year != null)
         {
-            query += "'@year', ";
-            d.Add("@year", year);
+            query += "@year, ";
+            d.Add("@year", group.year);
         }
         else
         {
@@ -106,10 +107,10 @@ public class AddGroupsController : ControllerBase
         }
 
         //platform
-        if (platform != null)
+        if (group.platform != null)
         {
-            query += "'@platform',";
-            d.Add("@platform", platform);
+            query += "@platform,";
+            d.Add("@platform", group.platform);
         }
         else
         {

@@ -171,7 +171,7 @@ END;
 
 -- Minimal rows for the database to work --
 
-insert ignore into Authors values(null, "Politecnico di Milano", "https://www.polimi.it/", "https://techcamp.polimi.it/wp-content/uploads/2018/11/LogoPolimi-bianco-h324.png");
+insert ignore into Authors values(1, "Politecnico di Milano", "https://www.polimi.it/", "https://techcamp.polimi.it/wp-content/uploads/2018/11/LogoPolimi-bianco-h324.png");
 insert ignore into Tags values("ALTRO", null);
 insert ignore into Tags values("ATENEO", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg");
 insert ignore into Tags values("RICERCA E INNOVAZIONE", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg");
