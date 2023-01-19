@@ -25,54 +25,48 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
 
     public void Configure(SwaggerGenOptions options)
     {
-        foreach (var description in _provider.ApiVersionDescriptions)
+        options.SwaggerDoc("definitions", new OpenApiInfo
         {
-            var info = CreateVersionInfo(description);
-            options.SwaggerDoc(description.GroupName, info);
-            options.SupportNonNullableReferenceTypes();
-            options.MapType<JToken>(() => new OpenApiSchema { Type = typeof(JToken).Name });
-            options.OperationFilter<AuthOperationsFilter>();
-            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            Title = "PoliFemo API",
+            Version = "v1",
+            Description = "PoliFemo API",
+            Contact = new OpenApiContact
             {
-                Description = "Access token using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                Name = Constants.Authorization,
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer"
-            });
+                Name = "PoliFemo",
+                Email = "dsd"
+                
+            }
+        });
 
-            options.TagActionsBy(api =>
-            {
-                if (api.GroupName != null) return new[] { api.GroupName };
+        options.SupportNonNullableReferenceTypes();
+        options.MapType<JToken>(() => new OpenApiSchema { Type = typeof(JToken).Name });
+        options.OperationFilter<AuthOperationsFilter>();
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "Access token using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            Name = Constants.Authorization,
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
 
-                if (api.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
-                    return new[] { controllerActionDescriptor.ControllerName };
+        options.TagActionsBy(api =>
+        {
+            if (api.GroupName != null) return new[] { api.GroupName };
 
-                throw new InvalidOperationException("Unable to determine tag for endpoint.");
-            });
-            options.DocInclusionPredicate((name, api) => true);
+            if (api.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
+                return new[] { controllerActionDescriptor.ControllerName };
 
-            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-            ApiVersionsManager.AddVersion(info.Version);
-        }
+            throw new InvalidOperationException("Unable to determine tag for endpoint.");
+        });
+        options.DocInclusionPredicate((name, api) => true);
+
+        var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));       
     }
 
     public void Configure(string name, SwaggerGenOptions options)
     {
         Configure(options);
-    }
-
-    private static OpenApiInfo CreateVersionInfo(ApiVersionDescription description)
-    {
-        var info = new OpenApiInfo
-        {
-            Title = "PoliFemoBackend API",
-            Version = description.ApiVersion.ToString()
-        };
-
-        if (description.IsDeprecated) info.Description += " This API version has been deprecated.";
-
-        return info;
     }
 }

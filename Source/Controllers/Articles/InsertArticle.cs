@@ -15,10 +15,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Articles")]
-[Route("v{version:apiVersion}/articles")]
 [Route("/articles")]
+
 public class InsertArticle : ControllerBase
 {
     /// <summary>
@@ -44,7 +43,7 @@ public class InsertArticle : ControllerBase
     /// <response code="401">Authorization error</response>
     /// <response code="403">The user does not have enough permissions</response>
     /// <response code="500">Can't connect to the server</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpPost]
     [Authorize]
     public ObjectResult InsertArticleDb(

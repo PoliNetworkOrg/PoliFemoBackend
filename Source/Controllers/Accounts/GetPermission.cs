@@ -13,11 +13,10 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Accounts")]
-[Route("v{version:apiVersion}/accounts/{id}/permissions")]
 [Route("accounts/{id}/permissions")]
 [Authorize]
+
 public class GetPermissions : ControllerBase
 {
     /// <summary>
@@ -27,7 +26,7 @@ public class GetPermissions : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="401">Authorization error</response>
     /// <response code="500">Can't connect to the server</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpGet]
     public ObjectResult GetPermission(string id)
     {

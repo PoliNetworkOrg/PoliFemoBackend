@@ -12,10 +12,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Groups;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Groups")]
-[Route("v{version:apiVersion}/groups/search")]
 [Route("/groups/search")]
+
 public class SearchGroupsController : ControllerBase
 {
     /// <summary>
@@ -32,7 +31,7 @@ public class SearchGroupsController : ControllerBase
     /// <response code="200">Returns the array of groups</response>
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available groups</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpGet]
     public ActionResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,
         string? language, string? office)

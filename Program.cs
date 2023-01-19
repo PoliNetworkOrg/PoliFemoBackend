@@ -6,7 +6,6 @@ using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Prometheus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -36,6 +35,9 @@ internal static class Program
             Test.TestMain();
             return;
         }
+
+        GlobalVariables.BasePath = args.FirstOrDefault(arg => arg.StartsWith("--base-path="))?.Split('=')[1] ?? "/";
+        var useNews = !args.Any(arg => arg == "--no-news");
 
         try
         {
@@ -116,32 +118,24 @@ internal static class Program
 
             GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
+            if (GlobalVariables.BasePath != "/")
+            {
+                app.UsePathBase(GlobalVariables.BasePath);
+                app.UseRouting();
+            }
+
             app.UseSwagger();
             app.UseStaticFiles();
             app.UseSwaggerUI(options =>
             {
                 options.DocExpansion(DocExpansion.None);
-                if (app.Services.GetService(typeof(IApiVersionDescriptionProvider)) is IApiVersionDescriptionProvider
-                    provider)
-                {
-                    foreach (var description in provider.ApiVersionDescriptions)
-                    {
-                        options.SwaggerEndpoint("/swagger/" + description.GroupName + "/swagger.json",
-                            "PoliFemoBackend API " + description.GroupName.ToUpperInvariant());
-                        options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
-                        options.RoutePrefix = "swagger";
-                    }
-                }
-                else
-                {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "PoliFemoBackend API V1");
-                    options.RoutePrefix = "swagger";
-                }
+                options.SwaggerEndpoint(GlobalVariables.BasePath + "swagger/definitions/swagger.json", "PoliFemo API");
+                options.InjectStylesheet(GlobalVariables.BasePath + "swagger-ui/SwaggerDark.css");
             });
 
             try
             {
-                Start.StartThings();
+                Start.StartThings(useNews);
             }
             catch (Exception ex)
             {

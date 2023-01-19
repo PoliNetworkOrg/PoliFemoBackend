@@ -9,17 +9,16 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Admin;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Admin")]
-[Route("v{version:apiVersion}/admin/uptime")]
 [Route("/admin/uptime")]
+
 public class GetUptimeController : ControllerBase
 {
     /// <summary>
     ///     Get the uptime of the backend server
     /// </summary>
-    /// <returns></returns>
-    [MapToApiVersion("1.0")]
+    /// <returns>The number of seconds of uptime</returns>
+    
     [HttpGet]
     public ObjectResult GetUptime()
     {

@@ -15,7 +15,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="Other\DB\DBPolifemo.SQL"/>
+        <None Remove="Other\DB\DBPolifemo.sql"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="Other\DB\DBPolifemo.SQL">
+        <Content Include="Other\DB\DBPolifemo.sql">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
@@ -44,9 +44,9 @@
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.10"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0"/>
-        <PackageReference Include="Mysql.Data" Version="8.0.31"/>
+        <PackageReference Include="Mysql.Data" Version="8.0.32"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1"/>
     </ItemGroup>
 

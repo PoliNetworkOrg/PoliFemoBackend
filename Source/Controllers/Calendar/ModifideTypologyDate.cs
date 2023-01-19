@@ -9,10 +9,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Calendar;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Calendar")]
-[Route("v{version:apiVersion}/calendar/modify")]
 [Route("/calendar/modify")]
+
 public class ModifyDateControllers : ControllerBase
 {
     /// <summary>
@@ -30,7 +29,7 @@ public class ModifyDateControllers : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Date modified</response>
     /// <response code="500">Can't connect to server or Date not modified</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpPost]
     public ObjectResult ModifiedTypeDateDb(DateTime date, int tipologia_old, int tipologia_new)
     {
@@ -59,7 +58,7 @@ public class ModifyDateControllers : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Date added</response>
     /// <response code="500">Can't connect to server or Date not added</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpPut]
     public ObjectResult AddTypeDateDb(DateTime date, int tipologia)
     {
@@ -85,7 +84,7 @@ public class ModifyDateControllers : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Date removed</response>
     /// <response code="500">Can't connect to server or Date not removed</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpDelete]
     public ObjectResult RemoveTypeDateDb(DateTime date, int tipologia)
     {

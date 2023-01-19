@@ -15,10 +15,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Auth;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Auth")]
-[Route("v{version:apiVersion}/auth/code")]
-[Route("auth/code")]
+[Route("/auth/code")]
+
 public class CodeExchangeController : ControllerBase
 {
     /// <summary>
@@ -33,7 +32,7 @@ public class CodeExchangeController : ControllerBase
     /// <response code="400">The code is not valid</response>
     /// <response code="403">The user is not using a PoliMi org email</response>
     /// <returns>An access and a refresh token</returns>
-    [MapToApiVersion("1.0")]
+    
     [HttpGet]
     public ActionResult CodeExchange(string code, int state)
         // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d

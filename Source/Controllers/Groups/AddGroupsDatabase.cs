@@ -9,10 +9,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Groups;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Groups")]
-[Route("v{version:apiVersion}/groups")]
 [Route("/groups")]
+
 public class AddGroupsController : ControllerBase
 {
     /// <summary>
@@ -21,7 +20,7 @@ public class AddGroupsController : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Group Added</response>
     /// <response code="500">Can't connect to server or Group not Added</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpPost]
     public ObjectResult AddGroupsDb(string name, string? year, string id, string? degree, string? type,
         string? platform, string language, string? office, string? school, string link_id)

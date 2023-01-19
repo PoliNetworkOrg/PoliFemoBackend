@@ -12,10 +12,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Articles")]
-[Route("v{version:apiVersion}/articles/{id:int}")]
 [Route("/articles/{id:int}")]
+
 public class DeleteArticle : ControllerBase
 {
     /// <summary>
@@ -26,7 +25,7 @@ public class DeleteArticle : ControllerBase
     /// <response code="401">Authorization error</response>
     /// <response code="403">The user does not have enough permissions</response>
     /// <response code="500">Can't connect to the server</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpDelete]
     [Authorize]
     public ObjectResult DeleteArticleDb(int id)

@@ -9,10 +9,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Rooms")]
-[Route("v{version:apiVersion}/rooms/{room}/occupancy")]
 [Route("/rooms/{room}/occupancy")]
+
 public class RoomOccupancyReport : ControllerBase
 {
     /// <summary>
@@ -28,7 +27,7 @@ public class RoomOccupancyReport : ControllerBase
     /// <response code="401">Authorization error</response>
     /// <response code="403">The user does not have enough permissions</response>
     /// <response code="500">Can't connect to the server</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpPost]
     [Authorize]
     public ObjectResult ReportOccupancy(uint room, float rate)
@@ -76,7 +75,7 @@ public class RoomOccupancyReport : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="400">The room ID is not valid</response>
     /// <returns>The occupancy rate and the room ID</returns>
-    [MapToApiVersion("1.0")]
+    
     [HttpGet]
     public ObjectResult GetReportedOccupancy(uint room)
     {
