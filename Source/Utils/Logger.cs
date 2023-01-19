@@ -42,12 +42,16 @@ public static class Logger
 
             Console.ResetColor();
 
-            lock (LogFileLock)
-            {
-                File.AppendAllLinesAsync(Constants.DataLogPath, new[]
+            try {
+                lock (LogFileLock)
                 {
-                    "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
-                });
+                    File.AppendAllLinesAsync(Constants.DataLogPath, new[]
+                    {
+                        "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
+                    });
+                }
+            } catch (Exception e) {
+                CriticalError(e, log);
             }
         }
         catch (Exception e)

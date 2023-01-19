@@ -16,6 +16,7 @@ using PoliFemoBackend.Source.Configure;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Middlewares;
 using PoliFemoBackend.Source.Test;
+using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Start;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -37,9 +38,7 @@ internal static class Program
             return;
         }
 
-        GlobalVariables.BasePath = args.FirstOrDefault(arg => arg.StartsWith("--base-path="))?.Split('=')[1] ?? "/";
-        var useNews = !args.Any(arg => arg == "--no-news");
-        GlobalVariables.LogLevel = int.Parse(args.FirstOrDefault(arg => arg.StartsWith("--log-level="))?.Split('=')[1] ?? "4");
+        ArgumentsUtil au = new ArgumentsUtil(args);
  
         try
         {
@@ -138,7 +137,7 @@ internal static class Program
 
             try
             {
-                Start.StartThings(useNews);
+                Start.StartThings(au.useNews);
             }
             catch (Exception ex)
             {
