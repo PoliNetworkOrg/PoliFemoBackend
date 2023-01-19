@@ -110,7 +110,7 @@ create table if not exists belongsTo
 create or replace index type_id
     on belongsTo (type_id);
 
-create table if not exists permission
+create table if not exists permissions
 (
     grant_id  varchar(200) not null,
     user_id   varchar(100) not null,
@@ -144,7 +144,7 @@ create
     function if not exists deleteUser(userid varchar(100)) returns int
 BEGIN
 
-    DELETE FROM permission WHERE user_id=userid;
+    DELETE FROM permissions WHERE user_id=userid;
     DELETE FROM RoomOccupancyReports WHERE user_id=userid;
     DELETE FROM Users WHERE user_id=userid;
 
@@ -171,7 +171,7 @@ END;
 
 -- Minimal rows for the database to work --
 
-insert ignore into Authors values(null, "Politecnico di Milano", "https://www.polimi.it/", "https://techcamp.polimi.it/wp-content/uploads/2018/11/LogoPolimi-bianco-h324.png");
+insert ignore into Authors values(1, "Politecnico di Milano", "https://www.polimi.it/", "https://techcamp.polimi.it/wp-content/uploads/2018/11/LogoPolimi-bianco-h324.png");
 insert ignore into Tags values("ALTRO", null);
 insert ignore into Tags values("ATENEO", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg");
 insert ignore into Tags values("RICERCA E INNOVAZIONE", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg");

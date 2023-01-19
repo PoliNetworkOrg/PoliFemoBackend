@@ -13,12 +13,12 @@ namespace PoliFemoBackend.Source.Controllers.Groups;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Groups")]
-[Route("/groups/search")]
+[Route("/groups")]
 
 public class SearchGroupsController : ControllerBase
 {
     /// <summary>
-    ///     Searches for available groups
+    ///     Search for available groups
     /// </summary>
     /// <param name="name" example="Informatica">Group name</param>
     /// <param name="year" example="2022">Year</param>
@@ -27,11 +27,9 @@ public class SearchGroupsController : ControllerBase
     /// <param name="platform" example="TG">Possible values: WA, TG, FB</param>
     /// <param name="language" example="ITA">Possible values: ITA, ENG</param>
     /// <param name="office" example="Leonardo">Possible values: Bovisa, Como, Cremona, Lecco, Leonardo</param>
-    /// <returns>An array of free groups</returns>
-    /// <response code="200">Returns the array of groups</response>
+    /// <returns>An array of Group objects</returns>
+    /// <response code="200">Request completed succesfully</response>
     /// <response code="500">Can't connect to server</response>
-    /// <response code="204">No available groups</response>
-    
     [HttpGet]
     public ActionResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,
         string? language, string? office)
