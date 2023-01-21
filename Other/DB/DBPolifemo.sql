@@ -37,7 +37,6 @@ create table if not exists `Groups`
     type_                    enum ('S', 'C', 'E')                                    null,
     `year`                    varchar(10)                                             null,
     platform                 enum ('WA', 'TG', 'FB')                                 null,
-    permanent_id             int                                                     null,
     last_updated             datetime                                                null,
     link_is_working          enum ('Y', 'N')                                         null
 );

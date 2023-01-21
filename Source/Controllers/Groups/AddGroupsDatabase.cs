@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Objects.Permissions;
+using PoliFemoBackend.Source.Objects.Groups;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
@@ -116,9 +116,6 @@ public class AddGroupsController : ControllerBase
         {
             query += "null, ";
         }
-
-        //permanent id
-        query += "null, ";
 
         //Last update date
         query += "now(), ";
