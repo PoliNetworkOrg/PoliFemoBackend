@@ -79,7 +79,8 @@ public class CodeExchangeController : ControllerBase
                         }.ToString()
                     );
 
-                subject = token.Subject;
+                token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["id_token"]?.ToString());
+                subject = token != null ? token.Subject : throw new Exception("Token is null");
                 acctype = "POLIMI";
             }
             catch (ArgumentException)

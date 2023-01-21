@@ -32,7 +32,7 @@ create table if not exists `Groups`
         primary key,
     degree                   enum ('LT', 'LM', 'LU')                                 null,
     school                   enum ('ICAT', 'DES', '3I', 'ICAT+3I', 'AUIC')           null,
-    id_link                  varchar(50)                                             null,
+    link_id                  varchar(50)                                             null,
     `language`                enum ('ITA', 'ENG')                                     null,
     type_                    enum ('S', 'C', 'E')                                    null,
     `year`                    varchar(10)                                             null,

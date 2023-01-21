@@ -7,6 +7,7 @@ public class ArgumentsUtil {
 
     public ArgumentsUtil(string[] args)  {
         foreach (var arg in args) {
+            GlobalVariables.BasePath = "/";
             //key-value pairs
             if (arg.Contains("=")) {
                 var split = arg.Split('=');
