@@ -6,8 +6,8 @@ public class ArgumentsUtil {
     public bool useNews = true;
 
     public ArgumentsUtil(string[] args)  {
+        GlobalVariables.BasePath = "/";
         foreach (var arg in args) {
-            GlobalVariables.BasePath = "/";
             //key-value pairs
             if (arg.Contains("=")) {
                 var split = arg.Split('=');
