@@ -1,7 +1,5 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-namespace PoliFemoBackend.Source.Objects.Permissions;
+using PoliFemoBackend.Source.Utils.Groups;
+namespace PoliFemoBackend.Source.Objects.Groups;
 
 public class Group
 {
@@ -16,11 +14,13 @@ public class Group
     public string? language { get; set; }
     public string? office { get; set; }
 
-    public Group(string name, string? year, string id, string? degree, string? type, string? platform, string? school, string? link_id, string? language, string? office)
+    public Group(string name, string? year, string? degree, string? type, string? platform, string? school, string? link_id, string? language, string? office)
     {
         this.name = name;
         this.year = year;
-        this.id = id;
+        string s = platform + "/" + year + "/" + link_id;
+        Console.WriteLine("s:" ,s);
+        this.id= GenerateHash.generatedId(s);
         this.degree = degree;
         this.type = type;
         this.platform = platform;
@@ -29,4 +29,8 @@ public class Group
         this.language = language;
         this.office = office;
     }
+   
 }
+
+
+
