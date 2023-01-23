@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Objects.Article;
+namespace PoliFemoBackend.Source.Objects.Articles;
 
 public class Articles
 {

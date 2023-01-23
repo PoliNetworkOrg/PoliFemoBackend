@@ -12,26 +12,26 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Articles;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Articles")]
-[Route("v{version:apiVersion}/articles/{id:int}")]
 [Route("/articles/{id:int}")]
+
 public class DeleteArticle : ControllerBase
 {
     /// <summary>
-    ///     Removes an article from database
+    ///     Remove an article
     /// </summary>
-    /// <param name="id">ID of the article to be deleted</param>
-    /// <response code="200">Article deleted successfully</response>
+    /// <param name="id">Article ID</param>
+    /// <response code="200">Request completed successfully</response>
+    /// <response code="401">Authorization error</response>
     /// <response code="403">The user does not have enough permissions</response>
-    /// <response code="500">Can't connect to server</response>
-    [MapToApiVersion("1.0")]
+    /// <response code="500">Can't connect to the server</response>
+    
     [HttpDelete]
     [Authorize]
     public ObjectResult DeleteArticleDb(int id)
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        var article = Database.ExecuteSelect("SELECT id_author from Articles WHERE id_article=@id",
+        var article = Database.ExecuteSelect("SELECT author_id from Articles WHERE article_id=@id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -49,7 +49,7 @@ public class DeleteArticle : ControllerBase
             });
         }
 
-        var result = Database.Execute("DELETE FROM Articles WHERE id_article=@id",
+        var result = Database.Execute("DELETE FROM Articles WHERE article_id=@id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {

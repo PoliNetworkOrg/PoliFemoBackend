@@ -9,10 +9,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Rooms")]
-[Route("v{version:apiVersion}/rooms/{room}/occupancy")]
 [Route("/rooms/{room}/occupancy")]
+
 public class RoomOccupancyReport : ControllerBase
 {
     /// <summary>
@@ -21,13 +20,14 @@ public class RoomOccupancyReport : ControllerBase
     /// <remarks>
     ///     The rate must be between 1 and 5
     /// </remarks>
-    /// <param name="room">The room ID</param>
-    /// <param name="rate">The occupancy rate</param>
-    /// <response code="200">Report sent successfully</response>
+    /// <param name="room">Room ID</param>
+    /// <param name="rate">Occupancy rate</param>
+    /// <response code="200">Request completed successfully</response>
     /// <response code="400">The rate is not valid</response>
-    /// <response code="401">Insufficient permissions</response>
-    /// <response code="500">Database error</response>
-    [MapToApiVersion("1.0")]
+    /// <response code="401">Authorization error</response>
+    /// <response code="403">The user does not have enough permissions</response>
+    /// <response code="500">Can't connect to the server</response>
+    
     [HttpPost]
     [Authorize]
     public ObjectResult ReportOccupancy(uint room, float rate)
@@ -49,7 +49,7 @@ public class RoomOccupancyReport : ControllerBase
             });
 
         var q =
-            "REPLACE INTO RoomOccupancyReports (id_room, id_user, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
+            "REPLACE INTO RoomOccupancyReports (room_id, user_id, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
         var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id_room", room },
@@ -71,11 +71,11 @@ public class RoomOccupancyReport : ControllerBase
     /// <summary>
     ///     Get the occupancy rate of a room
     /// </summary>
-    /// <param name="room">The room ID</param>
-    /// <response code="200">Request successful</response>
-    /// <response code="400">The room is not valid</response>
+    /// <param name="room">Room ID</param>
+    /// <response code="200">Request completed successfully</response>
+    /// <response code="400">The room ID is not valid</response>
     /// <returns>The occupancy rate and the room ID</returns>
-    [MapToApiVersion("1.0")]
+    
     [HttpGet]
     public ObjectResult GetReportedOccupancy(uint room)
     {

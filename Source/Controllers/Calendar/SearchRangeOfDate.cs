@@ -11,10 +11,9 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Calendar;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Calendar")]
-[Route("v{version:apiVersion}/calendar/search/range")]
 [Route("/calendar/search/range")]
+
 public class SearchRangeOfDate : ControllerBase
 {
     /// <summary>
@@ -26,12 +25,12 @@ public class SearchRangeOfDate : ControllerBase
     /// <response code="200">Returns the array of date</response>
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available date</response>
-    [MapToApiVersion("1.0")]
+    
     [HttpGet]
     public ActionResult SearchDateDb(DateTime start, DateTime end)
     {
         var query =
-            "SELECT DISTINCT Types.name, Days.giorno FROM Days, appartiene, Types WHERE Days.giorno BETWEEN '@start' AND '@end' AND Days.giorno = appartiene.giorno AND appartiene.id_tipologia = Types.id_tipologia ORDER BY Days.giorno";
+            "SELECT DISTINCT Types.name, Days.giorno FROM Days, belongsTo, Types WHERE Days.giorno BETWEEN '@start' AND '@end' AND Days.giorno = belongsTo.giorno AND belongsTo.id_tipologia = Types.id_tipologia ORDER BY Days.giorno";
         query = query.Replace("@start", start.ToString("yyyy-MM-dd"));
         query = query.Replace("@end", end.ToString("yyyy-MM-dd"));
 

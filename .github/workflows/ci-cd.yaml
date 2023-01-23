@@ -1,0 +1,105 @@
+name: Publish Docker image
+
+on:
+  push
+
+jobs:
+  build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    if: ${{ github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main' }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          push: false
+
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Set env
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: echo "DOCKER_REPO=$(echo prod)" >> $GITHUB_ENV
+
+      - name: Set env
+        if: ${{ github.ref == 'refs/heads/dev' }}
+        run: echo "DOCKER_REPO=$(echo dev)" >> $GITHUB_ENV
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}
+
+  Update-K8s-Manifests:
+    name: Update K8s Deployment Manifest with Image Version
+    needs: push_to_registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get application code from repo
+        uses: actions/checkout@v3
+        with:
+          repository: polinetworkorg/polinetwork-cd
+          ssh-key: ${{ secrets.CD_DEPLOY_KEY }}
+
+#       - name: Update image name in manifest file
+#         if: ${{ github.ref == 'refs/heads/dev' }}
+#         uses: azure/powershell@v1
+#         env:
+#           DOCKER_REPO: 'dev'
+#           STAGE_ENV: 'dev'
+#         with:
+#           inlineScript: |
+#             $line = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
+#             $content = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
+#             $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
+#           azPSVersion: "latest"
+    
+      - name: Set foobar to cool
+        if: ${{ github.ref == 'refs/heads/dev' }}
+        env:
+          DOCKER_REPO: 'dev'
+          STAGE_ENV: 'dev'
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.spec|=select(.selector.matchLabels.app=="app-dev").template.spec.containers[0].image = "polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"' app-${{ env.STAGE_ENV }}/app-deployment.yaml 
+          
+      - name: Update image name in manifest file
+        if: ${{ github.ref == 'refs/heads/main' }}
+        env:
+          DOCKER_REPO: 'prod'
+          STAGE_ENV: 'prod'
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            $line = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
+            $content = Get-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
+            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/polifemo_backend_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content app-${{ env.STAGE_ENV }}/app-deployment.yaml
+          azPSVersion: "latest"
+      
+      - name: Commit changes in manifest to repo
+        run: | 
+          git config user.name "GitHub Actions Bot"
+          git config user.email ""
+          git add */app-deployment.yaml
+          git commit -m "Update image version in K8s Deployment manifests file"
+          git push origin

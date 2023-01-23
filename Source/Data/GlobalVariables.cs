@@ -13,6 +13,8 @@ public static class GlobalVariables
 {
     public static readonly DateTime Start = DateTime.Now;
     private static JObject? _secrets;
+    public static string? BasePath { get; set; }
+    public static int LogLevel { get; set; }
     public static DbConfig? DbConfigVar { get; set; }
     public static MySqlConnection? DbConnection { get; set; }
     public static JwtSecurityTokenHandler? TokenHandler { get; set; }

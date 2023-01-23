@@ -3,7 +3,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
-using PoliFemoBackend.Source.Objects.Permission;
+using PoliFemoBackend.Source.Objects.Permissions;
 
 #endregion
 
@@ -39,7 +39,7 @@ public static class AuthUtil
 
                 default:
                 {
-                    formContent.Add("redirect_uri", "https://api.polinetwork.org/v1/auth/code");
+                    formContent.Add("redirect_uri", "https://api.polinetwork.org" + GlobalVariables.BasePath + "auth/code");
                     break;
                 }
             }
@@ -84,7 +84,7 @@ public static class AuthUtil
     public static bool HasPermission(string? userid, string permission)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT id_grant FROM permission, Grants, Users WHERE id_user=sha2(@userid, 256) AND id_grant=@permission",
+            "SELECT grant_id FROM permissions, Grants, Users WHERE Users.user_id=sha2(@userid, 256) AND grant_id=@permission",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -97,7 +97,7 @@ public static class AuthUtil
     public static bool HasGrantAndObjectPermission(string? userid, string permission, int objectid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT id_grant FROM permission WHERE id_user=sha2(@userid, 256) AND id_grant=@permission AND id_object=@objectid",
+            "SELECT grant_id FROM permissions WHERE user_id=sha2(@userid, 256) AND grant_id=@permission AND object_id=@objectid",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -108,12 +108,12 @@ public static class AuthUtil
         return results != null;
     }
 
-    public static List<PermissionGrantObject> GetPermissions(string? userid, bool convert = true)
+    public static List<Grant> GetPermissions(string? userid, bool convert = true)
     {
         var query =
-            "SELECT DISTINCT name_grant, id_object FROM Grants, permission, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_user ";
-        if (convert) query += "AND id_user=sha2(@userid, 256)";
-        else query += "AND id_user=@userid";
+            "SELECT DISTINCT grant_name, object_id FROM Grants, permissions, Users WHERE grant_name=permissions.grant_id AND permissions.user_id=Users.user_id ";
+        if (convert) query += "AND Users.user_id=sha2(@userid, 256)";
+        else query += "AND Users.user_id=@userid";
 
         var results = Database.Database.ExecuteSelect(
             query,
@@ -122,12 +122,12 @@ public static class AuthUtil
             {
                 { "@userid", userid }
             });
-        var array = new List<PermissionGrantObject>();
+        var array = new List<Grant>();
         for (var i = 0; i < results?.Rows.Count; i++)
             array.Add(
-                new PermissionGrantObject(
-                    results.Rows[i]["name_grant"].ToString(),
-                    results.Rows[i]["id_object"].ToString()
+                new Grant(
+                    results.Rows[i]["grant_name"].ToString() ?? "",
+                    int.TryParse(results.Rows[i]["object_id"].ToString(), out var idObject) ? idObject : null
                 )
             );
         return array;
@@ -136,21 +136,21 @@ public static class AuthUtil
     public static string?[] GetAuthorizedAuthors(string? userid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT a.* FROM Authors a, permission p WHERE p.id_user = sha2(@userid, 256) AND a.id_author = p.id_object AND p.id_grant = 'authors'",
+            "SELECT a.* FROM Authors a, permissions p WHERE p.user_id = sha2(@userid, 256) AND a.author_id = p.object_id AND p.grant_id = 'authors'",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
                 { "@userid", userid }
             });
         var array = new string?[results?.Rows.Count ?? 0];
-        for (var i = 0; i < results?.Rows.Count; i++) array[i] = results.Rows[i]["name_"].ToString();
+        for (var i = 0; i < results?.Rows.Count; i++) array[i] = results.Rows[i]["name"].ToString();
         return array;
     }
 
     public static string GetAccountType(JwtSecurityToken jwtSecurityToken)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT account_type FROM Users WHERE id_user = sha2(@userid, 256)",
+            "SELECT account_type FROM Users WHERE user_id = sha2(@userid, 256)",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {

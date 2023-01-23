@@ -8,3 +8,6 @@ bin/*
 *.csproj.user
 .vscode/*
 /secrets.json
+/config
+/logs
+out/*

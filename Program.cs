@@ -6,16 +6,17 @@ using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Prometheus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Configure;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Middleware;
+using PoliFemoBackend.Source.Middlewares;
 using PoliFemoBackend.Source.Test;
+using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Start;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -37,6 +38,8 @@ internal static class Program
             return;
         }
 
+        ArgumentsUtil au = new ArgumentsUtil(args);
+ 
         try
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -83,6 +86,7 @@ internal static class Program
 
             builder.Services.AddApiVersioning(setup =>
             {
+                setup.ApiVersionReader = new UrlSegmentApiVersionReader();
                 setup.DefaultApiVersion = new ApiVersion(1, 0);
                 setup.AssumeDefaultVersionWhenUnspecified = true;
                 setup.ReportApiVersions = true;
@@ -116,32 +120,24 @@ internal static class Program
 
             GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
+            if (GlobalVariables.BasePath != "/")
+            {
+                app.UsePathBase(GlobalVariables.BasePath);
+                app.UseRouting();
+            }
+
             app.UseSwagger();
             app.UseStaticFiles();
             app.UseSwaggerUI(options =>
             {
                 options.DocExpansion(DocExpansion.None);
-                if (app.Services.GetService(typeof(IApiVersionDescriptionProvider)) is IApiVersionDescriptionProvider
-                    provider)
-                {
-                    foreach (var description in provider.ApiVersionDescriptions)
-                    {
-                        options.SwaggerEndpoint("/swagger/" + description.GroupName + "/swagger.json",
-                            "PoliFemoBackend API " + description.GroupName.ToUpperInvariant());
-                        options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
-                        options.RoutePrefix = "swagger";
-                    }
-                }
-                else
-                {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "PoliFemoBackend API V1");
-                    options.RoutePrefix = "swagger";
-                }
+                options.SwaggerEndpoint(GlobalVariables.BasePath + "swagger/definitions/swagger.json", "PoliFemo API");
+                options.InjectStylesheet(GlobalVariables.BasePath + "swagger-ui/SwaggerDark.css");
             });
 
             try
             {
-                Start.StartThings();
+                Start.StartThings(au.useNews);
             }
             catch (Exception ex)
             {

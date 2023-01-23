@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 
-namespace PoliFemoBackend.Source.Objects.Article.News;
+namespace PoliFemoBackend.Source.Objects.Articles.News;
 
 internal class HtmlNews
 {

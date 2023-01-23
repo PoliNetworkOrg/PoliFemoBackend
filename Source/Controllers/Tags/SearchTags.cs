@@ -10,20 +10,19 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Tags;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Tags")]
-[Route("v{version:apiVersion}/tags")]
 [Route("/tags")]
+
 public class TagByIdController : ControllerBase
 {
     /// <summary>
-    ///     Search Tags
+    ///     Get a list of article tags
     /// </summary>
-    /// <returns>A json of tags</returns>
-    /// <response code="200">Returns the array of tags</response>
-    /// <response code="500">Can't connect to server</response>
+    /// <returns>A JSON array of tags</returns>
+    /// <response code="200">Request completed successfully</response>
     /// <response code="404">No available tags</response>
-    [MapToApiVersion("1.0")]
+    /// <response code="500">Can't connect to the server</response>
+    
     [HttpGet]
     public ActionResult SearchTags()
     {

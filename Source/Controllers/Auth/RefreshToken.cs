@@ -10,22 +10,21 @@ using PoliFemoBackend.Source.Utils;
 namespace PoliFemoBackend.Source.Controllers.Auth;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Auth")]
-[Route("v{version:apiVersion}/auth/refresh")]
-[Route("auth/refresh")]
+[Route("/auth/refresh")]
+
 public class RefreshTokenController : ControllerBase
 {
     /// <summary>
     ///     Get a new access token from Microsoft
     /// </summary>
     /// <remarks>
-    ///     The refresh token is sent in the Token header
+    ///     The refresh token is sent in the "Token" header
     /// </remarks>
-    /// <response code="200">Returns the new access token</response>
+    /// <response code="200">Request completed successfully</response>
     /// <response code="400">The refresh token is not valid</response>
     /// <returns>A new access token</returns>
-    [MapToApiVersion("1.0")]
+    
     [HttpGet]
     public ObjectResult RefreshToken()
     {

@@ -12,83 +12,84 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Groups;
 
 [ApiController]
-[ApiVersion("1.0")]
 [ApiExplorerSettings(GroupName = "Groups")]
-[Route("v{version:apiVersion}/groups/search")]
-[Route("/groups/search")]
+[Route("/groups")]
+
 public class SearchGroupsController : ControllerBase
 {
     /// <summary>
-    ///     Searches for available groups
+    ///     Search for groups by parameters
     /// </summary>
     /// <param name="name" example="Informatica">Group name</param>
-    /// <param name="year" example="2022">Year</param>
+    /// <param name="year" example="2022/2023">Year</param>
     /// <param name="degree" example="LT">Possible values: LT, LM, LU </param>
     /// <param name="type" example="C">Possible values: S, C, E</param>
     /// <param name="platform" example="TG">Possible values: WA, TG, FB</param>
     /// <param name="language" example="ITA">Possible values: ITA, ENG</param>
     /// <param name="office" example="Leonardo">Possible values: Bovisa, Como, Cremona, Lecco, Leonardo</param>
-    /// <returns>An array of free groups</returns>
-    /// <response code="200">Returns the array of groups</response>
+    /// <returns>An array of Group objects</returns>
+    /// <response code="200">Request completed succesfully</response>
     /// <response code="500">Can't connect to server</response>
-    /// <response code="204">No available groups</response>
-    [MapToApiVersion("1.0")]
     [HttpGet]
     public ActionResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,
         string? language, string? office)
     {
-        var d = new Dictionary<string, object?> { { "@name", name } };
+        var d = new Dictionary<string, object?> { { "@name", "%"+name+"%" } };
 
-        var query = "SELECT * FROM Groups WHERE class LIKE '%@name%'";
+        var query = "SELECT * FROM Groups WHERE class LIKE @name";
         if (year != null)
         {
-            query += " AND year = '@year'";
+            query += " AND year = @year";
             d.Add("@year", year);
         }
 
         if (degree != null)
         {
-            query += " AND degree = '@degree'";
+            query += " AND degree = @degree";
             d.Add("@degree", degree);
         }
 
         if (type != null)
         {
-            query += " AND type_ = '@type'";
+            query += " AND type_ = @type";
             d.Add("@type", type);
         }
 
         if (platform != null)
         {
-            query += " AND platform = '@platform'";
+            query += " AND platform = @platform";
             d.Add("@platform", platform);
         }
 
         if (language != null)
         {
-            query += " AND language_ = '@language'";
+            query += " AND language = @language";
             d.Add("@language", language);
         }
 
         if (office != null)
         {
-            query += " AND office = '@office';";
+            query += " AND office = @office;";
             d.Add("@office", office);
         }
 
         var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
-
-        //if results is null
-        if (results == null) return GroupsUtil.ErrorInRetrievingGroups();
-
-        if (results.Rows.Count == 0) return NoContent();
 
         var sg = JsonConvert.SerializeObject(results);
         HttpContext.Response.ContentType = "application/json";
 
         var ag = JsonConvert.DeserializeObject(sg) as JArray;
 
-        var o = new JObject { { "groups", ag } };
+        var o = new  {
+            groups = ag == null ? new JArray() : ag,
+            name = name,
+            year = year,
+            degree = degree,
+            type = type,
+            platform = platform,
+            language = language,
+            office = office
+        };
         return Ok(o);
     }
 }

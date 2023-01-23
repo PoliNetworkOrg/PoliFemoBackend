@@ -14,13 +14,24 @@ public static class Logger
 
     public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.Info)
     {
-        if (log == null || string.IsNullOrEmpty(log.ToString())) return;
+        if (log == null || string.IsNullOrEmpty(log.ToString()) || ((int)logSeverityLevel) > GlobalVariables.LogLevel) return;
 
         try
         {
+            switch (logSeverityLevel) {
+                case LogSeverityLevel.Critical:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case LogSeverityLevel.Error:
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    break;
+                case LogSeverityLevel.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+            }
             Console.WriteLine(logSeverityLevel + " | " + log);
             var log1 = log.ToString();
-            Directory.CreateDirectory("../data/");
+            Directory.CreateDirectory(Constants.DataPath);
 
             if (!File.Exists(Constants.DataLogPath))
             {
@@ -29,12 +40,18 @@ public static class Logger
                 File.WriteAllText(file.FullName, "");
             }
 
-            lock (LogFileLock)
-            {
-                File.AppendAllLinesAsync(Constants.DataLogPath, new[]
+            Console.ResetColor();
+
+            try {
+                lock (LogFileLock)
                 {
-                    "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
-                });
+                    File.AppendAllLinesAsync(Constants.DataLogPath, new[]
+                    {
+                        "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
+                    });
+                }
+            } catch (Exception e) {
+                CriticalError(e, log);
             }
         }
         catch (Exception e)

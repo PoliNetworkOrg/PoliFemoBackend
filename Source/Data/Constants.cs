@@ -7,13 +7,21 @@ public static class Constants
     public const string GroupsUrl =
         "https://raw.githubusercontent.com/PoliNetworkOrg/polinetworkWebsiteData/main/groups.json";
 
-    public const string DbConfig = "../config/dbconfig.json";
+    public const string DbConfig = ConfigPath + "/dbconfig.json";
 
-    public const string DataLogPath = "../logs/backend.log";
+    public const string DataLogPath = LogsPath + "/backend.log";
+    
+    public const string SecretJson = ConfigPath + "/secrets.json";
+
+    public const string ConfigPath = "/config";
+
+    public const string DataPath = "./data";
+
+    public const string LogsPath = "./logs";
+
+    public const string SqlCommandsPath = "./Other/DB/DBPolifemo.sql";
 
     public const string AzureClientId = "92602f24-dd8e-448e-a378-b1c575310f9d";
-
-    public const string AzureScope = "api://92602f24-dd8e-448e-a378-b1c575310f9d/PoliFemoApi.Use";
 
     public const string AzureAuthority = "https://login.microsoftonline.com/common/v2.0";
 
