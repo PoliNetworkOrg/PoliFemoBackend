@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -15,6 +16,7 @@ using PoliFemoBackend.Source.Configure;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Middlewares;
 using PoliFemoBackend.Source.Test;
+using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Start;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -36,9 +38,8 @@ internal static class Program
             return;
         }
 
-        GlobalVariables.BasePath = args.FirstOrDefault(arg => arg.StartsWith("--base-path="))?.Split('=')[1] ?? "/";
-        var useNews = !args.Any(arg => arg == "--no-news");
-
+        ArgumentsUtil au = new ArgumentsUtil(args);
+ 
         try
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -85,6 +86,7 @@ internal static class Program
 
             builder.Services.AddApiVersioning(setup =>
             {
+                setup.ApiVersionReader = new UrlSegmentApiVersionReader();
                 setup.DefaultApiVersion = new ApiVersion(1, 0);
                 setup.AssumeDefaultVersionWhenUnspecified = true;
                 setup.ReportApiVersions = true;
@@ -135,7 +137,7 @@ internal static class Program
 
             try
             {
-                Start.StartThings(useNews);
+                Start.StartThings(au.useNews);
             }
             catch (Exception ex)
             {

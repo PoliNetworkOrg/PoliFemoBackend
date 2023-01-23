@@ -18,10 +18,10 @@ namespace PoliFemoBackend.Source.Controllers.Groups;
 public class SearchGroupsController : ControllerBase
 {
     /// <summary>
-    ///     Search for available groups
+    ///     Search for groups by parameters
     /// </summary>
     /// <param name="name" example="Informatica">Group name</param>
-    /// <param name="year" example="2022">Year</param>
+    /// <param name="year" example="2022/2023">Year</param>
     /// <param name="degree" example="LT">Possible values: LT, LM, LU </param>
     /// <param name="type" example="C">Possible values: S, C, E</param>
     /// <param name="platform" example="TG">Possible values: WA, TG, FB</param>
@@ -75,17 +75,21 @@ public class SearchGroupsController : ControllerBase
 
         var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
 
-        //if results is null
-        if (results == null) return NoContent();
-
-        //if (results.Rows.Count == 0) return NoContent();
-
         var sg = JsonConvert.SerializeObject(results);
         HttpContext.Response.ContentType = "application/json";
 
         var ag = JsonConvert.DeserializeObject(sg) as JArray;
 
-        var o = new JObject { { "groups", ag } };
+        var o = new  {
+            groups = ag == null ? new JArray() : ag,
+            name = name,
+            year = year,
+            degree = degree,
+            type = type,
+            platform = platform,
+            language = language,
+            office = office
+        };
         return Ok(o);
     }
 }

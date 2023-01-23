@@ -39,7 +39,7 @@ public static class AuthUtil
 
                 default:
                 {
-                    formContent.Add("redirect_uri", "https://api.polinetwork.org/v1/auth/code");
+                    formContent.Add("redirect_uri", "https://api.polinetwork.org" + GlobalVariables.BasePath + "auth/code");
                     break;
                 }
             }
@@ -84,7 +84,7 @@ public static class AuthUtil
     public static bool HasPermission(string? userid, string permission)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT id_grant FROM permissions, Grants, Users WHERE Users.id_user=sha2(@userid, 256) AND id_grant=@permission",
+            "SELECT grant_id FROM permissions, Grants, Users WHERE Users.user_id=sha2(@userid, 256) AND grant_id=@permission",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -97,7 +97,7 @@ public static class AuthUtil
     public static bool HasGrantAndObjectPermission(string? userid, string permission, int objectid)
     {
         var results = Database.Database.ExecuteSelect(
-            "SELECT id_grant FROM permissions WHERE id_user=sha2(@userid, 256) AND id_grant=@permission AND id_object=@objectid",
+            "SELECT grant_id FROM permissions WHERE user_id=sha2(@userid, 256) AND grant_id=@permission AND object_id=@objectid",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -111,9 +111,9 @@ public static class AuthUtil
     public static List<Grant> GetPermissions(string? userid, bool convert = true)
     {
         var query =
-            "SELECT DISTINCT name_grant, id_object FROM Grants, permissions, Users WHERE name_grant=permission.id_grant AND permission.id_user=Users.id_user ";
-        if (convert) query += "AND Users.id_user=sha2(@userid, 256)";
-        else query += "AND Users.id_user=@userid";
+            "SELECT DISTINCT grant_name, object_id FROM Grants, permissions, Users WHERE grant_name=permissions.grant_id AND permissions.user_id=Users.user_id ";
+        if (convert) query += "AND Users.user_id=sha2(@userid, 256)";
+        else query += "AND Users.user_id=@userid";
 
         var results = Database.Database.ExecuteSelect(
             query,
@@ -126,8 +126,8 @@ public static class AuthUtil
         for (var i = 0; i < results?.Rows.Count; i++)
             array.Add(
                 new Grant(
-                    results.Rows[i]["name_grant"].ToString() ?? "",
-                    int.TryParse(results.Rows[i]["id_object"].ToString(), out var idObject) ? idObject : null
+                    results.Rows[i]["grant_name"].ToString() ?? "",
+                    int.TryParse(results.Rows[i]["object_id"].ToString(), out var idObject) ? idObject : null
                 )
             );
         return array;

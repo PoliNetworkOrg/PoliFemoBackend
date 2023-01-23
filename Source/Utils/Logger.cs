@@ -14,7 +14,7 @@ public static class Logger
 
     public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.Info)
     {
-        if (log == null || string.IsNullOrEmpty(log.ToString())) return;
+        if (log == null || string.IsNullOrEmpty(log.ToString()) || ((int)logSeverityLevel) > GlobalVariables.LogLevel) return;
 
         try
         {
@@ -42,12 +42,16 @@ public static class Logger
 
             Console.ResetColor();
 
-            lock (LogFileLock)
-            {
-                File.AppendAllLinesAsync(Constants.DataLogPath, new[]
+            try {
+                lock (LogFileLock)
                 {
-                    "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
-                });
+                    File.AppendAllLinesAsync(Constants.DataLogPath, new[]
+                    {
+                        "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
+                    });
+                }
+            } catch (Exception e) {
+                CriticalError(e, log);
             }
         }
         catch (Exception e)

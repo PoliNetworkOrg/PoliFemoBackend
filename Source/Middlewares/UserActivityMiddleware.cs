@@ -19,7 +19,6 @@ public class UserActivityMiddleware
 
         if (!done)
         {
-            //send an error message
             httpContext.Response.StatusCode = 500;
             await httpContext.Response.WriteAsJsonAsync(new
             {
@@ -48,7 +47,7 @@ public class UserActivityMiddleware
         if (string.IsNullOrEmpty(handlerSubject))
             return false;
 
-        const string query = "UPDATE Users SET last_activity = NOW() WHERE id_user = SHA2(@subject, 256)";
+        const string query = "UPDATE Users SET last_activity = NOW() WHERE user_id = SHA2(@subject, 256)";
         var parameters = new Dictionary<string, object?>
         {
             { "@subject", handlerSubject }

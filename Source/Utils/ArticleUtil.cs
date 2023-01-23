@@ -2,7 +2,7 @@
 
 using System.Data;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Objects.Article;
+using PoliFemoBackend.Source.Objects.Articles;
 
 #endregion
 
