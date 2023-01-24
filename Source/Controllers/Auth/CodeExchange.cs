@@ -30,7 +30,7 @@ public class CodeExchangeController : ControllerBase
     /// <param name="state">App ID</param>
     /// <response code="200">Request completed successfully</response>
     /// <response code="400">The code is not valid</response>
-    /// <response code="403">The user is not using a PoliMi org email</response>
+    /// <response code="403">The user is not using a valid org email</response>
     /// <returns>An access and a refresh token</returns>
     
     [HttpGet]
@@ -71,17 +71,23 @@ public class CodeExchangeController : ControllerBase
                         statusCode = HttpStatusCode.BadRequest
                     });
 
-                if (!domain.Contains("polimi.it"))
-                    return new ForbidResult(
-                        new JObject
+                switch (domain) {
+                    case "polimi.it":
+                    case "mail.polimi.it":
+                        acctype = "POLIMI";
+                        break;
+                    case "polinetwork.org":
+                        acctype = "POLINETWORK";
+                        break;
+                    default:
+                        return new ForbidResult(new JObject
                         {
-                            { "error", "A PoliMi email is required" }
-                        }.ToString()
-                    );
+                           { "error", "The received code is not a valid organization code. Please use a public account instead." }
+                        }.ToString());
+                }
 
                 token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["id_token"]?.ToString());
                 subject = token != null ? token.Subject : throw new Exception("Token is null");
-                acctype = "POLIMI";
             }
             catch (ArgumentException)
             {
