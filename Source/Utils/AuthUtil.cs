@@ -33,7 +33,7 @@ public static class AuthUtil
                 case 10020:
                 {
                     formContent.Add("redirect_uri",
-                        "https://francescolf-polinetworkorg-polifemobackend-7rvv557wfpjxp-5500.githubpreview.dev/index.html");
+                        "https://dashboard.polinetwork.org");
                     break;
                 }
 
