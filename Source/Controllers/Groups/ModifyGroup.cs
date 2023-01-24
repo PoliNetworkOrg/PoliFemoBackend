@@ -125,20 +125,16 @@ public class ModifyGroupsController : ControllerBase
         d.Add("@old_id", id);
         query += "WHERE id= @old_id;";
 
-        //Console.WriteLine(query);
-        if (GlobalVariables.DbConfigVar == null)
-            return new ObjectResult(new { message = "Error", status = 200 });
         try
         {
             var results = Database.Execute(query, GlobalVariables.DbConfigVar, d);
         }
         catch (System.Exception)
         {
-            return StatusCode(500, new { message = "Error", status = 500 });
-            throw;
+            return StatusCode(500, new { message = "Server error" });
         }
 
-        return Ok(new { message = "Group Modified", status = 200 });
+        return Ok("");
             
     }
 }

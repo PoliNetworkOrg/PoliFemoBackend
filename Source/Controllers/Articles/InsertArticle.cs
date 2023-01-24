@@ -102,7 +102,7 @@ public class InsertArticle : ControllerBase
             {
                 { "error", "You must provide both latitude and longitude" }
             });
-        if (data.latitude != 0 && (data.latitude is not (>= -90.0 and <= 90.0) || data.longitude is not (>= -180.0 and <= 180.0)))
+        if (data.latitude != 0 && (data.latitude < -90 || data.latitude > 90 || data.longitude < -180 || data.longitude > 180))
             return new BadRequestObjectResult(new JObject
             {
                 { "error", "Invalid latitude or longitude" }
