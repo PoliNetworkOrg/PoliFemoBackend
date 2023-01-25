@@ -54,7 +54,7 @@ public class CodeExchangeController : ControllerBase
                     error = "Error while exchanging code for token",
                     reason = responseJson.Value<string>("error")
                 });
-
+    
             string subject, acctype;
             JwtSecurityToken? token;
 
@@ -62,9 +62,9 @@ public class CodeExchangeController : ControllerBase
             try
             {
                 token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
-                var domain = token?.Payload["upn"].ToString();
+                var domain = token?.Payload["upn"].ToString()?.Split('@')[1];
                 if (domain == null || token?.Subject == null)
-                    return new ObjectResult(new
+                    return new BadRequestObjectResult(new
                     {
                         error =
                             "The received code is not a valid organization code. Request a new authorization code and login again.",
@@ -80,10 +80,10 @@ public class CodeExchangeController : ControllerBase
                         acctype = "POLINETWORK";
                         break;
                     default:
-                        return new ForbidResult(new JObject
+                        return StatusCode(403, new
                         {
-                           { "error", "The received code is not a valid organization code. Please use a public account instead." }
-                        }.ToString());
+                            error = "The user is not using a valid org email. Please use a public account."
+                        });
                 }
 
                 token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["id_token"]?.ToString());
