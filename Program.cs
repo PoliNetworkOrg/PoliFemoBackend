@@ -107,7 +107,11 @@ internal static class Program
                 options.Authority = Constants.AzureAuthority;
                 options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
                 options.TokenValidationParameters.ValidIssuers =
-                    new[] { Constants.AzureCommonIssuer, Constants.AzureOrgIssuer };
+                    new[] {
+                        Constants.AzureCommonIssuer,
+                        Constants.AzurePolimiIssuer,
+                        Constants.AzurePoliNetworkIssuer
+                    };
                 options.Events = new JwtBearerEvents
                 {
                     OnChallenge = async context => { await OnChallengeMethod(context); }
