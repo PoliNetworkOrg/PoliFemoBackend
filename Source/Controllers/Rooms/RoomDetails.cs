@@ -16,10 +16,10 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 public class RoomDetailsController : ControllerBase
 {
     /// <summary>
-    ///     Search for available rooms in a given time range
+    ///     gets room details by id
     /// </summary>
-    /// <param name="id" example="MIA">Room id</param>
-    /// <returns>Returns room details by id(power ...)</returns>
+    /// <param name="id" example="4635">Room id</param>
+    /// <returns>Returns room details by id(power, building, ...)</returns>
     /// <response code="200">Request completed successfully</response>
     /// <response code="500">Can't connect to poli servers</response>
     
