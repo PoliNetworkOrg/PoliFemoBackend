@@ -95,7 +95,7 @@ public static class RoomUtil
         return new { name = nome, building = edificio, power = pwr, link = ROOM_INFO_URLS + info };
     }
 
-    public static async Task<object?> getRoomById(int id){
+    public static async Task<JObject?> getRoomById(int id){
         var url = ROOM_INFO_URLS + "Aula.do?" + 
                   "idaula=" +  id;
 
@@ -110,32 +110,36 @@ public static class RoomUtil
         (parsing doesn't work very well, regex++)
         */
         string fetchedHtml = html.GetData() ?? "";
-        String[] fields = {"Sigla", "Capienza", "Edificio"};
+        String[] fields = {"Sigla", "Capienza", "Edificio", "Indirizzo"};
+        String[] names   = {"name", "capacity", "building", "address"};
         //other fields include "Tipologia", "Indirizzo", "Dipartimento", "Codice vano", "Postazione per studenti disabili", ...
-        var properties = new Dictionary<String, String>();
+        var properties = new JObject();
         int propLen = fields.Length;
         for(int i = 0;i < propLen;i++){
             String i_tag = $@"<i>{fields[i]}</i>";
             Regex filter = new Regex($@"{i_tag}.*?<br>.*?</td>", RegexOptions.Singleline);
             var match = filter.Match(fetchedHtml);
             if(match.Success){
-                properties[fields[i]] = match.Value
+                properties.Add(names[i], match.Value
                     .Replace(i_tag, "")
                     .Replace("<br>", "")
                     .Replace("</td>", "")
                     .Replace("&nbsp;", "")
-                    .Replace("\n", "").Trim();
+                    .Replace("\n", "").Trim()
+                );
             }
             else
-                properties[fields[i]] = "-";
+                properties.Add(names[i], null);
+            
+            if(properties[names[i]]?.ToString() == "-")
+                properties[names[i]] = null;
         }   
-        properties["Edificio"] = properties["Edificio"].Split('-')[0].Trim();
+        properties["building"] = properties["building"]?.ToString().Split('-')[0].Trim();
         var json = File.ReadAllText("Other/Examples/roomsWithPower.json");
         var data = JObject.Parse(json);
         //Retrieving the list of IDs for the room with power outlets
         var list = data["rwp"]?.Select(x => (int)x).ToArray();
-        if(list != null)
-            properties["prese"] = list.Contains(id) ? "si" : "no";
+        properties["power"] = (list != null && list.Contains(id));
         return properties;
     }
 
