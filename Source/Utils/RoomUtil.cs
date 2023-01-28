@@ -2,6 +2,7 @@
 
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -92,6 +93,54 @@ public static class RoomUtil
 
         //Builds room object 
         return new { name = nome, building = edificio, power = pwr, link = ROOM_INFO_URLS + info };
+    }
+
+    public static async Task<JObject?> getRoomById(int id){
+        var url = ROOM_INFO_URLS + "Aula.do?" + 
+                  "idaula=" +  id;
+
+        var html = await HtmlUtil.DownloadHtmlAsync(url);
+        if (html.IsValid() == false) return null;
+        /*
+        example of property tag
+        <td colspan="1" rowspan="1" style="width: 33%" class="ElementInfoCard1 jaf-card-element">
+			<i>Codice vano</i>
+			<br>&nbsp;LCF040800S042
+		</td>
+        (parsing doesn't work very well, regex++)
+        */
+        string fetchedHtml = html.GetData() ?? "";
+        String[] fields = {"Sigla", "Capienza", "Edificio", "Indirizzo"};
+        String[] names   = {"name", "capacity", "building", "address"};
+        //other fields include "Tipologia", "Indirizzo", "Dipartimento", "Codice vano", "Postazione per studenti disabili", ...
+        var properties = new JObject();
+        int propLen = fields.Length;
+        for(int i = 0;i < propLen;i++){
+            String i_tag = $@"<i>{fields[i]}</i>";
+            Regex filter = new Regex($@"{i_tag}.*?<br>.*?</td>", RegexOptions.Singleline);
+            var match = filter.Match(fetchedHtml);
+            if(match.Success){
+                properties.Add(names[i], match.Value
+                    .Replace(i_tag, "")
+                    .Replace("<br>", "")
+                    .Replace("</td>", "")
+                    .Replace("&nbsp;", "")
+                    .Replace("\n", "").Trim()
+                );
+            }
+            else
+                properties.Add(names[i], null);
+            
+            if(properties[names[i]]?.ToString() == "-")
+                properties[names[i]] = null;
+        }   
+        properties["building"] = properties["building"]?.ToString().Split('-')[0].Trim();
+        var json = File.ReadAllText("Other/Examples/roomsWithPower.json");
+        var data = JObject.Parse(json);
+        //Retrieving the list of IDs for the room with power outlets
+        var list = data["rwp"]?.Select(x => (int)x).ToArray();
+        properties["power"] = (list != null && list.Contains(id));
+        return properties;
     }
 
     private static bool RoomWithPower(HtmlNode? node)
