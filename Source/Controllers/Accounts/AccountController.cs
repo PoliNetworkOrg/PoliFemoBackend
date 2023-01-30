@@ -4,8 +4,10 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Permissions;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
 
@@ -51,4 +53,37 @@ public class ArticleByIdController : ControllerBase
             authorized_authors = AuthUtil.GetAuthorizedAuthors(sub)
         });
     }
+
+
+    /// <summary>
+    ///     Delete the user's account and data
+    /// </summary>
+    /// <response code="200">Request completed successfully</response>
+    /// <response code="400">Invalid token received</response>
+    /// <response code="500">Can't connect to the server</response>
+    [Authorize]
+    [HttpDelete]
+    [Route("/accounts/me")]
+    public ObjectResult DeleteAccount()
+    {
+        var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
+        if (sub == null)
+        {
+            return BadRequest("");
+        }
+
+        var query = "SELECT deleteUser(SHA2(@sub, 256))";
+        var parameters = new Dictionary<string, object?>
+        {
+            {"@sub", sub}
+        };
+
+        var r = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
+        if (r == null)
+        {
+            return StatusCode(500, "");
+        } else {
+            return Ok("");
+        }
+    }    
 }

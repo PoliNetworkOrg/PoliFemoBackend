@@ -17,7 +17,7 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 [Route("accounts/{id}/permissions")]
 [Authorize]
 
-public class GetPermissions : ControllerBase
+public class GetPermissionsController : ControllerBase
 {
     /// <summary>
     ///     Get the permissions of the user
@@ -28,7 +28,7 @@ public class GetPermissions : ControllerBase
     /// <response code="500">Can't connect to the server</response>
     
     [HttpGet]
-    public ObjectResult GetPermission(string id)
+    public ObjectResult GetPermissions(string id)
     {
         var perms = AuthUtil.GetPermissions(id, false);
 
