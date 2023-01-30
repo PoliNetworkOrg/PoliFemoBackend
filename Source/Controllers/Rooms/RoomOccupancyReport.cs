@@ -10,7 +10,7 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Rooms")]
-[Route("/rooms/{room}/occupancy")]
+[Route("/rooms/{id:int}/occupancy")]
 
 public class RoomOccupancyReport : ControllerBase
 {
@@ -20,7 +20,7 @@ public class RoomOccupancyReport : ControllerBase
     /// <remarks>
     ///     The rate must be between 1 and 5
     /// </remarks>
-    /// <param name="room">Room ID</param>
+    /// <param name="id">Room ID</param>
     /// <param name="rate">Occupancy rate</param>
     /// <response code="200">Request completed successfully</response>
     /// <response code="400">The rate is not valid</response>
@@ -30,7 +30,7 @@ public class RoomOccupancyReport : ControllerBase
     
     [HttpPost]
     [Authorize]
-    public ObjectResult ReportOccupancy(uint room, float rate)
+    public ObjectResult ReportOccupancy(uint id, float rate)
     {
         var whenReported = DateTime.Now;
 
@@ -52,7 +52,7 @@ public class RoomOccupancyReport : ControllerBase
             "REPLACE INTO RoomOccupancyReports (room_id, user_id, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
         var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>
         {
-            { "@id_room", room },
+            { "@id_room", id },
             { "@id_user", jwt.Subject },
             { "@rate", rate },
             { "@when_reported", whenReported }

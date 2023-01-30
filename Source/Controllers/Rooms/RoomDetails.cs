@@ -2,8 +2,6 @@
 
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils;
 
 #endregion
@@ -16,10 +14,10 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 public class RoomDetailsController : ControllerBase
 {
     /// <summary>
-    ///     gets room details by id
+    ///     Get room details by ID
     /// </summary>
-    /// <param name="id" example="4635">Room id</param>
-    /// <returns>Returns room details by id(name, address, capacity, building, power) </returns>
+    /// <param name="id" example="4635">Room ID</param>
+    /// <returns>Room name, address, capacity, building, power</returns>
     /// <response code="200">Request completed successfully</response>
     /// <response code="500">Can't connect to poli servers</response>
     
