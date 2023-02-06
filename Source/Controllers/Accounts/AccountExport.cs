@@ -1,6 +1,7 @@
 #region
 
 using System.Data;
+using System.Globalization;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,7 @@ public class AccountExportController : ControllerBase
             {"@sub", sub}
         };
         var q = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
-        var lastActivity = q?.Rows[0]["last_activity"]?.ToString() ?? "";
+        DateTime lastActivity = DateTime.Parse(q?.Rows[0]["last_activity"]?.ToString() ?? "");
         var id = q?.Rows[0]["user_id"]?.ToString() ?? "";
         var accountType = q?.Rows[0]["account_type"]?.ToString() ?? "";
 
@@ -62,7 +63,7 @@ public class AccountExportController : ControllerBase
         return File(Encoding.UTF8.GetBytes(JObject.FromObject(new
         {
             id = id,
-            last_activity = lastActivity,
+            last_activity = lastActivity.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
             account_type = accountType,
             permissions = Grant.GetFormattedPerms(AuthUtil.GetPermissions(sub)),
             room_occupancy_reports = roc
