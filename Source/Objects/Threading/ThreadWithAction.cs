@@ -2,10 +2,10 @@
 
 public class ThreadWithAction
 {
+    public readonly List<int> Partial = new();
     private Action? _action;
     private Thread? _thread;
     public int Failed = 0;
-    public List<int> Partial = new();
     public int Total = 0;
 
 

@@ -41,21 +41,26 @@ public class AccountExportController : ControllerBase
         var id = q?.Rows[0]["user_id"]?.ToString() ?? "";
         var accountType = q?.Rows[0]["account_type"]?.ToString() ?? "";
 
-
         query = "SELECT * FROM RoomOccupancyReports WHERE user_id = SHA2(@sub, 256)";
         q = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
         var occupancyReports = q?.Rows;
         var roc = new JArray();
-        if (occupancyReports != null)
-            foreach (DataRow row in occupancyReports)
-                roc.Add(JObject.FromObject(new
-                {
-                    room_id = row["room_id"],
-                    when_reported = row["when_reported"],
-                    rate = row["rate"]
-                }));
+        if (occupancyReports == null)
+            return FileExport(id, lastActivity, accountType, sub, roc);
 
+        foreach (DataRow row in occupancyReports)
+            roc.Add(JObject.FromObject(new
+            {
+                room_id = row["room_id"],
+                when_reported = row["when_reported"],
+                rate = row["rate"]
+            }));
+        return FileExport(id, lastActivity, accountType, sub, roc);
+    }
 
+    private FileContentResult FileExport(string id, DateTime lastActivity, string accountType, string? sub,
+        JArray roc)
+    {
         return File(Encoding.UTF8.GetBytes(JObject.FromObject(new
         {
             id,
