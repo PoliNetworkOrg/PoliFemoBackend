@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
@@ -88,25 +88,18 @@ public class AccountAutoExpireAfterInactivity : ControllerBase
         // ReSharper disable once FunctionNeverReturns
     }
 
+    /// <summary>
+    /// Check if users have been inactive for more than what is permitted by their settings.
+    /// Delete those users.
+    /// </summary>
+    /// <returns>How many users we deleted</returns>
     private static int? CheckInactivity()
     {
         const string q = "SELECT user_id FROM USERS " +
                          "WHERE (expireInactivity IS NOT NULL AND last_activity + expireInactivity >= NOW()) " +
                          "OR (expireInactivity IS NULL AND DATE_ADD(last_activity, INTERVAL 2 YEAR) >= NOW())";
         var d = Database.ExecuteSelect(q, null);
-        if (d == null)
-            return null;
 
-        var done = 0;
-        foreach (DataRow dr in d.Rows)
-        {
-            var userId = dr.ItemArray[0]?.ToString();
-            if (string.IsNullOrEmpty(userId)) continue;
-            var b = AccountDeletionUtil.DeleteAccountSingle(userId, true);
-            if (b)
-                done++;
-        }
-
-        return done;
+        return d?.Rows.Cast<DataRow>().Count(dr => AccountDeletionUtil.DeleteAccountSingle(dr.ItemArray[0]?.ToString(), true));
     }
 }

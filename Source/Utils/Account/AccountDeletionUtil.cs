@@ -4,7 +4,7 @@ namespace PoliFemoBackend.Source.Utils.Account;
 
 public static class AccountDeletionUtil
 {
-    public static bool DeleteAccountSingle(string sub, bool hashed)
+    public static bool DeleteAccountSingle(string? sub, bool hashed)
     {
         if (string.IsNullOrEmpty(sub))
             return false;
