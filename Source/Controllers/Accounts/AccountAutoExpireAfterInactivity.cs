@@ -90,7 +90,7 @@ public class AccountAutoExpireAfterInactivity : ControllerBase
 
     private static int? CheckInactivity()
     {
-        const string q = "SELECT user_id FROM USERS WHERE last_activity + expireInactivity >= NOW()";
+        const string q = "SELECT user_id FROM USERS " +
                          "WHERE (expireInactivity IS NOT NULL AND last_activity + expireInactivity >= NOW()) " +
                          "OR (expireInactivity IS NULL AND DATE_ADD(last_activity, INTERVAL 2 YEAR) >= NOW())";
         var d = Database.ExecuteSelect(q, null);
