@@ -67,23 +67,18 @@ public class ArticleByIdController : ControllerBase
     public ObjectResult DeleteAccount()
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        if (sub == null)
+        if (string.IsNullOrEmpty(sub))
         {
             return BadRequest("");
         }
 
-        var query = "SELECT deleteUser(SHA2(@sub, 256))";
+        const string query = "SELECT deleteUser(SHA2(@sub, 256))";
         var parameters = new Dictionary<string, object?>
         {
             {"@sub", sub}
         };
 
         var r = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
-        if (r == null)
-        {
-            return StatusCode(500, "");
-        } else {
-            return Ok("");
-        }
-    }    
+        return r == null ? StatusCode(500, "") : Ok("");
+    }
 }

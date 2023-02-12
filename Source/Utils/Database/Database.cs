@@ -72,11 +72,11 @@ public static class Database
     }
 
     // ReSharper disable once UnusedMember.Global
-    internal static object? GetFirstValueFromDataTable(DataTable dt)
+    internal static object? GetFirstValueFromDataTable(DataTable? dt)
     {
         try
         {
-            return dt.Rows[0].ItemArray[0];
+            return dt?.Rows[0].ItemArray[0];
         }
         catch
         {
