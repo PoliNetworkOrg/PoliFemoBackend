@@ -12,7 +12,6 @@ namespace PoliFemoBackend.Source.Controllers.Calendar;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Calendar")]
 [Route("/calendar")]
-
 public class PopulateCalendarTable : ControllerBase
 {
     /// <summary>
@@ -21,7 +20,6 @@ public class PopulateCalendarTable : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Days Added</response>
     /// <response code="500">Can't connect to server or Days not Added</response>
-    
     [HttpPut]
     public ObjectResult AddCalendarDb2(List<IFormFile> file, string year)
     {

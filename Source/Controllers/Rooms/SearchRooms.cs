@@ -25,7 +25,6 @@ public class SearchRoomsController : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="204">No available rooms</response>
     /// <response code="500">Can't connect to poli servers</response>
-    
     [HttpGet]
     public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] DateTime hourStart,
         [BindRequired] DateTime hourStop)

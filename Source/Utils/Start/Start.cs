@@ -31,7 +31,7 @@ public static class Start
             Console.WriteLine(ex);
         }
 
-   
+
         try
         {
             ThreadStartUtil.ThreadStartMethod(useNews);
@@ -40,6 +40,5 @@ public static class Start
         {
             Console.WriteLine(ex);
         }
-        
     }
 }

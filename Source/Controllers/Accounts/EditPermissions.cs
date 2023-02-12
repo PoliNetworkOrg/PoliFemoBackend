@@ -11,7 +11,6 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Accounts")]
 [Route("/accounts/{id}/permissions")]
-
 public class EditPermissions : ControllerBase
 {
     /// <summary>
@@ -27,7 +26,6 @@ public class EditPermissions : ControllerBase
     /// <response code="403">The user does not have enough permissions</response>
     /// <response code="400">A received grant is not valid</response>
     /// <response code="500">Can't connect to the server</response>
-    
     [HttpPost]
     [Authorize]
     public ObjectResult GrantPermission(string id, [FromBody] Grant grant)
@@ -76,7 +74,6 @@ public class EditPermissions : ControllerBase
     /// <param name="grant">The Grant object</param>
     /// <response code="200">Permissions updated successfully</response>
     /// <response code="403">The user does not have enough permissions</response>
-    
     [HttpDelete]
     [Authorize]
     public ObjectResult RevokePermission(string id, [FromBody] Grant grant)

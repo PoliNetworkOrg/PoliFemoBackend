@@ -18,7 +18,6 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Articles")]
 [Route("/articles")]
-
 public class InsertArticle : ControllerBase
 {
     /// <summary>
@@ -44,14 +43,13 @@ public class InsertArticle : ControllerBase
     /// <response code="401">Authorization error</response>
     /// <response code="403">The user does not have enough permissions</response>
     /// <response code="500">Can't connect to the server</response>
-    
     [HttpPost]
     [Authorize]
     public ObjectResult InsertArticleDb(
         [FromBody] Article data
     )
     {
-        var isValidTag = Database.ExecuteSelect($"SELECT * FROM Tags WHERE name = @tag",
+        var isValidTag = Database.ExecuteSelect("SELECT * FROM Tags WHERE name = @tag",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -67,7 +65,7 @@ public class InsertArticle : ControllerBase
 
         if (data.author_id != 0)
         {
-            var isValidAuthor = Database.ExecuteSelect($"SELECT * FROM Authors WHERE author_id = @id",
+            var isValidAuthor = Database.ExecuteSelect("SELECT * FROM Authors WHERE author_id = @id",
                 GlobalVariables.DbConfigVar,
                 new Dictionary<string, object?>
                 {
@@ -102,7 +100,8 @@ public class InsertArticle : ControllerBase
             {
                 { "error", "You must provide both latitude and longitude" }
             });
-        if (data.latitude != 0 && (data.latitude < -90 || data.latitude > 90 || data.longitude < -180 || data.longitude > 180))
+        if (data.latitude != 0 &&
+            (data.latitude < -90 || data.latitude > 90 || data.longitude < -180 || data.longitude > 180))
             return new BadRequestObjectResult(new JObject
             {
                 { "error", "Invalid latitude or longitude" }

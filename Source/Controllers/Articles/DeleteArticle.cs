@@ -14,7 +14,6 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Articles")]
 [Route("/articles/{id:int}")]
-
 public class DeleteArticle : ControllerBase
 {
     /// <summary>
@@ -25,7 +24,6 @@ public class DeleteArticle : ControllerBase
     /// <response code="401">Authorization error</response>
     /// <response code="403">The user does not have enough permissions</response>
     /// <response code="500">Can't connect to the server</response>
-    
     [HttpDelete]
     [Authorize]
     public ObjectResult DeleteArticleDb(int id)

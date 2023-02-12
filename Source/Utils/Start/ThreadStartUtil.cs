@@ -1,4 +1,5 @@
-﻿using PoliFemoBackend.Source.Objects.Threading;
+﻿using PoliFemoBackend.Source.Controllers.Accounts;
+using PoliFemoBackend.Source.Objects.Threading;
 using PoliFemoBackend.Source.Utils.News.PoliMi;
 
 namespace PoliFemoBackend.Source.Utils.Start;
@@ -18,11 +19,12 @@ public static class ThreadStartUtil
         }
         else
         {
-            Logger.WriteLine("--no-news flag found. We will not search for news.", LogSeverityLevel.Info);
+            Logger.WriteLine("--no-news flag found. We will not search for news.");
         }
-        
+
         _checkInactivityThreadWithAction = new ThreadWithAction();
-        _checkInactivityThreadWithAction.SetAction(() => Controllers.Accounts.AccountAutoExpireAfterInactivity.LoopCheckInactivity(_checkInactivityThreadWithAction));
+        _checkInactivityThreadWithAction.SetAction(() =>
+            AccountAutoExpireAfterInactivity.LoopCheckInactivity(_checkInactivityThreadWithAction));
         _checkInactivityThreadWithAction.Run();
     }
 }

@@ -52,7 +52,7 @@ public class UserActivityMiddleware
         {
             { "@subject", handlerSubject }
         };
-        
+
         var results = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
         return results > 0;
     }

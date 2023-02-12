@@ -12,7 +12,6 @@ namespace PoliFemoBackend.Source.Controllers.Auth;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Auth")]
 [Route("/auth/refresh")]
-
 public class RefreshTokenController : ControllerBase
 {
     /// <summary>
@@ -24,7 +23,6 @@ public class RefreshTokenController : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="400">The refresh token is not valid</response>
     /// <returns>A new access token</returns>
-    
     [HttpGet]
     public ObjectResult RefreshToken()
     {

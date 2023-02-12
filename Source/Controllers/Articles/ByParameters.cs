@@ -14,7 +14,6 @@ namespace PoliFemoBackend.Source.Controllers.Articles;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Articles")]
 [Route("/articles")]
-
 public class ArticlesByParameters : ControllerBase
 {
     /// <summary>
@@ -34,7 +33,6 @@ public class ArticlesByParameters : ControllerBase
     /// <returns>A JSON list of articles</returns>
     /// <response code="200">Request completed successfully</response>
     /// <response code="500">Can't connect to the server</response>
-
     [HttpGet]
     public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id,
         string? title, uint? limit, uint? pageOffset, string? sort)
@@ -67,7 +65,7 @@ public class ArticlesByParameters : ControllerBase
         if (sort == "date") query += "ORDER BY publish_time DESC ";
 
         query += limitOffset.GetLimitQuery();
-        JArray resultsJArray = new(); 
+        JArray resultsJArray = new();
 
         var results = Database.ExecuteSelect(
             query, // Remove last AND

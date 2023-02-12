@@ -5,7 +5,7 @@ public class ThreadWithAction
     private Action? _action;
     private Thread? _thread;
     public int Failed = 0;
-    public List<int> Partial = new List<int>();
+    public List<int> Partial = new();
     public int Total = 0;
 
 

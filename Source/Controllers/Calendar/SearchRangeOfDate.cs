@@ -13,7 +13,6 @@ namespace PoliFemoBackend.Source.Controllers.Calendar;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Calendar")]
 [Route("/calendar/search/range")]
-
 public class SearchRangeOfDate : ControllerBase
 {
     /// <summary>
@@ -25,7 +24,6 @@ public class SearchRangeOfDate : ControllerBase
     /// <response code="200">Returns the array of date</response>
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available date</response>
-    
     [HttpGet]
     public ActionResult SearchDateDb(DateTime start, DateTime end)
     {

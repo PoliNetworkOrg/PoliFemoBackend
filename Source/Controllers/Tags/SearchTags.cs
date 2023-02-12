@@ -12,7 +12,6 @@ namespace PoliFemoBackend.Source.Controllers.Tags;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Tags")]
 [Route("/tags")]
-
 public class TagByIdController : ControllerBase
 {
     /// <summary>
@@ -22,7 +21,6 @@ public class TagByIdController : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="404">No available tags</response>
     /// <response code="500">Can't connect to the server</response>
-    
     [HttpGet]
     public ActionResult SearchTags()
     {

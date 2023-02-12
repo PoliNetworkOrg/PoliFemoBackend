@@ -16,7 +16,6 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 [ApiExplorerSettings(GroupName = "Accounts")]
 [Route("accounts/{id}/permissions")]
 [Authorize]
-
 public class GetPermissionsController : ControllerBase
 {
     /// <summary>
@@ -26,7 +25,6 @@ public class GetPermissionsController : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="401">Authorization error</response>
     /// <response code="500">Can't connect to the server</response>
-    
     [HttpGet]
     public ObjectResult GetPermissions(string id)
     {

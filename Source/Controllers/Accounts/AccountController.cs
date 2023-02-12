@@ -4,10 +4,9 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Permissions;
 using PoliFemoBackend.Source.Utils;
-using PoliFemoBackend.Source.Utils.Database;
+using PoliFemoBackend.Source.Utils.Account;
 
 #endregion
 
@@ -28,7 +27,6 @@ public class ArticleByIdController : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="401">Authorization error</response>
     /// <response code="500">Can't connect to the server</response>
-    
     [HttpGet]
     public ObjectResult ProfileDetails()
     {
@@ -67,12 +65,9 @@ public class ArticleByIdController : ControllerBase
     public ObjectResult DeleteAccount()
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        if (string.IsNullOrEmpty(sub))
-        {
-            return BadRequest("");
-        }
+        if (string.IsNullOrEmpty(sub)) return BadRequest("");
 
-        var r = Utils.Account.AccountDeletionUtil.DeleteAccountSingle(sub, false);
-        return r ?  Ok(""): StatusCode(500, "");
+        var r = AccountDeletionUtil.DeleteAccountSingle(sub, false);
+        return r ? Ok("") : StatusCode(500, "");
     }
 }

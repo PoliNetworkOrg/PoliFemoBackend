@@ -2,19 +2,23 @@ using PoliFemoBackend.Source.Data;
 
 namespace PoliFemoBackend.Source.Utils;
 
-public class ArgumentsUtil {
+public class ArgumentsUtil
+{
     public bool useNews = true;
 
-    public ArgumentsUtil(string[] args)  {
+    public ArgumentsUtil(string[] args)
+    {
         GlobalVariables.BasePath = "/";
-        foreach (var arg in args) {
+        foreach (var arg in args)
             //key-value pairs
-            if (arg.Contains("=")) {
+            if (arg.Contains("="))
+            {
                 var split = arg.Split('=');
                 var key = split[0].Substring(2);
                 var value = split[1];
 
-                switch (key) {
+                switch (key)
+                {
                     case "base-path":
                         GlobalVariables.BasePath = value;
                         break;
@@ -24,14 +28,15 @@ public class ArgumentsUtil {
                 }
             }
             //flags
-            else {
+            else
+            {
                 var value = arg.Substring(2);
-                switch (value) {
+                switch (value)
+                {
                     case "no-news":
                         useNews = false;
                         break;
                 }
             }
-        }
     }
 }

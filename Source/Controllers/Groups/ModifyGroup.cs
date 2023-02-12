@@ -13,7 +13,6 @@ namespace PoliFemoBackend.Source.Controllers.Groups;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Groups")]
 [Route("/groups/{id}")]
-
 public class ModifyGroupsController : ControllerBase
 {
     /// <summary>
@@ -25,7 +24,7 @@ public class ModifyGroupsController : ControllerBase
     /// <response code="200">Request completed succesfully</response>
     /// <response code="500">Can't connect to server</response>
     [HttpPut]
-    public ObjectResult ModifyGroupsDb (JObject ob, string id)
+    public ObjectResult ModifyGroupsDb(JObject ob, string id)
     {
         var d = new Dictionary<string, object?> { { "@id", id } };
 
@@ -50,14 +49,14 @@ public class ModifyGroupsController : ControllerBase
             query += "degree = @degree,";
             d.Add("@degree", ob["degree"]);
         }
-       
+
         //school
         if (ob["school"] != null)
         {
             query += "school =@school, ";
             d.Add("@school", ob["school"]);
         }
-       
+
 
         //id_link
         if (!string.IsNullOrEmpty(ob["link_id"]?.ToString()))
@@ -73,7 +72,7 @@ public class ModifyGroupsController : ControllerBase
             query += "language = @language,";
             d.Add("@language", ob["language"]);
         }
-       
+
 
         //type
         if (ob["type"] != null)
@@ -87,7 +86,7 @@ public class ModifyGroupsController : ControllerBase
         {
             query += "year = @year, ";
             d.Add("@year", ob["year"]);
-        }       
+        }
 
         //platform
         if (ob["platform"] != null)
@@ -105,18 +104,18 @@ public class ModifyGroupsController : ControllerBase
             //fai select in cui recuperi i paramentri non modificati
             var query2 = "SELECT * FROM Groups WHERE id = @id";
             var results = Database.ExecuteSelect(query2, GlobalVariables.DbConfigVar, d);
-           //salva i parametri non modificati in una variabile
-           if(ob["platform"] == null)
+            //salva i parametri non modificati in una variabile
+            if (ob["platform"] == null)
                 d.Add("@platform", results?.Rows[0]["platform"]);
 
-            if(ob["year"] == null)
-                d["@year"]= results?.Rows[0]["year"];
+            if (ob["year"] == null)
+                d["@year"] = results?.Rows[0]["year"];
 
-            if(string.IsNullOrEmpty(ob["link_id"]?.ToString()))
-                d["@l"]= results?.Rows[0]["link_id"];
-            
+            if (string.IsNullOrEmpty(ob["link_id"]?.ToString()))
+                d["@l"] = results?.Rows[0]["link_id"];
+
             //richiama generatedID per generare un nuovo id
-            d["@id"]= GenerateHash.generatedId(d["@platform"]?.ToString() + "/" + d["@year"]?.ToString() + "/"+ d["@l"]?.ToString());   
+            d["@id"] = GenerateHash.generatedId(d["@platform"] + "/" + d["@year"] + "/" + d["@l"]);
         }
 
         //Link Funzionante
@@ -129,12 +128,11 @@ public class ModifyGroupsController : ControllerBase
         {
             var results = Database.Execute(query, GlobalVariables.DbConfigVar, d);
         }
-        catch (System.Exception)
+        catch (Exception)
         {
             return StatusCode(500, new { message = "Server error" });
         }
 
         return Ok("");
-            
     }
 }

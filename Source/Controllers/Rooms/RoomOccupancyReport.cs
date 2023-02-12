@@ -11,7 +11,6 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Rooms")]
 [Route("/rooms/{id:int}/occupancy")]
-
 public class RoomOccupancyReport : ControllerBase
 {
     /// <summary>
@@ -27,7 +26,6 @@ public class RoomOccupancyReport : ControllerBase
     /// <response code="401">Authorization error</response>
     /// <response code="403">The user does not have enough permissions</response>
     /// <response code="500">Can't connect to the server</response>
-    
     [HttpPost]
     [Authorize]
     public ObjectResult ReportOccupancy(uint id, float rate)
@@ -75,7 +73,6 @@ public class RoomOccupancyReport : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="400">The room ID is not valid</response>
     /// <returns>The occupancy rate and the room ID</returns>
-    
     [HttpGet]
     public ObjectResult GetReportedOccupancy(uint room)
     {

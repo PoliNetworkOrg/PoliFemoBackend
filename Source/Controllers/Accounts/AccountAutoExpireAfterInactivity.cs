@@ -4,29 +4,28 @@ using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Threading;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Account;
 using PoliFemoBackend.Source.Utils.Database;
 
 namespace PoliFemoBackend.Source.Controllers.Accounts;
+
 [ApiController]
 [Authorize]
 [ApiExplorerSettings(GroupName = "Accounts")]
 [Route("/accounts/me/autoexpire")]
-public class AccountAutoExpireAfterInactivity: ControllerBase
+public class AccountAutoExpireAfterInactivity : ControllerBase
 {
     [Authorize]
     [HttpGet]
     public ObjectResult GetAutoExpireAfterInactivityTimeSpan()
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        if (string.IsNullOrEmpty(sub))
-        {
-            return BadRequest("");
-        }
+        if (string.IsNullOrEmpty(sub)) return BadRequest("");
 
         const string query = "SELECT expireInactivity FROM USERS WHERE user_id = (SHA2(@sub, 256))";
         var parameters = new Dictionary<string, object?>
         {
-            {"@sub", sub}
+            { "@sub", sub }
         };
 
         var r = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
@@ -37,7 +36,7 @@ public class AccountAutoExpireAfterInactivity: ControllerBase
         var timeSpan = (TimeSpan)value;
         return Ok(timeSpan);
     }
-    
+
     [Authorize]
     [HttpPost]
     public ObjectResult SetAutoExpireAfterInactivityTimeSpan(TimeSpan timeSpan)
@@ -46,26 +45,22 @@ public class AccountAutoExpireAfterInactivity: ControllerBase
         {
             case < 30: //30 days
                 return new BadRequestObjectResult("timeSpan too low");
-            case > 365*5: // 5 years
+            case > 365 * 5: // 5 years
                 return new BadRequestObjectResult("timeSpan too high");
         }
 
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        if (string.IsNullOrEmpty(sub))
-        {
-            return BadRequest("");
-        }
+        if (string.IsNullOrEmpty(sub)) return BadRequest("");
 
         const string query = "UPDATE USERS SET  expireInactivity = @t  WHERE user_id = (SHA2(@sub, 256))";
         var parameters = new Dictionary<string, object?>
         {
-            {"@sub", sub},
-            {"@t", timeSpan}
+            { "@sub", sub },
+            { "@t", timeSpan }
         };
 
         var r = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
-        return r > 0 ?   Ok("") : StatusCode(500, "");
-
+        return r > 0 ? Ok("") : StatusCode(500, "");
     }
 
     public static void LoopCheckInactivity(ThreadWithAction threadWithAction)
@@ -77,7 +72,7 @@ public class AccountAutoExpireAfterInactivity: ControllerBase
             try
             {
                 var r = CheckInactivity();
-                count += (r ?? 0);
+                count += r ?? 0;
 
                 threadWithAction.Partial.Add(r ?? 0);
                 threadWithAction.Total = count;
@@ -105,7 +100,7 @@ public class AccountAutoExpireAfterInactivity: ControllerBase
         {
             var userId = dr.ItemArray[0]?.ToString();
             if (string.IsNullOrEmpty(userId)) continue;
-            var b =  Utils.Account.AccountDeletionUtil.DeleteAccountSingle(userId, hashed: true);
+            var b = AccountDeletionUtil.DeleteAccountSingle(userId, true);
             if (b)
                 done++;
         }

@@ -38,8 +38,8 @@ internal static class Program
             return;
         }
 
-        ArgumentsUtil au = new ArgumentsUtil(args);
- 
+        var au = new ArgumentsUtil(args);
+
         try
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -107,7 +107,8 @@ internal static class Program
                 options.Authority = Constants.AzureAuthority;
                 options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
                 options.TokenValidationParameters.ValidIssuers =
-                    new[] {
+                    new[]
+                    {
                         Constants.AzureCommonIssuer,
                         Constants.AzurePolimiIssuer,
                         Constants.AzurePoliNetworkIssuer

@@ -19,7 +19,6 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 [ApiExplorerSettings(GroupName = "Accounts")]
 [Route("accounts/me/export")]
 [Authorize]
-
 public class AccountExportController : ControllerBase
 {
     /// <summary>
@@ -27,7 +26,6 @@ public class AccountExportController : ControllerBase
     /// </summary>
     /// <response code="200">Request completed successfully</response>
     /// <response code="500">Can't connect to the server</response>
-    
     [HttpGet]
     public FileContentResult ExportData()
     {
@@ -36,10 +34,10 @@ public class AccountExportController : ControllerBase
         var query = "SELECT user_id, last_activity, account_type FROM Users WHERE user_id = SHA2(@sub, 256)";
         var parameters = new Dictionary<string, object?>
         {
-            {"@sub", sub}
+            { "@sub", sub }
         };
         var q = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
-        DateTime lastActivity = DateTime.Parse(q?.Rows[0]["last_activity"]?.ToString() ?? "");
+        var lastActivity = DateTime.Parse(q?.Rows[0]["last_activity"]?.ToString() ?? "");
         var id = q?.Rows[0]["user_id"]?.ToString() ?? "";
         var accountType = q?.Rows[0]["account_type"]?.ToString() ?? "";
 
@@ -50,19 +48,17 @@ public class AccountExportController : ControllerBase
         var roc = new JArray();
         if (occupancyReports != null)
             foreach (DataRow row in occupancyReports)
-            {
                 roc.Add(JObject.FromObject(new
                 {
                     room_id = row["room_id"],
                     when_reported = row["when_reported"],
                     rate = row["rate"]
                 }));
-            }
 
 
         return File(Encoding.UTF8.GetBytes(JObject.FromObject(new
         {
-            id = id,
+            id,
             last_activity = lastActivity.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
             account_type = accountType,
             permissions = Grant.GetFormattedPerms(AuthUtil.GetPermissions(sub)),

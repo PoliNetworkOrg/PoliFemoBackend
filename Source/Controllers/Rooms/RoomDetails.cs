@@ -20,9 +20,9 @@ public class RoomDetailsController : ControllerBase
     /// <returns>Room name, address, capacity, building, power</returns>
     /// <response code="200">Request completed successfully</response>
     /// <response code="500">Can't connect to poli servers</response>
-    
     [HttpGet]
-    public async Task<ObjectResult> getRoomDetails(int id){
+    public async Task<ObjectResult> getRoomDetails(int id)
+    {
         var room = await RoomUtil.getRoomById(id);
         if (room is null)
         {
@@ -32,6 +32,7 @@ public class RoomDetailsController : ControllerBase
                 StatusCode = (int)HttpStatusCode.InternalServerError
             };
         }
+
         return new ObjectResult(room);
     }
 }

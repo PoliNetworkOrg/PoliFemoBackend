@@ -8,16 +8,16 @@ public static class AccountDeletionUtil
     {
         if (string.IsNullOrEmpty(sub))
             return false;
-        
+
         const string queryNotHashed = "SELECT deleteUser(SHA2(@sub, 256))";
         const string queryHashed = "SELECT deleteUser(@sub)";
         var parameters = new Dictionary<string, object?>
         {
-            {"@sub", sub}
+            { "@sub", sub }
         };
 
         var queryToRun = hashed ? queryHashed : queryNotHashed;
-        var r = Utils.Database.Database.ExecuteSelect(queryToRun, GlobalVariables.DbConfigVar, parameters);
+        var r = Database.Database.ExecuteSelect(queryToRun, GlobalVariables.DbConfigVar, parameters);
         return r != null;
     }
 }

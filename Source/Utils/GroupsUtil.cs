@@ -10,7 +10,6 @@ namespace PoliFemoBackend.Source.Utils;
 // ReSharper disable once UnusedType.Global
 public static class GroupsUtil
 {
-
     public static ObjectResult ErrorInRetrievingGroups()
     {
         return new ObjectResult(new
