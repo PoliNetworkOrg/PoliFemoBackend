@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Objects.Threading;
 using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
 
@@ -64,5 +66,50 @@ public class AccountAutoExpireAfterInactivity: ControllerBase
         var r = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
         return r > 0 ?   Ok("") : StatusCode(500, "");
 
+    }
+
+    public static void LoopCheckInactivity(ThreadWithAction threadWithAction)
+    {
+        const int timeToWait = 1000 * 60 * 60 * 24; //every day
+        var count = 0;
+        while (true)
+        {
+            try
+            {
+                var r = CheckInactivity();
+                count += (r ?? 0);
+
+                threadWithAction.Partial.Add(r ?? 0);
+                threadWithAction.Total = count;
+            }
+            catch (Exception ex)
+            {
+                threadWithAction.Failed++;
+                Logger.WriteLine(ex, LogSeverityLevel.Error);
+            }
+
+            Thread.Sleep(timeToWait);
+        }
+        // ReSharper disable once FunctionNeverReturns
+    }
+
+    private static int? CheckInactivity()
+    {
+        const string q = "SELECT user_id FROM USERS WHERE last_activity + expireInactivity >= NOW()";
+        var d = Database.ExecuteSelect(q, null);
+        if (d == null)
+            return null;
+
+        var done = 0;
+        foreach (DataRow dr in d.Rows)
+        {
+            var userId = dr.ItemArray[0]?.ToString();
+            if (string.IsNullOrEmpty(userId)) continue;
+            var b =  Utils.Account.AccountDeletionUtil.DeleteAccountSingle(userId, hashed: true);
+            if (b)
+                done++;
+        }
+
+        return done;
     }
 }

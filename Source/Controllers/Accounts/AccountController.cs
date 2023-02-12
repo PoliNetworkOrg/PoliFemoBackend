@@ -72,13 +72,7 @@ public class ArticleByIdController : ControllerBase
             return BadRequest("");
         }
 
-        const string query = "SELECT deleteUser(SHA2(@sub, 256))";
-        var parameters = new Dictionary<string, object?>
-        {
-            {"@sub", sub}
-        };
-
-        var r = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
-        return r == null ? StatusCode(500, "") : Ok("");
+        var r = Utils.Account.AccountDeletionUtil.DeleteAccountSingle(sub, false);
+        return r ?  Ok(""): StatusCode(500, "");
     }
 }

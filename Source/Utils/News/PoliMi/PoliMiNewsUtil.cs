@@ -208,13 +208,13 @@ public static class PoliMiNewsUtil
                 var r = GetNews();
                 count += r;
 
-                threadWithAction.Partial = r;
+                threadWithAction.Partial.Add(r);
                 threadWithAction.Total = count;
             }
             catch (Exception ex)
             {
                 threadWithAction.Failed++;
-                Console.WriteLine(ex);
+                Logger.WriteLine(ex, LogSeverityLevel.Error);
             }
 
             Thread.Sleep(timeToWait);

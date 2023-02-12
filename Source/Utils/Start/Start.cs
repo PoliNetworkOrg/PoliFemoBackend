@@ -31,17 +31,15 @@ public static class Start
             Console.WriteLine(ex);
         }
 
-        if (useNews) {
-            try
-            {
-                ThreadStartUtil.ThreadStartMethod();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        } else {
-            Logger.WriteLine("--no-news flag found. We will not search for news.", LogSeverityLevel.Info);
+   
+        try
+        {
+            ThreadStartUtil.ThreadStartMethod(useNews);
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+        
     }
 }

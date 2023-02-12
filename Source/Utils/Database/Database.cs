@@ -2,6 +2,7 @@
 
 using System.Data;
 using MySql.Data.MySqlClient;
+using PoliFemoBackend.Source.Data;
 
 #endregion
 
@@ -35,9 +36,9 @@ public static class Database
 
     public static DataTable? ExecuteSelect(string query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)
     {
-        if (dbConfig == null) return default;
+        dbConfig ??= GlobalVariables.DbConfigVar;
 
-        var connection = new MySqlConnection(dbConfig.GetConnectionString());
+        var connection = new MySqlConnection(dbConfig?.GetConnectionString());
 
         Logger.LogQuery(query, args);
 
