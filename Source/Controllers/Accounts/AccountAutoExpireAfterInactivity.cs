@@ -15,6 +15,10 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 [Route("/accounts/me/autoexpire")]
 public class AccountAutoExpireAfterInactivity : ControllerBase
 {
+    /// <summary>
+    ///     Get the timespan for auto expire after inactivity
+    /// </summary>
+    /// <returns></returns>
     [Authorize]
     [HttpGet]
     public ObjectResult GetAutoExpireAfterInactivityTimeSpan()
@@ -37,6 +41,10 @@ public class AccountAutoExpireAfterInactivity : ControllerBase
         return Ok(timeSpan);
     }
 
+    /// <summary>
+    ///     Set the timespan for auto expire after inactivity
+    /// </summary>
+    /// <returns></returns>
     [Authorize]
     [HttpPost]
     public ObjectResult SetAutoExpireAfterInactivityTimeSpan(TimeSpan timeSpan)
@@ -63,6 +71,10 @@ public class AccountAutoExpireAfterInactivity : ControllerBase
         return r > 0 ? Ok("") : StatusCode(500, "");
     }
 
+    /// <summary>
+    ///     Loop in a thread that checks every day if someone is inactive and delete them
+    /// </summary>
+    /// <param name="threadWithAction"></param>
     public static void LoopCheckInactivity(ThreadWithAction threadWithAction)
     {
         const int timeToWait = 1000 * 60 * 60 * 24; //every day
@@ -89,8 +101,8 @@ public class AccountAutoExpireAfterInactivity : ControllerBase
     }
 
     /// <summary>
-    /// Check if users have been inactive for more than what is permitted by their settings.
-    /// Delete those users.
+    ///     Check if users have been inactive for more than what is permitted by their settings.
+    ///     Delete those users.
     /// </summary>
     /// <returns>How many users we deleted</returns>
     private static int? CheckInactivity()
@@ -100,6 +112,7 @@ public class AccountAutoExpireAfterInactivity : ControllerBase
                          "OR (expireInactivity IS NULL AND DATE_ADD(last_activity, INTERVAL 2 YEAR) >= NOW())";
         var d = Database.ExecuteSelect(q, null);
 
-        return d?.Rows.Cast<DataRow>().Count(dr => AccountDeletionUtil.DeleteAccountSingle(dr.ItemArray[0]?.ToString(), true));
+        return d?.Rows.Cast<DataRow>()
+            .Count(dr => AccountDeletionUtil.DeleteAccountSingle(dr.ItemArray[0]?.ToString(), true));
     }
 }
