@@ -80,7 +80,7 @@ public class SearchGroupsController : ControllerBase
 
         var o = new
         {
-            groups = ag == null ? new JArray() : ag,
+            groups = ag ?? new JArray(),
             name,
             year,
             degree,

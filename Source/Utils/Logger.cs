@@ -19,18 +19,13 @@ public static class Logger
 
         try
         {
-            switch (logSeverityLevel)
+            Console.ForegroundColor = logSeverityLevel switch
             {
-                case LogSeverityLevel.Critical:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case LogSeverityLevel.Error:
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    break;
-                case LogSeverityLevel.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-            }
+                LogSeverityLevel.Critical => ConsoleColor.Red,
+                LogSeverityLevel.Error => ConsoleColor.DarkRed,
+                LogSeverityLevel.Warning => ConsoleColor.Yellow,
+                _ => Console.ForegroundColor
+            };
 
             Console.WriteLine(logSeverityLevel + " | " + log);
             var log1 = log.ToString();

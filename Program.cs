@@ -142,7 +142,7 @@ internal static class Program
 
             try
             {
-                Start.StartThings(au.useNews);
+                Start.StartThings(au.UseNews);
             }
             catch (Exception ex)
             {

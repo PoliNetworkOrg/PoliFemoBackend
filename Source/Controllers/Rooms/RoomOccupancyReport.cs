@@ -33,7 +33,7 @@ public class RoomOccupancyReport : ControllerBase
         var whenReported = DateTime.Now;
 
         var token = Request.Headers[Constants.Authorization];
-        var jwt = new JwtSecurityToken(token.ToString().Substring(7));
+        var jwt = new JwtSecurityToken(token.ToString()[7..]);
         if (AuthUtil.GetAccountType(jwt) != "POLIMI")
             return new UnauthorizedObjectResult(new JObject
             {

@@ -101,7 +101,7 @@ public class InsertArticle : ControllerBase
                 { "error", "You must provide both latitude and longitude" }
             });
         if (data.latitude != 0 &&
-            (data.latitude < -90 || data.latitude > 90 || data.longitude < -180 || data.longitude > 180))
+            (data.latitude is < -90 or > 90 || data.longitude is < -180 or > 180))
             return new BadRequestObjectResult(new JObject
             {
                 { "error", "Invalid latitude or longitude" }
@@ -126,18 +126,17 @@ public class InsertArticle : ControllerBase
                 { "@targetTimeConverted", data.target_time }
             }
         );
-        if (result < 0)
-        {
-            Response.StatusCode = 500;
-            return new ObjectResult(new JObject
+        if (result >= 0)
+            return Created("", new JObject
             {
-                { "error", "Internal server error" }
+                { "message", "Article created successfully" }
             });
-        }
-
-        return Created("", new JObject
+        
+        Response.StatusCode = 500;
+        return new ObjectResult(new JObject
         {
-            { "message", "Article created successfully" }
+            { "error", "Internal server error" }
         });
+
     }
 }

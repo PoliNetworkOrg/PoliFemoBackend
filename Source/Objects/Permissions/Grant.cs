@@ -17,6 +17,6 @@ public class Grant
     public static List<JObject> GetFormattedPerms(IEnumerable<Grant> perms)
     {
         return perms.Select(t => new JObject
-            { { "grant", t.grant }, { "object_id", t.object_id == null ? null : t.object_id } }).ToList();
+            { { "grant", t.grant }, { "object_id", t.object_id } }).ToList();
     }
 }

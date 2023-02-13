@@ -11,7 +11,7 @@ public class Group
         this.year = year;
         var s = platform + "/" + year + "/" + link_id;
         Console.WriteLine("s:", s);
-        id = GenerateHash.generatedId(s);
+        id = GenerateHash.GeneratedId(s);
         this.degree = degree;
         this.type = type;
         this.platform = platform;

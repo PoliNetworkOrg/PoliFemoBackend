@@ -44,10 +44,12 @@ public class RefreshTokenController : ControllerBase
             Response.ContentType = "application/json";
 
             var responseJson = JObject.Parse(responseBody);
-            var resultJson = new JObject();
-            resultJson["access_token"] = responseJson["id_token"];
-            resultJson["refresh_token"] = responseJson["refresh_token"];
-            resultJson["expires_in"] = responseJson["expires_in"];
+            var resultJson = new JObject
+            {
+                ["access_token"] = responseJson["id_token"],
+                ["refresh_token"] = responseJson["refresh_token"],
+                ["expires_in"] = responseJson["expires_in"]
+            };
 
             return new ObjectResult(resultJson);
         }

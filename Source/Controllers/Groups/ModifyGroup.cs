@@ -115,7 +115,7 @@ public class ModifyGroupsController : ControllerBase
                 d["@l"] = results?.Rows[0]["link_id"];
 
             //richiama generatedID per generare un nuovo id
-            d["@id"] = GenerateHash.generatedId(d["@platform"] + "/" + d["@year"] + "/" + d["@l"]);
+            d["@id"] = GenerateHash.GeneratedId(d["@platform"] + "/" + d["@year"] + "/" + d["@l"]);
         }
 
         //Link Funzionante

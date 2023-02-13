@@ -53,15 +53,12 @@ public class DeleteArticle : ControllerBase
             {
                 { "@id", id }
             });
-        if (result < 0)
+        if (result >= 0) return Ok("");
+        Response.StatusCode = 500;
+        return new ObjectResult(new JObject
         {
-            Response.StatusCode = 500;
-            return new ObjectResult(new JObject
-            {
-                { "error", "Internal server error" }
-            });
-        }
+            { "error", "Internal server error" }
+        });
 
-        return Ok("");
     }
 }
