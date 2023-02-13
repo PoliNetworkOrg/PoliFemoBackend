@@ -71,37 +71,37 @@ public class RoomOccupancyReport : ControllerBase
     /// <summary>
     ///     Get the occupancy rate of a room
     /// </summary>
-    /// <param name="room">Room ID</param>
+    /// <param name="id">Room ID</param>
     /// <response code="200">Request completed successfully</response>
     /// <response code="400">The room ID is not valid</response>
     /// <returns>The occupancy rate and the room ID</returns>
     
     [HttpGet]
-    public ObjectResult GetReportedOccupancy(uint room)
+    public ObjectResult GetReportedOccupancy(uint id)
     {
         const string q = "SELECT SUM(x.w * x.rate)/SUM(x.w) " +
                          "FROM (" +
                          "SELECT TIMESTAMPDIFF(SECOND, NOW(), when_reported) w, rate " +
                          "FROM RoomOccupancyReports " +
-                         "WHERE id_room = @id_room AND when_reported >= @yesterday" +
+                         "WHERE room_id = @room_id AND when_reported >= @yesterday" +
                          ") x ";
         var dict = new Dictionary<string, object?>
         {
-            { "@id_room", room },
+            { "@room_id", id },
             { "@yesterday", DateTime.Now.AddDays(-1) }
         };
         var r = Database.ExecuteSelect(q, DbConfig.DbConfigVar, dict);
         if (r == null || r.Rows.Count == 0 || r.Rows[0].ItemArray.Length == 0)
             return new BadRequestObjectResult(new JObject
             {
-                { "error", "Can't get occupancy for room " + room }
+                { "error", "Can't get occupancy for room " + id }
             });
 
         var rate = Database.GetFirstValueFromDataTable(r);
 
         return Ok(new JObject
         {
-            { "room_id", room },
+            { "room_id", id },
             { "occupancy_rate", new JValue(rate) }
         });
     }
