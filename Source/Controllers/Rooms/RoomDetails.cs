@@ -24,14 +24,13 @@ public class RoomDetailsController : ControllerBase
     public async Task<ObjectResult> GetRoomDetails(int id)
     {
         var room = await RoomUtil.getRoomById(id);
-        if (room is not null) 
+        if (room is not null)
             return new ObjectResult(room);
-        
+
         const string text4 = "Errore nella consultazione del sito del polimi!";
         return new ObjectResult(new { error = text4 })
         {
             StatusCode = (int)HttpStatusCode.InternalServerError
         };
-
     }
 }

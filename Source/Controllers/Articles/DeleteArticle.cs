@@ -59,6 +59,5 @@ public class DeleteArticle : ControllerBase
         {
             { "error", "Internal server error" }
         });
-
     }
 }

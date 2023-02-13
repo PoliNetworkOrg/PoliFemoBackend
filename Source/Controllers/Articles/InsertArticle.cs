@@ -131,12 +131,11 @@ public class InsertArticle : ControllerBase
             {
                 { "message", "Article created successfully" }
             });
-        
+
         Response.StatusCode = 500;
         return new ObjectResult(new JObject
         {
             { "error", "Internal server error" }
         });
-
     }
 }
