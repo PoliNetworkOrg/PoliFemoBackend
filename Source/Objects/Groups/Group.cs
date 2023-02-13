@@ -10,7 +10,7 @@ public class Group
         this.name = name;
         this.year = year;
         var s = platform + "/" + year + "/" + link_id;
-        Console.WriteLine("s:", s);
+        Console.WriteLine("s:" + s);
         id = GenerateHash.GeneratedId(s);
         this.degree = degree;
         this.type = type;
