@@ -115,10 +115,11 @@ public static class RoomUtil
         string[] names = { "name", "capacity", "building", "address" };
         //other fields include "Tipologia", "Indirizzo", "Dipartimento", "Codice vano", "Postazione per studenti disabili", ...
         var properties = new JObject();
-        int propLen = fields.Length;
-        for(int i = 0;i < propLen;i++){
-            String i_tag = $@"<em>{fields[i]}</em>";
-            Regex filter = new Regex($@"{i_tag}.*?<br>.*?</td>", RegexOptions.Singleline);
+        var propLen = fields.Length;
+        for (var i = 0; i < propLen; i++)
+        {
+            var i_tag = $@"<em>{fields[i]}</em>";
+            var filter = new Regex($@"{i_tag}.*?<br>.*?</td>", RegexOptions.Singleline);
             var match = filter.Match(fetchedHtml);
             if (match.Success)
                 properties.Add(names[i], match.Value
@@ -140,7 +141,7 @@ public static class RoomUtil
         var data = JObject.Parse(json);
         //Retrieving the list of IDs for the room with power outlets
         var list = data["rwp"]?.Select(x => (int)x).ToArray();
-        properties["power"] = (list != null && list.Contains(id));
+        properties["power"] = list != null && list.Contains(id);
         properties["capacity"] = int.Parse(properties["capacity"]?.ToString() ?? "-1");
         return properties;
     }
