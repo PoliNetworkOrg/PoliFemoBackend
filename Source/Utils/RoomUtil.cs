@@ -116,7 +116,7 @@ public static class RoomUtil
         var properties = new JObject();
         int propLen = fields.Length;
         for(int i = 0;i < propLen;i++){
-            String i_tag = $@"<i>{fields[i]}</i>";
+            String i_tag = $@"<em>{fields[i]}</em>";
             Regex filter = new Regex($@"{i_tag}.*?<br>.*?</td>", RegexOptions.Singleline);
             var match = filter.Match(fetchedHtml);
             if(match.Success){
@@ -140,6 +140,7 @@ public static class RoomUtil
         //Retrieving the list of IDs for the room with power outlets
         var list = data["rwp"]?.Select(x => (int)x).ToArray();
         properties["power"] = (list != null && list.Contains(id));
+        properties["capacity"] = int.Parse(properties["capacity"]?.ToString() ?? "-1");
         return properties;
     }
 
