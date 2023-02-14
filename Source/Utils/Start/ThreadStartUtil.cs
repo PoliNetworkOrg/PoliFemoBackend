@@ -7,7 +7,6 @@ namespace PoliFemoBackend.Source.Utils.Start;
 public static class ThreadStartUtil
 {
     private static ThreadWithAction? _getNewsThreadWithAction;
-    private static ThreadWithAction? _checkInactivityThreadWithAction;
 
     public static void ThreadStartMethod(bool useNews)
     {
@@ -21,10 +20,5 @@ public static class ThreadStartUtil
         {
             Logger.WriteLine("--no-news flag found. We will not search for news.");
         }
-
-        _checkInactivityThreadWithAction = new ThreadWithAction();
-        _checkInactivityThreadWithAction.SetAction(() =>
-            AccountAutoExpireAfterInactivity.LoopCheckInactivity(_checkInactivityThreadWithAction));
-        _checkInactivityThreadWithAction.Run();
     }
 }
