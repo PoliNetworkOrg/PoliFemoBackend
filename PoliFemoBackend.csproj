@@ -41,7 +41,7 @@
         <PackageReference Include="EPPlus" Version="6.1.2"/>
         <PackageReference Include="HtmlAgilityPack" Version="1.11.46"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.14"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.13"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.14"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0"/>
         <PackageReference Include="Mysql.Data" Version="8.0.31"/>
