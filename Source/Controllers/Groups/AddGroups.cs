@@ -13,7 +13,6 @@ namespace PoliFemoBackend.Source.Controllers.Groups;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Groups")]
 [Route("/groups")]
-
 public class AddGroupsController : ControllerBase
 {
     /// <summary>
@@ -77,7 +76,7 @@ public class AddGroupsController : ControllerBase
             query += "@id_link,";
             d.Add("@id_link", group.link_id);
         }
-        
+
 
         //language
         if (!string.IsNullOrEmpty(group.language))
@@ -127,8 +126,8 @@ public class AddGroupsController : ControllerBase
 
         var results = Database.Execute(query, GlobalVariables.DbConfigVar, d);
 
-        return results == 0 ?
-            StatusCode(500, new { message = "Can't connect to server" }) :
-            new CreatedResult("/groups", new { message = "Group added", status = 200 });
+        return results == 0
+            ? StatusCode(500, new { message = "Can't connect to server" })
+            : new CreatedResult("/groups", new { message = "Group added", status = 200 });
     }
 }

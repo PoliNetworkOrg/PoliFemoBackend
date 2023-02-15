@@ -14,21 +14,19 @@ public static class Logger
 
     public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.Info)
     {
-        if (log == null || string.IsNullOrEmpty(log.ToString()) || ((int)logSeverityLevel) > GlobalVariables.LogLevel) return;
+        if (log == null || string.IsNullOrEmpty(log.ToString()) ||
+            (int)logSeverityLevel > GlobalVariables.LogLevel) return;
 
         try
         {
-            switch (logSeverityLevel) {
-                case LogSeverityLevel.Critical:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case LogSeverityLevel.Error:
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    break;
-                case LogSeverityLevel.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-            }
+            Console.ForegroundColor = logSeverityLevel switch
+            {
+                LogSeverityLevel.Critical => ConsoleColor.Red,
+                LogSeverityLevel.Error => ConsoleColor.DarkRed,
+                LogSeverityLevel.Warning => ConsoleColor.Yellow,
+                _ => Console.ForegroundColor
+            };
+
             Console.WriteLine(logSeverityLevel + " | " + log);
             var log1 = log.ToString();
             Directory.CreateDirectory(Constants.DataPath);
@@ -42,7 +40,8 @@ public static class Logger
 
             Console.ResetColor();
 
-            try {
+            try
+            {
                 lock (LogFileLock)
                 {
                     File.AppendAllLinesAsync(Constants.DataLogPath, new[]
@@ -50,7 +49,9 @@ public static class Logger
                         "#@#LOG ENTRY#@#" + GetTime() + " | " + logSeverityLevel + " | " + log1
                     });
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 CriticalError(e, log);
             }
         }

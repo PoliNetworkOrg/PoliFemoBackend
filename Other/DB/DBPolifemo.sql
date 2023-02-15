@@ -81,7 +81,8 @@ create table if not exists Users
     user_id       varchar(100)                               not null
         primary key,
     account_type  enum ('POLIMI', 'POLINETWORK', 'PERSONAL') not null,
-    last_activity datetime                                   not null
+    last_activity datetime                                   not null,
+    expires_days  int                                        not null
 );
 
 create table if not exists RoomOccupancyReports
@@ -151,16 +152,15 @@ BEGIN
 
 END;
 
-create
-    event if not exists auto_purge_users on schedule
+create event if not exists auto_purge_users on schedule
     every '1' DAY
         starts '2023-01-01 04:00:00'
     enable
     do
     BEGIN
 
-    CREATE TEMPORARY TABLE IF NOT EXISTS UsersToDelete(userid VARCHAR(100));
-    INSERT INTO UsersToDelete SELECT user_id from Users where last_activity < NOW() - INTERVAL 1 YEAR;
+    CREATE TEMPORARY TABLE IF NOT EXISTS UsersToDelete(userid VARCHAR(100), days INT);
+    INSERT INTO UsersToDelete SELECT user_id, expires_days from Users where DATEDIFF(NOW(), last_activity) > expires_days;
     SELECT deleteUser(userid) FROM UsersToDelete;
     DROP TABLE UsersToDelete;
 

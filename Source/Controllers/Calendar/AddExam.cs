@@ -10,9 +10,7 @@ using PoliFemoBackend.Source.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Calendar;
 
 [ApiController]
-
 [ApiExplorerSettings(GroupName = "Calendar")]
-
 [Route("/calendar/exam")]
 public class AddExam : ControllerBase
 {
@@ -22,7 +20,6 @@ public class AddExam : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Exams Added</response>
     /// <response code="500">Can't connect to server or Exams not Added</response>
-    
     [HttpPut]
     public ObjectResult AddExamDb(List<IFormFile> file)
     {

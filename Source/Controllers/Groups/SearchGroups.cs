@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
@@ -14,7 +13,6 @@ namespace PoliFemoBackend.Source.Controllers.Groups;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Groups")]
 [Route("/groups")]
-
 public class SearchGroupsController : ControllerBase
 {
     /// <summary>
@@ -34,7 +32,7 @@ public class SearchGroupsController : ControllerBase
     public ActionResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,
         string? language, string? office)
     {
-        var d = new Dictionary<string, object?> { { "@name", "%"+name+"%" } };
+        var d = new Dictionary<string, object?> { { "@name", "%" + name + "%" } };
 
         var query = "SELECT * FROM Groups WHERE class LIKE @name";
         if (year != null)
@@ -80,15 +78,16 @@ public class SearchGroupsController : ControllerBase
 
         var ag = JsonConvert.DeserializeObject(sg) as JArray;
 
-        var o = new  {
-            groups = ag == null ? new JArray() : ag,
-            name = name,
-            year = year,
-            degree = degree,
-            type = type,
-            platform = platform,
-            language = language,
-            office = office
+        var o = new
+        {
+            groups = ag ?? new JArray(),
+            name,
+            year,
+            degree,
+            type,
+            platform,
+            language,
+            office
         };
         return Ok(o);
     }

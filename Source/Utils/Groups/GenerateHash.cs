@@ -1,26 +1,24 @@
 using System.Security.Cryptography;
+using System.Text;
+
 namespace PoliFemoBackend.Source.Utils.Groups;
 
-
-   public class GenerateHash{
-    public static string generatedId(string s){
-        string id = "";
-        using (SHA256 sha256Hash = SHA256.Create())
+public static class GenerateHash
+{
+    public static string GeneratedId(string s)
+    {
+        var id = "";
+        using (var sha256Hash = SHA256.Create())
         {
-            byte[] bytes = sha256Hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(s));
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                builder.Append(bytes[i].ToString("x2"));
-            }
+            var bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(s));
+            var builder = new StringBuilder();
+            foreach (var t in bytes)
+                builder.Append(t.ToString("x2"));
+
             id = builder.ToString();
         }
+
         Console.WriteLine(s);
         return id;
     }
-    
 }
-
-
-
-

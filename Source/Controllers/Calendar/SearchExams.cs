@@ -13,7 +13,6 @@ namespace PoliFemoBackend.Source.Controllers.Calendar;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Exam")]
 [Route("/exam/search")]
-
 public class SearchExam : ControllerBase
 {
     /// <summary>
@@ -31,7 +30,6 @@ public class SearchExam : ControllerBase
     /// <response code="200">Returns the array of exams</response>
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available exam</response>
-    
     [HttpGet]
     public ActionResult SearchExamDb(string? cod_mat, string? insegnamento, string? sede, int? semestre,
         string? docente, string? orario, string? giorno, string? lista)

@@ -11,7 +11,6 @@ namespace PoliFemoBackend.Source.Controllers.Calendar;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Calendar")]
 [Route("/calendar/modify")]
-
 public class ModifyDateControllers : ControllerBase
 {
     /// <summary>
@@ -29,7 +28,6 @@ public class ModifyDateControllers : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Date modified</response>
     /// <response code="500">Can't connect to server or Date not modified</response>
-    
     [HttpPost]
     public ObjectResult ModifiedTypeDateDb(DateTime date, int tipologia_old, int tipologia_new)
     {
@@ -58,7 +56,6 @@ public class ModifyDateControllers : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Date added</response>
     /// <response code="500">Can't connect to server or Date not added</response>
-    
     [HttpPut]
     public ObjectResult AddTypeDateDb(DateTime date, int tipologia)
     {
@@ -84,7 +81,6 @@ public class ModifyDateControllers : ControllerBase
     /// <returns>Nothing</returns>
     /// <response code="200">Date removed</response>
     /// <response code="500">Can't connect to server or Date not removed</response>
-    
     [HttpDelete]
     public ObjectResult RemoveTypeDateDb(DateTime date, int tipologia)
     {

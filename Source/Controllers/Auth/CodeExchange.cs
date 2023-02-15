@@ -17,7 +17,6 @@ namespace PoliFemoBackend.Source.Controllers.Auth;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Auth")]
 [Route("/auth/code")]
-
 public class CodeExchangeController : ControllerBase
 {
     /// <summary>
@@ -32,7 +31,6 @@ public class CodeExchangeController : ControllerBase
     /// <response code="400">The code is not valid</response>
     /// <response code="403">The user is not using a valid org email</response>
     /// <returns>An access and a refresh token</returns>
-    
     [HttpGet]
     public ActionResult CodeExchange(string code, int state)
         // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d
@@ -54,7 +52,7 @@ public class CodeExchangeController : ControllerBase
                     error = "Error while exchanging code for token",
                     reason = responseJson.Value<string>("error")
                 });
-    
+
             string subject, acctype;
             JwtSecurityToken? token;
 
@@ -71,7 +69,8 @@ public class CodeExchangeController : ControllerBase
                         statusCode = HttpStatusCode.BadRequest
                     });
 
-                switch (domain) {
+                switch (domain)
+                {
                     case "polimi.it":
                     case "mail.polimi.it":
                         acctype = "POLIMI";
@@ -108,7 +107,7 @@ public class CodeExchangeController : ControllerBase
                 );
             }
 
-            var query = "INSERT IGNORE INTO Users VALUES(sha2(@subject, 256), @acctype, NOW());";
+            var query = "INSERT IGNORE INTO Users VALUES(sha2(@subject, 256), @acctype, NOW(), 730);";
             var parameters = new Dictionary<string, object?>
             {
                 { "@subject", subject },

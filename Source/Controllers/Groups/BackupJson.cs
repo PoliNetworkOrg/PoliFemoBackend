@@ -13,7 +13,6 @@ namespace PoliFemoBackend.Source.Controllers.Groups;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Groups")]
 [Route("/groups/backup")]
-
 public class BackupGroupsController : ControllerBase
 {
     /// <summary>
@@ -23,7 +22,6 @@ public class BackupGroupsController : ControllerBase
     /// <response code="200">Returns the array of groups</response>
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available groups</response>
-    
     [HttpGet]
     public ActionResult BackupGroupsDb()
     {

@@ -10,7 +10,7 @@ public static class Constants
     public const string DbConfig = ConfigPath + "/dbconfig.json";
 
     public const string DataLogPath = LogsPath + "/backend.log";
-    
+
     public const string SecretJson = ConfigPath + "/secrets.json";
 
     public const string ConfigPath = "/config";
@@ -25,9 +25,11 @@ public static class Constants
 
     public const string AzureAuthority = "https://login.microsoftonline.com/common/v2.0";
 
-    public const string AzurePolimiIssuer = "https://login.microsoftonline.com/0a17712b-6df3-425d-808e-309df28a5eeb/v2.0";
+    public const string AzurePolimiIssuer =
+        "https://login.microsoftonline.com/0a17712b-6df3-425d-808e-309df28a5eeb/v2.0";
 
-    public const string AzurePoliNetworkIssuer = "https://login.microsoftonline.com/7f8cafc8-4314-4070-9744-fe02f91bcb21/v2.0";
+    public const string AzurePoliNetworkIssuer =
+        "https://login.microsoftonline.com/7f8cafc8-4314-4070-9744-fe02f91bcb21/v2.0";
 
     public const string AzureCommonIssuer =
         "https://login.microsoftonline.com/9188040d-6c67-4c5b-b112-36a304b66dad/v2.0";

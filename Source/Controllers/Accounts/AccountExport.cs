@@ -19,7 +19,6 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 [ApiExplorerSettings(GroupName = "Accounts")]
 [Route("accounts/me/export")]
 [Authorize]
-
 public class AccountExportController : ControllerBase
 {
     /// <summary>
@@ -27,44 +26,48 @@ public class AccountExportController : ControllerBase
     /// </summary>
     /// <response code="200">Request completed successfully</response>
     /// <response code="500">Can't connect to the server</response>
-    
     [HttpGet]
     public FileContentResult ExportData()
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
 
-        var query = "SELECT user_id, last_activity, account_type FROM Users WHERE user_id = SHA2(@sub, 256)";
+        var query = "SELECT user_id, last_activity, account_type, expires_days FROM Users WHERE user_id = SHA2(@sub, 256)";
         var parameters = new Dictionary<string, object?>
         {
-            {"@sub", sub}
+            { "@sub", sub }
         };
         var q = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
-        DateTime lastActivity = DateTime.Parse(q?.Rows[0]["last_activity"]?.ToString() ?? "");
+        var lastActivity = DateTime.Parse(q?.Rows[0]["last_activity"]?.ToString() ?? "");
         var id = q?.Rows[0]["user_id"]?.ToString() ?? "";
         var accountType = q?.Rows[0]["account_type"]?.ToString() ?? "";
-
+        var expiresDays = int.Parse(q?.Rows[0]["expires_days"]?.ToString() ?? "0");
 
         query = "SELECT * FROM RoomOccupancyReports WHERE user_id = SHA2(@sub, 256)";
         q = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
         var occupancyReports = q?.Rows;
         var roc = new JArray();
-        if (occupancyReports != null)
-            foreach (DataRow row in occupancyReports)
+        if (occupancyReports == null)
+            return FileExport(id, lastActivity, accountType, expiresDays, sub, roc);
+
+        foreach (DataRow row in occupancyReports)
+            roc.Add(JObject.FromObject(new
             {
-                roc.Add(JObject.FromObject(new
-                {
-                    room_id = row["room_id"],
-                    when_reported = row["when_reported"],
-                    rate = row["rate"]
-                }));
-            }
+                room_id = row["room_id"],
+                when_reported = row["when_reported"],
+                rate = row["rate"]
+            }));
+        return FileExport(id, lastActivity, accountType, expiresDays, sub, roc);
+    }
 
-
+    private FileContentResult FileExport(string id, DateTime lastActivity, string accountType, int edays, string? sub,
+        JArray roc)
+    {
         return File(Encoding.UTF8.GetBytes(JObject.FromObject(new
         {
-            id = id,
+            id,
             last_activity = lastActivity.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
             account_type = accountType,
+            expires_days = edays,
             permissions = Grant.GetFormattedPerms(AuthUtil.GetPermissions(sub)),
             room_occupancy_reports = roc
         }).ToString()), "application/json", id + ".json");

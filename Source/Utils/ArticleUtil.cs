@@ -10,7 +10,6 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class ArticleUtil
 {
-
     /// <summary>
     /// </summary>
     /// <complexity>

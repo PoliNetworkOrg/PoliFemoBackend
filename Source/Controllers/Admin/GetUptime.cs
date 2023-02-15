@@ -11,14 +11,12 @@ namespace PoliFemoBackend.Source.Controllers.Admin;
 [ApiController]
 [ApiExplorerSettings(GroupName = "Admin")]
 [Route("/admin/uptime")]
-
 public class GetUptimeController : ControllerBase
 {
     /// <summary>
     ///     Get the uptime of the backend server
     /// </summary>
     /// <returns>The number of seconds of uptime</returns>
-    
     [HttpGet]
     public ObjectResult GetUptime()
     {

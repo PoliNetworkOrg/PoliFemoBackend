@@ -51,16 +51,17 @@ public class DbConfig
         {
             GlobalVariables.DbConnection.Open();
             if (GlobalVariables.DbConnection.State == ConnectionState.Open)
-                Logger.WriteLine("Connection to db on start works! Performing table checks...", LogSeverityLevel.Info);
-                var sql = File.ReadAllText(Constants.SqlCommandsPath);
-                Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
-                Logger.WriteLine("Table checks completed! Starting application...", LogSeverityLevel.Info);
+                Logger.WriteLine("Connection to db on start works! Performing table checks...");
+            var sql = File.ReadAllText(Constants.SqlCommandsPath);
+            Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
+            Logger.WriteLine("Table checks completed! Starting application...");
         }
         catch (Exception ex)
         {
-            Logger.WriteLine("An error occurred while initializing the database. Check the details and try again.", LogSeverityLevel.Critical);
+            Logger.WriteLine("An error occurred while initializing the database. Check the details and try again.",
+                LogSeverityLevel.Critical);
             Logger.WriteLine(ex.Message, LogSeverityLevel.Critical);
-            System.Environment.Exit(1);
+            Environment.Exit(1);
         }
     }
 

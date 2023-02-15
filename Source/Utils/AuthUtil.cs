@@ -39,7 +39,8 @@ public static class AuthUtil
 
                 default:
                 {
-                    formContent.Add("redirect_uri", "https://api.polinetwork.org" + GlobalVariables.BasePath + "auth/code");
+                    formContent.Add("redirect_uri",
+                        "https://api.polinetwork.org" + GlobalVariables.BasePath + "auth/code");
                     break;
                 }
             }
