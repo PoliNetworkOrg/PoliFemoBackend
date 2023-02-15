@@ -14,21 +14,33 @@ public static class HtmlUtil
     internal static async Task<WebReply> DownloadHtmlAsync(string urlAddress)
 
     {
-        HttpClient httpClient = new();
-        var response = await httpClient.GetAsync(urlAddress);
-
-        if (response.StatusCode != HttpStatusCode.OK) return new WebReply(null, response.StatusCode);
-
-        var receiveStream = response.Content;
         try
         {
-            var te = receiveStream.ReadAsByteArrayAsync().Result;
-            var s = Encoding.UTF8.GetString(te, 0, te.Length);
-
+            HttpClient httpClient = new();
+            var response = await httpClient.GetByteArrayAsync(urlAddress);
+            var s = Encoding.UTF8.GetString(response, 0, response.Length);
             return new WebReply(s, HttpStatusCode.OK);
+            /*
+
+            if (response.StatusCode != HttpStatusCode.OK) return new WebReply(null, response.StatusCode);
+
+            var receiveStream = response.Content;
+            try
+            {
+                var te = receiveStream.ReadAsByteArrayAsync().Result;
+                var s = Encoding.UTF8.GetString(te, 0, te.Length);
+
+                return new WebReply(s, HttpStatusCode.OK);
+            }
+            catch
+            {
+                return new WebReply(null, HttpStatusCode.ExpectationFailed);
+            }
+            */
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine(ex);
             return new WebReply(null, HttpStatusCode.ExpectationFailed);
         }
     }
