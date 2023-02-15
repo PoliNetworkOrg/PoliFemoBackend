@@ -74,9 +74,11 @@ public static class RoomUtil
             colsizetotal += colsize;
             var vEnd = colsizetotal; // the end is the new total (prev + colsize)
 
+            /*
             // this is the trickery, if any column ends before the shift start or starts before
             // the shift end, then we skip
-            var b = vEnd < shiftStart || vStart > shiftEnd;
+            var inScopeSearch = vEnd < shiftStart || vStart > shiftEnd;
+            */
 
 
             // if one of the not-skipped column represents an actual lesson, then return false,
@@ -84,22 +86,15 @@ public static class RoomUtil
             bool occupiedBool = !string.IsNullOrEmpty(nodeChildNode.InnerHtml.Trim());
             if (occupiedBool)
             {
-                if (b)
-                    for (int times = 0; times<colsize; times++)
-                        occupied[iTime] = RoomOccupancyEnum.OCCUPIED_NOT_IN_SEARCH_SCOPE;
-                else
-                    for (int times = 0; times<colsize; times++)
-                        occupied[iTime] = RoomOccupancyEnum.OCCUPIED_IN_SEARCH_SCOPE;
+                for (int times = 0; times<colsize; times++)
+                    occupied[iTime] = RoomOccupancyEnum.OCCUPIED;
+
                 //return false;
             }
             else
             {
-                if (b)
-                    for (int times = 0; times<colsize; times++)
-                        occupied[iTime] = RoomOccupancyEnum.FREE_NOT_IN_SEARCH_SCOPE;
-                else
-                    for (int times = 0; times<colsize; times++)
-                        occupied[iTime] = RoomOccupancyEnum.FREE_IN_SEARCH_SCOPE;
+                for (int times = 0; times<colsize; times++) 
+                    occupied[iTime] = RoomOccupancyEnum.FREE;
             }
         }
 
