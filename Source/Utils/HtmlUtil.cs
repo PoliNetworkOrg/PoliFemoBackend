@@ -11,15 +11,17 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class HtmlUtil
 {
-    internal static async Task<WebReply> DownloadHtmlAsync(string urlAddress)
+    internal static Task<WebReply> DownloadHtmlAsync(string urlAddress)
 
     {
         try
         {
             HttpClient httpClient = new();
-            var response = await httpClient.GetByteArrayAsync(urlAddress);
+            var task = httpClient.GetByteArrayAsync(urlAddress);
+            task.Wait();
+            var response = task.Result;
             var s = Encoding.UTF8.GetString(response, 0, response.Length);
-            return new WebReply(s, HttpStatusCode.OK);
+            return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
             /*
 
             if (response.StatusCode != HttpStatusCode.OK) return new WebReply(null, response.StatusCode);
@@ -41,7 +43,7 @@ public static class HtmlUtil
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            return new WebReply(null, HttpStatusCode.ExpectationFailed);
+            return Task.FromResult(new WebReply(null, HttpStatusCode.ExpectationFailed));
         }
     }
 

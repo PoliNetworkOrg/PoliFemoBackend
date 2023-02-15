@@ -3,6 +3,7 @@
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Enums;
 
 #endregion
 
@@ -51,13 +52,20 @@ public static class RoomUtil
         if (node?.ChildNodes == null) return true;
 
         var colsizetotal = 0;
+        
+        var occupied = new Dictionary<TimeOnly, RoomOccupancyEnum>();
         // the first two children are not time slots
         for (var i = 2; i < node.ChildNodes.Count; i++)
         {
+            var iTime = new TimeOnly(8,0,0) ;
+            iTime = iTime.AddMinutes((colsizetotal) * 15);
+            
+            var nodeChildNode = node.ChildNodes[i];
             int colsize;
-            // for each column, take it's span as the colsize
-            if (node.ChildNodes[i].Attributes.Contains("colspan"))
-                colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
+                // for each column, take it's span as the colsize
+                
+            if (nodeChildNode.Attributes.Contains("colspan"))
+                colsize = (int)Convert.ToInt64(nodeChildNode.Attributes["colspan"].Value);
             else
                 colsize = 1;
 
@@ -68,13 +76,35 @@ public static class RoomUtil
 
             // this is the trickery, if any column ends before the shift start or starts before
             // the shift end, then we skip
-            if (vEnd < shiftStart || vStart > shiftEnd) continue;
+            var b = vEnd < shiftStart || vStart > shiftEnd;
+
 
             // if one of the not-skipped column represents an actual lesson, then return false,
             // the room is occupied
-            if (!string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim())) return false;
+            bool occupiedBool = !string.IsNullOrEmpty(nodeChildNode.InnerHtml.Trim());
+            if (occupiedBool)
+            {
+                if (b)
+                    for (int times = 0; times<colsize; times++)
+                        occupied[iTime] = RoomOccupancyEnum.OCCUPIED_NOT_IN_SEARCH_SCOPE;
+                else
+                    for (int times = 0; times<colsize; times++)
+                        occupied[iTime] = RoomOccupancyEnum.OCCUPIED_IN_SEARCH_SCOPE;
+                //return false;
+            }
+            else
+            {
+                if (b)
+                    for (int times = 0; times<colsize; times++)
+                        occupied[iTime] = RoomOccupancyEnum.FREE_NOT_IN_SEARCH_SCOPE;
+                else
+                    for (int times = 0; times<colsize; times++)
+                        occupied[iTime] = RoomOccupancyEnum.FREE_IN_SEARCH_SCOPE;
+            }
         }
 
+        ;
+        
         // if no lesson takes place in the room in the time window, the room is free (duh)
         return true;
     }
