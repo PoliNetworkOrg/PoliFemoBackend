@@ -2,5 +2,6 @@
 
 public enum RoomOccupancyEnum
 {
-    OCCUPIED, FREE
+    OCCUPIED,
+    FREE
 }

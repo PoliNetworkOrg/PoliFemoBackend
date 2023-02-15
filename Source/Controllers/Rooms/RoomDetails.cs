@@ -2,7 +2,6 @@
 
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Rooms;
 
 #endregion

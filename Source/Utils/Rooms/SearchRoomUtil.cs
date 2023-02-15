@@ -5,25 +5,22 @@ namespace PoliFemoBackend.Source.Utils.Rooms;
 
 public static class SearchRoomUtil
 {
-    public static async Task<Tuple<JArray?,DoneEnum> > SearchRooms(string sede, DateTime hourStart, DateTime hourStop)
+    public static async Task<Tuple<JArray?, DoneEnum>> SearchRooms(string sede, DateTime hourStart, DateTime hourStop)
     {
         hourStop = hourStop.AddMinutes(-1);
         var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, sede);
-        if (t3 is null || t3.Count == 0)
-        {
-            return new Tuple<JArray?, DoneEnum>(null, DoneEnum.ERROR);
-        }
+        if (t3 is null || t3.Count == 0) return new Tuple<JArray?, DoneEnum>(null, DoneEnum.ERROR);
 
         var htmlNode = t3[0];
         var t4 = RoomUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
-        if (t4 is null || t4.Count == 0) 
+        if (t4 is null || t4.Count == 0)
             return new Tuple<JArray?, DoneEnum>(null, DoneEnum.SKIPPED);
-        
+
         var results = new JArray();
         foreach (var room in t4)
         {
             if (room == null) continue;
-            
+
             var formattedRoom = JObject.FromObject(room);
             var roomLink = formattedRoom.GetValue("link");
             if (roomLink != null)
@@ -36,6 +33,5 @@ public static class SearchRoomUtil
         }
 
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
-
     }
 }

@@ -21,9 +21,9 @@ public static class RoomUtil
         var shiftStart = GetShiftSlotFromTime(start);
         var shiftEnd = GetShiftSlotFromTime(stop);
 
-        return (table.ChildNodes.Where(child => child != null)
+        return table.ChildNodes.Where(child => child != null)
             .Select(child => CheckIfFree(child, shiftStart, shiftEnd))
-            .Where(toAdd => toAdd != null)).ToList();
+            .Where(toAdd => toAdd != null).ToList();
     }
 
     private static object? CheckIfFree(HtmlNode? node, int shiftStart, int shiftEnd)
@@ -54,42 +54,42 @@ public static class RoomUtil
             return new List<RoomOccupancyResultObject>();
 
         var colsizetotal = 0;
-        
-        var occupied = new List<RoomOccupancyResultObject> { new(new TimeOnly(7,45,0), RoomOccupancyEnum.FREE, false ) };
-        
+
+        var occupied = new List<RoomOccupancyResultObject>
+            { new(new TimeOnly(7, 45, 0), RoomOccupancyEnum.FREE, false) };
+
         // the first two children are not time slots
         for (var i = 2; i < node.ChildNodes.Count; i++)
         {
-            var iTime = new TimeOnly(8,0,0) ;
-            iTime = iTime.AddMinutes((colsizetotal) * 15);
-            
+            var iTime = new TimeOnly(8, 0, 0);
+            iTime = iTime.AddMinutes(colsizetotal * 15);
+
             var nodeChildNode = node.ChildNodes[i];
 
             var colsize =
                 // for each column, take it's span as the colsize
                 nodeChildNode.Attributes.Contains("colspan")
-                ? (int)Convert.ToInt64(nodeChildNode.Attributes["colspan"].Value)
-                : 1;
+                    ? (int)Convert.ToInt64(nodeChildNode.Attributes["colspan"].Value)
+                    : 1;
 
             // the time start in shifts for each column, is the previous total
             var vStart = colsizetotal;
             colsizetotal += colsize;
             var vEnd = colsizetotal; // the end is the new total (prev + colsize)
 
-            
+
             // this is the trickery, if any column ends before the shift start or starts before
             // the shift end, then we skip
             var inScopeSearch = vEnd >= shiftStart && vStart <= shiftEnd;
-            
 
 
             // if one of the not-skipped column represents an actual lesson, then return false,
             // the room is occupied
             var occupiedBool = !string.IsNullOrEmpty(nodeChildNode.InnerHtml.Trim());
-            var roomOccupancyEnum = occupiedBool ? RoomOccupancyEnum.OCCUPIED :RoomOccupancyEnum.FREE;
-            
+            var roomOccupancyEnum = occupiedBool ? RoomOccupancyEnum.OCCUPIED : RoomOccupancyEnum.FREE;
+
             //now mark the occupancies of the room
-            occupied.Add(new RoomOccupancyResultObject(iTime, roomOccupancyEnum , inScopeSearch));
+            occupied.Add(new RoomOccupancyResultObject(iTime, roomOccupancyEnum, inScopeSearch));
         }
 
         // if no lesson takes place in the room in the time window, the room is free (duh)
@@ -110,14 +110,15 @@ public static class RoomUtil
 
         var occupancies = new JObject();
         foreach (var roomOccupancyResult in roomOccupancyResultObjects)
-        {
             occupancies[roomOccupancyResult._timeOnly.ToLongTimeString()] =
                 roomOccupancyResult.RoomOccupancyEnum == RoomOccupancyEnum.FREE ? "free" : "occupied";
-        }
-        
+
         //Builds room object 
-        return new { name = nome, building = edificio, power = pwr, link = RoomInfoUrls + info,
-            occupancies  };
+        return new
+        {
+            name = nome, building = edificio, power = pwr, link = RoomInfoUrls + info,
+            occupancies
+        };
     }
 
     public static async Task<JObject?> GetRoomById(int id)
