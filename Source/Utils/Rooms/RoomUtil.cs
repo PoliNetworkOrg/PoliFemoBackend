@@ -42,7 +42,8 @@ public static class RoomUtil
             return null;
 
         var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
-        var roomFreeBool = roomFree.All(x => x is { RoomOccupancyEnum: RoomOccupancyEnum.FREE, inScopeSearch: true });
+        var searchInScopeResults = roomFree.Where(x => x.inScopeSearch).ToList();
+        var roomFreeBool = searchInScopeResults.All(x => x is { RoomOccupancyEnum: RoomOccupancyEnum.FREE });
 
         return roomFreeBool == false ? null : GetAula(node, roomFree);
     }
@@ -78,7 +79,7 @@ public static class RoomUtil
             
             // this is the trickery, if any column ends before the shift start or starts before
             // the shift end, then we skip
-            var inScopeSearch = vEnd < shiftStart || vStart > shiftEnd;
+            var inScopeSearch = vEnd >= shiftStart && vStart <= shiftEnd;
             
 
 
