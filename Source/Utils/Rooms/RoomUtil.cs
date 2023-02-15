@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Enums;
+using PoliFemoBackend.Source.Objects.Rooms;
 
 #endregion
 
@@ -20,12 +21,9 @@ public static class RoomUtil
         var shiftStart = GetShiftSlotFromTime(start);
         var shiftEnd = GetShiftSlotFromTime(stop);
 
-        return (from child in table.ChildNodes
-            where child != null
-            select CheckIfFree(child, shiftStart, shiftEnd)
-            into toAdd
-            where toAdd != null
-            select toAdd).ToList();
+        return (table.ChildNodes.Where(child => child != null)
+            .Select(child => CheckIfFree(child, shiftStart, shiftEnd))
+            .Where(toAdd => toAdd != null)).ToList();
     }
 
     private static object? CheckIfFree(HtmlNode? node, int shiftStart, int shiftEnd)
@@ -44,16 +42,20 @@ public static class RoomUtil
             return null;
 
         var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
-        return roomFree ? GetAula(node) : null;
+        var roomFreeBool = roomFree.All(x => x is { RoomOccupancyEnum: RoomOccupancyEnum.FREE, inScopeSearch: true });
+
+        return roomFreeBool == false ? null : GetAula(node, roomFree);
     }
 
-    private static bool IsRoomFree(HtmlNode? node, int shiftStart, int shiftEnd)
+    private static List<RoomOccupancyResultObject> IsRoomFree(HtmlNode? node, int shiftStart, int shiftEnd)
     {
-        if (node?.ChildNodes == null) return true;
+        if (node?.ChildNodes == null)
+            return new List<RoomOccupancyResultObject>();
 
         var colsizetotal = 0;
         
-        var occupied = new Dictionary<TimeOnly, RoomOccupancyEnum>();
+        var occupied = new List<RoomOccupancyResultObject> { new(new TimeOnly(7,45,0), RoomOccupancyEnum.FREE, false ) };
+        
         // the first two children are not time slots
         for (var i = 2; i < node.ChildNodes.Count; i++)
         {
@@ -61,50 +63,39 @@ public static class RoomUtil
             iTime = iTime.AddMinutes((colsizetotal) * 15);
             
             var nodeChildNode = node.ChildNodes[i];
-            int colsize;
+
+            var colsize =
                 // for each column, take it's span as the colsize
-                
-            if (nodeChildNode.Attributes.Contains("colspan"))
-                colsize = (int)Convert.ToInt64(nodeChildNode.Attributes["colspan"].Value);
-            else
-                colsize = 1;
+                nodeChildNode.Attributes.Contains("colspan")
+                ? (int)Convert.ToInt64(nodeChildNode.Attributes["colspan"].Value)
+                : 1;
 
             // the time start in shifts for each column, is the previous total
             var vStart = colsizetotal;
             colsizetotal += colsize;
             var vEnd = colsizetotal; // the end is the new total (prev + colsize)
 
-            /*
+            
             // this is the trickery, if any column ends before the shift start or starts before
             // the shift end, then we skip
             var inScopeSearch = vEnd < shiftStart || vStart > shiftEnd;
-            */
+            
 
 
             // if one of the not-skipped column represents an actual lesson, then return false,
             // the room is occupied
-            bool occupiedBool = !string.IsNullOrEmpty(nodeChildNode.InnerHtml.Trim());
-            if (occupiedBool)
-            {
-                for (int times = 0; times<colsize; times++)
-                    occupied[iTime] = RoomOccupancyEnum.OCCUPIED;
-
-                //return false;
-            }
-            else
-            {
-                for (int times = 0; times<colsize; times++) 
-                    occupied[iTime] = RoomOccupancyEnum.FREE;
-            }
+            var occupiedBool = !string.IsNullOrEmpty(nodeChildNode.InnerHtml.Trim());
+            var roomOccupancyEnum = occupiedBool ? RoomOccupancyEnum.OCCUPIED :RoomOccupancyEnum.FREE;
+            
+            //now mark the occupancies of the room
+            occupied.Add(new RoomOccupancyResultObject(iTime, roomOccupancyEnum , inScopeSearch));
         }
 
-        ;
-        
         // if no lesson takes place in the room in the time window, the room is free (duh)
-        return true;
+        return occupied;
     }
 
-    private static object GetAula(HtmlNode? node)
+    private static object GetAula(HtmlNode? node, List<RoomOccupancyResultObject> roomOccupancyResultObjects)
     {
         //Flag to indicate if the room has a power outlet (true/false)
         var pwr = RoomWithPower(node);
@@ -116,8 +107,16 @@ public static class RoomUtil
         //get room link
         var info = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["href"]?.Value;
 
+        var occupancies = new JObject();
+        foreach (var roomOccupancyResult in roomOccupancyResultObjects)
+        {
+            occupancies[roomOccupancyResult._timeOnly.ToLongTimeString()] =
+                roomOccupancyResult.RoomOccupancyEnum == RoomOccupancyEnum.FREE ? "free" : "occupied";
+        }
+        
         //Builds room object 
-        return new { name = nome, building = edificio, power = pwr, link = RoomInfoUrls + info };
+        return new { name = nome, building = edificio, power = pwr, link = RoomInfoUrls + info,
+            occupancies  };
     }
 
     public static async Task<JObject?> GetRoomById(int id)

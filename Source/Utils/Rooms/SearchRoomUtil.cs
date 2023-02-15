@@ -1,6 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Enums;
 
 namespace PoliFemoBackend.Source.Utils.Rooms;
