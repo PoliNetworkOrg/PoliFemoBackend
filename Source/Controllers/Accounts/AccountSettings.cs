@@ -40,7 +40,7 @@ public class AccountSettings : ControllerBase
 
         var jObject = new JObject
         {
-            { "expire_in_days", int.Parse(value.ToString() ?? "0")}
+            { "expire_in_days", int.Parse(value.ToString() ?? "0") }
         };
 
         return Ok(jObject);
@@ -57,7 +57,6 @@ public class AccountSettings : ControllerBase
     [HttpPost]
     public ObjectResult SetSettings([FromBody] JObject body)
     {
-
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
         var query = "";
         var parameters = new Dictionary<string, object?>
@@ -77,11 +76,9 @@ public class AccountSettings : ControllerBase
                         {
                             { "error", "Invalid value. The number of days must be between 30 and 1825" }
                         });
-                    else
-                    {
-                        query = "UPDATE Users SET expires_days = @v WHERE user_id = (SHA2(@sub, 256))";
-                        parameters.Add("@v", value.Value<int>());
-                    }
+
+                    query = "UPDATE Users SET expires_days = @v WHERE user_id = (SHA2(@sub, 256))";
+                    parameters.Add("@v", value.Value<int>());
                     break;
 
                 default:
@@ -95,7 +92,6 @@ public class AccountSettings : ControllerBase
         var r = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
         if (r != 1)
             return StatusCode(500, "");
-        else
-            return Ok("");
+        return Ok("");
     }
 }

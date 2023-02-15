@@ -31,7 +31,8 @@ public class AccountExportController : ControllerBase
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
 
-        var query = "SELECT user_id, last_activity, account_type, expires_days FROM Users WHERE user_id = SHA2(@sub, 256)";
+        var query =
+            "SELECT user_id, last_activity, account_type, expires_days FROM Users WHERE user_id = SHA2(@sub, 256)";
         var parameters = new Dictionary<string, object?>
         {
             { "@sub", sub }

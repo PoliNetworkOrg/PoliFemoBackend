@@ -1,5 +1,4 @@
-﻿using PoliFemoBackend.Source.Controllers.Accounts;
-using PoliFemoBackend.Source.Objects.Threading;
+﻿using PoliFemoBackend.Source.Objects.Threading;
 using PoliFemoBackend.Source.Utils.News.PoliMi;
 
 namespace PoliFemoBackend.Source.Utils.Start;
