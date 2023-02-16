@@ -34,7 +34,8 @@ internal static class Program
     {
         if (args.Length > 0 && args[0] == "test")
         {
-            Test.TestMain();
+            var task = Test.TestMain();
+            task.Wait();
             return;
         }
 
