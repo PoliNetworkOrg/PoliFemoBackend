@@ -4,8 +4,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Enums;
-using PoliFemoBackend.Source.Utils.Rooms;
+using PoliFemoBackend.Source.Utils;
 
 #endregion
 
@@ -30,22 +29,35 @@ public class SearchRoomsController : ControllerBase
     public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] DateTime hourStart,
         [BindRequired] DateTime hourStop)
     {
-        var (jArrayResults, doneEnum) = await SearchRoomUtil.SearchRooms(sede, hourStart, hourStop);
-        switch (doneEnum)
+        hourStop = hourStop.AddMinutes(-1);
+        var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, sede);
+        if (t3 is null || t3.Count == 0)
         {
-            case DoneEnum.DONE:
-                return Ok(new JObject(new JProperty("freeRooms", jArrayResults)));
-            case DoneEnum.SKIPPED:
-                return NoContent();
-            default:
-            case DoneEnum.ERROR:
+            const string text4 = "Errore nella consultazione del sito del polimi!";
+            return new ObjectResult(new { error = text4 })
             {
-                const string text4 = "Errore nella consultazione del sito del polimi!";
-                return new ObjectResult(new { error = text4 })
-                {
-                    StatusCode = (int)HttpStatusCode.InternalServerError
-                };
-            }
+                StatusCode = (int)HttpStatusCode.InternalServerError
+            };
         }
+
+        var t4 = RoomUtil.GetFreeRooms(t3[0], hourStart, hourStop);
+        if (t4 is null || t4.Count == 0) return NoContent();
+        var results = new JArray();
+        foreach (var room in t4)
+            if (room != null)
+            {
+                var formattedRoom = JObject.FromObject(room);
+                var roomLink = formattedRoom.GetValue("link");
+                if (roomLink != null)
+                {
+                    var roomId = int.Parse(roomLink.ToString().Split("idaula=")[1]);
+                    formattedRoom.Add(new JProperty("room_id", roomId));
+                }
+
+                results.Add(formattedRoom);
+            }
+
+        var json = new { freeRooms = results };
+        return Ok(new JObject(new JProperty("freeRooms", results)));
     }
 }

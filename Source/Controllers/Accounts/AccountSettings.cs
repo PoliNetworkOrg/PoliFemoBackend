@@ -90,6 +90,8 @@ public class AccountSettings : ControllerBase
         }
 
         var r = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
-        return r != 1 ? StatusCode(500, "") : Ok("");
+        if (r != 1)
+            return StatusCode(500, "");
+        return Ok("");
     }
 }

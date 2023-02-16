@@ -11,39 +11,25 @@ namespace PoliFemoBackend.Source.Utils;
 
 public static class HtmlUtil
 {
-    internal static Task<WebReply> DownloadHtmlAsync(string urlAddress)
+    internal static async Task<WebReply> DownloadHtmlAsync(string urlAddress)
 
     {
+        HttpClient httpClient = new();
+        var response = await httpClient.GetAsync(urlAddress);
+
+        if (response.StatusCode != HttpStatusCode.OK) return new WebReply(null, response.StatusCode);
+
+        var receiveStream = response.Content;
         try
         {
-            HttpClient httpClient = new();
-            var task = httpClient.GetByteArrayAsync(urlAddress);
-            task.Wait();
-            var response = task.Result;
-            var s = Encoding.UTF8.GetString(response, 0, response.Length);
-            return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
-            /*
+            var te = receiveStream.ReadAsByteArrayAsync().Result;
+            var s = Encoding.UTF8.GetString(te, 0, te.Length);
 
-            if (response.StatusCode != HttpStatusCode.OK) return new WebReply(null, response.StatusCode);
-
-            var receiveStream = response.Content;
-            try
-            {
-                var te = receiveStream.ReadAsByteArrayAsync().Result;
-                var s = Encoding.UTF8.GetString(te, 0, te.Length);
-
-                return new WebReply(s, HttpStatusCode.OK);
-            }
-            catch
-            {
-                return new WebReply(null, HttpStatusCode.ExpectationFailed);
-            }
-            */
+            return new WebReply(s, HttpStatusCode.OK);
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine(ex);
-            return Task.FromResult(new WebReply(null, HttpStatusCode.ExpectationFailed));
+            return new WebReply(null, HttpStatusCode.ExpectationFailed);
         }
     }
 

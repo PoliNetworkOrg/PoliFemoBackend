@@ -2,7 +2,7 @@
 
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Utils.Rooms;
+using PoliFemoBackend.Source.Utils;
 
 #endregion
 
@@ -23,7 +23,7 @@ public class RoomDetailsController : ControllerBase
     [HttpGet]
     public async Task<ObjectResult> GetRoomDetails(int id)
     {
-        var room = await RoomUtil.GetRoomById(id);
+        var room = await RoomUtil.getRoomById(id);
         if (room is not null)
             return new ObjectResult(room);
 
