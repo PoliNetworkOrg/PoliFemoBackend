@@ -88,7 +88,9 @@ public static class RoomUtil
             var occupiedBool = !string.IsNullOrEmpty(nodeChildNode.InnerHtml.Trim());
             var roomOccupancyEnum = occupiedBool ? RoomOccupancyEnum.OCCUPIED : RoomOccupancyEnum.FREE;
 
-            //now mark the occupancies of the room
+            //add the result to the list only if the previous result is different
+            if (occupied.Any() && occupied.Last().RoomOccupancyEnum == roomOccupancyEnum) continue;
+
             occupied.Add(new RoomOccupancyResultObject(iTime, roomOccupancyEnum, inScopeSearch));
         }
 
