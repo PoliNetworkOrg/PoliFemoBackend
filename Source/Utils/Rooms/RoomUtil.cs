@@ -45,7 +45,7 @@ public static class RoomUtil
         var searchInScopeResults = roomFree.Where(x => x.inScopeSearch).ToList();
         var roomFreeBool = searchInScopeResults.All(x => x is { RoomOccupancyEnum: RoomOccupancyEnum.FREE });
 
-        return roomFreeBool == false ? null : GetAula(node, roomFree);
+        return roomFreeBool == false ? null : GetAula(node, roomFree, shiftEnd);
     }
 
     private static List<RoomOccupancyResultObject> IsRoomFree(HtmlNode? node, int shiftStart, int shiftEnd)
@@ -96,7 +96,7 @@ public static class RoomUtil
         return occupied;
     }
 
-    private static object GetAula(HtmlNode? node, List<RoomOccupancyResultObject> roomOccupancyResultObjects)
+    private static object GetAula(HtmlNode? node, List<RoomOccupancyResultObject> roomOccupancyResultObjects, int shiftStop)
     {
         //Flag to indicate if the room has a power outlet (true/false)
         var pwr = RoomWithPower(node);
@@ -109,9 +109,12 @@ public static class RoomUtil
         var info = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["href"]?.Value;
 
         var occupancies = new JObject();
-        foreach (var roomOccupancyResult in roomOccupancyResultObjects)
-            occupancies[roomOccupancyResult._timeOnly.ToLongTimeString()] =
-                roomOccupancyResult.RoomOccupancyEnum == RoomOccupancyEnum.FREE ? "free" : "occupied";
+        
+        foreach (var roomOccupancyResultObject in roomOccupancyResultObjects.Where(x => x._timeOnly > GetTimeFromShiftSlot(shiftStop)))
+        {
+            if (occupancies.Children().Count() != 0 && occupancies.Children().Last().Last().ToString() == roomOccupancyResultObject.RoomOccupancyEnum.ToString()) continue;
+            occupancies.Add(roomOccupancyResultObject._timeOnly.ToString(), roomOccupancyResultObject.RoomOccupancyEnum.ToString());
+        }
 
         //Builds room object 
         return new
@@ -197,6 +200,13 @@ public static class RoomUtil
         var shiftSlot = (time.Hour - 8) * 4;
         shiftSlot += time.Minute / 15;
         return shiftSlot;
+    }
+
+    private static TimeOnly GetTimeFromShiftSlot(int shiftSlot)
+    {
+        var hour = shiftSlot / 4 + 8;
+        var minute = (shiftSlot % 4) * 15;
+        return new TimeOnly(hour, minute, 0);
     }
 
 
