@@ -114,7 +114,7 @@ public static class RoomUtil
         foreach (var roomOccupancyResultObject in roomOccupancyResultObjects.Where(x =>
                      x._timeOnly > GetTimeFromShiftSlot(shiftStop)))
         {
-            if (occupancies.Children().Count() != 0 && occupancies.Children().Last().Last().ToString() ==
+            if (occupancies.Children().Any() && occupancies.Children().Last().Last().ToString() ==
                 roomOccupancyResultObject.RoomOccupancyEnum.ToString()) continue;
             occupancies.Add(roomOccupancyResultObject._timeOnly.ToString(),
                 roomOccupancyResultObject.RoomOccupancyEnum.ToString());
