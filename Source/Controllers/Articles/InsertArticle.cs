@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Objects.Articles;
 using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Database;
