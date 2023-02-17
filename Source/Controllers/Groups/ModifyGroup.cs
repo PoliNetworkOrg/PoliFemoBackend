@@ -102,7 +102,7 @@ public class ModifyGroupsController : ControllerBase
         if (ob["platform"] != null || ob["year"] != null || !string.IsNullOrEmpty(ob["link_id"]?.ToString()))
         {
             //fai select in cui recuperi i paramentri non modificati
-            var query2 = "SELECT * FROM Groups WHERE id = @id";
+            const string query2 = "SELECT * FROM Groups WHERE id = @id";
             var results = Database.ExecuteSelect(query2, GlobalVariables.DbConfigVar, d);
             //salva i parametri non modificati in una variabile
             if (ob["platform"] == null)

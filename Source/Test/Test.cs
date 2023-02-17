@@ -26,8 +26,6 @@ public static class Test
         }
 
 
-        ;
-
         //DbConfig.InitializeDbConfig();
         //ArticleContentUpgrade.ArticleContentUpgradeMethod();
     }

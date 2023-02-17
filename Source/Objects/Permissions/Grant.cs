@@ -17,6 +17,6 @@ public class Grant
     public static List<JObject> GetFormattedPerms(IEnumerable<Grant> perms)
     {
         return perms.Select(t => new JObject
-            { { "grant", t.grant }, { "object_id", t.object_id } }).ToList();
+            { { nameof(grant), t.grant }, { nameof(object_id), t.object_id } }).ToList();
     }
 }
