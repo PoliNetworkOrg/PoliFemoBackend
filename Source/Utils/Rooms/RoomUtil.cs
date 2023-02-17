@@ -96,7 +96,7 @@ public static class RoomUtil
         return occupied;
     }
 
-    private static object GetAula(HtmlNode? node, List<RoomOccupancyResultObject> roomOccupancyResultObjects,
+    private static object GetAula(HtmlNode? node, IEnumerable<RoomOccupancyResultObject> roomOccupancyResultObjects,
         int shiftStop)
     {
         //Flag to indicate if the room has a power outlet (true/false)

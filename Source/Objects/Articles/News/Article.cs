@@ -1,4 +1,4 @@
-namespace PoliFemoBackend.Source.Objects.Articles;
+namespace PoliFemoBackend.Source.Objects.Articles.News;
 
 public class Article
 {

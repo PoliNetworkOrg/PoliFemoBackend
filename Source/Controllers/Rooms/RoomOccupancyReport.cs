@@ -46,8 +46,7 @@ public class RoomOccupancyReport : ControllerBase
                 { "error", "Rate must between " + Constants.MinRate + " and " + Constants.MaxRate }
             });
 
-        var q =
-            "REPLACE INTO RoomOccupancyReports (room_id, user_id, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
+        const string q = "REPLACE INTO RoomOccupancyReports (room_id, user_id, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
         var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id_room", id },
