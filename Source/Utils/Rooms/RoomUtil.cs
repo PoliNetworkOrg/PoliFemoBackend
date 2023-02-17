@@ -96,7 +96,8 @@ public static class RoomUtil
         return occupied;
     }
 
-    private static object GetAula(HtmlNode? node, List<RoomOccupancyResultObject> roomOccupancyResultObjects, int shiftStop)
+    private static object GetAula(HtmlNode? node, List<RoomOccupancyResultObject> roomOccupancyResultObjects,
+        int shiftStop)
     {
         //Flag to indicate if the room has a power outlet (true/false)
         var pwr = RoomWithPower(node);
@@ -109,11 +110,14 @@ public static class RoomUtil
         var info = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["href"]?.Value;
 
         var occupancies = new JObject();
-        
-        foreach (var roomOccupancyResultObject in roomOccupancyResultObjects.Where(x => x._timeOnly > GetTimeFromShiftSlot(shiftStop)))
+
+        foreach (var roomOccupancyResultObject in roomOccupancyResultObjects.Where(x =>
+                     x._timeOnly > GetTimeFromShiftSlot(shiftStop)))
         {
-            if (occupancies.Children().Count() != 0 && occupancies.Children().Last().Last().ToString() == roomOccupancyResultObject.RoomOccupancyEnum.ToString()) continue;
-            occupancies.Add(roomOccupancyResultObject._timeOnly.ToString(), roomOccupancyResultObject.RoomOccupancyEnum.ToString());
+            if (occupancies.Children().Count() != 0 && occupancies.Children().Last().Last().ToString() ==
+                roomOccupancyResultObject.RoomOccupancyEnum.ToString()) continue;
+            occupancies.Add(roomOccupancyResultObject._timeOnly.ToString(),
+                roomOccupancyResultObject.RoomOccupancyEnum.ToString());
         }
 
         //Builds room object 
@@ -205,7 +209,7 @@ public static class RoomUtil
     private static TimeOnly GetTimeFromShiftSlot(int shiftSlot)
     {
         var hour = shiftSlot / 4 + 8;
-        var minute = (shiftSlot % 4) * 15;
+        var minute = shiftSlot % 4 * 15;
         return new TimeOnly(hour, minute, 0);
     }
 
