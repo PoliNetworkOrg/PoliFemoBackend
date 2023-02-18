@@ -10,6 +10,7 @@ using PoliFemoBackend.Source.Utils.Groups;
 
 namespace PoliFemoBackend.Source.Controllers.Groups;
 
+[Obsolete("This endpoint will be removed with no replacement.")]
 [ApiController]
 [ApiExplorerSettings(GroupName = "Groups")]
 [Route("/groups/{id}")]

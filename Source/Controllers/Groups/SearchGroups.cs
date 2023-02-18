@@ -10,6 +10,7 @@ using PoliFemoBackend.Source.Utils.Database;
 
 namespace PoliFemoBackend.Source.Controllers.Groups;
 
+[Obsolete("This endpoint will be removed with no replacement. Please use the JSON file to search for groups.")]
 [ApiController]
 [ApiExplorerSettings(GroupName = "Groups")]
 [Route("/groups")]
