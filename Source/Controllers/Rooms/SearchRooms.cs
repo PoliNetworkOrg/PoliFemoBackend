@@ -19,7 +19,7 @@ public class SearchRoomsController : ControllerBase
     /// <summary>
     ///     Search for available rooms in a given time range
     /// </summary>
-    /// <param name="sede" example="MIA">Possible values: MIA, MIB</param>
+    /// <param name="sede" example="MIA">Possible values: MIA, MIB, LCF, MNI, PCL</param>
     /// <param name="hourStart" example="2022-05-18T12:15:00Z">Start time</param>
     /// <param name="hourStop" example="2022-05-18T14:15:00Z">End time</param>
     /// <returns>A JSON array of free rooms</returns>
