@@ -2,11 +2,6 @@
 
 public static class Constants
 {
-    public const string ArticlesUrl = "https://pastebin.com/raw/Giry1b7z";
-
-    public const string GroupsUrl =
-        "https://raw.githubusercontent.com/PoliNetworkOrg/polinetworkWebsiteData/main/groups.json";
-
     public const string DbConfig = ConfigPath + "/dbconfig.json";
 
     public const string DataLogPath = LogsPath + "/backend.log";
@@ -21,7 +16,7 @@ public static class Constants
 
     public const string SqlCommandsPath = "./Other/DB/DBPolifemo.sql";
 
-    public const string AzureClientId = "92602f24-dd8e-448e-a378-b1c575310f9d";
+    public const string AzureClientId = "a06b160b-8d5d-4be2-b452-ea3b768998ed";
 
     public const string AzureAuthority = "https://login.microsoftonline.com/common/v2.0";
 
@@ -40,6 +35,6 @@ public static class Constants
 
     public static class Permissions
     {
-        public const string PermissionsConst = "permissions";
+        public const string ManagePermissions = "permissions";
     }
 }
