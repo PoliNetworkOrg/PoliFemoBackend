@@ -31,7 +31,7 @@ public class EditPermissions : ControllerBase
     public ObjectResult GrantPermission(string id, [FromBody] Grant grant)
     {
         var canGrantPermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
-            Constants.Permissions.PermissionsConst);
+            Constants.Permissions.ManagePermissions);
         if (!canGrantPermissions)
         {
             Response.StatusCode = 403;
@@ -79,7 +79,7 @@ public class EditPermissions : ControllerBase
     public ObjectResult RevokePermission(string id, [FromBody] Grant grant)
     {
         var canRevokePermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
-            Constants.Permissions.PermissionsConst);
+            Constants.Permissions.ManagePermissions);
         if (!canRevokePermissions)
         {
             Response.StatusCode = 403;
