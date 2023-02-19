@@ -7,7 +7,7 @@ public static class GenerateHash
 {
     public static string GeneratedId(string s)
     {
-        var id = "";
+        string id;
         using (var sha256Hash = SHA256.Create())
         {
             var bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(s));
