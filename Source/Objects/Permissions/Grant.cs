@@ -10,9 +10,9 @@ public class Grant
         object_id = idObject;
     }
 
-    public int? object_id { get; set; }
+    public int? object_id { get; init; }
 
-    public string grant { get; set; }
+    public string grant { get; init; }
 
     public static List<JObject> GetFormattedPerms(IEnumerable<Grant> perms)
     {
