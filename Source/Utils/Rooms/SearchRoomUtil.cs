@@ -25,8 +25,18 @@ public static class SearchRoomUtil
             var roomLink = formattedRoom.GetValue("link");
             if (roomLink != null)
             {
-                var roomId = int.Parse(roomLink.ToString().Split("idaula=")[1]);
+                var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
                 formattedRoom.Add(new JProperty("room_id", roomId));
+                try
+                {
+                    var reportedOccupancyJObject = Controllers.Rooms.RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
+                    formattedRoom["report_occupancy"] =
+                        reportedOccupancyJObject;
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(ex);
+                }
             }
 
             results.Add(formattedRoom);

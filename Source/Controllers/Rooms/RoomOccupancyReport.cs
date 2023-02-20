@@ -76,6 +76,17 @@ public class RoomOccupancyReport : ControllerBase
     [HttpGet]
     public ObjectResult GetReportedOccupancy(uint id)
     {
+        var result = GetReportedOccupancyJObject(id);
+        if (result == null)
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "Can't get occupancy for room " + id }
+            });
+        return Ok(result);
+    }
+
+    public static JObject? GetReportedOccupancyJObject(uint id)
+    {
         const string q = "SELECT SUM(x.w * x.rate)/SUM(x.w) " +
                          "FROM (" +
                          "SELECT TIMESTAMPDIFF(SECOND, NOW(), when_reported) w, rate " +
@@ -89,17 +100,15 @@ public class RoomOccupancyReport : ControllerBase
         };
         var r = Database.ExecuteSelect(q, DbConfig.DbConfigVar, dict);
         if (r == null || r.Rows.Count == 0 || r.Rows[0].ItemArray.Length == 0)
-            return new BadRequestObjectResult(new JObject
-            {
-                { "error", "Can't get occupancy for room " + id }
-            });
+            return null;
 
         var rate = Database.GetFirstValueFromDataTable(r);
 
-        return Ok(new JObject
+        var jObject = new JObject
         {
             { "room_id", id },
             { "occupancy_rate", new JValue(rate) }
-        });
+        };
+        return jObject;
     }
 }
