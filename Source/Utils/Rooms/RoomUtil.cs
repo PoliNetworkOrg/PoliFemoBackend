@@ -14,12 +14,12 @@ public static class RoomUtil
 {
     private const string RoomInfoUrls = "https://www7.ceda.polimi.it/spazi/spazi/controller/";
 
-    internal static List<object?>? GetFreeRooms(HtmlNode? table, DateTime start, DateTime stop)
+    internal static List<object?>? GetFreeRooms(HtmlNode? table, DateTime? start, DateTime? stop)
     {
         if (table?.ChildNodes == null) return null;
 
-        var shiftStart = GetShiftSlotFromTime(start);
-        var shiftEnd = GetShiftSlotFromTime(stop);
+        var shiftStart = GetShiftSlotFromTime(start ?? DateTime.Now);
+        var shiftEnd = GetShiftSlotFromTime(stop ?? DateTime.Now);
 
         return table.ChildNodes.Where(child => child != null)
             .Select(child => CheckIfFree(child, shiftStart, shiftEnd))
@@ -214,11 +214,12 @@ public static class RoomUtil
     }
 
 
-    internal static async Task<List<HtmlNode>?> GetDailySituationOnDate(DateTime date, string sede)
+    internal static async Task<List<HtmlNode>?> GetDailySituationOnDate(DateTime? date, string sede)
     {
-        var day = date.Day;
-        var month = date.Month;
-        var year = date.Year;
+        date ??= DateTime.Today;
+        var day = date?.Day;
+        var month = date?.Month;
+        var year = date?.Year;
 
         if (string.IsNullOrEmpty(sede)) return null;
 
