@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Controllers.Rooms;
 using PoliFemoBackend.Source.Enums;
 
 namespace PoliFemoBackend.Source.Utils.Rooms;
@@ -29,7 +30,7 @@ public static class SearchRoomUtil
                 formattedRoom.Add(new JProperty("room_id", roomId));
                 try
                 {
-                    var reportedOccupancyJObject = Controllers.Rooms.RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
+                    var reportedOccupancyJObject = RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
                     formattedRoom["report_occupancy"] =
                         reportedOccupancyJObject;
                 }
