@@ -25,11 +25,15 @@ public class SearchRoomsController : ControllerBase
     /// <returns>A JSON array of free rooms</returns>
     /// <response code="200">Request completed successfully</response>
     /// <response code="204">No available rooms</response>
+    /// <response code="400">Invalid time range (outside 8-20)</response>
     /// <response code="500">Can't connect to poli servers</response>
     [HttpGet]
     public async Task<IActionResult> SearchRooms([BindRequired] string sede, DateTime? hourStart,
         DateTime? hourStop)
     {
+        if (hourStart?.Hour < 8 || hourStop?.Hour > 20)
+            return BadRequest(new JObject(new JProperty("error", "Invalid time range")));
+
         var (jArrayResults, doneEnum) = await SearchRoomUtil.SearchRooms(sede, hourStart, hourStop);
         switch (doneEnum)
         {
