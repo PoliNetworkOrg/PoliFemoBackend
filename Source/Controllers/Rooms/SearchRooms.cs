@@ -27,8 +27,8 @@ public class SearchRoomsController : ControllerBase
     /// <response code="204">No available rooms</response>
     /// <response code="500">Can't connect to poli servers</response>
     [HttpGet]
-    public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] DateTime hourStart,
-        [BindRequired] DateTime hourStop)
+    public async Task<IActionResult> SearchRooms([BindRequired] string sede, DateTime? hourStart,
+        DateTime? hourStop)
     {
         var (jArrayResults, doneEnum) = await SearchRoomUtil.SearchRooms(sede, hourStart, hourStop);
         switch (doneEnum)
