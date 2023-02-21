@@ -34,7 +34,7 @@ public class SearchRoomsController : ControllerBase
         switch (doneEnum)
         {
             case DoneEnum.DONE:
-                return Ok(new JObject(new JProperty("freeRooms", jArrayResults)));
+                return Ok(new JObject(new JProperty("free_rooms", jArrayResults)));
             case DoneEnum.SKIPPED:
                 return NoContent();
             default:
