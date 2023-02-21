@@ -106,6 +106,8 @@ public static class RoomUtil
         var nome = dove?.ChildNodes.First(x => x.Name == "a")?.InnerText.Trim();
         //Get Building name
         var edificio = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["title"]?.Value.Split('-')[2].Trim();
+        //Get address
+        var indirizzo = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["title"]?.Value.Split('-')[1].Trim();
         //get room link
         var info = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["href"]?.Value;
 
@@ -123,7 +125,7 @@ public static class RoomUtil
         //Builds room object 
         return new
         {
-            name = nome, building = edificio, power = pwr, link = RoomInfoUrls + info,
+            name = nome, building = edificio, address = indirizzo, power = pwr, link = RoomInfoUrls + info,
             occupancies
         };
     }
