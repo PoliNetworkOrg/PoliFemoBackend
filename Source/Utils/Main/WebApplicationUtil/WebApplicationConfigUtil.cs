@@ -6,8 +6,11 @@ namespace PoliFemoBackend.Source.Utils.Main.WebApplicationUtil;
 
 public static class WebApplicationConfigUtil
 {
-    internal static void AppConfigPostServerThreads(WebApplication app)
+    internal static void AppConfigPostServerThreads(WebApplication? app)
     {
+        if (app == null)
+            return;
+
         app.UseMetricsTextEndpoint();
         app.UseMetricsAllMiddleware();
 
@@ -30,8 +33,11 @@ public static class WebApplicationConfigUtil
         app.MapControllers();
     }
 
-    internal static void AppConfigPreServerThreads(IApplicationBuilder app)
+    internal static void AppConfigPreServerThreads(IApplicationBuilder? app)
     {
+        if (app == null)
+            return;
+
         if (GlobalVariables.BasePath != "/")
         {
             app.UsePathBase(GlobalVariables.BasePath);

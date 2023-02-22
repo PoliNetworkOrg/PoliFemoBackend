@@ -9,7 +9,7 @@ namespace PoliFemoBackend.Source.Utils.Article;
 public static class CheckAuthorUtil
 {
     /// <summary>
-    /// Get author errors (if any)
+    ///     Get author errors (if any)
     /// </summary>
     /// <param name="data"></param>
     /// <param name="insertArticle"></param>

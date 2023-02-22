@@ -14,7 +14,7 @@ namespace PoliFemoBackend.Source.Utils.Main.WebApplicationUtil;
 
 public static class CreateApplicationUtil
 {
-    internal static WebApplication CreateWebApplication(string[] args)
+    internal static WebApplication? CreateWebApplication(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });

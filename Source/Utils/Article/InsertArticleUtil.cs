@@ -25,7 +25,7 @@ public static class InsertArticleUtil
 
         var sub = AuthUtil.GetSubjectFromHttpRequest(insertArticle.Request);
 
-        var errorCheckAuthor = Utils.Article.CheckAuthorUtil.CheckAuthourErros(data, insertArticle, sub);
+        var errorCheckAuthor = CheckAuthorUtil.CheckAuthourErros(data, insertArticle, sub);
         if (errorCheckAuthor != null)
             return errorCheckAuthor;
 

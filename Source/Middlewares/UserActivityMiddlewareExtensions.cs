@@ -2,8 +2,8 @@
 
 public static class UserActivityMiddlewareExtensions
 {
-    public static IApplicationBuilder UseUserActivityMiddleware(this IApplicationBuilder builder)
+    public static IApplicationBuilder? UseUserActivityMiddleware(this IApplicationBuilder? builder)
     {
-        return builder.UseMiddleware<UserActivityMiddleware>();
+        return builder?.UseMiddleware<UserActivityMiddleware>();
     }
 }
