@@ -13,7 +13,7 @@ public static class DownloadNewsUtil
 
         var docPoliMi = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiHomePage);
         var newsPolimi = PoliMiNewsUtil.GetNewsPoliMi(docPoliMi);
-        var merged = PoliMiNewsUtil.Merge(urls?.ChildNodes, newsPolimi);
+        var merged = MergeNewsUtil.Merge(urls?.ChildNodes, newsPolimi);
 
         return DownloadCurrentNews2(merged);
     }
