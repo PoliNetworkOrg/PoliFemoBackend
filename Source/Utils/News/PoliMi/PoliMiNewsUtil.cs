@@ -1,7 +1,6 @@
 ﻿#region
 
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Objects.Threading;
@@ -14,7 +13,6 @@ public static class PoliMiNewsUtil
 {
     internal const string UrlPoliMiNews = "https://www.polimi.it/in-evidenza";
     internal const string UrlPoliMiHomePage = "https://www.polimi.it/";
-    private const int PoliMiAuthorId = 1;
 
 
     internal static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls, IReadOnlyCollection<HtmlNode>? newsPolimi)
@@ -98,32 +96,8 @@ public static class PoliMiNewsUtil
         if (string.IsNullOrEmpty(hInHomePage) || string.IsNullOrEmpty(hInEvidenza))
             return false;
 
-        return CheckIfSimilar(hInEvidenza, hInHomePage);
+        return HtmlNewsUtil.CheckIfSimilar(hInEvidenza, hInHomePage);
     }
-
-    private static bool CheckIfSimilar(string a, string b)
-    {
-        if (a == b)
-            return true;
-
-        var aS = a.Split("/");
-        var bS = b.Split("/");
-
-        var aS2 = aS.Where(x => !string.IsNullOrEmpty(x)).ToList();
-        var bS2 = bS.Where(x => !string.IsNullOrEmpty(x)).ToList();
-
-        if (aS2.Count != bS2.Count)
-            return false;
-
-        var matches = CountMatches(aS2, bS2);
-        return matches >= aS2.Count / 2 && aS2[^1] == bS2[^1];
-    }
-
-    private static int CountMatches(IReadOnlyCollection<string> aS2, IReadOnlyList<string> bS2)
-    {
-        return aS2.Count != bS2.Count ? 0 : aS2.Where((t, i) => t == bS2[i]).Count();
-    }
-
 
     internal static List<HtmlNode>? GetNewsPoliMi(HtmlDocument? docPoliMi)
     {
@@ -134,14 +108,6 @@ public static class PoliMiNewsUtil
         var slider5 = slider4?.Where(x => x.GetClasses().Contains("sp-slide")).ToList();
         return slider5;
     }
-
-    internal static HtmlDocument? LoadUrl(string url)
-    {
-        var web = new HtmlWeb();
-        var doc = web.Load(url);
-        return doc;
-    }
-
 
     internal static void GetContent(NewsPolimi? result)
     {
@@ -164,34 +130,9 @@ public static class PoliMiNewsUtil
             return;
 
         var urls2 = urls1.Where(x => x.GetClasses().Contains("container")).ToList();
-        SetContent(urls2, result);
+        HtmlNewsUtil.SetContent(urls2, result);
     }
 
-    private static void SetContent(IReadOnlyCollection<HtmlNode> urls2, NewsPolimi newsPolimi)
-    {
-        var urls3 = HtmlUtil.GetElementsByTagAndClassName(urls2, "img");
-        AdaptImages(urls3);
-
-        newsPolimi.SetContent(urls2.Select(x => x.OuterHtml).ToList());
-    }
-
-    private static void AdaptImages(IEnumerable<HtmlNode>? urls3)
-    {
-        if (urls3 == null) return;
-
-        foreach (var x in urls3) AdaptImage(x);
-    }
-
-
-    private static void AdaptImage(HtmlNode htmlNode)
-    {
-        var src = htmlNode.Attributes.Contains("src") ? htmlNode.Attributes["src"].Value : "";
-
-        if (!src.StartsWith("http"))
-            src = "https://polimi.it" + src;
-
-        htmlNode.SetAttributeValue("src", src);
-    }
 
     /// <summary>
     ///     Loops every 30 mins to sync PoliMi news with the app db
@@ -233,7 +174,7 @@ public static class PoliMiNewsUtil
         foreach (var newsItem in news)
             try
             {
-                var r = UpdateDbWithNews(newsItem);
+                var r = NewsDbUtil.UpdateDbWithNews(newsItem);
                 if (r == DoneEnum.DONE)
                     count++;
             }
@@ -243,54 +184,5 @@ public static class PoliMiNewsUtil
             }
 
         return count;
-    }
-
-    private static DoneEnum UpdateDbWithNews(NewsPolimi newsItem)
-    {
-        var url = newsItem.GetUrl();
-        if (string.IsNullOrEmpty(url))
-            return DoneEnum.ERROR;
-
-        const string query = "SELECT COUNT(*) FROM Articles WHERE source_url = @url";
-        var args = new Dictionary<string, object?> { { "@url", url } };
-        var results = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
-        if (results == null)
-            return DoneEnum.SKIPPED;
-
-        var result = Database.Database.GetFirstValueFromDataTable(results);
-        if (result == null)
-            return DoneEnum.SKIPPED;
-
-        var num = Convert.ToInt32(result);
-        if (num > 0)
-            return DoneEnum.SKIPPED; //news already in db
-
-        InsertItemInDb(newsItem);
-        return DoneEnum.DONE;
-    }
-
-    private static void InsertItemInDb(NewsPolimi newsItem) //11111
-    {
-        const string query1 = "INSERT IGNORE INTO Articles " +
-                              "(title,subtitle,content,publish_time,source_url,author_id,image,tag_id) " +
-                              "VALUES " +
-                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl, @author_id, @image, @tag)";
-        var args1 = new Dictionary<string, object?>
-        {
-            { "@sourceUrl", newsItem.GetUrl() },
-            { "@title", newsItem.GetTitle() },
-            { "@subtitle", newsItem.GetSubtitle() },
-            { "@text_", newsItem.GetContentAsTextJson() },
-            { "@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
-            { "@author_id", PoliMiAuthorId },
-            { "@image", newsItem.GetImgUrl() },
-            { "@tag", newsItem.GetTag()?.ToUpper() == "" ? "ALTRO" : newsItem.GetTag()?.ToUpper() }
-        };
-        Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
-    }
-
-    public static void FixContent(NewsPolimi result)
-    {
-        result.FixContent();
     }
 }

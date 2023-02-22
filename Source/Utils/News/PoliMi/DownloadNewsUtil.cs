@@ -7,10 +7,10 @@ public static class DownloadNewsUtil
 {
     internal static IEnumerable<NewsPolimi> DownloadCurrentNews()
     {
-        var docNews = PoliMiNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
+        var docNews = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
         var urls = docNews?.DocumentNode.SelectNodes("//ul").First(x => x.GetClasses().Contains("ce-menu"));
 
-        var docPoliMi = PoliMiNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiHomePage);
+        var docPoliMi = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiHomePage);
         var newsPolimi = PoliMiNewsUtil.GetNewsPoliMi(docPoliMi);
         var merged = PoliMiNewsUtil.Merge(urls?.ChildNodes, newsPolimi);
 
@@ -82,7 +82,7 @@ public static class DownloadNewsUtil
             if (result.IsContentEmpty())
                 PoliMiNewsUtil.GetContent(result);
 
-            PoliMiNewsUtil.FixContent(result);
+            FixContent(result);
 
             return new Optional<NewsPolimi>(result);
         }
@@ -92,5 +92,11 @@ public static class DownloadNewsUtil
         }
 
         return new Optional<NewsPolimi>();
+    }
+
+
+    private static void FixContent(NewsPolimi result)
+    {
+        result.FixContent();
     }
 }
