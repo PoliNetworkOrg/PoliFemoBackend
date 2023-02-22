@@ -6,7 +6,7 @@ using PoliFemoBackend.Source.Objects.Articles;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils;
+namespace PoliFemoBackend.Source.Utils.Article;
 
 public static class ArticleUtil
 {
