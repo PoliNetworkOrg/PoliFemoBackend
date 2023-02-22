@@ -23,7 +23,7 @@ public class RoomDetailsController : ControllerBase
     [HttpGet]
     public async Task<ObjectResult> GetRoomDetails(int id)
     {
-        var room = await RoomUtil.GetRoomById(id);
+        var room = await SingleRoomUtil.GetRoomById(id);
         if (room is not null)
             return new ObjectResult(room);
 

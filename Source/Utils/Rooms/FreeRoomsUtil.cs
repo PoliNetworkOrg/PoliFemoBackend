@@ -37,7 +37,7 @@ public static class FreeRoomsUtil
         var searchInScopeResults = roomFree.Where(x => x.inScopeSearch).ToList();
         var roomFreeBool = searchInScopeResults.All(x => x is { RoomOccupancyEnum: RoomOccupancyEnum.FREE });
 
-        return roomFreeBool == false ? null : RoomUtil.GetAula(node, roomFree, shiftEnd);
+        return roomFreeBool == false ? null : ExtractHtmlRoomUtil.GetAula(node, roomFree, shiftEnd);
     }
 
     private static List<RoomOccupancyResultObject> IsRoomFree(HtmlNode? node, int shiftStart, int shiftEnd)
