@@ -2,7 +2,7 @@
 
 namespace PoliFemoBackend.Source.Utils.Html;
 
-public class NodeUtil
+public static class NodeUtil
 {
     internal static List<HtmlNode>? GetElementsByTagAndClassName(HtmlNode? doc, string tag = "",
         string? className = "", long? limit = null)
@@ -18,123 +18,23 @@ public class NodeUtil
 
         var result = new List<HtmlNode>();
 
-        if (emptyTag && limit == null)
-        {
-            lst.Add(doc);
-            for (var i = 0; i < lst.Count; i++)
-            {
-                if (lst[i].GetClasses().Contains(className)) result.Add(lst[i]);
+        if (emptyTag && limit == null) return NodeFilterUtil.EmptyTagAndNoLimit(doc, className, lst, result);
 
-                var childcollection = lst[i].ChildNodes;
-                if (childcollection == null) continue;
+        if (emptyCn && limit == null) return NodeFilterUtil.EmptyClassnameAndNoLimit(doc, tag, lst, result);
 
-                lst.AddRange(childcollection);
-            }
+        if (!emptyCn && emptyTag == false && limit == null)
+            return NodeFilterUtil.HasClassnameAndTagAndNoLimit(doc, tag, className, lst, result);
 
-            return result;
-        }
+        if (emptyTag && limit != null) return NodeFilterUtil.HasTagAndLimit(doc, className, limit, lst, result);
 
-        switch (emptyCn)
-        {
-            case true when limit == null:
-            {
-                lst.Add(doc);
-                for (var i = 0; i < lst.Count; i++)
-                {
-                    if (lst[i].Name == tag) result.Add(lst[i]);
+        if (emptyCn && limit != null) return NodeFilterUtil.HasNoClassnameAndLimit(doc, tag, limit, lst, result);
 
-                    var childcollection = lst[i].ChildNodes;
-                    if (childcollection == null) continue;
+        if (!emptyCn && emptyTag == false && limit != null)
+            return NodeFilterUtil.HasClassnameAndTagAndLimit(doc, tag, className, limit, lst, result);
 
-                    lst.AddRange(childcollection);
-                }
-
-                return result;
-            }
-            case false when emptyTag == false && limit == null:
-            {
-                lst.Add(doc);
-                for (var i = 0; i < lst.Count; i++)
-                {
-                    if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag) result.Add(lst[i]);
-
-                    var childcollection = lst[i].ChildNodes;
-                    if (childcollection == null) continue;
-
-                    lst.AddRange(childcollection);
-                }
-
-                return result;
-            }
-        }
-
-        if (emptyTag && limit != null)
-        {
-            lst.Add(doc);
-            for (var i = 0; i < lst.Count; i++)
-            {
-                if (lst[i].GetClasses().Contains(className))
-                {
-                    result.Add(lst[i]);
-
-                    if (result.Count == limit.Value) return result;
-                }
-
-                var childcollection = lst[i].ChildNodes;
-                if (childcollection == null) continue;
-
-                lst.AddRange(childcollection);
-            }
-
-            return result;
-        }
-
-        switch (emptyCn)
-        {
-            case true when limit != null:
-            {
-                lst.Add(doc);
-                for (var i = 0; i < lst.Count; i++)
-                {
-                    if (lst[i].Name == tag)
-                    {
-                        result.Add(lst[i]);
-
-                        if (result.Count == limit.Value) return result;
-                    }
-
-                    var childcollection = lst[i].ChildNodes;
-                    if (childcollection == null) continue;
-
-                    lst.AddRange(childcollection);
-                }
-
-                return result;
-            }
-            case false when emptyTag == false && limit != null:
-            {
-                lst.Add(doc);
-                for (var i = 0; i < lst.Count; i++)
-                {
-                    if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag)
-                    {
-                        result.Add(lst[i]);
-
-                        if (result.Count == limit.Value) return result;
-                    }
-
-                    var childcollection = lst[i].ChildNodes;
-                    if (childcollection == null) continue;
-
-                    lst.AddRange(childcollection);
-                }
-
-                return result;
-            }
-            default:
-                return null;
-        }
+        return null;
     }
+
 
     public static IEnumerable<HtmlNode> GetElementsByTagAndClassName(IEnumerable<HtmlNode> list, string tag)
     {
