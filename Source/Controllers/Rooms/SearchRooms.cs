@@ -28,8 +28,8 @@ public class SearchRoomsController : ControllerBase
     /// <response code="400">Invalid time range (outside 8-20)</response>
     /// <response code="500">Can't connect to poli servers</response>
     [HttpGet]
-    public async Task<IActionResult> SearchRooms([BindRequired] string sede, DateTime? hourStart,
-        DateTime? hourStop)
+    public async Task<IActionResult> SearchRooms([BindRequired] string sede, DateTime? hourStart, DateTime? hourStop)
+
     {
         if (hourStart?.Hour < 8 || hourStop?.Hour > 20)
             return BadRequest(new JObject(new JProperty("error", "Invalid time range")));
