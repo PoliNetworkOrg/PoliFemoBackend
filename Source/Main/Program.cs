@@ -33,7 +33,7 @@ internal static class Program
     {
         if (args.Length > 0 && args[0] == "test")
         {
-            RunTest();
+            Test.Test.RunTest();
             return;
         }
 
@@ -54,11 +54,6 @@ internal static class Program
         }
     }
 
-    private static void RunTest()
-    {
-        var task = Test.Test.TestMain();
-        task.Wait();
-    }
 
     private static void StartServer(string[] args, ArgumentsUtil au)
     {
@@ -66,7 +61,7 @@ internal static class Program
 
         GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
-        AppConfigPreServerThreads(app);
+        Utils.Main.WebApplicationUtil.AppConfigPreServerThreads(app);
 
         try
         {
@@ -77,50 +72,8 @@ internal static class Program
             Console.WriteLine(ex);
         }
 
-        AppConfigPostServerThreads(app);
+        Utils.Main.WebApplicationUtil.AppConfigPostServerThreads(app);
 
         app.Run();
-    }
-
-    private static void AppConfigPostServerThreads(WebApplication app)
-    {
-        app.UseMetricsTextEndpoint();
-        app.UseMetricsAllMiddleware();
-
-        app.UseMiddleware<PageNotFoundMiddleware>();
-
-        app.UseCors(policyBuilder =>
-        {
-            policyBuilder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
-
-        app.UseAuthentication();
-
-        app.UseAuthorization();
-
-        app.UseUserActivityMiddleware();
-
-        app.MapControllers();
-    }
-
-    private static void AppConfigPreServerThreads(IApplicationBuilder app)
-    {
-        if (GlobalVariables.BasePath != "/")
-        {
-            app.UsePathBase(GlobalVariables.BasePath);
-            app.UseRouting();
-        }
-
-        app.UseSwagger();
-        app.UseStaticFiles();
-        app.UseSwaggerUI(options =>
-        {
-            options.DocExpansion(DocExpansion.None);
-            options.SwaggerEndpoint(GlobalVariables.BasePath + "swagger/definitions/swagger.json", "PoliFemo API");
-            options.InjectStylesheet(GlobalVariables.BasePath + "swagger-ui/SwaggerDark.css");
-        });
     }
 }

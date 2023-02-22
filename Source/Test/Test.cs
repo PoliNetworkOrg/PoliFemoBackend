@@ -8,7 +8,13 @@ namespace PoliFemoBackend.Source.Test;
 
 public static class Test
 {
-    public static async Task TestMain()
+    internal static void RunTest()
+    {
+        var task = TestMain();
+        task.Wait();
+    }
+
+    private static async Task TestMain()
     {
         Console.WriteLine("Test");
 
