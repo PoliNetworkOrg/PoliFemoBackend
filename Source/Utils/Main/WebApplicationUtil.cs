@@ -91,7 +91,7 @@ public static class WebApplicationUtil
                 };
             options.Events = new JwtBearerEvents
             {
-                OnChallenge = async context => { await Utils.Main.ProgramUtil.OnChallengeMethod(context); }
+                OnChallenge = async context => { await ProgramUtil.OnChallengeMethod(context); }
             };
         });
 

@@ -1,23 +1,10 @@
 #region
 
 using System.IdentityModel.Tokens.Jwt;
-using App.Metrics;
-using App.Metrics.AspNetCore;
-using App.Metrics.Formatters.Prometheus;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Internal;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Configure;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Middlewares;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Main;
 using PoliFemoBackend.Source.Utils.Start;
-using Swashbuckle.AspNetCore.SwaggerUI;
 
 #endregion
 
@@ -57,11 +44,11 @@ internal static class Program
 
     private static void StartServer(string[] args, ArgumentsUtil au)
     {
-        var app = Utils.Main.WebApplicationUtil.CreateWebApplication(args);
+        var app = WebApplicationUtil.CreateWebApplication(args);
 
         GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
-        Utils.Main.WebApplicationUtil.AppConfigPreServerThreads(app);
+        WebApplicationUtil.AppConfigPreServerThreads(app);
 
         try
         {
@@ -72,7 +59,7 @@ internal static class Program
             Console.WriteLine(ex);
         }
 
-        Utils.Main.WebApplicationUtil.AppConfigPostServerThreads(app);
+        WebApplicationUtil.AppConfigPostServerThreads(app);
 
         app.Run();
     }
