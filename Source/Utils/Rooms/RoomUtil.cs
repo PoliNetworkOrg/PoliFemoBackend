@@ -144,10 +144,10 @@ public static class RoomUtil
         var doc = new HtmlDocument();
         doc.LoadHtml(html.GetData());
 
-        var t1 = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "BoxInfoCard", 1);
+        var t1 = NodeUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "BoxInfoCard", 1);
 
         //Get html node tbody (table) containing the rooms' daily situation requested by the query 
-        var t3 = HtmlUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
+        var t3 = NodeUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
         return t3;
     }
 }

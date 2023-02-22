@@ -31,7 +31,7 @@ public static class HtmlNewsUtil
 
     internal static void SetContent(IReadOnlyCollection<HtmlNode> urls2, NewsPolimi newsPolimi)
     {
-        var urls3 = HtmlUtil.GetElementsByTagAndClassName(urls2, "img");
+        var urls3 = NodeUtil.GetElementsByTagAndClassName(urls2, "img");
         AdaptImages(urls3);
 
         newsPolimi.SetContent(urls2.Select(x => x.OuterHtml).ToList());

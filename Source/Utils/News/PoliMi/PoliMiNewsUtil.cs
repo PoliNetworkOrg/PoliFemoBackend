@@ -79,8 +79,8 @@ public static class PoliMiNewsUtil
         if (itemHomePage.HtmlNode == null || itemInEvidenza.HtmlNode == null)
             return false;
 
-        var hrefHomePage = HtmlUtil.GetElementsByTagAndClassName(itemHomePage.HtmlNode, "a")?.First().Attributes;
-        var hrefInEvidenza = HtmlUtil.GetElementsByTagAndClassName(itemInEvidenza.HtmlNode, "a")?.First().Attributes;
+        var hrefHomePage = NodeUtil.GetElementsByTagAndClassName(itemHomePage.HtmlNode, "a")?.First().Attributes;
+        var hrefInEvidenza = NodeUtil.GetElementsByTagAndClassName(itemInEvidenza.HtmlNode, "a")?.First().Attributes;
 
         if (hrefHomePage == null || hrefInEvidenza == null)
             return false;
@@ -102,10 +102,10 @@ public static class PoliMiNewsUtil
 
     internal static List<HtmlNode>? GetNewsPoliMi(HtmlDocument? docPoliMi)
     {
-        var slider = HtmlUtil.GetElementsByTagAndClassName(docPoliMi?.DocumentNode, "body", null);
-        var slider2 = HtmlUtil.GetElementsByTagAndClassName(slider?.First(), "section");
+        var slider = NodeUtil.GetElementsByTagAndClassName(docPoliMi?.DocumentNode, "body", null);
+        var slider2 = NodeUtil.GetElementsByTagAndClassName(slider?.First(), "section");
         var slider3 = slider2?.First(x => x.Id == "news");
-        var slider4 = HtmlUtil.GetElementsByTagAndClassName(slider3, "div");
+        var slider4 = NodeUtil.GetElementsByTagAndClassName(slider3, "div");
         var slider5 = slider4?.Where(x => x.GetClasses().Contains("sp-slide")).ToList();
         return slider5;
     }
@@ -118,7 +118,7 @@ public static class PoliMiNewsUtil
         try
         {
             var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
-            var p = HtmlUtil.GetElementsByTagAndClassName(urls, "p")?.Select(x => x.InnerHtml).ToList();
+            var p = NodeUtil.GetElementsByTagAndClassName(urls, "p")?.Select(x => x.InnerHtml).ToList();
             if (p != null)
                 result?.SetContent(p);
         }
