@@ -25,37 +25,9 @@ public static class InsertArticleUtil
 
         var sub = AuthUtil.GetSubjectFromHttpRequest(insertArticle.Request);
 
-        if (data.author_id != 0)
-        {
-            var isValidAuthor = Database.Database.ExecuteSelect("SELECT * FROM Authors WHERE author_id = @id",
-                GlobalVariables.DbConfigVar,
-                new Dictionary<string, object?>
-                {
-                    { "@id", data.author_id }
-                });
-            if (isValidAuthor == null)
-                return new BadRequestObjectResult(new JObject
-                {
-                    { "error", "Invalid author" }
-                });
-
-
-            if (!AccountAuthUtil.HasGrantAndObjectPermission(sub, "authors", data.author_id))
-            {
-                insertArticle.Response.StatusCode = 403;
-                return new ObjectResult(new JObject
-                {
-                    { "error", "You don't have enough permissions" }
-                });
-            }
-        }
-        else
-        {
-            return new BadRequestObjectResult(new JObject
-            {
-                { "error", "Invalid author" }
-            });
-        }
+        var errorCheckAuthor = Utils.Article.CheckAuthorUtil.CheckAuthourErros(data, insertArticle, sub);
+        if (errorCheckAuthor != null)
+            return errorCheckAuthor;
 
         if ((data.latitude != 0 && data.longitude == 0) || (data.latitude == 0 && data.longitude != 0))
             return new BadRequestObjectResult(new JObject
@@ -69,6 +41,12 @@ public static class InsertArticleUtil
                 { "error", "Invalid latitude or longitude" }
             });
 
+        return InsertArticleDb(data, insertArticle);
+    }
+
+
+    private static ObjectResult InsertArticleDb(Objects.Articles.News.Article data, InsertArticle insertArticle)
+    {
         const string insertQuery =
             @"INSERT INTO Articles(tag_id, title, subtitle, content, publish_time, target_time, latitude, longitude, image, author_id, source_url) 
             VALUES (@id_tag, @title, @subtitle, @content, NOW(), @targetTimeConverted, @latitude, @longitude, @image, @id_author, null)";
