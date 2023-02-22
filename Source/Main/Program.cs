@@ -42,135 +42,7 @@ internal static class Program
 
         try
         {
-            var builder = WebApplication.CreateBuilder(args);
-            builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
-            builder.Services.Configure<MvcOptions>(options => { options.EnableEndpointRouting = false; });
-
-            builder.Services.AddMvcCore(opts =>
-                opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
-            builder.Services.AddLogging();
-
-            var metrics = AppMetrics.CreateDefaultBuilder().Build();
-
-            builder.Services.AddMetrics(metrics);
-
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("policy",
-                    policy =>
-                    {
-                        policy.AllowAnyOrigin()
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                    });
-            });
-
-            builder.Host
-                .ConfigureMetrics(metricsBuilder =>
-                {
-                    metricsBuilder.Configuration.Configure(options => { options.DefaultContextLabel = "default"; });
-                })
-                .UseMetricsWebTracking()
-                .UseMetricsEndpoints()
-                .UseMetrics(options =>
-                {
-                    options.EndpointOptions = endpointsOptions =>
-                    {
-                        endpointsOptions.MetricsTextEndpointOutputFormatter =
-                            new MetricsPrometheusTextOutputFormatter();
-                        endpointsOptions.MetricsEndpointEnabled = false;
-                    };
-                });
-
-            builder.Services.AddControllers().AddNewtonsoftJson();
-
-            builder.Services.AddApiVersioning(setup =>
-            {
-                setup.ApiVersionReader = new UrlSegmentApiVersionReader();
-                setup.DefaultApiVersion = new ApiVersion(1, 0);
-                setup.AssumeDefaultVersionWhenUnspecified = true;
-                setup.ReportApiVersions = true;
-            });
-            builder.Services.AddVersionedApiExplorer(setup =>
-            {
-                setup.GroupNameFormat = "'v'VVV";
-                setup.SubstituteApiVersionInUrl = true;
-            });
-
-            builder.Services.AddSwaggerGen();
-
-            builder.Services.AddAuthentication(sharedOptions =>
-            {
-                sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.Authority = Constants.AzureAuthority;
-                options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
-                options.TokenValidationParameters.ValidIssuers =
-                    new[]
-                    {
-                        Constants.AzureCommonIssuer,
-                        Constants.AzurePolimiIssuer,
-                        Constants.AzurePoliNetworkIssuer
-                    };
-                options.Events = new JwtBearerEvents
-                {
-                    OnChallenge = async context => { await OnChallengeMethod(context); }
-                };
-            });
-
-            builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
-
-            var app = builder.Build();
-
-            GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
-
-            if (GlobalVariables.BasePath != "/")
-            {
-                app.UsePathBase(GlobalVariables.BasePath);
-                app.UseRouting();
-            }
-
-            app.UseSwagger();
-            app.UseStaticFiles();
-            app.UseSwaggerUI(options =>
-            {
-                options.DocExpansion(DocExpansion.None);
-                options.SwaggerEndpoint(GlobalVariables.BasePath + "swagger/definitions/swagger.json", "PoliFemo API");
-                options.InjectStylesheet(GlobalVariables.BasePath + "swagger-ui/SwaggerDark.css");
-            });
-
-            try
-            {
-                Start.StartThings(au.UseNews);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
-            app.UseMetricsTextEndpoint();
-            app.UseMetricsAllMiddleware();
-
-            app.UseMiddleware<PageNotFoundMiddleware>();
-
-            app.UseCors(policyBuilder =>
-            {
-                policyBuilder
-                    .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-            });
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
-            app.UseUserActivityMiddleware();
-
-            app.MapControllers();
-
-            app.Run();
+            StartServer(args, au);
         }
         catch (Exception ex)
         {
@@ -178,23 +50,138 @@ internal static class Program
         }
     }
 
-    private static async Task OnChallengeMethod(JwtBearerChallengeContext context)
+    private static void StartServer(string[] args, ArgumentsUtil au)
     {
-        var json = new JObject
+        var builder = WebApplication.CreateBuilder(args);
+        builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
+        builder.Services.Configure<MvcOptions>(options => { options.EnableEndpointRouting = false; });
+
+        builder.Services.AddMvcCore(opts =>
+            opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
+        builder.Services.AddLogging();
+
+        var metrics = AppMetrics.CreateDefaultBuilder().Build();
+
+        builder.Services.AddMetrics(metrics);
+
+        builder.Services.AddCors(options =>
         {
-            { "error", "Invalid token. Refresh your current access token or request a new authorization code" },
-            { "reason", context.AuthenticateFailure?.Message }
-        };
-        context.Response.StatusCode = 401;
-        context.Response.ContentType = "application/json";
+            options.AddPolicy("policy",
+                policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });
 
+        builder.Host
+            .ConfigureMetrics(metricsBuilder =>
+            {
+                metricsBuilder.Configuration.Configure(options => { options.DefaultContextLabel = "default"; });
+            })
+            .UseMetricsWebTracking()
+            .UseMetricsEndpoints()
+            .UseMetrics(options =>
+            {
+                options.EndpointOptions = endpointsOptions =>
+                {
+                    endpointsOptions.MetricsTextEndpointOutputFormatter =
+                        new MetricsPrometheusTextOutputFormatter();
+                    endpointsOptions.MetricsEndpointEnabled = false;
+                };
+            });
 
-        if (!context.Request.Headers.ContainsKey(Constants.Authorization))
-            json["reason"] = "Missing Authorization header";
-        else if (!context.Request.Headers[Constants.Authorization].ToString().StartsWith("Bearer "))
-            json["reason"] = "Not a Bearer token";
+        builder.Services.AddControllers().AddNewtonsoftJson();
 
-        context.HandleResponse();
-        await context.Response.WriteAsync(JsonConvert.SerializeObject(json));
+        builder.Services.AddApiVersioning(setup =>
+        {
+            setup.ApiVersionReader = new UrlSegmentApiVersionReader();
+            setup.DefaultApiVersion = new ApiVersion(1, 0);
+            setup.AssumeDefaultVersionWhenUnspecified = true;
+            setup.ReportApiVersions = true;
+        });
+        builder.Services.AddVersionedApiExplorer(setup =>
+        {
+            setup.GroupNameFormat = "'v'VVV";
+            setup.SubstituteApiVersionInUrl = true;
+        });
+
+        builder.Services.AddSwaggerGen();
+
+        builder.Services.AddAuthentication(sharedOptions =>
+        {
+            sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.Authority = Constants.AzureAuthority;
+            options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
+            options.TokenValidationParameters.ValidIssuers =
+                new[]
+                {
+                    Constants.AzureCommonIssuer,
+                    Constants.AzurePolimiIssuer,
+                    Constants.AzurePoliNetworkIssuer
+                };
+            options.Events = new JwtBearerEvents
+            {
+                OnChallenge = async context => { await Utils.Main.ProgramUtil.OnChallengeMethod(context); }
+            };
+        });
+
+        builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+
+        var app = builder.Build();
+
+        GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
+
+        if (GlobalVariables.BasePath != "/")
+        {
+            app.UsePathBase(GlobalVariables.BasePath);
+            app.UseRouting();
+        }
+
+        app.UseSwagger();
+        app.UseStaticFiles();
+        app.UseSwaggerUI(options =>
+        {
+            options.DocExpansion(DocExpansion.None);
+            options.SwaggerEndpoint(GlobalVariables.BasePath + "swagger/definitions/swagger.json", "PoliFemo API");
+            options.InjectStylesheet(GlobalVariables.BasePath + "swagger-ui/SwaggerDark.css");
+        });
+
+        try
+        {
+            Start.StartThings(au.UseNews);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        app.UseMetricsTextEndpoint();
+        app.UseMetricsAllMiddleware();
+
+        app.UseMiddleware<PageNotFoundMiddleware>();
+
+        app.UseCors(policyBuilder =>
+        {
+            policyBuilder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.UseUserActivityMiddleware();
+
+        app.MapControllers();
+
+        app.Run();
     }
+
+   
 }
