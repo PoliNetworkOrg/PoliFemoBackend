@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Articles.News;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Database;
 
 // ReSharper disable InconsistentNaming
@@ -78,7 +78,7 @@ public class InsertArticle : ControllerBase
                 });
 
 
-            if (!AuthUtil.HasGrantAndObjectPermission(sub, "authors", data.author_id))
+            if (!AccountAuthUtil.HasGrantAndObjectPermission(sub, "authors", data.author_id))
             {
                 Response.StatusCode = 403;
                 return new ObjectResult(new JObject

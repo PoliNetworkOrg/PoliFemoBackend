@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Database;
 
 namespace PoliFemoBackend.Source.Controllers.Rooms;
@@ -34,7 +34,7 @@ public class RoomOccupancyReport : ControllerBase
 
         var token = Request.Headers[Constants.Authorization];
         var jwt = new JwtSecurityToken(token.ToString()[7..]);
-        if (AuthUtil.GetAccountType(jwt) != "POLIMI")
+        if (AccountAuthUtil.GetAccountType(jwt) != "POLIMI")
             return new UnauthorizedObjectResult(new JObject
             {
                 { "error", "You don't have enough permissions" }
