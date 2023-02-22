@@ -33,11 +33,15 @@ internal static class Program
     {
         if (args.Length > 0 && args[0] == "test")
         {
-            var task = Test.Test.TestMain();
-            task.Wait();
+            RunTest();
             return;
         }
 
+        RunServer(args);
+    }
+
+    private static void RunServer(string[] args)
+    {
         var au = new ArgumentsUtil(args);
 
         try
@@ -50,105 +54,19 @@ internal static class Program
         }
     }
 
+    private static void RunTest()
+    {
+        var task = Test.Test.TestMain();
+        task.Wait();
+    }
+
     private static void StartServer(string[] args, ArgumentsUtil au)
     {
-        var builder = WebApplication.CreateBuilder(args);
-        builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
-        builder.Services.Configure<MvcOptions>(options => { options.EnableEndpointRouting = false; });
-
-        builder.Services.AddMvcCore(opts =>
-            opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
-        builder.Services.AddLogging();
-
-        var metrics = AppMetrics.CreateDefaultBuilder().Build();
-
-        builder.Services.AddMetrics(metrics);
-
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy("policy",
-                policy =>
-                {
-                    policy.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-        });
-
-        builder.Host
-            .ConfigureMetrics(metricsBuilder =>
-            {
-                metricsBuilder.Configuration.Configure(options => { options.DefaultContextLabel = "default"; });
-            })
-            .UseMetricsWebTracking()
-            .UseMetricsEndpoints()
-            .UseMetrics(options =>
-            {
-                options.EndpointOptions = endpointsOptions =>
-                {
-                    endpointsOptions.MetricsTextEndpointOutputFormatter =
-                        new MetricsPrometheusTextOutputFormatter();
-                    endpointsOptions.MetricsEndpointEnabled = false;
-                };
-            });
-
-        builder.Services.AddControllers().AddNewtonsoftJson();
-
-        builder.Services.AddApiVersioning(setup =>
-        {
-            setup.ApiVersionReader = new UrlSegmentApiVersionReader();
-            setup.DefaultApiVersion = new ApiVersion(1, 0);
-            setup.AssumeDefaultVersionWhenUnspecified = true;
-            setup.ReportApiVersions = true;
-        });
-        builder.Services.AddVersionedApiExplorer(setup =>
-        {
-            setup.GroupNameFormat = "'v'VVV";
-            setup.SubstituteApiVersionInUrl = true;
-        });
-
-        builder.Services.AddSwaggerGen();
-
-        builder.Services.AddAuthentication(sharedOptions =>
-        {
-            sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.Authority = Constants.AzureAuthority;
-            options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
-            options.TokenValidationParameters.ValidIssuers =
-                new[]
-                {
-                    Constants.AzureCommonIssuer,
-                    Constants.AzurePolimiIssuer,
-                    Constants.AzurePoliNetworkIssuer
-                };
-            options.Events = new JwtBearerEvents
-            {
-                OnChallenge = async context => { await Utils.Main.ProgramUtil.OnChallengeMethod(context); }
-            };
-        });
-
-        builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
-
-        var app = builder.Build();
+        var app = Utils.Main.WebApplicationUtil.CreateWebApplication(args);
 
         GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
 
-        if (GlobalVariables.BasePath != "/")
-        {
-            app.UsePathBase(GlobalVariables.BasePath);
-            app.UseRouting();
-        }
-
-        app.UseSwagger();
-        app.UseStaticFiles();
-        app.UseSwaggerUI(options =>
-        {
-            options.DocExpansion(DocExpansion.None);
-            options.SwaggerEndpoint(GlobalVariables.BasePath + "swagger/definitions/swagger.json", "PoliFemo API");
-            options.InjectStylesheet(GlobalVariables.BasePath + "swagger-ui/SwaggerDark.css");
-        });
+        AppConfigPreServerThreads(app);
 
         try
         {
@@ -159,6 +77,13 @@ internal static class Program
             Console.WriteLine(ex);
         }
 
+        AppConfigPostServerThreads(app);
+
+        app.Run();
+    }
+
+    private static void AppConfigPostServerThreads(WebApplication app)
+    {
         app.UseMetricsTextEndpoint();
         app.UseMetricsAllMiddleware();
 
@@ -179,9 +104,23 @@ internal static class Program
         app.UseUserActivityMiddleware();
 
         app.MapControllers();
-
-        app.Run();
     }
 
-   
+    private static void AppConfigPreServerThreads(IApplicationBuilder app)
+    {
+        if (GlobalVariables.BasePath != "/")
+        {
+            app.UsePathBase(GlobalVariables.BasePath);
+            app.UseRouting();
+        }
+
+        app.UseSwagger();
+        app.UseStaticFiles();
+        app.UseSwaggerUI(options =>
+        {
+            options.DocExpansion(DocExpansion.None);
+            options.SwaggerEndpoint(GlobalVariables.BasePath + "swagger/definitions/swagger.json", "PoliFemo API");
+            options.InjectStylesheet(GlobalVariables.BasePath + "swagger-ui/SwaggerDark.css");
+        });
+    }
 }
