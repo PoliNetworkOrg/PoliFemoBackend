@@ -28,7 +28,7 @@ public class CodeExchangeController : ControllerBase
     /// <response code="403">The user is not using a valid org email</response>
     /// <returns>An access and a refresh token</returns>
     [HttpGet]
-    public ActionResult CodeExchange(string code, int state)
+    public ActionResult? CodeExchange(string code, int state)
         // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d
         //      &scope=openid%20offline_access&response_type=code
         //      &login_hint=nome.cognome@mail.polimi.it&state=10010
