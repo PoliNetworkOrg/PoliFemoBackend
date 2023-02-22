@@ -67,6 +67,9 @@ public class ProfessorReviewController : ControllerBase
     [Authorize]
     public ActionResult PostProfessorReview(uint professorId, uint categoryReview, decimal reviewValue)
     {
+        if (reviewValue is < 1 or > 5)
+            return StatusCode(500, ""); //todo: controllare questo
+        
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
 
         const string query = "INSERT IGNORE INTO professor_reviews " +
