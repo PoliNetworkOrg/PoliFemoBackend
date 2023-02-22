@@ -4,7 +4,7 @@ using PoliFemoBackend.Source.Objects.Rooms;
 
 namespace PoliFemoBackend.Source.Utils.Rooms;
 
-public class FreeRoomsUtil
+public static class FreeRoomsUtil
 {
     internal static List<object?>? GetFreeRooms(HtmlNode? table, DateTime? start, DateTime? stop)
     {

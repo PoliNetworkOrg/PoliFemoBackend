@@ -1,6 +1,6 @@
 ﻿namespace PoliFemoBackend.Source.Utils.Rooms;
 
-public class TimeRoomUtil
+public static class TimeRoomUtil
 {
     internal static int GetShiftSlotFromTime(DateTime time)
     {
