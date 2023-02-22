@@ -87,4 +87,30 @@ public class ProfessorReviewController : ControllerBase
         var r = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
         return Ok(r);
     }
+    
+    [HttpGet]
+    [Route("/categories")]
+    public ActionResult GetCategories()
+    {
+        const string q = "SELECT id, name  FROM review_categories  ";
+
+        var dt = Database.ExecuteSelect(q, GlobalVariables.DbConfigVar);
+        var jArray = new JArray();
+        if (dt == null)
+            return Ok(jArray); //todo: mettere 404?
+
+        foreach (DataRow dr in dt.Rows)
+        {
+            var jObject = new JObject
+            {
+                ["id"] = Convert.ToUInt32(dr.ItemArray[0]),
+                ["name"] = dr.ItemArray[1]?.ToString()
+            };
+
+            jArray.Add(jObject);
+        }
+
+        return Ok(jArray);
+    }
+    
 }
