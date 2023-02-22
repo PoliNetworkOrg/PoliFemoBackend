@@ -4,10 +4,26 @@ namespace PoliFemoBackend.Source.Utils.Danger;
 
 public static class GracefullyShutdown
 {
-    public static void Shutdown()
+    public static void ShutdownGracefully()
     {
-        //todo: add code to do a safe shutdown (like save things)
-        GlobalVariables.App?.StopAsync().Wait();
-        Environment.Exit(0);
+        //todo: save things
+
+        if (ServerStop())
+            Environment.Exit(0);
+    }
+
+    private static bool ServerStop()
+    {
+        try
+        {
+            GlobalVariables.App?.StopAsync().Wait();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        return false;
     }
 }
