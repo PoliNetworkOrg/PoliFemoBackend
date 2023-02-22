@@ -7,7 +7,7 @@ using PoliFemoBackend.Source.Objects.Web;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils;
+namespace PoliFemoBackend.Source.Utils.Html;
 
 public static class HtmlUtil
 {

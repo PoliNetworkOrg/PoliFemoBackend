@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects.Rooms;
+using PoliFemoBackend.Source.Utils.Html;
 
 #endregion
 

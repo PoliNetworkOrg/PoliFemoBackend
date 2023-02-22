@@ -1,5 +1,6 @@
 ﻿using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Objects.Types;
+using PoliFemoBackend.Source.Utils.Html;
 
 namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
