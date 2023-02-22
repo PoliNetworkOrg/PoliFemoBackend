@@ -29,6 +29,10 @@ public class ProfessorReviewController : ControllerBase
      *      name [STRING(100)]
      * )
      * link between the two tables: professor_reviews.review_category = review_categories.id
+     *
+     * primary keys:
+     * professor_reviews (professor_id,user_id,review_category)
+     * review_categories (id)
      */
 
     [HttpGet]
