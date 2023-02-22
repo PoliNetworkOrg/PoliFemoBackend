@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils;
+namespace PoliFemoBackend.Source.Utils.Groups;
 
 // ReSharper disable once UnusedType.Global
 public static class GroupsUtil

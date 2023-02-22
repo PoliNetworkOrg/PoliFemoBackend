@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Permissions;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
@@ -69,7 +69,7 @@ public class AccountExportController : ControllerBase
             last_activity = lastActivity.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
             account_type = accountType,
             expires_days = edays,
-            permissions = Grant.GetFormattedPerms(AuthUtil.GetPermissions(sub)),
+            permissions = Grant.GetFormattedPerms(AccountAuthUtil.GetPermissions(sub)),
             room_occupancy_reports = roc
         }).ToString()), "application/json", id + ".json");
     }

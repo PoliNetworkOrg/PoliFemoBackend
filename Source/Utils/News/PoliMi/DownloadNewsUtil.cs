@@ -1,5 +1,6 @@
 ﻿using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Objects.Types;
+using PoliFemoBackend.Source.Utils.Html;
 
 namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
@@ -7,12 +8,12 @@ public static class DownloadNewsUtil
 {
     internal static IEnumerable<NewsPolimi> DownloadCurrentNews()
     {
-        var docNews = PoliMiNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
+        var docNews = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
         var urls = docNews?.DocumentNode.SelectNodes("//ul").First(x => x.GetClasses().Contains("ce-menu"));
 
-        var docPoliMi = PoliMiNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiHomePage);
+        var docPoliMi = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiHomePage);
         var newsPolimi = PoliMiNewsUtil.GetNewsPoliMi(docPoliMi);
-        var merged = PoliMiNewsUtil.Merge(urls?.ChildNodes, newsPolimi);
+        var merged = MergeNewsUtil.Merge(urls?.ChildNodes, newsPolimi);
 
         return DownloadCurrentNews2(merged);
     }
@@ -40,9 +41,9 @@ public static class DownloadNewsUtil
 
             if (htmlNews.NodeInEvidenza == null)
             {
-                var img = HtmlUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")?.First()
+                var img = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")?.First()
                     .Attributes["src"].Value ?? "";
-                tagFinal = HtmlUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
+                tagFinal = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
                     ?.First(x => x.GetClasses().Contains("newsCategory")).InnerHtml.Trim();
                 urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
             }
@@ -64,9 +65,9 @@ public static class DownloadNewsUtil
 
                 if (htmlNews.NodePoliMiHomePage != null)
                 {
-                    var img = HtmlUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")?.First()
+                    var img = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")?.First()
                         .Attributes["src"].Value ?? "";
-                    tagFinal = HtmlUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
+                    tagFinal = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
                         ?.First(x => x.GetClasses().Contains("newsCategory")).InnerHtml.Trim();
                     urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
                 }
@@ -82,7 +83,7 @@ public static class DownloadNewsUtil
             if (result.IsContentEmpty())
                 PoliMiNewsUtil.GetContent(result);
 
-            PoliMiNewsUtil.FixContent(result);
+            FixContent(result);
 
             return new Optional<NewsPolimi>(result);
         }
@@ -92,5 +93,11 @@ public static class DownloadNewsUtil
         }
 
         return new Optional<NewsPolimi>();
+    }
+
+
+    private static void FixContent(NewsPolimi result)
+    {
+        result.FixContent();
     }
 }

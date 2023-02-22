@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils;
+namespace PoliFemoBackend.Source.Utils.Auth;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public class AuthOperationsFilter : IOperationFilter

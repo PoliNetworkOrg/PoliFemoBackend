@@ -18,7 +18,7 @@ public class GetUptimeController : ControllerBase
     /// </summary>
     /// <returns>The number of seconds of uptime</returns>
     [HttpGet]
-    public ObjectResult GetUptime()
+    public ObjectResult? GetUptime()
     {
         try
         {

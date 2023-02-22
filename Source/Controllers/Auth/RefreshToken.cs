@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Auth;
 
 #endregion
 
@@ -24,7 +25,7 @@ public class RefreshTokenController : ControllerBase
     /// <response code="400">The refresh token is not valid</response>
     /// <returns>A new access token</returns>
     [HttpGet]
-    public ObjectResult RefreshToken()
+    public ObjectResult? RefreshToken()
     {
         try
         {

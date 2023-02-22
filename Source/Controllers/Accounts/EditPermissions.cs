@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Permissions;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Database;
 
 namespace PoliFemoBackend.Source.Controllers.Accounts;
@@ -30,7 +30,7 @@ public class EditPermissions : ControllerBase
     [Authorize]
     public ObjectResult GrantPermission(string id, [FromBody] Grant grant)
     {
-        var canGrantPermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
+        var canGrantPermissions = AccountAuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
             Constants.Permissions.ManagePermissions);
         if (!canGrantPermissions)
         {
@@ -78,7 +78,7 @@ public class EditPermissions : ControllerBase
     [Authorize]
     public ObjectResult RevokePermission(string id, [FromBody] Grant grant)
     {
-        var canRevokePermissions = AuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
+        var canRevokePermissions = AccountAuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
             Constants.Permissions.ManagePermissions);
         if (!canRevokePermissions)
         {

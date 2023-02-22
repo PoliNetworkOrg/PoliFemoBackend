@@ -14,7 +14,7 @@ public static class SearchRoomUtil
         if (t3 is null || t3.Count == 0) return new Tuple<JArray?, DoneEnum>(null, DoneEnum.ERROR);
 
         var htmlNode = t3[0];
-        var t4 = RoomUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
+        var t4 = FreeRoomsUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
         if (t4 is null || t4.Count == 0)
             return new Tuple<JArray?, DoneEnum>(null, DoneEnum.SKIPPED);
 

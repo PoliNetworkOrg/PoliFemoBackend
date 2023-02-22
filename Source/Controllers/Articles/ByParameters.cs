@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.DbObjects;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Article;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
