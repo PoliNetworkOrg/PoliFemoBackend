@@ -1,10 +1,7 @@
 #region
 
-using System.IdentityModel.Tokens.Jwt;
-using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Main;
-using PoliFemoBackend.Source.Utils.Start;
 
 #endregion
 
@@ -33,34 +30,11 @@ internal static class Program
 
         try
         {
-            StartServer(args, au);
+            StartServerUtil.StartServer(args, au);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
         }
-    }
-
-
-    private static void StartServer(string[] args, ArgumentsUtil au)
-    {
-        var app = WebApplicationUtil.CreateWebApplication(args);
-
-        GlobalVariables.TokenHandler = new JwtSecurityTokenHandler();
-
-        WebApplicationUtil.AppConfigPreServerThreads(app);
-
-        try
-        {
-            Start.StartThings(au.UseNews);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-
-        WebApplicationUtil.AppConfigPostServerThreads(app);
-
-        app.Run();
     }
 }
