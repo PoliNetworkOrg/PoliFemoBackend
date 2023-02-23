@@ -12,7 +12,7 @@ public static class SingleRoomUtil
         var url = RoomUtil.RoomInfoUrls + "Aula.do?" +
                   "idaula=" + id;
 
-        var html = await HtmlUtil.DownloadHtmlAsync(url);
+        var html = HtmlUtil.DownloadHtmlAsync(url);
         if (html.IsValid() == false) return null;
         /*
         example of property tag

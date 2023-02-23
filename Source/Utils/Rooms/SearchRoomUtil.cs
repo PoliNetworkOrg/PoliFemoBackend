@@ -6,18 +6,22 @@ namespace PoliFemoBackend.Source.Utils.Rooms;
 
 public static class SearchRoomUtil
 {
-    public static async Task<Tuple<JArray?, DoneEnum>> SearchRooms(string sede, DateTime? hourStart, DateTime? hourStop)
+    public static Tuple<JArray?, DoneEnum> SearchRooms(string sede, DateTime? hourStart, DateTime? hourStop)
     {
         hourStop = hourStop?.AddMinutes(-1);
 
-        var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, sede);
+        var t3 = RoomUtil.GetDailySituationOnDate(hourStart, sede);
         if (t3 is null || t3.Count == 0) return new Tuple<JArray?, DoneEnum>(null, DoneEnum.ERROR);
 
         var htmlNode = t3[0];
         var t4 = FreeRoomsUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
-        if (t4 is null || t4.Count == 0)
-            return new Tuple<JArray?, DoneEnum>(null, DoneEnum.SKIPPED);
+        return t4 is null || t4.Count == 0
+            ? new Tuple<JArray?, DoneEnum>(null, DoneEnum.SKIPPED)
+            : ReturnResultSearch(t4);
+    }
 
+    private static Tuple<JArray?, DoneEnum> ReturnResultSearch(List<object?> t4)
+    {
         var results = new JArray();
         foreach (var room in t4)
         {

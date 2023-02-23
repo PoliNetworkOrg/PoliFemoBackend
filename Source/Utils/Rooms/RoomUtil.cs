@@ -12,7 +12,7 @@ public static class RoomUtil
     public const string RoomInfoUrls = "https://www7.ceda.polimi.it/spazi/spazi/controller/";
 
 
-    internal static async Task<List<HtmlNode>?> GetDailySituationOnDate(DateTime? date, string sede)
+    internal static List<HtmlNode>? GetDailySituationOnDate(DateTime? date, string sede)
     {
         date ??= DateTime.Today;
         var day = date?.Day;
@@ -30,7 +30,8 @@ public static class RoomUtil
                   "&giorno_year=" + year +
                   "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&evn_visualizza=";
 
-        var html = await HtmlUtil.DownloadHtmlAsync(url);
+        var expireDate = DateTime.Now.AddHours(1);
+        var html = HtmlUtil.DownloadHtmlAsync(url, expireDate);
         if (html.IsValid() == false) return null;
 
         var doc = new HtmlDocument();
