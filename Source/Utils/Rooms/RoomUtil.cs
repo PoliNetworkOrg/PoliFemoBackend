@@ -1,6 +1,7 @@
 #region
 
 using HtmlAgilityPack;
+using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils.Html;
 
 #endregion
@@ -31,7 +32,7 @@ public static class RoomUtil
                   "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&evn_visualizza=";
 
         var expireDate = DateTime.Now.AddHours(1);
-        var html = HtmlUtil.DownloadHtmlAsync(url, expireDate);
+        var html = HtmlUtil.DownloadHtmlAsync(url, expireDate, ExpireCacheEnum.TIMED_EXPIRATION);
         if (html.IsValid() == false) return null;
 
         var doc = new HtmlDocument();

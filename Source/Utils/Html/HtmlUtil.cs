@@ -2,6 +2,8 @@
 
 using System.Net;
 using System.Text;
+using PoliFemoBackend.Source.Enums;
+using PoliFemoBackend.Source.Objects.Search;
 using PoliFemoBackend.Source.Objects.Web;
 
 #endregion
@@ -10,16 +12,31 @@ namespace PoliFemoBackend.Source.Utils.Html;
 
 public static class HtmlUtil
 {
-    private static readonly Dictionary<string, Tuple<string?, DateTime?>> RecordsCache = new();
+    private static readonly Dictionary<string, SearchResultTempObject> RecordsCache = new();
 
 
-    public static WebReply DownloadHtmlAsync(string urlAddress, DateTime? expireDate = null)
+    public static WebReply DownloadHtmlAsync(string urlAddress, DateTime? expireDate = null,
+        ExpireCacheEnum alreadyExpired = ExpireCacheEnum.ALREADY_EXPIRED)
     {
         if (string.IsNullOrEmpty(urlAddress))
             return new WebReply(null, HttpStatusCode.ExpectationFailed, false);
 
+        //if expired we need to download it again
+        switch (alreadyExpired)
+        {
+            case ExpireCacheEnum.NEVER_EXPIRE:
+                break;
+            case ExpireCacheEnum.ALREADY_EXPIRED:
+                return DownloadNotFromCache(urlAddress, expireDate, alreadyExpired);
+            case ExpireCacheEnum.TIMED_EXPIRATION:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(alreadyExpired), alreadyExpired, null);
+        }
+
+        //let's try to see if it's in the cache and not expired
         var possibleWebReply = TryToGetResultFromCache(urlAddress);
-        return possibleWebReply ?? DownloadNotFromCache(urlAddress, expireDate);
+        return possibleWebReply ?? DownloadNotFromCache(urlAddress, expireDate, alreadyExpired);
     }
 
     private static WebReply? TryToGetResultFromCache(string urlAddress)
@@ -29,35 +46,20 @@ public static class HtmlUtil
 
         var record = RecordsCache[urlAddress];
 
-        if (!string.IsNullOrEmpty(record.Item1))
-        {
-            WebReply webReply;
-            if (record.Item2 == null) //no expiration
-            {
-                webReply = new WebReply(record.Item1, HttpStatusCode.OK, true);
-                return webReply;
-            }
-
-            if (record.Item2 <= DateTime.Now)
-                //expired
-            {
-                RecordsCache.Remove(urlAddress);
-            }
-            else
-            {
-                webReply = new WebReply(record.Item1, HttpStatusCode.OK, true);
-                return webReply;
-            }
-        }
-        else
+        var expired = record.HasExpired();
+        if (expired)
         {
             RecordsCache.Remove(urlAddress);
+            return null;
         }
 
-        return null;
+        //we have a match!
+        var webReply = new WebReply(record.Result, HttpStatusCode.OK, true);
+        return webReply;
     }
 
-    private static WebReply DownloadNotFromCache(string urlAddress, DateTime? expireDate)
+    private static WebReply DownloadNotFromCache(string urlAddress, DateTime? expireDate,
+        ExpireCacheEnum alreadyExpired)
     {
         try
         {
@@ -65,8 +67,11 @@ public static class HtmlUtil
             var task = httpClient.GetByteArrayAsync(urlAddress);
             task.Wait();
             var response = task.Result;
+
             var s = Encoding.UTF8.GetString(response, 0, response.Length);
-            if (!string.IsNullOrEmpty(s)) RecordsCache[urlAddress] = new Tuple<string?, DateTime?>(s, expireDate);
+            if (!string.IsNullOrEmpty(s))
+                //if there's a value, cache it
+                RecordsCache[urlAddress] = new SearchResultTempObject(s, expireDate, alreadyExpired);
 
             return new WebReply(s, HttpStatusCode.OK, false);
         }
