@@ -12,9 +12,24 @@ namespace PoliFemoBackend.Source.Utils.Html;
 
 public static class HtmlUtil
 {
+    //Cache for the HtmlUtil
     private static readonly Dictionary<string, SearchResultTempObject> RecordsCache = new();
 
 
+    /// <summary>
+    ///     Download an url and get a WebReply. Can be get a result from cache.
+    /// </summary>
+    /// <param name="urlAddress">Url address to get</param>
+    /// <param name="expireDate">
+    ///     If it's downloaded from the web, if expireDate is not null, this will be the Date when the
+    ///     result will be marked as expired in cache
+    /// </param>
+    /// <param name="alreadyExpired">
+    ///     If you don't want to use caching, you can ignore the current cache, delete it and get a
+    ///     new value
+    /// </param>
+    /// <returns>The webreply from the web or the cache, according to parameters</returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static WebReply DownloadHtmlAsync(string urlAddress, DateTime? expireDate = null,
         ExpireCacheEnum alreadyExpired = ExpireCacheEnum.ALREADY_EXPIRED)
     {
@@ -39,6 +54,11 @@ public static class HtmlUtil
         return possibleWebReply ?? DownloadNotFromCache(urlAddress, expireDate, alreadyExpired);
     }
 
+    /// <summary>
+    ///     Try to get result from cache
+    /// </summary>
+    /// <param name="urlAddress">The url address we should have a cache value result for</param>
+    /// <returns>A cached value if found and not expired, null otherwise</returns>
     private static WebReply? TryToGetResultFromCache(string urlAddress)
     {
         if (!RecordsCache.ContainsKey(urlAddress))
@@ -58,6 +78,13 @@ public static class HtmlUtil
         return webReply;
     }
 
+    /// <summary>
+    ///     Download the result from the web, ignoring the cache. Store it in the cache when found.
+    /// </summary>
+    /// <param name="urlAddress">Url address to get</param>
+    /// <param name="expireDate">When will this value expire? (can be null, never)</param>
+    /// <param name="alreadyExpired">If you don't want to cache the result, set this as "ALREADY_EXPIRED"</param>
+    /// <returns>WebReply from the web, not the cache.</returns>
     private static WebReply DownloadNotFromCache(string urlAddress, DateTime? expireDate,
         ExpireCacheEnum alreadyExpired)
     {

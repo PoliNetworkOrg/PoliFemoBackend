@@ -2,6 +2,9 @@
 
 namespace PoliFemoBackend.Source.Objects.Search;
 
+/// <summary>
+///     Used to store the search result in the cache
+/// </summary>
 public class SearchResultTempObject
 {
     private readonly ExpireCacheEnum _alreadyExpired;
@@ -15,27 +18,23 @@ public class SearchResultTempObject
         _alreadyExpired = alreadyExpired;
     }
 
+    /// <summary>
+    ///     Check if the result cached has expired
+    /// </summary>
+    /// <returns>True if expired, false otherwise</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The {alreadyExpired} enum has an invalid value</exception>
     public bool HasExpired()
     {
-        if (string.IsNullOrEmpty(Result))
-            return true;
-
-        switch (_alreadyExpired)
+        return string.IsNullOrEmpty(Result) || _alreadyExpired switch
         {
-            case ExpireCacheEnum.NEVER_EXPIRE:
-                return false;
-            case ExpireCacheEnum.ALREADY_EXPIRED:
-                return true;
-            case ExpireCacheEnum.TIMED_EXPIRATION:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        return _expireDate switch
-        {
-            null => false, //no expiration
-            _ => _expireDate <= DateTime.Now
+            ExpireCacheEnum.NEVER_EXPIRE => false,
+            ExpireCacheEnum.ALREADY_EXPIRED => true,
+            ExpireCacheEnum.TIMED_EXPIRATION => _expireDate switch
+            {
+                null => false, //no expiration
+                _ => _expireDate <= DateTime.Now
+            },
+            _ => throw new ArgumentOutOfRangeException()
         };
     }
 }
