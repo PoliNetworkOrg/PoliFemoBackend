@@ -5,7 +5,7 @@ using PoliFemoBackend.Source.Utils.Calendar.Populate;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Calendar;
+namespace PoliFemoBackend.Source.Controllers.Calendar.Populate;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Calendar")]

@@ -30,6 +30,7 @@ public class SearchGroupsController : ControllerBase
     /// <response code="200">Request completed succesfully</response>
     /// <response code="500">Can't connect to server</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult SearchGroupsDb(string name, string? year, string? degree, string? type, string? platform,
         string? language, string? office)
     {

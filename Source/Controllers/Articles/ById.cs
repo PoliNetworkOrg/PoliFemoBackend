@@ -23,6 +23,7 @@ public class ArticleByIdController : ControllerBase
     /// <response code="404">No available articles</response>
     /// <response code="500">Can't connect to the server</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult SearchArticlesById(int id)
     {
         var a = SearchArticlesByIdObject(id);

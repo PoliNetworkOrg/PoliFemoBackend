@@ -25,6 +25,7 @@ public class RefreshTokenController : ControllerBase
     /// <response code="400">The refresh token is not valid</response>
     /// <returns>A new access token</returns>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult? RefreshToken()
     {
         try

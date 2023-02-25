@@ -18,6 +18,7 @@ public class GetUptimeController : ControllerBase
     /// </summary>
     /// <returns>The number of seconds of uptime</returns>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult? GetUptime()
     {
         try

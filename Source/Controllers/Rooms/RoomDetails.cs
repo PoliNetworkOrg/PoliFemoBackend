@@ -21,6 +21,7 @@ public class RoomDetailsController : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="500">Can't connect to poli servers</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public async Task<ObjectResult> GetRoomDetails(int id)
     {
         var room = await SingleRoomUtil.GetRoomById(id);
