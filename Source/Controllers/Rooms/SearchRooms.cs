@@ -17,7 +17,7 @@ namespace PoliFemoBackend.Source.Controllers.Rooms;
 public class SearchRoomsController : ControllerBase
 {
     private const int SecondsToCacheSearch = 60 * 60; //an hour
-    
+
     /// <summary>
     ///     Search for available rooms in a given time range
     /// </summary>

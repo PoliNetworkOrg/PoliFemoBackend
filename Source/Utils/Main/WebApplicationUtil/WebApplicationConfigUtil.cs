@@ -27,7 +27,7 @@ public static class WebApplicationConfigUtil
         app.UseAuthentication();
 
         app.UseResponseCaching();
-        
+
         app.UseAuthorization();
 
         app.UseUserActivityMiddleware();

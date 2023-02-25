@@ -65,7 +65,7 @@ public class SearchRangeOfDate : ControllerBase
     }
 
     /// <summary>
-    /// METHOD RETURN A STRING WITH ALL TYPOLOGIES OF A DAY
+    ///     METHOD RETURN A STRING WITH ALL TYPOLOGIES OF A DAY
     /// </summary>
     /// <returns></returns>
     private static JArray GetArrayString(DataTable results, string date)
