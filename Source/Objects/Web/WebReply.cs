@@ -10,13 +10,11 @@ public class WebReply
 {
     private readonly string? _data;
     private readonly HttpStatusCode _httpStatusCode;
-    public readonly bool fromCache;
 
-    public WebReply(string? s, HttpStatusCode httpStatusCode, bool fromCache)
+    public WebReply(string? s, HttpStatusCode httpStatusCode)
     {
         _data = s;
         _httpStatusCode = httpStatusCode;
-        this.fromCache = fromCache;
     }
 
 
