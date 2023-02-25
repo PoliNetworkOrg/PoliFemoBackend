@@ -27,6 +27,7 @@ public class AccountExportController : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="500">Can't connect to the server</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public FileContentResult ExportData()
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);

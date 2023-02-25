@@ -26,6 +26,7 @@ public class GetPermissionsController : ControllerBase
     /// <response code="401">Authorization error</response>
     /// <response code="500">Can't connect to the server</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult GetPermissions(string id)
     {
         var perms = AccountAuthUtil.GetPermissions(id, false);

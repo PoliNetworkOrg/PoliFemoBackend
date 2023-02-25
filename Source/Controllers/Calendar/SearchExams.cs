@@ -31,6 +31,7 @@ public class SearchExam : ControllerBase
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available exam</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult SearchExamDb(string? cod_mat, string? insegnamento, string? sede, int? semestre,
         string? docente, string? orario, string? giorno, string? lista)
     {

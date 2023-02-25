@@ -28,6 +28,7 @@ public class ArticleByIdController : ControllerBase
     /// <response code="401">Authorization error</response>
     /// <response code="500">Can't connect to the server</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult ProfileDetails()
     {
         string userid;

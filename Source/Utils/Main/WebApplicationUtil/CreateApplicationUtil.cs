@@ -57,6 +57,7 @@ public static class CreateApplicationUtil
             });
 
         builder.Services.AddControllers().AddNewtonsoftJson();
+        builder.Services.AddResponseCaching();
 
         builder.Services.AddApiVersioning(setup =>
         {

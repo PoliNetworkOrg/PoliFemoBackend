@@ -28,6 +28,7 @@ public class SearchRoomsController : ControllerBase
     /// <response code="400">Invalid time range (outside 8-20)</response>
     /// <response code="500">Can't connect to poli servers</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public async Task<IActionResult> SearchRooms([BindRequired] string sede, DateTime? hourStart, DateTime? hourStop)
 
     {

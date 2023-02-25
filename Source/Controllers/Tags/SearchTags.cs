@@ -22,6 +22,7 @@ public class TagByIdController : ControllerBase
     /// <response code="404">No available tags</response>
     /// <response code="500">Can't connect to the server</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult SearchTags()
     {
         var results = Database.ExecuteSelect(
