@@ -57,6 +57,8 @@ public static class CreateApplicationUtil
             });
 
         builder.Services.AddControllers().AddNewtonsoftJson();
+        
+        //https://learn.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-7.0
         builder.Services.AddResponseCaching();
 
         builder.Services.AddApiVersioning(setup =>
