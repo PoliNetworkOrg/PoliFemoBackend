@@ -4,14 +4,14 @@ namespace PoliFemoBackend.Source.Objects.Rooms;
 
 public class RoomOccupancyResultObject
 {
-    public readonly TimeOnly _timeOnly;
-    public readonly bool inScopeSearch;
+    public readonly TimeOnly TimeOnly;
     public readonly RoomOccupancyEnum RoomOccupancyEnum;
+    internal readonly string? text;
 
-    public RoomOccupancyResultObject(TimeOnly timeOnly, RoomOccupancyEnum roomOccupancyEnum, bool inScopeSearch)
+    public RoomOccupancyResultObject(TimeOnly timeOnly, RoomOccupancyEnum roomOccupancyEnum, string? text)
     {
-        _timeOnly = timeOnly;
+        TimeOnly = timeOnly;
         RoomOccupancyEnum = roomOccupancyEnum;
-        this.inScopeSearch = inScopeSearch;
+        this.text = text;
     }
 }

@@ -13,8 +13,10 @@ public static class FreeRoomsUtil
         var shiftStart = TimeRoomUtil.GetShiftSlotFromTime(start ?? DateTime.Now);
         var shiftEnd = TimeRoomUtil.GetShiftSlotFromTime(stop ?? DateTime.Now);
 
-        return table.ChildNodes.Where(child => child != null)
-            .Select(child => CheckIfFree(child, shiftStart, shiftEnd))
+        var enumerable = table.ChildNodes
+            .Select(child => CheckIfFree(child, shiftStart, shiftEnd)).ToList();
+        
+        return enumerable
             .Where(toAdd => toAdd != null).ToList();
     }
 
@@ -22,11 +24,14 @@ public static class FreeRoomsUtil
     {
         try
         {
-            if (node == null) return null;
+            if (node == null) 
+                return null;
 
-            if (!node.GetClasses().Contains("normalRow")) return null;
+            if (!node.GetClasses().Contains("normalRow")) 
+                return null;
 
-            if (node.ChildNodes == null) return null;
+            if (node.ChildNodes == null) 
+                return null;
 
             if (shiftEnd < shiftStart)
                 shiftEnd = shiftStart;
@@ -39,10 +44,13 @@ public static class FreeRoomsUtil
                 return null;
 
             var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
-            var searchInScopeResults = roomFree.Where(x => x.inScopeSearch).ToList();
-            var roomFreeBool = searchInScopeResults.All(x => x is { RoomOccupancyEnum: RoomOccupancyEnum.FREE });
+            //var searchInScopeResults = roomFree.Where(x => x.inScopeSearch).ToList();
+            //var roomFreeBool = searchInScopeResults.All(x => x is { RoomOccupancyEnum: RoomOccupancyEnum.FREE });
 
-            return roomFreeBool == false ? null : ExtractHtmlRoomUtil.GetAula(node, roomFree, shiftEnd);
+            //if (roomFreeBool == false)
+            //    return null;
+            
+            return ExtractHtmlRoomUtil.GetAula(node, roomFree, shiftEnd);
         }
         catch (Exception ex)
         {
@@ -51,7 +59,7 @@ public static class FreeRoomsUtil
         }
     }
 
-    private static List<RoomOccupancyResultObject> IsRoomFree(HtmlNode? node, int shiftStart, int shiftEnd)
+    private static IEnumerable<RoomOccupancyResultObject> IsRoomFree(HtmlNode? node, int shiftStart, int shiftEnd)
     {
         if (node?.ChildNodes == null)
             return new List<RoomOccupancyResultObject>();
@@ -59,7 +67,7 @@ public static class FreeRoomsUtil
         var colsizetotal = 0;
 
         var occupied = new List<RoomOccupancyResultObject>
-            { new(new TimeOnly(7, 45, 0), RoomOccupancyEnum.FREE, false) };
+            { new(new TimeOnly(7, 45, 0), RoomOccupancyEnum.FREE, null) };
 
         // the first two children are not time slots
         for (var i = 2; i < node.ChildNodes.Count; i++)
@@ -92,7 +100,16 @@ public static class FreeRoomsUtil
             var roomOccupancyEnum = occupiedBool ? RoomOccupancyEnum.OCCUPIED : RoomOccupancyEnum.FREE;
 
             //now mark the occupancies of the room
-            occupied.Add(new RoomOccupancyResultObject(iTime, roomOccupancyEnum, inScopeSearch));
+            var htmlNodes = nodeChildNode.ChildNodes.Where(x => x.Name == "a").ToList();
+            string? text = null;
+            if (htmlNodes.Count > 0)
+            {
+                var htmlNode = htmlNodes.First();
+                text = htmlNode?.InnerHtml.Trim();
+            }
+
+        
+            occupied.Add(new RoomOccupancyResultObject(iTime, roomOccupancyEnum, text));
         }
 
         // if no lesson takes place in the room in the time window, the room is free (duh)

@@ -28,14 +28,27 @@ public static class ExtractHtmlRoomUtil
         var info = dove?.ChildNodes.First(x => x.Name == "a")?.Attributes["href"]?.Value;
 
         var occupancies = new JObject();
-
-        foreach (var roomOccupancyResultObject in roomOccupancyResultObjects.Where(x =>
-                     x._timeOnly > TimeRoomUtil.GetTimeFromShiftSlot(shiftStop)))
+        var timeFromShiftSlot = TimeRoomUtil.GetTimeFromShiftSlot(shiftStop);
+        
+        /*
+        var occupancyResultObjects = 
+            roomOccupancyResultObjects.Where(
+                x => true || x._timeOnly > timeFromShiftSlot
+                ).ToList();
+        */
+ 
+        foreach (var roomOccupancyResultObject in roomOccupancyResultObjects)
         {
-            if (occupancies.Children().Any() && occupancies.Children().Last().Last().ToString() ==
-                roomOccupancyResultObject.RoomOccupancyEnum.ToString()) continue;
-            occupancies.Add(roomOccupancyResultObject._timeOnly.ToString(),
-                roomOccupancyResultObject.RoomOccupancyEnum.ToString());
+            if (!CheckIfKeep(roomOccupancyResultObject, occupancies)) 
+                continue;
+            
+            var jObject = new JObject
+            {
+                ["status"] = roomOccupancyResultObject.RoomOccupancyEnum.ToString(),
+                ["text"] = roomOccupancyResultObject.text
+            };
+            var propertyName = roomOccupancyResultObject.TimeOnly.ToString();
+            occupancies.Add(propertyName, jObject);
         }
 
         //Builds room object 
@@ -44,5 +57,13 @@ public static class ExtractHtmlRoomUtil
             name = nome, building = edificio, address = indirizzo, power = pwr, link = RoomUtil.RoomInfoUrls + info,
             occupancies
         };
+    }
+
+    private static bool CheckIfKeep(RoomOccupancyResultObject roomOccupancyResultObject, JObject occupancies)
+    {
+        return
+            !occupancies.Children().Any()
+            || occupancies.Children().Last().Last().ToString() !=
+            roomOccupancyResultObject.RoomOccupancyEnum.ToString();
     }
 }
