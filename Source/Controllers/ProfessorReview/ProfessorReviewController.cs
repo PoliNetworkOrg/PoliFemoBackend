@@ -69,7 +69,7 @@ public class ProfessorReviewController : ControllerBase
     {
         if (reviewValue is < 1 or > 5)
             return StatusCode(500, ""); //todo: controllare questo
-        
+
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
 
         const string query = "INSERT IGNORE INTO professor_reviews " +
@@ -87,7 +87,7 @@ public class ProfessorReviewController : ControllerBase
         var r = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
         return Ok(r);
     }
-    
+
     [HttpGet]
     [Route("/categories")]
     public ActionResult GetCategories()
@@ -112,5 +112,4 @@ public class ProfessorReviewController : ControllerBase
 
         return Ok(jArray);
     }
-    
 }

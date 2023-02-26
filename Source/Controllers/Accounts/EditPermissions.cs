@@ -104,7 +104,7 @@ public class EditPermissions : ControllerBase
             { "@id_user", id },
             { "@id_object", grant.object_id ?? -1 }
         });
-        
+
         if (count != 1)
             return new BadRequestObjectResult(new JObject
             {
