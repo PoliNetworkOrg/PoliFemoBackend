@@ -74,6 +74,7 @@ public class RoomOccupancyReport : ControllerBase
     /// <response code="400">The room ID is not valid</response>
     /// <returns>The occupancy rate and the room ID</returns>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult GetReportedOccupancy(uint id)
     {
         var result = GetReportedOccupancyJObject(id);

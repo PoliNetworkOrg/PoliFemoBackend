@@ -13,6 +13,7 @@ namespace PoliFemoBackend.Source.Controllers.HomePage;
 public class HomepageByIdController : ControllerBase
 {
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public RedirectResult Index()
     {
         var url = $"{Request.Scheme}://{Request.Host}" + GlobalVariables.BasePath + "swagger";

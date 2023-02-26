@@ -38,10 +38,10 @@ public static class CodeExchangeUtil
             });
 
         var loginResultObject = LoginUtil.LoginUser(codeExchangeController, responseJson);
-        if (loginResultObject is { actionResult: { } })
-            return loginResultObject.actionResult;
+        if (loginResultObject is { ActionResult: { } })
+            return loginResultObject.ActionResult;
 
-        AddUserToDb(loginResultObject?.subject, loginResultObject?.acctype);
+        AddUserToDb(loginResultObject?.Subject, loginResultObject?.Acctype);
 
         var responseObject = new JObject
         {

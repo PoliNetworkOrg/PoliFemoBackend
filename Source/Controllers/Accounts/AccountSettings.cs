@@ -22,6 +22,7 @@ public class AccountSettings : ControllerBase
     /// <response code="500">Can't connect to server</response>
     [Authorize]
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult GetSettings()
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);

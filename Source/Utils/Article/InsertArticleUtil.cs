@@ -45,7 +45,7 @@ public static class InsertArticleUtil
     }
 
 
-    private static ObjectResult InsertArticleDb(Objects.Articles.News.Article data, InsertArticle insertArticle)
+    private static ObjectResult InsertArticleDb(Objects.Articles.News.Article data, ControllerBase insertArticle)
     {
         const string insertQuery =
             @"INSERT INTO Articles(tag_id, title, subtitle, content, publish_time, target_time, latitude, longitude, image, author_id, source_url) 

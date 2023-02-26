@@ -4,14 +4,14 @@ namespace PoliFemoBackend.Source.Objects.Auth;
 
 public class LoginResultObject
 {
-    internal readonly string? acctype;
-    internal readonly string? subject;
-    public ActionResult? actionResult;
+    internal readonly string? Acctype;
+    public readonly ActionResult? ActionResult;
+    internal readonly string? Subject;
 
     public LoginResultObject(string? acctype, string? subject, ActionResult? actionResult)
     {
-        this.acctype = acctype;
-        this.subject = subject;
-        this.actionResult = actionResult;
+        Acctype = acctype;
+        Subject = subject;
+        ActionResult = actionResult;
     }
 }
