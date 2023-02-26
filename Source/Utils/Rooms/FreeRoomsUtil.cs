@@ -20,24 +20,35 @@ public static class FreeRoomsUtil
 
     private static object? CheckIfFree(HtmlNode? node, int shiftStart, int shiftEnd)
     {
-        if (node == null) return null;
+        try
+        {
+            if (node == null) return null;
 
-        if (!node.GetClasses().Contains("normalRow")) return null;
+            if (!node.GetClasses().Contains("normalRow")) return null;
 
-        if (node.ChildNodes == null) return null;
+            if (node.ChildNodes == null) return null;
 
-        if (!node.ChildNodes.Any(x =>
-                x.HasClass("dove")
-                && x.ChildNodes != null
-                && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))
-            ))
-            return null;
+            if (shiftEnd < shiftStart)
+                shiftEnd = shiftStart;
 
-        var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
-        var searchInScopeResults = roomFree.Where(x => x.inScopeSearch).ToList();
-        var roomFreeBool = searchInScopeResults.All(x => x is { RoomOccupancyEnum: RoomOccupancyEnum.FREE });
+            if (!node.ChildNodes.Any(x =>
+                    x.HasClass("dove")
+                    && x.ChildNodes != null
+                    && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))
+                ))
+                return null;
 
-        return roomFreeBool == false ? null : ExtractHtmlRoomUtil.GetAula(node, roomFree, shiftEnd);
+            var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
+            var searchInScopeResults = roomFree.Where(x => x.inScopeSearch).ToList();
+            var roomFreeBool = searchInScopeResults.All(x => x is { RoomOccupancyEnum: RoomOccupancyEnum.FREE });
+
+            return roomFreeBool == false ? null : ExtractHtmlRoomUtil.GetAula(node, roomFree, shiftEnd);
+        }
+        catch (Exception ex)
+        {
+            Logger.WriteLine(ex);
+            throw;
+        }
     }
 
     private static List<RoomOccupancyResultObject> IsRoomFree(HtmlNode? node, int shiftStart, int shiftEnd)
