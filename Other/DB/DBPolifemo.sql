@@ -114,7 +114,8 @@ create table if not exists permissions
 (
     grant_id  varchar(200) not null,
     user_id   varchar(100) not null,
-    object_id int          null,
+    object_id int          not null,
+    primary key (grant_id, user_id, object_id),
     constraint grant_id
         foreign key (grant_id) references Grants (grant_name),
     constraint user_id
