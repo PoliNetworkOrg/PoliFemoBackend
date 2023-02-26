@@ -15,7 +15,7 @@ public static class FreeRoomsUtil
 
         var enumerable = table.ChildNodes
             .Select(child => CheckIfFree(child, shiftStart, shiftEnd)).ToList();
-        
+
         return enumerable
             .Where(toAdd => toAdd != null).ToList();
     }
@@ -24,13 +24,13 @@ public static class FreeRoomsUtil
     {
         try
         {
-            if (node == null) 
+            if (node == null)
                 return null;
 
-            if (!node.GetClasses().Contains("normalRow")) 
+            if (!node.GetClasses().Contains("normalRow"))
                 return null;
 
-            if (node.ChildNodes == null) 
+            if (node.ChildNodes == null)
                 return null;
 
             if (shiftEnd < shiftStart)
@@ -44,13 +44,7 @@ public static class FreeRoomsUtil
                 return null;
 
             var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
-            //var searchInScopeResults = roomFree.Where(x => x.inScopeSearch).ToList();
-            //var roomFreeBool = searchInScopeResults.All(x => x is { RoomOccupancyEnum: RoomOccupancyEnum.FREE });
-
-            //if (roomFreeBool == false)
-            //    return null;
-            
-            return ExtractHtmlRoomUtil.GetAula(node, roomFree, shiftEnd);
+            return ExtractHtmlRoomUtil.GetAula(node, roomFree);
         }
         catch (Exception ex)
         {
@@ -108,11 +102,12 @@ public static class FreeRoomsUtil
                 text = htmlNode?.InnerHtml.Trim();
             }
 
-        
+
             occupied.Add(new RoomOccupancyResultObject(iTime, roomOccupancyEnum, text));
         }
 
         // if no lesson takes place in the room in the time window, the room is free (duh)
-        return occupied;
+        var filterDuplicates = ExtractHtmlRoomUtil.FilterDuplicates(occupied);
+        return filterDuplicates;
     }
 }
