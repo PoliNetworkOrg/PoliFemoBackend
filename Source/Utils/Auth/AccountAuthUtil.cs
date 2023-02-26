@@ -37,7 +37,7 @@ public static class AccountAuthUtil
             array.Add(
                 new Grant(
                     results.Rows[i]["grant_name"].ToString() ?? "",
-                    int.TryParse(results.Rows[i]["object_id"].ToString(), out var idObject) ? idObject : null
+                    int.TryParse(results.Rows[i]["object_id"].ToString(), out var id) ? id : -1
                 )
             );
         return array;
