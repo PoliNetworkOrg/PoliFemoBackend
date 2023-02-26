@@ -36,6 +36,7 @@ public class ProfessorReviewController : ControllerBase
      */
 
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult GetProfessorReview(uint professorId)
     {
         var q =
@@ -90,6 +91,7 @@ public class ProfessorReviewController : ControllerBase
 
     [HttpGet]
     [Route("/categories")]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult GetCategories()
     {
         const string q = "SELECT id, name  FROM review_categories  ";
