@@ -6,10 +6,7 @@ public class Grant
 {
     public Grant(string nameGrant, int? idObject)
     {
-        if (idObject == -1)
-            object_id = null;
-        else
-            object_id = idObject;
+        object_id = idObject == -1 ? null : idObject;
         grant = nameGrant;
     }
 
