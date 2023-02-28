@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using System.Web;
+using HtmlAgilityPack;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Rooms;
 
@@ -99,7 +100,7 @@ public static class FreeRoomsUtil
             if (htmlNodes.Count > 0)
             {
                 var htmlNode = htmlNodes.First();
-                text = htmlNode?.InnerHtml.Trim();
+                text = HttpUtility.HtmlDecode(htmlNode?.InnerHtml.Trim());
             }
 
 

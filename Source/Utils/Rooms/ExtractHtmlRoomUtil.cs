@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Rooms;
 
 namespace PoliFemoBackend.Source.Utils.Rooms;
@@ -46,8 +47,9 @@ public static class ExtractHtmlRoomUtil
             var jObject = new JObject
             {
                 ["status"] = roomOccupancyResultObject.RoomOccupancyEnum.ToString(),
-                ["text"] = roomOccupancyResultObject.text
             };
+            if (roomOccupancyResultObject.RoomOccupancyEnum == RoomOccupancyEnum.OCCUPIED)
+                jObject.Add("text", roomOccupancyResultObject.text);
             var propertyName = roomOccupancyResultObject.TimeOnly.ToString();
             occupancies.Add(propertyName, jObject);
         }
