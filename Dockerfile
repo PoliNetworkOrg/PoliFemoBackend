@@ -7,6 +7,8 @@ COPY . ./
 RUN dotnet restore
 # Build and publish a release
 RUN dotnet publish -c Release -o out
+# Set timezone to Italy
+RUN sh -c 'rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime;'
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
