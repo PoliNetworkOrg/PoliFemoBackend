@@ -11,6 +11,7 @@ namespace PoliFemoBackend.Source.Controllers.Rooms.Search;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Rooms")]
+[Route("/rooms/search")]
 [Route("/rooms/search_hour")]
 public class SearchRoomsWithHourController : ControllerBase
 {
