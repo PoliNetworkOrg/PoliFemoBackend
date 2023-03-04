@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils.Rooms;
+using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion
 
@@ -32,27 +33,11 @@ public class SearchRoomsWithHourController : ControllerBase
     [HttpGet]
     [ResponseCache(VaryByQueryKeys = new[] { "*" }, Duration = SecondsToCacheSearch)]
     public async Task<IActionResult> SearchRooms([BindRequired] string sede, DateTime? hourStart, DateTime? hourStop)
-
     {
-        if (hourStart?.Hour < 8 || hourStop?.Hour > 20)
-            return BadRequest(new JObject(new JProperty("error", "Invalid time range")));
-
-        var (jArrayResults, doneEnum) = await SearchRoomUtil.SearchRooms(sede, hourStart, hourStop);
-        switch (doneEnum)
-        {
-            case DoneEnum.DONE:
-                return Ok(new JObject(new JProperty("free_rooms", jArrayResults)));
-            case DoneEnum.SKIPPED:
-                return NoContent();
-            default:
-            case DoneEnum.ERROR:
-            {
-                const string text4 = "Errore nella consultazione del sito del polimi!";
-                return new ObjectResult(new { error = text4 })
-                {
-                    StatusCode = (int)HttpStatusCode.InternalServerError
-                };
-            }
-        }
+        return hourStart?.Hour < 8 || hourStop?.Hour > 20
+            ? BadRequest(new JObject(new JProperty("error", "Invalid time range")))
+            : await SearchRoomUtil.ReturnSearchResults(sede, hourStart, hourStop, this);
     }
+
+
 }

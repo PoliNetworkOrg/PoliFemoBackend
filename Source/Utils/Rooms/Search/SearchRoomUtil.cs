@@ -1,8 +1,11 @@
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Controllers.Rooms;
+using PoliFemoBackend.Source.Controllers.Rooms.Search;
 using PoliFemoBackend.Source.Enums;
 
-namespace PoliFemoBackend.Source.Utils.Rooms;
+namespace PoliFemoBackend.Source.Utils.Rooms.Search;
 
 public static class SearchRoomUtil
 {
@@ -47,5 +50,27 @@ public static class SearchRoomUtil
         }
 
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
+    }
+
+    internal static async Task<IActionResult> ReturnSearchResults(string sede, DateTime? hourStart, DateTime? hourStop,
+        ControllerBase controllerBase)
+    {
+        var (jArrayResults, doneEnum) = await SearchRooms(sede, hourStart, hourStop);
+        switch (doneEnum)
+        {
+            case DoneEnum.DONE:
+                return controllerBase.Ok(new JObject(new JProperty("free_rooms", jArrayResults)));
+            case DoneEnum.SKIPPED:
+                return controllerBase.NoContent();
+            default:
+            case DoneEnum.ERROR:
+            {
+                const string text4 = "Errore nella consultazione del sito del polimi!";
+                return new ObjectResult(new { error = text4 })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
     }
 }
