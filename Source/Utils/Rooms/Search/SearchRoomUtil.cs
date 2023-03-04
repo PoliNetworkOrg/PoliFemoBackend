@@ -2,7 +2,6 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Controllers.Rooms;
-using PoliFemoBackend.Source.Controllers.Rooms.Search;
 using PoliFemoBackend.Source.Enums;
 
 namespace PoliFemoBackend.Source.Utils.Rooms.Search;

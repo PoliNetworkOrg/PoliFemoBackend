@@ -1,6 +1,5 @@
 ﻿#region
 
-using PoliFemoBackend.Source.Utils.Rooms;
 using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion

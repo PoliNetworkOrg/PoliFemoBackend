@@ -1,11 +1,8 @@
 ﻿#region
 
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Enums;
-using PoliFemoBackend.Source.Utils.Rooms;
 using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion
@@ -38,6 +35,4 @@ public class SearchRoomsWithHourController : ControllerBase
             ? BadRequest(new JObject(new JProperty("error", "Invalid time range")))
             : await SearchRoomUtil.ReturnSearchResults(sede, hourStart, hourStop, this);
     }
-
-
 }

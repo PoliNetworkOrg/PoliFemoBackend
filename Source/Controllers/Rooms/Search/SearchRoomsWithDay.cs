@@ -1,11 +1,7 @@
 ﻿#region
 
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Enums;
-using PoliFemoBackend.Source.Utils.Rooms;
 using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion
@@ -31,11 +27,11 @@ public class SearchRoomsWithDayController : ControllerBase
     /// <response code="500">Can't connect to poli servers</response>
     [HttpGet]
     [ResponseCache(VaryByQueryKeys = new[] { "*" }, Duration = SecondsToCacheSearch)]
-    public async Task<IActionResult> SearchRooms([BindRequired] string sede, DateOnly dateOnly)
+    public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] DateOnly dateOnly)
     {
         var hourStart = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 8, 0, 0);
         var hourStop = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 20, 0, 0);
-        
+
         return await SearchRoomUtil.ReturnSearchResults(sede, hourStart, hourStop, this);
     }
 }
