@@ -20,9 +20,10 @@ public static class Test
 
         try
         {
-            var hourStart = new DateTime(2023, 02, 15, 8, 0, 0);
-            var hourStop = new DateTime(2023, 02, 15, 8, 0, 0);
-            var r = await SearchRoomUtil.SearchRooms("MIB", hourStart, hourStop);
+            var hourStart = new DateTime(2023, 02, 27, 8, 0, 0);
+            var hourStop = new DateTime(2023, 02, 27, 20, 0, 0);
+            ;
+            var r = await SearchRoomUtil.SearchRooms("MIA", hourStart, hourStop);
             ;
             Console.WriteLine(r);
         }
