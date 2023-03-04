@@ -23,7 +23,6 @@ public class SearchRoomsWithDayController : ControllerBase
     /// <returns>A JSON array of free rooms</returns>
     /// <response code="200">Request completed successfully</response>
     /// <response code="204">No available rooms</response>
-    /// <response code="400">Invalid time range (outside 8-20)</response>
     /// <response code="500">Can't connect to poli servers</response>
     [HttpGet]
     [ResponseCache(VaryByQueryKeys = new[] { "*" }, Duration = SecondsToCacheSearch)]
