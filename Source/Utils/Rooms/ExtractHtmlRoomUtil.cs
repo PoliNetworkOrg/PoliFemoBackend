@@ -71,7 +71,7 @@ public static class ExtractHtmlRoomUtil
     }
 
     private static bool CheckIfKeep(RoomOccupancyResultObject roomOccupancyResultObject,
-        List<RoomOccupancyResultObject> occupancies)
+        IReadOnlyCollection<RoomOccupancyResultObject> occupancies)
     {
         return
             !occupancies.Any()
