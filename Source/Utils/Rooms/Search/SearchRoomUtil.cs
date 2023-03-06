@@ -1,5 +1,4 @@
 using System.Data;
-using System.Globalization;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -11,22 +10,22 @@ namespace PoliFemoBackend.Source.Utils.Rooms.Search;
 
 public static class SearchRoomUtil
 {
-    public static async Task<Tuple<JArray?, DoneEnum>?> SearchRooms(string sede, DateTime? hourStart, DateTime? hourStop)
+    public static async Task<Tuple<JArray?, DoneEnum>?> SearchRooms(string sede, DateTime? hourStart,
+        DateTime? hourStop)
     {
         hourStop = hourStop?.AddMinutes(-1);
 
         var dictionary = new Dictionary<string, object?>
         {
-            {"@url", "polimidailysituation://" + hourStart?.ToString("yyyy-MM-dd")}
+            { "@url", "polimidailysituation://" + hourStart?.ToString("yyyy-MM-dd") }
         };
-        const string selectFromWebcacheWhereUrlLikeUrl = "SELECT * FROM WebCache WHERE url LIKE @url AND NOW() < expires_at";
-        var q = Database.Database.ExecuteSelect(selectFromWebcacheWhereUrlLikeUrl, GlobalVariables.DbConfigVar, dictionary
+        const string selectFromWebcacheWhereUrlLikeUrl =
+            "SELECT * FROM WebCache WHERE url LIKE @url AND NOW() < expires_at";
+        var q = Database.Database.ExecuteSelect(selectFromWebcacheWhereUrlLikeUrl, GlobalVariables.DbConfigVar,
+            dictionary
         );
 
-        if (q?.Rows.Count > 0)
-        {
-            return await GetResultSearchFromCacheApartFromOccupancy(q);
-        }
+        if (q?.Rows.Count > 0) return await GetResultSearchFromCacheApartFromOccupancy(q);
 
         var r = await Tuple(sede, hourStart, hourStop);
 
@@ -37,20 +36,14 @@ public static class SearchRoomUtil
         return r;
     }
 
-    private static async Task< Tuple<JArray?, DoneEnum>?> Tuple(string sede, DateTime? hourStart, DateTime? hourStop)
+    private static async Task<Tuple<JArray?, DoneEnum>?> Tuple(string sede, DateTime? hourStart, DateTime? hourStop)
     {
         var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, sede);
-        if (t3 is null || t3.Count == 0)
-        {
-            return new Tuple<JArray?, DoneEnum>(null, DoneEnum.ERROR);
-        }
+        if (t3 is null || t3.Count == 0) return new Tuple<JArray?, DoneEnum>(null, DoneEnum.ERROR);
 
         var htmlNode = t3[0];
         var t4 = FreeRoomsUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
-        if (t4 is null || t4.Count == 0)
-        {
-            return new Tuple<JArray?, DoneEnum>(null, DoneEnum.SKIPPED);
-        }
+        if (t4 is null || t4.Count == 0) return new Tuple<JArray?, DoneEnum>(null, DoneEnum.SKIPPED);
 
         var results = new JArray();
         foreach (var room in t4)
@@ -81,7 +74,6 @@ public static class SearchRoomUtil
         }
 
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
-
     }
 
     private static void SaveResultToCache(DateTime? hourStart, JArray? results)

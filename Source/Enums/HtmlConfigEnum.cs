@@ -2,5 +2,6 @@
 
 public enum HtmlConfigEnum
 {
-    NONE, ROOM_TABLE
+    NONE,
+    ROOM_TABLE
 }
