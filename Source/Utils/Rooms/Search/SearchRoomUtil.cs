@@ -22,8 +22,17 @@ public static class SearchRoomUtil
         if (q?.Rows.Count > 0)
         {
             var sq = q?.Rows[0]["content"]?.ToString();
-            JArray? jArray = null;
+            JArray jArray = new JArray();
             if (sq != null) jArray = JArray.Parse(sq);
+            List<Task> tasks = new List<Task>();
+            foreach (JObject roomobj in jArray)
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    roomobj["occupancy_rate"] = RoomOccupancyReport.GetReportedOccupancyJObject((uint)(roomobj["room_id"] ?? 1))?["occupancy_rate"];
+                }));
+            }
+            await Task.WhenAll(tasks);
             return new Tuple<JArray?, DoneEnum>(jArray, DoneEnum.DONE);
         }
 
@@ -69,9 +78,6 @@ public static class SearchRoomUtil
             {"@content", results.ToString()}
         }
         );
-
-        //TODO: aggiornare occupancies
-
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
     }
 
