@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.DbObjects;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Article;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
@@ -34,6 +35,7 @@ public class ArticlesByParameters : ControllerBase
     /// <response code="200">Request completed successfully</response>
     /// <response code="500">Can't connect to the server</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult SearchArticlesByDateRange(DateTime? start, DateTime? end, string? tag, int? author_id,
         string? title, uint? limit, uint? pageOffset, string? sort)
     {

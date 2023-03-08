@@ -25,6 +25,7 @@ public class SearchRangeOfDate : ControllerBase
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available date</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult SearchDateDb(DateTime start, DateTime end)
     {
         var query =
@@ -63,8 +64,10 @@ public class SearchRangeOfDate : ControllerBase
         return Ok(giorni);
     }
 
-
-    //METHOD RETURN A STRING WITH ALL TYPOLOGIES OF A DAY
+    /// <summary>
+    ///     METHOD RETURN A STRING WITH ALL TYPOLOGIES OF A DAY
+    /// </summary>
+    /// <returns></returns>
     private static JArray GetArrayString(DataTable results, string date)
     {
         var array = new JArray();

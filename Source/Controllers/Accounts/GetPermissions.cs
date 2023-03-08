@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects.Permissions;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Auth;
 
 // ReSharper disable InconsistentNaming
 
@@ -26,9 +26,10 @@ public class GetPermissionsController : ControllerBase
     /// <response code="401">Authorization error</response>
     /// <response code="500">Can't connect to the server</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult GetPermissions(string id)
     {
-        var perms = AuthUtil.GetPermissions(id, false);
+        var perms = AccountAuthUtil.GetPermissions(id, false);
 
         if (perms.Count == 0)
         {

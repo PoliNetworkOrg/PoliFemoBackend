@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Database;
 
 #endregion
@@ -38,7 +38,7 @@ public class DeleteArticle : ControllerBase
         if (article == null)
             return new NotFoundObjectResult("");
         var idAuthor = Convert.ToInt32(Database.GetFirstValueFromDataTable(article));
-        if (!AuthUtil.HasGrantAndObjectPermission(sub, "authors", idAuthor))
+        if (!AccountAuthUtil.HasGrantAndObjectPermission(sub, "authors", idAuthor))
         {
             Response.StatusCode = 403;
             return new UnauthorizedObjectResult(new JObject

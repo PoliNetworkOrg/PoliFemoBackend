@@ -6,13 +6,13 @@ public class Grant
 {
     public Grant(string nameGrant, int? idObject)
     {
+        object_id = idObject == -1 ? null : idObject;
         grant = nameGrant;
-        object_id = idObject;
     }
 
-    public int? object_id { get; set; }
+    public int? object_id { get; init; }
 
-    public string grant { get; set; }
+    public string grant { get; init; }
 
     public static List<JObject> GetFormattedPerms(IEnumerable<Grant> perms)
     {

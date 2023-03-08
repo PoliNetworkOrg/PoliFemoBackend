@@ -24,6 +24,7 @@ public class BackupGroupsController : ControllerBase
     /// <response code="500">Can't connect to server</response>
     /// <response code="204">No available groups</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult BackupGroupsDb()
     {
         const string query = "SELECT * FROM Groups ORDER BY class";

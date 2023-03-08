@@ -5,8 +5,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PoliFemoBackend.Source.Objects.Permissions;
-using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Account;
+using PoliFemoBackend.Source.Utils.Auth;
 
 #endregion
 
@@ -28,12 +28,13 @@ public class ArticleByIdController : ControllerBase
     /// <response code="401">Authorization error</response>
     /// <response code="500">Can't connect to the server</response>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult ProfileDetails()
     {
         string userid;
         var tempSub = AuthUtil.GetSubjectFromHttpRequest(Request);
         var sub = tempSub ?? "";
-        var permissions = AuthUtil.GetPermissions(sub);
+        var permissions = AccountAuthUtil.GetPermissions(sub);
         using (var sha256Hash = SHA256.Create())
         {
             //From String to byte array
@@ -48,7 +49,7 @@ public class ArticleByIdController : ControllerBase
         {
             id = userid.ToLower(),
             permissions = permarray,
-            authorized_authors = AuthUtil.GetAuthorizedAuthors(sub)
+            authorized_authors = AccountAuthoursAuthUtil.GetAuthorizedAuthors(sub)
         });
     }
 

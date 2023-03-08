@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Database;
 
 namespace PoliFemoBackend.Source.Controllers.Accounts;
@@ -22,6 +22,7 @@ public class AccountSettings : ControllerBase
     /// <response code="500">Can't connect to server</response>
     [Authorize]
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult GetSettings()
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Database;
 
 namespace PoliFemoBackend.Source.Controllers.Rooms;
@@ -34,7 +34,7 @@ public class RoomOccupancyReport : ControllerBase
 
         var token = Request.Headers[Constants.Authorization];
         var jwt = new JwtSecurityToken(token.ToString()[7..]);
-        if (AuthUtil.GetAccountType(jwt) != "POLIMI")
+        if (AccountAuthUtil.GetAccountType(jwt) != "POLIMI")
             return new UnauthorizedObjectResult(new JObject
             {
                 { "error", "You don't have enough permissions" }
@@ -74,7 +74,19 @@ public class RoomOccupancyReport : ControllerBase
     /// <response code="400">The room ID is not valid</response>
     /// <returns>The occupancy rate and the room ID</returns>
     [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ObjectResult GetReportedOccupancy(uint id)
+    {
+        var result = GetReportedOccupancyJObject(id);
+        if (result == null)
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "Can't get occupancy for room " + id }
+            });
+        return Ok(result);
+    }
+
+    public static JObject? GetReportedOccupancyJObject(uint id)
     {
         const string q = "SELECT SUM(x.w * x.rate)/SUM(x.w) " +
                          "FROM (" +
@@ -89,17 +101,15 @@ public class RoomOccupancyReport : ControllerBase
         };
         var r = Database.ExecuteSelect(q, DbConfig.DbConfigVar, dict);
         if (r == null || r.Rows.Count == 0 || r.Rows[0].ItemArray.Length == 0)
-            return new BadRequestObjectResult(new JObject
-            {
-                { "error", "Can't get occupancy for room " + id }
-            });
+            return null;
 
         var rate = Database.GetFirstValueFromDataTable(r);
 
-        return Ok(new JObject
+        var jObject = new JObject
         {
             { "room_id", id },
             { "occupancy_rate", new JValue(rate) }
-        });
+        };
+        return jObject;
     }
 }
