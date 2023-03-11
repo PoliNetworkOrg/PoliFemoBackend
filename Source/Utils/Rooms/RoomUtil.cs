@@ -1,7 +1,6 @@
 #region
 
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils.Html;
 
 #endregion
@@ -31,17 +30,15 @@ public static class RoomUtil
                   "&giorno_year=" + year +
                   "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&evn_visualizza=";
 
-        var html = await HtmlUtil.DownloadHtmlAsync(url, false,  HtmlConfigEnum.ROOM_TABLE);
+        var html = await HtmlUtil.DownloadHtmlAsync(url, false, true);
         if (html.IsValid() == false) return null;
 
         var doc = new HtmlDocument();
         doc.LoadHtml(html.GetData());
         List<HtmlNode> nodes = new();
 
-        var node = new HtmlNode(HtmlNodeType.Element, doc, 0)
-        {
-            InnerHtml = doc.DocumentNode.InnerHtml
-        };
+        var node = new HtmlNode(HtmlNodeType.Element, doc, 0);
+        node.InnerHtml = doc.DocumentNode.InnerHtml;
         nodes.Add(node);
         return nodes;
     }

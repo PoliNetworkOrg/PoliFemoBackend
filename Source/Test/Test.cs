@@ -1,7 +1,5 @@
 ﻿#region
 
-using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion
