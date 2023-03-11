@@ -46,7 +46,7 @@ public static class ExtractHtmlRoomUtil
         {
             var jObject = new JObject
             {
-                ["status"] = roomOccupancyResultObject.RoomOccupancyEnum.ToString()
+                ["status"] = roomOccupancyResultObject.RoomOccupancyEnum.ToString(),
             };
             if (roomOccupancyResultObject.RoomOccupancyEnum == RoomOccupancyEnum.OCCUPIED)
                 jObject.Add("text", roomOccupancyResultObject.text);

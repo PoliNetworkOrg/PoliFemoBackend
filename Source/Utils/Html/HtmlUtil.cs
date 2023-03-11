@@ -13,8 +13,7 @@ namespace PoliFemoBackend.Source.Utils.Html;
 
 public static class HtmlUtil
 {
-    internal static Task<WebReply> DownloadHtmlAsync(string urlAddress, bool useCache = true,
-        HtmlConfigEnum isRoomTable = HtmlConfigEnum.NONE)
+    internal static Task<WebReply> DownloadHtmlAsync(string urlAddress, bool useCache = true, HtmlConfigEnum isRoomTable = HtmlConfigEnum.NONE)
 
     {
         try
@@ -23,13 +22,15 @@ public static class HtmlUtil
             {
                 var rs = GetFromCache(urlAddress);
                 if (!string.IsNullOrEmpty(rs))
-                    return Task.FromResult(new WebReply(rs, HttpStatusCode.OK));
-                ;
+                    return Task.FromResult(new WebReply(rs, HttpStatusCode.OK));;
             }
-
+            
             var s = GetFromWeb(urlAddress, isRoomTable);
 
-            if (useCache) AddToCache(s, urlAddress);
+            if (useCache)
+            {
+                AddToCache(s, urlAddress);
+            }
 
             return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
         }
@@ -64,12 +65,11 @@ public static class HtmlUtil
 
     private static void AddToCache(string s, string urlAddress)
     {
-        const string insertIntoWebcacheUrlContentExpiresAtValuesUrlContentNow =
-            "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW())";
-        var dictionary = new Dictionary<string, object?> { { "@url", urlAddress }, { "@content", s } };
+        const string insertIntoWebcacheUrlContentExpiresAtValuesUrlContentNow = "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW())";
+        var dictionary = new Dictionary<string, object?> {{"@url", urlAddress}, {"@content", s}};
         Database.Database.Execute(
-            insertIntoWebcacheUrlContentExpiresAtValuesUrlContentNow,
-            GlobalVariables.DbConfigVar,
+            insertIntoWebcacheUrlContentExpiresAtValuesUrlContentNow, 
+            GlobalVariables.DbConfigVar, 
             dictionary);
     }
 
