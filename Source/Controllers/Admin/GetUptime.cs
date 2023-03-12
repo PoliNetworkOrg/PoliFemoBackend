@@ -1,6 +1,8 @@
 ﻿#region
 
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System.Net;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils;
 
@@ -23,7 +25,11 @@ public class GetUptimeController : ControllerBase
     {
         try
         {
-            return Ok((DateTime.Now - GlobalVariables.Start).Ticks / 10000000);
+            return Ok(new JObject(
+                new JProperty("uptime", (DateTime.Now - GlobalVariables.Start).Ticks / 10000000),
+                new JProperty("node", Dns.GetHostName())
+            ));
+            
         }
         catch (Exception ex)
         {

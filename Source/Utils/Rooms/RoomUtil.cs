@@ -30,16 +30,16 @@ public static class RoomUtil
                   "&giorno_year=" + year +
                   "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&evn_visualizza=";
 
-        var html = await HtmlUtil.DownloadHtmlAsync(url);
+        var html = await HtmlUtil.DownloadHtmlAsync(url, false, true);
         if (html.IsValid() == false) return null;
 
         var doc = new HtmlDocument();
         doc.LoadHtml(html.GetData());
+        List<HtmlNode> nodes = new();
 
-        var t1 = NodeUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "BoxInfoCard", 1);
-
-        //Get html node tbody (table) containing the rooms' daily situation requested by the query 
-        var t3 = NodeUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
-        return t3;
+        var node = new HtmlNode(HtmlNodeType.Element, doc, 0);
+        node.InnerHtml = doc.DocumentNode.InnerHtml;
+        nodes.Add(node);
+        return nodes;
     }
 }
