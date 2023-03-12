@@ -122,6 +122,14 @@ create table if not exists permissions
         foreign key (user_id) references Users (user_id)
 );
 
+create table if not exists WebCache
+(
+    url        varchar(500) not null
+        primary key,
+    content    longtext     not null,
+    expires_at date         not null
+);
+
 create view if not exists ArticlesWithAuthors_View as
 select `art`.`article_id`  AS `article_id`,
        `art`.`tag_id`      AS `tag_id`,
@@ -153,18 +161,26 @@ BEGIN
 
 END;
 
-create event if not exists auto_purge_users on schedule
+create event if not exists chores on schedule
     every '1' DAY
         starts '2023-01-01 04:00:00'
     enable
     do
     BEGIN
 
+    # Delete old users
     CREATE TEMPORARY TABLE IF NOT EXISTS UsersToDelete(userid VARCHAR(100), days INT);
     INSERT INTO UsersToDelete SELECT user_id, expires_days from Users where DATEDIFF(NOW(), last_activity) > expires_days;
     SELECT deleteUser(userid) FROM UsersToDelete;
     DROP TABLE UsersToDelete;
 
+
+    # Delete old cache entries
+    DELETE FROM WebCache WHERE NOW() > expires_at;
+
+
+    # Delete old room occupancies reports
+    TRUNCATE TABLE RoomOccupancyReports;
 END;
 
 
