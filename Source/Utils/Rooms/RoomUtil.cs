@@ -37,8 +37,10 @@ public static class RoomUtil
         doc.LoadHtml(html.GetData());
         List<HtmlNode> nodes = new();
 
-        var node = new HtmlNode(HtmlNodeType.Element, doc, 0);
-        node.InnerHtml = doc.DocumentNode.InnerHtml;
+        var node = new HtmlNode(HtmlNodeType.Element, doc, 0)
+        {
+            InnerHtml = doc.DocumentNode.InnerHtml
+        };
         nodes.Add(node);
         return nodes;
     }

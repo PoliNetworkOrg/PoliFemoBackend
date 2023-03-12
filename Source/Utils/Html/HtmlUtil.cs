@@ -19,28 +19,34 @@ public static class HtmlUtil
         {
             if (useCache)
             {
-                var q = Database.Database.ExecuteSelect("SELECT * FROM WebCache WHERE url = @url", GlobalVariables.DbConfigVar, new Dictionary<string, object?> {{"@url", urlAddress}});
+                var q = Database.Database.ExecuteSelect("SELECT * FROM WebCache WHERE url = @url",
+                    GlobalVariables.DbConfigVar, new Dictionary<string, object?> { { "@url", urlAddress } });
                 if (q?.Rows.Count > 0)
                 {
                     var sq = q?.Rows[0]["content"]?.ToString();
                     if (sq != null) return Task.FromResult(new WebReply(sq, HttpStatusCode.OK));
                 }
             }
+
             HttpClient httpClient = new();
             var task = httpClient.GetByteArrayAsync(urlAddress);
             task.Wait();
             var response = task.Result;
             var s = Encoding.UTF8.GetString(response, 0, response.Length);
-            if (isRoomTable) {
+            if (isRoomTable)
+            {
                 var doc = new HtmlDocument();
                 doc.LoadHtml(s);
                 var t1 = NodeUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "BoxInfoCard", 1);
                 var t3 = NodeUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
                 s = t3?[0].InnerHtml ?? "";
-
             }
+
             if (useCache)
-                Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW())", GlobalVariables.DbConfigVar, new Dictionary<string, object?> {{"@url", urlAddress}, {"@content", s}});
+                Database.Database.Execute(
+                    "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW())",
+                    GlobalVariables.DbConfigVar,
+                    new Dictionary<string, object?> { { "@url", urlAddress }, { "@content", s } });
             return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
             /*
 
