@@ -72,7 +72,7 @@ public static class SearchRoomUtil
             results.Add(formattedRoom);
         }
 
-        Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW())", GlobalVariables.DbConfigVar, new Dictionary<string, object?>
+        Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)", GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             {"@url", "polimidailysituation://" + hourStart?.ToString("yyyy-MM-dd")},
             {"@content", results.ToString()}
