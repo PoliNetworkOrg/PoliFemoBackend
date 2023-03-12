@@ -19,7 +19,9 @@ public static class HtmlUtil
         {
             if (useCache)
             {
-                var q = Database.Database.ExecuteSelect("SELECT * FROM WebCache WHERE url = @url", GlobalVariables.DbConfigVar, new Dictionary<string, object?> {{"@url", urlAddress}});
+                const string selectFromWebcacheWhereUrlUrl = "SELECT * FROM WebCache WHERE url = @url";
+                var dictionary = new Dictionary<string, object?> {{"@url", urlAddress}};
+                var q = Database.Database.ExecuteSelect(selectFromWebcacheWhereUrlUrl, GlobalVariables.DbConfigVar, dictionary);
                 if (q?.Rows.Count > 0)
                 {
                     var sq = q?.Rows[0]["content"]?.ToString();
