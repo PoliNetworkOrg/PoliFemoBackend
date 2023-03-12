@@ -40,7 +40,7 @@ public static class HtmlUtil
 
             }
             if (useCache)
-                Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW())", GlobalVariables.DbConfigVar, new Dictionary<string, object?> {{"@url", urlAddress}, {"@content", s}});
+                Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)", GlobalVariables.DbConfigVar, new Dictionary<string, object?> {{"@url", urlAddress}, {"@content", s}});
             return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
             /*
 
