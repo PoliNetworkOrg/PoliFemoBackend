@@ -12,16 +12,19 @@ namespace PoliFemoBackend.Source.Utils.Html;
 
 public static class HtmlUtil
 {
-    internal static Task<WebReply> DownloadHtmlAsync(string urlAddress, bool isRoomTable = false)
+    internal static Task<WebReply> DownloadHtmlAsync(string urlAddress, bool useCache = true, bool isRoomTable = false)
 
     {
         try
         {
-            var q = Database.Database.ExecuteSelect("SELECT * FROM WebCache WHERE url = @url", GlobalVariables.DbConfigVar, new Dictionary<string, object?> {{"@url", urlAddress}});
-            if (q?.Rows.Count > 0)
+            if (useCache)
             {
-                var sq = q?.Rows[0]["content"]?.ToString();
-                if (sq != null) return Task.FromResult(new WebReply(sq, HttpStatusCode.OK));
+                var q = Database.Database.ExecuteSelect("SELECT * FROM WebCache WHERE url = @url", GlobalVariables.DbConfigVar, new Dictionary<string, object?> {{"@url", urlAddress}});
+                if (q?.Rows.Count > 0)
+                {
+                    var sq = q?.Rows[0]["content"]?.ToString();
+                    if (sq != null) return Task.FromResult(new WebReply(sq, HttpStatusCode.OK));
+                }
             }
             HttpClient httpClient = new();
             var task = httpClient.GetByteArrayAsync(urlAddress);
@@ -36,7 +39,8 @@ public static class HtmlUtil
                 s = t3?[0].InnerHtml ?? "";
 
             }
-            Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW())", GlobalVariables.DbConfigVar, new Dictionary<string, object?> {{"@url", urlAddress}, {"@content", s}});
+            if (useCache)
+                Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW())", GlobalVariables.DbConfigVar, new Dictionary<string, object?> {{"@url", urlAddress}, {"@content", s}});
             return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
             /*
 

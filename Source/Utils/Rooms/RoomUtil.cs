@@ -30,7 +30,7 @@ public static class RoomUtil
                   "&giorno_year=" + year +
                   "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&evn_visualizza=";
 
-        var html = await HtmlUtil.DownloadHtmlAsync(url, true);
+        var html = await HtmlUtil.DownloadHtmlAsync(url, false, true);
         if (html.IsValid() == false) return null;
 
         var doc = new HtmlDocument();
