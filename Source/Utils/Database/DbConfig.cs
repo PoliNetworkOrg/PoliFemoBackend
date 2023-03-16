@@ -15,6 +15,7 @@ namespace PoliFemoBackend.Source.Utils.Database;
 public class DbConfig
 {
     public string? DatabaseName;
+    public string? Database;
     public string? Host;
     public string? Password;
     public int Port;
@@ -31,9 +32,10 @@ public class DbConfig
         {
             try
             {
-                var absolutePath = Path.GetFullPath(configDbconfigJson); 
+
                 var text = File.ReadAllText(configDbconfigJson);
                 DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
+                DbConfigVar?.FixName();
                 GlobalVariables.DbConfigVar = DbConfigVar;
             }
             catch (Exception ex)
@@ -60,7 +62,7 @@ public class DbConfig
             if (ignoreInitialScript == false)
             {
                 var sql = File.ReadAllText(Constants.SqlCommandsPath);
-                Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
+                Utils.Database.Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
             }
 
             Logger.WriteLine("Table checks completed! Starting application...");
@@ -72,6 +74,16 @@ public class DbConfig
             Logger.WriteLine(ex.Message, LogSeverityLevel.Critical);
             Environment.Exit(1);
         }
+    }
+
+    private void FixName()
+    {
+        if (string.IsNullOrEmpty(this.DatabaseName))
+            this.DatabaseName = this.Database;
+        
+        if (string.IsNullOrEmpty(this.Database))
+            this.Database = this.DatabaseName;
+
     }
 
 

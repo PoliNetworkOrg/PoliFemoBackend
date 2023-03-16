@@ -39,32 +39,39 @@ public static class SearchRoomUtil
         var results = new JArray();
         foreach (var room in t4)
         {
-            if (room == null) continue;
-
-            var formattedRoom = JObject.FromObject(room);
-            var roomLink = formattedRoom.GetValue("link");
-            if (roomLink != null)
-            {
-                var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
-                formattedRoom.Add(new JProperty("room_id", roomId));
-
-                try
-                {
-                    var reportedOccupancyJObject = RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
-                    formattedRoom["occupancy_rate"] =
-                        reportedOccupancyJObject?["occupancy_rate"];
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(ex);
-                }
-            }
-
-            results.Add(formattedRoom);
+            var r2 = FormatRoom(room);
+            if (r2!=null)
+                results.Add(r2);
         }
 
         SaveToCache(polimidailysituation, results);
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
+    }
+
+    private static JObject? FormatRoom(object? room)
+    {
+        if (room == null) return null;
+
+        var formattedRoom = JObject.FromObject(room);
+        var roomLink = formattedRoom.GetValue("link");
+        if (roomLink != null)
+        {
+            var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
+            formattedRoom.Add(new JProperty("room_id", roomId));
+
+            try
+            {
+                var reportedOccupancyJObject = RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
+                formattedRoom["occupancy_rate"] =
+                    reportedOccupancyJObject?["occupancy_rate"];
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(ex);
+            }
+        }
+
+        return formattedRoom;
     }
 
     private static void SaveToCache(string polimidailysituation, IEnumerable results)
