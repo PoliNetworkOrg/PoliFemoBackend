@@ -50,9 +50,6 @@ public static class Test
 
     private static void FixGlobalDbConfig()
     {
-        if (GlobalVariables.DbConfigVar == null)
-        {
-            GlobalVariables.DbConfigVar = GlobalVariables.GetDbConfig();
-        }
+        GlobalVariables.DbConfigVar ??= GlobalVariables.GetDbConfig(true);
     }
 }

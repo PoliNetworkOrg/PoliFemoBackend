@@ -30,12 +30,12 @@ public static class GlobalVariables
         _secrets = jObject;
     }
 
-    public static DbConfig? GetDbConfig()
+    public static DbConfig? GetDbConfig(bool ignoreInitialScript = false)
     {
         if (DbConfigVar != null)
             return DbConfigVar;
 
-        DbConfig.InitializeDbConfig();
+        DbConfig.InitializeDbConfig(ignoreInitialScript);
         return DbConfigVar;
     }
 }
