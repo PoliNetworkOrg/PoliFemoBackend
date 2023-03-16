@@ -29,11 +29,15 @@ public class SearchRoomsWithDayController : ControllerBase
     public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] string date)
     {
         DateOnly dateOnly;
-        try {
+        try
+        {
             dateOnly = DateOnly.Parse(date);
-        } catch (Exception) {
+        }
+        catch (Exception)
+        {
             return BadRequest(new { error = "Invalid date format" });
         }
+
         var hourStart = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 8, 0, 0);
         var hourStop = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 20, 0, 0);
 
