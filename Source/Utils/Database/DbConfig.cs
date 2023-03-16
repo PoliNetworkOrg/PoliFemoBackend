@@ -1,6 +1,7 @@
 #region
 
 using System.Data;
+using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Data;
@@ -25,11 +26,13 @@ public class DbConfig
         ;
         if (!Directory.Exists(Constants.ConfigPath)) Directory.CreateDirectory(Constants.ConfigPath);
 
-        if (File.Exists(Constants.DbConfig))
+        const string configDbconfigJson = Constants.DbConfig;
+        if (File.Exists(configDbconfigJson))
         {
             try
             {
-                var text = File.ReadAllText(Constants.DbConfig);
+                var absolutePath = Path.GetFullPath(configDbconfigJson); 
+                var text = File.ReadAllText(configDbconfigJson);
                 DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
                 GlobalVariables.DbConfigVar = DbConfigVar;
             }

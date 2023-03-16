@@ -16,7 +16,7 @@ public static class SearchRoomUtil
         hourStop = hourStop?.AddMinutes(-1);
 
         var polimidailysituation = "polimidailysituation://" + sede + "/" +  hourStart?.ToString("yyyy-MM-dd");
-        var selectFromWebcacheWhereUrlLikeUrl = "SELECT * FROM WebCache WHERE url LIKE @url";
+        const string selectFromWebcacheWhereUrlLikeUrl = "SELECT * FROM WebCache WHERE url LIKE @url";
         var dictionary = new Dictionary<string, object?>
         {
             {"@url", polimidailysituation}
