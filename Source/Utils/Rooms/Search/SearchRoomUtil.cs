@@ -23,7 +23,7 @@ public static class SearchRoomUtil
         if (q?.Rows.Count > 0)
         {
             var sq = q?.Rows[0]["content"]?.ToString();
-            JArray jArray = new JArray();
+            var jArray = new JArray();
             if (sq != null) jArray = JArray.Parse(sq);
             List<Task> tasks = new List<Task>();
             foreach (var jToken in jArray)
@@ -81,6 +81,15 @@ public static class SearchRoomUtil
         }
         );
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
+    }
+
+    private static Action UpdateOccupancyRateOfSomeRoom(JObject roomObj)
+    {
+        return () =>
+        {
+            roomObj["occupancy_rate"] =
+                RoomOccupancyReport.GetReportedOccupancyJObject((uint)(roomObj["room_id"] ?? 1))?["occupancy_rate"];
+        };
     }
 
     internal static async Task<IActionResult> ReturnSearchResults(string sede, DateTime? hourStart, DateTime? hourStop,
