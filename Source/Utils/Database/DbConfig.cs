@@ -1,6 +1,7 @@
 #region
 
 using System.Data;
+using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Data;
@@ -14,22 +15,27 @@ namespace PoliFemoBackend.Source.Utils.Database;
 public class DbConfig
 {
     public string? DatabaseName;
+    public string? Database;
     public string? Host;
     public string? Password;
     public int Port;
     public string? User;
     public static DbConfig? DbConfigVar { get; set; }
 
-    public static void InitializeDbConfig()
+    public static void InitializeDbConfig(bool ignoreInitialScript = false)
     {
+        ;
         if (!Directory.Exists(Constants.ConfigPath)) Directory.CreateDirectory(Constants.ConfigPath);
 
-        if (File.Exists(Constants.DbConfig))
+        const string configDbconfigJson = Constants.DbConfig;
+        if (File.Exists(configDbconfigJson))
         {
             try
             {
-                var text = File.ReadAllText(Constants.DbConfig);
+
+                var text = File.ReadAllText(configDbconfigJson);
                 DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
+                DbConfigVar?.FixName();
                 GlobalVariables.DbConfigVar = DbConfigVar;
             }
             catch (Exception ex)
@@ -52,8 +58,13 @@ public class DbConfig
             GlobalVariables.DbConnection.Open();
             if (GlobalVariables.DbConnection.State == ConnectionState.Open)
                 Logger.WriteLine("Connection to db on start works! Performing table checks...");
-            var sql = File.ReadAllText(Constants.SqlCommandsPath);
-            Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
+
+            if (ignoreInitialScript == false)
+            {
+                var sql = File.ReadAllText(Constants.SqlCommandsPath);
+                Utils.Database.Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
+            }
+
             Logger.WriteLine("Table checks completed! Starting application...");
         }
         catch (Exception ex)
@@ -63,6 +74,16 @@ public class DbConfig
             Logger.WriteLine(ex.Message, LogSeverityLevel.Critical);
             Environment.Exit(1);
         }
+    }
+
+    private void FixName()
+    {
+        if (string.IsNullOrEmpty(this.DatabaseName))
+            this.DatabaseName = this.Database;
+        
+        if (string.IsNullOrEmpty(this.Database))
+            this.Database = this.DatabaseName;
+
     }
 
 
