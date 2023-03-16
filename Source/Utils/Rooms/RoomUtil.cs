@@ -13,14 +13,14 @@ public static class RoomUtil
     public const string RoomInfoUrls = "https://www7.ceda.polimi.it/spazi/spazi/controller/";
 
 
-    internal static async Task<List<HtmlNode>?> GetDailySituationOnDate(DateTime? date, string sede)
+    internal static async Task<Tuple<List<HtmlNode>?, string>> GetDailySituationOnDate(DateTime? date, string sede)
     {
         date ??= DateTime.Today;
         var day = date?.Day;
         var month = date?.Month;
         var year = date?.Year;
 
-        if (string.IsNullOrEmpty(sede)) return null;
+        if (string.IsNullOrEmpty(sede)) return new Tuple<List<HtmlNode>?, string>(null, "sede empty");
 
         var url = "https://www7.ceda.polimi.it/spazi/spazi/controller/OccupazioniGiornoEsatto.do?" +
                   "csic=" + sede +
@@ -32,7 +32,7 @@ public static class RoomUtil
                   "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&evn_visualizza=";
 
         var html = await HtmlUtil.DownloadHtmlAsync(url, false, CacheTypeEnum.ROOMTABLE);
-        if (html.IsValid() == false) return null;
+        if (html.IsValid() == false) return new Tuple<List<HtmlNode>?, string>(null, "html invalid");
 
         var doc = new HtmlDocument();
         doc.LoadHtml(html.GetData());
@@ -43,6 +43,6 @@ public static class RoomUtil
             InnerHtml = doc.DocumentNode.InnerHtml
         };
         nodes.Add(node);
-        return nodes;
+        return new Tuple<List<HtmlNode>?, string>(nodes, string.Empty);
     }
 }

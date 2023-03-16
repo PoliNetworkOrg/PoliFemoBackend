@@ -29,9 +29,10 @@ public static class SearchRoomUtil
         }
 
         var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, sede);
-        if (t3 is null || t3.Count == 0) return new Tuple<JArray?, DoneEnum>(null, DoneEnum.ERROR);
+        if (t3.Item1 is null || t3.Item1?.Count == 0) 
+            return new Tuple<JArray?, DoneEnum>(new JArray(){t3.Item2}, DoneEnum.ERROR);
 
-        var htmlNode = t3[0];
+        var htmlNode = t3.Item1?[0];
         var t4 = FreeRoomsUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
         if (t4 is null || t4.Count == 0)
             return new Tuple<JArray?, DoneEnum>(null, DoneEnum.SKIPPED);
@@ -76,7 +77,6 @@ public static class SearchRoomUtil
 
     private static void SaveToCache(string polimidailysituation, IEnumerable results)
     {
-        ;
         try
         {
             const string qi =
@@ -90,16 +90,13 @@ public static class SearchRoomUtil
         }
         catch (Exception ex)
         {
-            ;
             Logger.WriteLine(ex);
         }
-
-        ;
     }
 
-    private static async Task<Tuple<JArray?, DoneEnum>> ReturnFromCache(DataTable q)
+    private static async Task<Tuple<JArray?, DoneEnum>> ReturnFromCache(DataTable? q)
     {
-        var sq = q?.Rows[0]["content"]?.ToString();
+        var sq = q?.Rows[0]["content"].ToString();
         var jArray = new JArray();
         if (sq != null) jArray = JArray.Parse(sq);
         var tasks = (from JObject roomobj in jArray select Task.Run(() => { UpdateOccupancyRate(roomobj); })).ToList();
@@ -127,7 +124,8 @@ public static class SearchRoomUtil
             case DoneEnum.ERROR:
             {
                 const string text4 = "Errore nella consultazione del sito del polimi!";
-                return new ObjectResult(new { error = text4 })
+                var error = text4 + " " + jArrayResults;
+                return new ObjectResult(new {error})
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
