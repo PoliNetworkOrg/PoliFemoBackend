@@ -54,21 +54,21 @@ public static class SearchRoomUtil
 
         var formattedRoom = JObject.FromObject(room);
         var roomLink = formattedRoom.GetValue("link");
-        if (roomLink != null)
-        {
-            var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
-            formattedRoom.Add(new JProperty("room_id", roomId));
+        if (roomLink == null) 
+            return formattedRoom;
+        
+        var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
+        formattedRoom.Add(new JProperty("room_id", roomId));
 
-            try
-            {
-                var reportedOccupancyJObject = RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
-                formattedRoom["occupancy_rate"] =
-                    reportedOccupancyJObject?["occupancy_rate"];
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(ex);
-            }
+        try
+        {
+            var reportedOccupancyJObject = RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
+            formattedRoom["occupancy_rate"] =
+                reportedOccupancyJObject?["occupancy_rate"];
+        }
+        catch (Exception ex)
+        {
+            Logger.WriteLine(ex);
         }
 
         return formattedRoom;
@@ -76,14 +76,25 @@ public static class SearchRoomUtil
 
     private static void SaveToCache(string polimidailysituation, IEnumerable results)
     {
-        const string qi =
-            "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)";
-        var objects = new Dictionary<string, object?>
+        ;
+        try
         {
-            { "@url", polimidailysituation },
-            { "@content", results.ToString() }
-        };
-        Database.Database.Execute(qi, GlobalVariables.DbConfigVar, objects);
+            const string qi =
+                "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)";
+            var objects = new Dictionary<string, object?>
+            {
+                { "@url", polimidailysituation },
+                { "@content", results.ToString() }
+            };
+            Database.Database.Execute(qi, GlobalVariables.DbConfigVar, objects);
+        }
+        catch (Exception ex)
+        {
+            ;
+            Logger.WriteLine(ex);
+        }
+
+        ;
     }
 
     private static async Task<Tuple<JArray?, DoneEnum>> ReturnFromCache(DataTable q)
