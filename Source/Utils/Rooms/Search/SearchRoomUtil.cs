@@ -13,11 +13,11 @@ public static class SearchRoomUtil
     {
         hourStop = hourStop?.AddMinutes(-1);
 
-        var q = Database.Database.ExecuteSelect("SELECT * FROM WebCache WHERE url LIKE @url",
-            GlobalVariables.DbConfigVar, new Dictionary<string, object?>
-            {
-                { "@url", "polimidailysituation://" + hourStart?.ToString("yyyy-MM-dd") }
-            }
+        var polimidailysituation = "polimidailysituation://" + sede + "/" +  hourStart?.ToString("yyyy-MM-dd");
+        var q = Database.Database.ExecuteSelect("SELECT * FROM WebCache WHERE url LIKE @url", GlobalVariables.DbConfigVar, new Dictionary<string, object?>
+        {
+            {"@url", polimidailysituation}
+        }
         );
 
         if (q?.Rows.Count > 0)
@@ -25,9 +25,15 @@ public static class SearchRoomUtil
             var sq = q?.Rows[0]["content"]?.ToString();
             var jArray = new JArray();
             if (sq != null) jArray = JArray.Parse(sq);
-            var tasks = (
-                from JObject roomObj in jArray
-                select Task.Run(UpdateOccupancyRateOfSomeRoom(roomObj))).ToList();
+            List<Task> tasks = new List<Task>();
+            foreach (var jToken in jArray)
+            {
+                var roomobj = (JObject)jToken;
+                tasks.Add(Task.Run(() =>
+                {
+                    roomobj["occupancy_rate"] = RoomOccupancyReport.GetReportedOccupancyJObject((uint)(roomobj["room_id"] ?? 1))?["occupancy_rate"];
+                }));
+            }
             await Task.WhenAll(tasks);
             return new Tuple<JArray?, DoneEnum>(jArray, DoneEnum.DONE);
         }
@@ -68,12 +74,11 @@ public static class SearchRoomUtil
             results.Add(formattedRoom);
         }
 
-        Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW())",
-            GlobalVariables.DbConfigVar, new Dictionary<string, object?>
-            {
-                { "@url", "polimidailysituation://" + hourStart?.ToString("yyyy-MM-dd") },
-                { "@content", results.ToString() }
-            }
+        Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)", GlobalVariables.DbConfigVar, new Dictionary<string, object?>
+        {
+            {"@url", polimidailysituation},
+            {"@content", results.ToString()}
+        }
         );
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
     }
