@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Data;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -14,28 +16,16 @@ public static class SearchRoomUtil
         hourStop = hourStop?.AddMinutes(-1);
 
         var polimidailysituation = "polimidailysituation://" + sede + "/" +  hourStart?.ToString("yyyy-MM-dd");
-        var q = Database.Database.ExecuteSelect("SELECT * FROM WebCache WHERE url LIKE @url", GlobalVariables.DbConfigVar, new Dictionary<string, object?>
+        var selectFromWebcacheWhereUrlLikeUrl = "SELECT * FROM WebCache WHERE url LIKE @url";
+        var dictionary = new Dictionary<string, object?>
         {
             {"@url", polimidailysituation}
-        }
-        );
+        };
+        var q = Database.Database.ExecuteSelect(selectFromWebcacheWhereUrlLikeUrl, GlobalVariables.DbConfigVar, dictionary);
 
         if (q?.Rows.Count > 0)
         {
-            var sq = q?.Rows[0]["content"]?.ToString();
-            JArray jArray = new JArray();
-            if (sq != null) jArray = JArray.Parse(sq);
-            List<Task> tasks = new List<Task>();
-            foreach (var jToken in jArray)
-            {
-                var roomobj = (JObject)jToken;
-                tasks.Add(Task.Run(() =>
-                {
-                    roomobj["occupancy_rate"] = RoomOccupancyReport.GetReportedOccupancyJObject((uint)(roomobj["room_id"] ?? 1))?["occupancy_rate"];
-                }));
-            }
-            await Task.WhenAll(tasks);
-            return new Tuple<JArray?, DoneEnum>(jArray, DoneEnum.DONE);
+            return await ReturnFromCache(q);
         }
 
         var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, sede);
@@ -58,7 +48,6 @@ public static class SearchRoomUtil
                 var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
                 formattedRoom.Add(new JProperty("room_id", roomId));
 
-
                 try
                 {
                     var reportedOccupancyJObject = RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
@@ -74,13 +63,36 @@ public static class SearchRoomUtil
             results.Add(formattedRoom);
         }
 
-        Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)", GlobalVariables.DbConfigVar, new Dictionary<string, object?>
-        {
-            {"@url", polimidailysituation},
-            {"@content", results.ToString()}
-        }
-        );
+        SaveToCache(polimidailysituation, results);
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
+    }
+
+    private static void SaveToCache(string polimidailysituation, IEnumerable results)
+    {
+        const string qi =
+            "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)";
+        var objects = new Dictionary<string, object?>
+        {
+            { "@url", polimidailysituation },
+            { "@content", results.ToString() }
+        };
+        Database.Database.Execute(qi, GlobalVariables.DbConfigVar, objects);
+    }
+
+    private static async Task<Tuple<JArray?, DoneEnum>> ReturnFromCache(DataTable q)
+    {
+        var sq = q?.Rows[0]["content"]?.ToString();
+        var jArray = new JArray();
+        if (sq != null) jArray = JArray.Parse(sq);
+        var tasks = (from JObject roomobj in jArray select Task.Run(() => { UpdateOccupancyRate(roomobj); })).ToList();
+        await Task.WhenAll(tasks);
+        return new Tuple<JArray?, DoneEnum>(jArray, DoneEnum.DONE);
+    }
+
+    private static void UpdateOccupancyRate(JObject roomobj)
+    {
+        roomobj["occupancy_rate"] =
+            RoomOccupancyReport.GetReportedOccupancyJObject((uint)(roomobj["room_id"] ?? 1))?["occupancy_rate"];
     }
 
     internal static async Task<IActionResult> ReturnSearchResults(string sede, DateTime? hourStart, DateTime? hourStop,

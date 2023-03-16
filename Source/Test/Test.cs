@@ -1,5 +1,6 @@
 ﻿#region
 
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion
@@ -10,13 +11,22 @@ public static class Test
 {
     internal static void RunTest()
     {
-        var task = TestMain();
-        task.Wait();
+        try
+        {
+            var task = TestMain();
+            task.Wait();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     private static async Task TestMain()
     {
         Console.WriteLine("Test");
+
+        FixGlobalDbConfig();
 
         try
         {
@@ -36,5 +46,13 @@ public static class Test
 
         //DbConfig.InitializeDbConfig();
         //ArticleContentUpgrade.ArticleContentUpgradeMethod();
+    }
+
+    private static void FixGlobalDbConfig()
+    {
+        if (GlobalVariables.DbConfigVar == null)
+        {
+            GlobalVariables.DbConfigVar = GlobalVariables.GetDbConfig();
+        }
     }
 }
