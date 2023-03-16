@@ -13,9 +13,10 @@ public static class SearchRoomUtil
     {
         hourStop = hourStop?.AddMinutes(-1);
 
+        var polimidailysituation = "polimidailysituation://" + sede + "/" +  hourStart?.ToString("yyyy-MM-dd");
         var q = Database.Database.ExecuteSelect("SELECT * FROM WebCache WHERE url LIKE @url", GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
-            {"@url", "polimidailysituation://" + hourStart?.ToString("yyyy-MM-dd")}
+            {"@url", polimidailysituation}
         }
         );
 
@@ -25,8 +26,9 @@ public static class SearchRoomUtil
             JArray jArray = new JArray();
             if (sq != null) jArray = JArray.Parse(sq);
             List<Task> tasks = new List<Task>();
-            foreach (JObject roomobj in jArray)
+            foreach (var jToken in jArray)
             {
+                var roomobj = (JObject)jToken;
                 tasks.Add(Task.Run(() =>
                 {
                     roomobj["occupancy_rate"] = RoomOccupancyReport.GetReportedOccupancyJObject((uint)(roomobj["room_id"] ?? 1))?["occupancy_rate"];
@@ -74,7 +76,7 @@ public static class SearchRoomUtil
 
         Database.Database.Execute("INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)", GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
-            {"@url", "polimidailysituation://" + hourStart?.ToString("yyyy-MM-dd")},
+            {"@url", polimidailysituation},
             {"@content", results.ToString()}
         }
         );
