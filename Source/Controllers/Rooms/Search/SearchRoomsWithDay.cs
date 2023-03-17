@@ -29,13 +29,17 @@ public class SearchRoomsWithDayController : ControllerBase
     [ResponseCache(VaryByQueryKeys = new[] { "*" }, Duration = SecondsToCacheSearch)]
     public async Task<IActionResult> SearchRooms([BindRequired] string date)
     {
-        List<string> sedi = new List<string>() { "MIA", "MIB", "LCF", "MNI", "PCL" };
+        var sedi = new List<string> { "MIA", "MIB", "LCF", "MNI", "PCL" };
         DateOnly dateOnly;
-        try {
+        try
+        {
             dateOnly = DateOnly.Parse(date);
-        } catch (Exception) {
+        }
+        catch (Exception)
+        {
             return BadRequest(new { error = "Invalid date format" });
         }
+
         var hourStart = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 8, 0, 0);
         var hourStop = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 20, 0, 0);
 
@@ -44,14 +48,14 @@ public class SearchRoomsWithDayController : ControllerBase
         foreach (var sede in sedi)
         {
             var (jArrayResults, doneEnum) = await SearchRoomUtil.SearchRooms(sede, hourStart, hourStop);
-            jObject.Add(new JObject() { {sede, jArrayResults} });
+            jObject.Add(new JObject { { sede, jArrayResults } });
             doneEnums.Add(doneEnum);
         }
 
         return doneEnums.Contains(DoneEnum.ERROR)
-            ? SearchRoomUtil.ReturnActionResult(this, DoneEnum.ERROR, null) 
-            : SearchRoomUtil.ReturnActionResult(this, jObject.Count == 0 
-                ? DoneEnum.SKIPPED 
+            ? SearchRoomUtil.ReturnActionResult(this, DoneEnum.ERROR, null)
+            : SearchRoomUtil.ReturnActionResult(this, jObject.Count == 0
+                ? DoneEnum.SKIPPED
                 : DoneEnum.DONE, jObject);
     }
 }

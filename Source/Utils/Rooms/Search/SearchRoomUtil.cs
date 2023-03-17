@@ -15,22 +15,20 @@ public static class SearchRoomUtil
     {
         hourStop = hourStop?.AddMinutes(-1);
 
-        var polimidailysituation = "polimidailysituation://" + sede + "/" +  hourStart?.ToString("yyyy-MM-dd");
+        var polimidailysituation = "polimidailysituation://" + sede + "/" + hourStart?.ToString("yyyy-MM-dd");
         const string selectFromWebcacheWhereUrlLikeUrl = "SELECT * FROM WebCache WHERE url LIKE @url";
         var dictionary = new Dictionary<string, object?>
         {
-            {"@url", polimidailysituation}
+            { "@url", polimidailysituation }
         };
-        var q = Database.Database.ExecuteSelect(selectFromWebcacheWhereUrlLikeUrl, GlobalVariables.DbConfigVar, dictionary);
+        var q = Database.Database.ExecuteSelect(selectFromWebcacheWhereUrlLikeUrl, GlobalVariables.DbConfigVar,
+            dictionary);
 
-        if (q?.Rows.Count > 0)
-        {
-            return await ReturnFromCache(q);
-        }
+        if (q?.Rows.Count > 0) return await ReturnFromCache(q);
 
         var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, sede);
-        if (t3.Item1 is null || t3.Item1?.Count == 0) 
-            return new Tuple<JArray?, DoneEnum>(new JArray(){t3.Item2}, DoneEnum.ERROR);
+        if (t3.Item1 is null || t3.Item1?.Count == 0)
+            return new Tuple<JArray?, DoneEnum>(new JArray { t3.Item2 }, DoneEnum.ERROR);
 
         var htmlNode = t3.Item1?[0];
         var t4 = FreeRoomsUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
@@ -41,7 +39,7 @@ public static class SearchRoomUtil
         foreach (var room in t4)
         {
             var r2 = FormatRoom(room);
-            if (r2!=null)
+            if (r2 != null)
                 results.Add(r2);
         }
 
@@ -55,9 +53,9 @@ public static class SearchRoomUtil
 
         var formattedRoom = JObject.FromObject(room);
         var roomLink = formattedRoom.GetValue("link");
-        if (roomLink == null) 
+        if (roomLink == null)
             return formattedRoom;
-        
+
         var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
         formattedRoom.Add(new JProperty("room_id", roomId));
 
@@ -117,7 +115,8 @@ public static class SearchRoomUtil
         return ReturnActionResult(controllerBase, doneEnum, jArrayResults);
     }
 
-    public static IActionResult ReturnActionResult(ControllerBase controllerBase, DoneEnum doneEnum, IEnumerable? jArrayResults)
+    public static IActionResult ReturnActionResult(ControllerBase controllerBase, DoneEnum doneEnum,
+        IEnumerable? jArrayResults)
     {
         switch (doneEnum)
         {

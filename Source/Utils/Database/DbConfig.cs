@@ -1,7 +1,6 @@
 #region
 
 using System.Data;
-using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Data;
@@ -14,8 +13,8 @@ namespace PoliFemoBackend.Source.Utils.Database;
 [JsonObject(MemberSerialization.Fields)]
 public class DbConfig
 {
-    public string? DatabaseName;
     public string? Database;
+    public string? DatabaseName;
     public string? Host;
     public string? Password;
     public int Port;
@@ -32,7 +31,6 @@ public class DbConfig
         {
             try
             {
-
                 var text = File.ReadAllText(configDbconfigJson);
                 DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
                 DbConfigVar?.FixName();
@@ -78,12 +76,11 @@ public class DbConfig
 
     private void FixName()
     {
-        if (string.IsNullOrEmpty(this.DatabaseName))
-            this.DatabaseName = this.Database;
-        
-        if (string.IsNullOrEmpty(this.Database))
-            this.Database = this.DatabaseName;
+        if (string.IsNullOrEmpty(DatabaseName))
+            DatabaseName = Database;
 
+        if (string.IsNullOrEmpty(Database))
+            Database = DatabaseName;
     }
 
 
