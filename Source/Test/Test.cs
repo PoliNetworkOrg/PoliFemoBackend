@@ -1,6 +1,7 @@
 ﻿#region
 
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Utils.Rooms;
 using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion
@@ -30,6 +31,8 @@ public static class Test
 
         try
         {
+            var r2 = await SingleRoomUtil.GetRoomById(32);
+            Console.WriteLine(r2);
             var hourStart = new DateTime(2023, 02, 27, 8, 0, 0);
             var hourStop = new DateTime(2023, 02, 27, 20, 0, 0);
             ;

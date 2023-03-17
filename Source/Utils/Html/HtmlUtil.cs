@@ -62,12 +62,21 @@ public static class HtmlUtil
 
     private static void SaveResultInCache(string urlAddress, bool useCache, string s)
     {
+     
         if (!useCache) 
             return;
-        
-        var dictionary = new Dictionary<string, object?> { { "@url", urlAddress }, { "@content", s } };
-        const string q = "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)";
-        Database.Database.Execute(q, GlobalVariables.DbConfigVar, dictionary);
+
+        try
+        {
+            var dictionary = new Dictionary<string, object?> { { "@url", urlAddress }, { "@content", s } };
+            const string q =
+                "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)";
+            Database.Database.Execute(q, GlobalVariables.DbConfigVar, dictionary);
+        }
+        catch
+        {
+            ;
+        }
     }
 
     private static WebReply? CheckIfToUseCache(string urlAddress, bool useCache)
