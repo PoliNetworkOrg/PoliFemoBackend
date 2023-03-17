@@ -114,10 +114,16 @@ public static class SearchRoomUtil
         ControllerBase controllerBase)
     {
         var (jArrayResults, doneEnum) = await SearchRooms(sede, hourStart, hourStop);
+        return ReturnActionResult(controllerBase, doneEnum, jArrayResults);
+    }
+
+    public static IActionResult ReturnActionResult(ControllerBase controllerBase, DoneEnum doneEnum, IEnumerable? jArrayResults)
+    {
         switch (doneEnum)
         {
             case DoneEnum.DONE:
-                return controllerBase.Ok(new JObject(new JProperty("free_rooms", jArrayResults)));
+                var jObject = new JObject(new JProperty("free_rooms", jArrayResults));
+                return controllerBase.Ok(jObject);
             case DoneEnum.SKIPPED:
                 return controllerBase.NoContent();
             default:
@@ -125,7 +131,7 @@ public static class SearchRoomUtil
             {
                 const string text4 = "Errore nella consultazione del sito del polimi!";
                 var error = text4 + " " + jArrayResults;
-                return new ObjectResult(new {error})
+                return new ObjectResult(new { error })
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };

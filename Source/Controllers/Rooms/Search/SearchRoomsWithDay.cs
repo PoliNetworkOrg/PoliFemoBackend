@@ -2,6 +2,8 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion
@@ -26,8 +28,9 @@ public class SearchRoomsWithDayController : ControllerBase
     /// <response code="500">Can't connect to poli servers</response>
     [HttpGet]
     [ResponseCache(VaryByQueryKeys = new[] { "*" }, Duration = SecondsToCacheSearch)]
-    public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] string date)
+    public async Task<IActionResult> SearchRooms([BindRequired] string date)
     {
+        List<string> sedi = new List<string>() { "MIA", "MIB", "LCF", "MNI", "PCL" };
         DateOnly dateOnly;
         try {
             dateOnly = DateOnly.Parse(date);
@@ -37,6 +40,19 @@ public class SearchRoomsWithDayController : ControllerBase
         var hourStart = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 8, 0, 0);
         var hourStop = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 20, 0, 0);
 
-        return await SearchRoomUtil.ReturnSearchResults(sede, hourStart, hourStop, this);
+        var jObject = new List<JObject>();
+        var doneEnums = new List<DoneEnum>();
+        foreach (var sede in sedi)
+        {
+            var (jArrayResults, doneEnum) = await SearchRoomUtil.SearchRooms(sede, hourStart, hourStop);
+            jObject.Add(new JObject() { {sede, jArrayResults} });
+            doneEnums.Add(doneEnum);
+        }
+
+        return doneEnums.Contains(DoneEnum.ERROR)
+            ? SearchRoomUtil.ReturnActionResult(this, DoneEnum.ERROR, null) 
+            : SearchRoomUtil.ReturnActionResult(this, jObject.Count == 0 
+                ? DoneEnum.SKIPPED 
+                : DoneEnum.DONE, jObject);
     }
 }
