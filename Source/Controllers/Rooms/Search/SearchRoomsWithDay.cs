@@ -20,7 +20,6 @@ public class SearchRoomsWithDayController : ControllerBase
     /// <summary>
     ///     Search for available rooms in a given date, from 8:00 to 20:00
     /// </summary>
-    /// <param name="sede" example="MIA">Possible values: MIA, MIB, LCF, MNI, PCL</param>
     /// <param name="date">Date in format yyyy-mm-dd</param>
     /// <returns>A JSON array of free rooms</returns>
     /// <response code="200">Request completed successfully</response>
