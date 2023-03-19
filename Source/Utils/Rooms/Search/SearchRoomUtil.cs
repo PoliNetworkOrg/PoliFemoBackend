@@ -12,41 +12,45 @@ public static class SearchRoomUtil
     {
         hourStop = hourStop?.AddMinutes(-1);
 
-        var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, sede);
-        if (t3 is null || t3.Count == 0) return new Tuple<JArray?, DoneEnum>(null, DoneEnum.ERROR);
-
-        var htmlNode = t3[0];
-        var t4 = FreeRoomsUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
-        if (t4 is null || t4.Count == 0)
-            return new Tuple<JArray?, DoneEnum>(null, DoneEnum.SKIPPED);
-
         var results = new JArray();
-        foreach (var room in t4)
+        var sedi = new[] { "MIA", "MIB", "LCF", "MNI", "PCL" };
+        for (int i = 0; i < sedi.Length; i++)
         {
-            if (room == null) continue;
+            var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, sedi[i]);
+            if (t3 is null || t3.Count == 0) return new Tuple<JArray?, DoneEnum>(null, DoneEnum.ERROR);
 
-            var formattedRoom = JObject.FromObject(room);
-            var roomLink = formattedRoom.GetValue("link");
-            if (roomLink != null)
+            var htmlNode = t3[0];
+            var t4 = FreeRoomsUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
+            if (t4 is null || t4.Count == 0)
+                return new Tuple<JArray?, DoneEnum>(null, DoneEnum.SKIPPED);
+            foreach (var room in t4)
             {
-                var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
-                formattedRoom.Add(new JProperty("room_id", roomId));
+                if (room == null) continue;
 
-
-                try
+                var formattedRoom = JObject.FromObject(room);
+                var roomLink = formattedRoom.GetValue("link");
+                if (roomLink != null)
                 {
-                    var reportedOccupancyJObject = RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
-                    formattedRoom["occupancy_rate"] =
-                        reportedOccupancyJObject?["occupancy_rate"];
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(ex);
-                }
-            }
+                    var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
+                    formattedRoom.Add(new JProperty("room_id", roomId));
 
-            results.Add(formattedRoom);
+
+                    try
+                    {
+                        var reportedOccupancyJObject = RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
+                        formattedRoom["occupancy_rate"] =
+                            reportedOccupancyJObject?["occupancy_rate"];
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteLine(ex);
+                    }
+                }
+
+                results.Add(formattedRoom);
+            }  
         }
+        
 
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
     }
