@@ -21,7 +21,7 @@ public class DbConfig
     public string? User;
     public static DbConfig? DbConfigVar { get; set; }
 
-    public static void InitializeDbConfig(bool ignoreInitialScript = false)
+    public static void InitializeDbConfig()
     {
         ;
         if (!Directory.Exists(Constants.ConfigPath)) Directory.CreateDirectory(Constants.ConfigPath);
@@ -57,7 +57,7 @@ public class DbConfig
             if (GlobalVariables.DbConnection.State == ConnectionState.Open)
                 Logger.WriteLine("Connection to db on start works! Performing table checks...");
 
-            if (ignoreInitialScript == false)
+            if (GlobalVariables.SkipDbSetup is null or false)
             {
                 var sql = File.ReadAllText(Constants.SqlCommandsPath);
                 Utils.Database.Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
