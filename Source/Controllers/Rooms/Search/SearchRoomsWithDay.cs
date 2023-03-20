@@ -26,7 +26,7 @@ public class SearchRoomsWithDayController : ControllerBase
     /// <response code="500">Can't connect to poli servers</response>
     [HttpGet]
    // [ResponseCache(VaryByQueryKeys = new[] { "*" }, Duration = SecondsToCacheSearch)]
-    public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] string date)
+    public async Task<IActionResult> SearchRooms(string? sede, [BindRequired] string date)
     {
         DateOnly dateOnly;
         try {

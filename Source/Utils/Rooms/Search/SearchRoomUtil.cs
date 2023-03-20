@@ -3,7 +3,6 @@ using System.Data;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Controllers.Rooms;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 
@@ -11,11 +10,18 @@ namespace PoliFemoBackend.Source.Utils.Rooms.Search;
 
 public static class SearchRoomUtil
 {
-    public static async Task<Tuple<JArray?, DoneEnum>> SearchRooms(string sede, DateTime? hourStart, DateTime? hourStop)
+    public static async Task<Tuple<JArray?, DoneEnum>> SearchRooms(string? sede, DateTime? hourStart, DateTime? hourStop)
     {
         
         hourStop = hourStop?.AddMinutes(-1);
-        var sedi = new[] { "MIA", "MIB", "LCF", "MNI", "PCL" };
+        string[] sedi;
+        if (sede == null) {
+            sedi = new string[] { "MIA", "MIB", "LCF", "MNI", "PCL" };
+        }
+        else
+        {
+            sedi = new string[] { sede };
+        }
         var results = new JArray();
 
         foreach (var item in sedi)
@@ -25,7 +31,7 @@ public static class SearchRoomUtil
             const string selectFromWebcacheWhereUrlLikeUrl = "SELECT * FROM WebCache WHERE url LIKE @url";
             var dictionary = new Dictionary<string, object?>
             {
-            {"@url", polimidailysituation}
+                {"@url", polimidailysituation}
             };
             var q = Database.Database.ExecuteSelect(selectFromWebcacheWhereUrlLikeUrl, GlobalVariables.DbConfigVar, dictionary);
 
@@ -66,7 +72,10 @@ public static class SearchRoomUtil
 
 
             SaveToCache(polimidailysituation, temp);
-            results.Add(temp);
+            foreach (var jToken in temp)
+            {
+                results.Add(jToken);
+            }
         }
         
         
@@ -88,16 +97,7 @@ public static class SearchRoomUtil
         var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
         formattedRoom.Add(new JProperty("room_id", roomId));
 
-        try
-        {
-            var reportedOccupancyJObject = RoomOccupancyReport.GetReportedOccupancyJObject(roomId);
-            formattedRoom["occupancy_rate"] =
-                reportedOccupancyJObject?["occupancy_rate"];
-        }
-        catch (Exception ex)
-        {
-            Logger.WriteLine(ex);
-        }
+        formattedRoom["occupancy_rate"] = null;
 
         return formattedRoom;
     }
@@ -113,7 +113,7 @@ public static class SearchRoomUtil
             var objects = new Dictionary<string, object?>
             {
                 { "@url", polimidailysituation },
-                { "@content", results.ToString() }
+                { "@content", results.ToString() },
             };
             Database.Database.Execute(qi, GlobalVariables.DbConfigVar, objects);
         }
@@ -123,50 +123,44 @@ public static class SearchRoomUtil
         }
     }
 
-    private static async Task<Tuple<JArray?, DoneEnum>> ReturnFromCache(DataTable? q)
-    {
-        var sq = q?.Rows[0]["content"].ToString();
-        var jArray = new JArray();
-        if (sq != null) jArray = JArray.Parse(sq);
-       
-        return new Tuple<JArray?, DoneEnum>(jArray, DoneEnum.DONE);
-    }
-
     private static void UpdateOccupancyRate(JArray rooms)
     {
-        JArray ids = new JArray();
+        int[] ids = new int[rooms.Count];
+        int i = 0;
         foreach (JObject roomobj in rooms)
         {
-        
-            ids.Append(roomobj?.First["room_id"] ?? 1);
+            int id = int.Parse(roomobj["room_id"]?.ToString() ?? "0");
+            if (roomobj?["room_id"] != null)
+                ids[i++] = id;
         }
-        const string q = "SELECT room_id, SUM(x.w * x.rate)/SUM(x.w) " +
+        string q = string.Format("SELECT room_id, SUM(x.w * x.rate)/SUM(x.w) " +
                         "FROM (" +
-                        "SELECT TIMESTAMPDIFF(SECOND, NOW(), when_reported) w, rate " +
+                        "SELECT room_id, TIMESTAMPDIFF(SECOND, NOW(), when_reported) w, rate " +
                         "FROM RoomOccupancyReports " +
-                        "WHERE room_id in @room_id AND when_reported >= @yesterday" +
-                        ") x ";
+                        "WHERE room_id in ({0}) AND when_reported >= @yesterday" +
+                        ") x GROUP BY room_id", string.Join(",", ids));
         var dict = new Dictionary<string, object?>
         {
-            { "@room_id", ids },
             { "@yesterday", DateTime.Now.AddDays(-1) }
         };
         var q2 = Database.Database.ExecuteSelect(q, GlobalVariables.DbConfigVar, dict);
         if (q2?.Rows.Count > 0)
         {
-            foreach(JObject roomobj in rooms)
+            foreach(DataRow row in q2.Rows)
             {
-                foreach (DataRow row in q2.Rows)
+                foreach (JObject roomobj in rooms)
                 {
-                    if (roomobj["room_id"] == row[0])
-                        roomobj["occupancy_rate"] = (float)row[1];
+                    if (roomobj["room_id"]?.ToString() == row[0].ToString()) {
+                        roomobj["occupancy_rate"] = (double)row[1];
+                        break;
+                    }
                 }
             }
         }
     }
     
 
-    internal static async Task<IActionResult> ReturnSearchResults(string sede, DateTime? hourStart, DateTime? hourStop,
+    internal static async Task<IActionResult> ReturnSearchResults(string? sede, DateTime? hourStart, DateTime? hourStop,
         ControllerBase controllerBase)
     {
         var (jArrayResults, doneEnum) = await SearchRooms(sede, hourStart, hourStop);
