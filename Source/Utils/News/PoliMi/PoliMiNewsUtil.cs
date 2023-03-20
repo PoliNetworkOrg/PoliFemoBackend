@@ -46,7 +46,9 @@ public static class PoliMiNewsUtil
         if (!(result?.IsContentEmpty() ?? false))
             return;
 
-        var urls2 = urls1.Where(x => x.GetClasses().Contains("container")).ToList();
+        var urls2 = urls1.Where(x => 
+            (x.GetClasses().Contains("container") && !(x.GetClasses().Contains("frame-type-header")))
+        ).ToList();
         HtmlNewsUtil.SetContent(urls2, result);
     }
 
