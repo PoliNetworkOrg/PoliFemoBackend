@@ -25,6 +25,10 @@ public class ArgumentsUtil
                     case "log-level":
                         GlobalVariables.LogLevel = int.Parse(value);
                         break;
+                    case "no-db-setup":
+                        GlobalVariables.SkipDbSetup = value == "true";
+                        break;
+                        ;
                 }
             }
             //flags
