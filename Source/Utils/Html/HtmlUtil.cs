@@ -69,7 +69,7 @@ public static class HtmlUtil
         {
             var dictionary = new Dictionary<string, object?> { { "@url", urlAddress }, { "@content", s } };
             const string q =
-                "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)";
+                "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAY)";
             Database.Database.Execute(q, GlobalVariables.DbConfigVar, dictionary);
         }
         catch
