@@ -20,9 +20,12 @@ public static class HtmlUtil
     {
         try
         {
-            var resultFromCache = CheckIfToUseCache(urlAddress, useCache);
-            if (resultFromCache != null)
-                return Task.FromResult(resultFromCache);
+            if (useCache)
+            {
+                var resultFromCache = CheckIfToUseCache(urlAddress);
+                if (resultFromCache != null)
+                    return Task.FromResult(resultFromCache);
+            }
 
             HttpClient httpClient = new();
             var task = httpClient.GetByteArrayAsync(urlAddress);
@@ -30,8 +33,10 @@ public static class HtmlUtil
             var response = task.Result;
             var s = Encoding.UTF8.GetString(response, 0, response.Length);
             s = FixTableContentFromCache(cacheTypeEnum, s);
+            
             if (useCache)
                 Cache.SaveToCacheUtil.SaveToCache(urlAddress, s);
+            
             return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
         }
         catch (Exception ex)
@@ -62,18 +67,9 @@ public static class HtmlUtil
     }
 
 
-    private static WebReply? CheckIfToUseCache(string urlAddress, bool useCache)
+    private static WebReply? CheckIfToUseCache(string urlAddress)
     {
-        if (!useCache)
-            return null;
-
-        const string selectFromWebcacheWhereUrlUrl = "SELECT * FROM WebCache WHERE url = @url";
-        var dictionary = new Dictionary<string, object?> { { "@url", urlAddress } };
-        var q = Database.Database.ExecuteSelect(selectFromWebcacheWhereUrlUrl, GlobalVariables.DbConfigVar, dictionary);
-        if (!(q?.Rows.Count > 0))
-            return null;
-
-        var sq = q?.Rows[0]["content"]?.ToString();
+        var sq = Cache.GetCacheUtil.GetCache(urlAddress);
         return sq != null ? new WebReply(sq, HttpStatusCode.OK) : null;
     }
 }
