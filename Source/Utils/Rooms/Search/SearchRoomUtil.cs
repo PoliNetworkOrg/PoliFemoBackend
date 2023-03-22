@@ -64,7 +64,7 @@ public static class SearchRoomUtil
             }
 
 
-            Utils.Cache.SaveToCacheUtil.SaveToCache(polimidailysituation, temp);
+            Utils.Cache.SaveToCacheUtil.SaveToCache(polimidailysituation, temp.ToString());
             foreach (var jToken in temp) results.Add(jToken);
         }
 

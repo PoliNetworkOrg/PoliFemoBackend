@@ -30,7 +30,8 @@ public static class HtmlUtil
             var response = task.Result;
             var s = Encoding.UTF8.GetString(response, 0, response.Length);
             s = FixTableContentFromCache(cacheTypeEnum, s);
-            Utils.Cache.SaveToCacheUtil.SaveResultInCache(urlAddress, useCache, s);
+            if (useCache)
+                Cache.SaveToCacheUtil.SaveToCache(urlAddress, s);
             return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
         }
         catch (Exception ex)
