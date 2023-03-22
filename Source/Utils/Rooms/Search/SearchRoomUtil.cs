@@ -64,7 +64,7 @@ public static class SearchRoomUtil
             }
 
 
-            SaveToCache(polimidailysituation, temp);
+            Utils.Cache.SaveToCacheUtil.SaveToCache(polimidailysituation, temp);
             foreach (var jToken in temp) results.Add(jToken);
         }
 
@@ -92,24 +92,6 @@ public static class SearchRoomUtil
     }
 
 
-    private static void SaveToCache(string polimidailysituation, IEnumerable results)
-    {
-        try
-        {
-            const string qi =
-                "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAY)";
-            var objects = new Dictionary<string, object?>
-            {
-                { "@url", polimidailysituation },
-                { "@content", results.ToString() }
-            };
-            Database.Database.Execute(qi, GlobalVariables.DbConfigVar, objects);
-        }
-        catch (Exception ex)
-        {
-            Logger.WriteLine(ex);
-        }
-    }
 
     private static void UpdateOccupancyRate(JArray rooms)
     {

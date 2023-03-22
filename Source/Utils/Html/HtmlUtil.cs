@@ -30,7 +30,7 @@ public static class HtmlUtil
             var response = task.Result;
             var s = Encoding.UTF8.GetString(response, 0, response.Length);
             s = FixTableContentFromCache(cacheTypeEnum, s);
-            SaveResultInCache(urlAddress, useCache, s);
+            Utils.Cache.SaveToCacheUtil.SaveResultInCache(urlAddress, useCache, s);
             return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
         }
         catch (Exception ex)
@@ -60,23 +60,6 @@ public static class HtmlUtil
         return s;
     }
 
-    private static void SaveResultInCache(string urlAddress, bool useCache, string s)
-    {
-        if (!useCache)
-            return;
-
-        try
-        {
-            var dictionary = new Dictionary<string, object?> { { "@url", urlAddress }, { "@content", s } };
-            const string q =
-                "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAY)";
-            Database.Database.Execute(q, GlobalVariables.DbConfigVar, dictionary);
-        }
-        catch
-        {
-            ;
-        }
-    }
 
     private static WebReply? CheckIfToUseCache(string urlAddress, bool useCache)
     {
