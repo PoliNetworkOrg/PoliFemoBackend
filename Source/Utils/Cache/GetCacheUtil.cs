@@ -1,6 +1,4 @@
-﻿using System.Net;
-using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Objects.Web;
+﻿using PoliFemoBackend.Source.Data;
 
 namespace PoliFemoBackend.Source.Utils.Cache;
 

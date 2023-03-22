@@ -3,9 +3,9 @@
 using System.Net;
 using System.Text;
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Web;
+using PoliFemoBackend.Source.Utils.Cache;
 
 #endregion
 
@@ -33,10 +33,10 @@ public static class HtmlUtil
             var response = task.Result;
             var s = Encoding.UTF8.GetString(response, 0, response.Length);
             s = FixTableContentFromCache(cacheTypeEnum, s);
-            
+
             if (useCache)
-                Cache.SaveToCacheUtil.SaveToCache(urlAddress, s);
-            
+                SaveToCacheUtil.SaveToCache(urlAddress, s);
+
             return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public static class HtmlUtil
 
     private static WebReply? CheckIfToUseCache(string urlAddress)
     {
-        var sq = Cache.GetCacheUtil.GetCache(urlAddress);
+        var sq = GetCacheUtil.GetCache(urlAddress);
         return sq != null ? new WebReply(sq, HttpStatusCode.OK) : null;
     }
 }

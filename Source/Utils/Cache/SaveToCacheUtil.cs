@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using PoliFemoBackend.Source.Data;
+﻿using PoliFemoBackend.Source.Data;
 
 namespace PoliFemoBackend.Source.Utils.Cache;
 
 public static class SaveToCacheUtil
 {
-
-
     internal static void SaveToCache(string url, string content)
     {
         try
@@ -25,5 +22,4 @@ public static class SaveToCacheUtil
             Logger.WriteLine(ex);
         }
     }
-
 }
