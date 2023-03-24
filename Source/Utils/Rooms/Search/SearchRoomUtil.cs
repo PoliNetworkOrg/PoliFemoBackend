@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
+using PoliFemoBackend.Source.Utils.Cache;
 
 namespace PoliFemoBackend.Source.Utils.Rooms.Search;
 
@@ -14,64 +15,59 @@ public static class SearchRoomUtil
         DateTime? hourStop)
     {
         hourStop = hourStop?.AddMinutes(-1);
-        string[] sedi;
-        if (sede == null)
-            sedi = new[] { "MIA", "MIB", "LCF", "MNI", "PCL" };
-        else
-            sedi = new[] { sede };
+        var sedi = sede == null ? new[] { "MIA", "MIB", "LCF", "MNI", "PCL", "CRG" } : new[] { sede };
         var results = new JArray();
 
         foreach (var item in sedi)
         {
-            var temp = new JArray();
-            var polimidailysituation = "polimidailysituation://" + item + "/" + hourStart?.ToString("yyyy-MM-dd");
-            const string selectFromWebcacheWhereUrlLikeUrl = "SELECT * FROM WebCache WHERE url LIKE @url";
-            var dictionary = new Dictionary<string, object?>
-            {
-                { "@url", polimidailysituation }
-            };
-            var q = Database.Database.ExecuteSelect(selectFromWebcacheWhereUrlLikeUrl, GlobalVariables.DbConfigVar,
-                dictionary);
-
-            if (q?.Rows.Count > 0)
-            {
-                //add to results from cache
-                var sq = q?.Rows[0]["content"].ToString();
-                if (sq != null)
-                {
-                    var jArray = JArray.Parse(sq);
-                    foreach (var jToken in jArray) results.Add(jToken);
-                }
-
-                continue;
-            }
-
-            var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, item);
-            if (t3.Item1 is null || t3.Item1?.Count == 0)
-                return new Tuple<JArray?, DoneEnum>(new JArray { t3.Item2 }, DoneEnum.ERROR);
-
-            var htmlNode = t3.Item1?[0];
-            var t4 = FreeRoomsUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
-            if (t4 is null || t4.Count == 0)
-                return new Tuple<JArray?, DoneEnum>(null, DoneEnum.SKIPPED);
-
-
-            foreach (var room in t4)
-            {
-                var r2 = FormatRoom(room);
-                if (r2 != null)
-                    temp.Add(r2);
-            }
-
-
-            SaveToCache(polimidailysituation, temp);
-            foreach (var jToken in temp) results.Add(jToken);
+            var x = await ElaborateSingleRoom(hourStart, hourStop, item, results);
+            if (x.Item1) return new Tuple<JArray?, DoneEnum>(x.Item2, x.Item3);
         }
-
 
         UpdateOccupancyRate(results);
 
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
+    }
+
+    private static async Task<Tuple<bool, JArray?, DoneEnum>> ElaborateSingleRoom(DateTime? hourStart,
+        DateTime? hourStop, string item, JArray results)
+    {
+        var temp = new JArray();
+        var polimidailysituation = "polimidailysituation://" + item + "/" + hourStart?.ToString("yyyy-MM-dd");
+        var q = GetCacheUtil.GetCache(polimidailysituation);
+
+
+        if (!string.IsNullOrEmpty(q))
+        {
+            //add to results from cache
+            var jArray = JArray.Parse(q);
+            foreach (var jToken in jArray)
+                results.Add(jToken);
+
+            return new Tuple<bool, JArray?, DoneEnum>(false, null, DoneEnum.SKIPPED);
+        }
+
+        var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, item);
+        if (t3.Item1 is null || t3.Item1?.Count == 0)
+            return new Tuple<bool, JArray?, DoneEnum>(true, new JArray { t3.Item2 }, DoneEnum.ERROR);
+
+        var htmlNode = t3.Item1?[0];
+        var t4 = FreeRoomsUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
+        if (t4 is null || t4.Count == 0) return new Tuple<bool, JArray?, DoneEnum>(true, null, DoneEnum.SKIPPED);
+
+        foreach (var room in t4)
+        {
+            var r2 = FormatRoom(room);
+            if (r2 != null)
+                temp.Add(r2);
+        }
+
+        SaveToCacheUtil.SaveToCache(polimidailysituation, temp.ToString());
+
+        foreach (var jToken in temp)
+            results.Add(jToken);
+
+        return new Tuple<bool, JArray?, DoneEnum>(false, null, DoneEnum.SKIPPED);
     }
 
     private static JObject? FormatRoom(object? room)
@@ -92,33 +88,15 @@ public static class SearchRoomUtil
     }
 
 
-    private static void SaveToCache(string polimidailysituation, IEnumerable results)
-    {
-        try
-        {
-            const string qi =
-                "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAY)";
-            var objects = new Dictionary<string, object?>
-            {
-                { "@url", polimidailysituation },
-                { "@content", results.ToString() }
-            };
-            Database.Database.Execute(qi, GlobalVariables.DbConfigVar, objects);
-        }
-        catch (Exception ex)
-        {
-            Logger.WriteLine(ex);
-        }
-    }
-
     private static void UpdateOccupancyRate(JArray rooms)
     {
         var ids = new int[rooms.Count];
         var i = 0;
-        foreach (JObject roomobj in rooms)
+        foreach (var jToken in rooms)
         {
+            var roomobj = (JObject)jToken;
             var id = int.Parse(roomobj["room_id"]?.ToString() ?? "0");
-            if (roomobj?["room_id"] != null)
+            if (roomobj["room_id"] != null)
                 ids[i++] = id;
         }
 
@@ -133,14 +111,18 @@ public static class SearchRoomUtil
             { "@yesterday", DateTime.Now.AddDays(-1) }
         };
         var q2 = Database.Database.ExecuteSelect(q, GlobalVariables.DbConfigVar, dict);
-        if (q2?.Rows.Count > 0)
-            foreach (DataRow row in q2.Rows)
-            foreach (JObject roomobj in rooms)
-                if (roomobj["room_id"]?.ToString() == row[0].ToString())
-                {
-                    roomobj["occupancy_rate"] = (double)row[1];
-                    break;
-                }
+        if (!(q2?.Rows.Count > 0))
+            return;
+
+        foreach (DataRow row in q2.Rows)
+        foreach (var jToken in rooms)
+        {
+            var roomobj = (JObject)jToken;
+            if (roomobj["room_id"]?.ToString() != row[0].ToString())
+                continue;
+            roomobj["occupancy_rate"] = (double)row[1];
+            break;
+        }
     }
 
 

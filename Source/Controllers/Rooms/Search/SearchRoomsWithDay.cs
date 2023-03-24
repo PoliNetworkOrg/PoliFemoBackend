@@ -29,7 +29,7 @@ public class SearchRoomsWithDayController : ControllerBase
     [ResponseCache(VaryByQueryKeys = new[] { "*" }, Duration = SecondsToCacheSearch)]
     public async Task<IActionResult> SearchRooms([BindRequired] string date)
     {
-        var sedi = new List<string> { "MIA", "MIB", "LCF", "MNI", "PCL" };
+        var sedi = new List<string> { "MIA", "MIB", "LCF", "MNI", "PCL", "CRG" };
         DateOnly dateOnly;
         try
         {
