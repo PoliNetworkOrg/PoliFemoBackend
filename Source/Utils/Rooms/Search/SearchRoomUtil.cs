@@ -15,7 +15,7 @@ public static class SearchRoomUtil
         DateTime? hourStop)
     {
         hourStop = hourStop?.AddMinutes(-1);
-        var sedi = sede == null ? new[] { "MIA", "MIB", "LCF", "MNI", "PCL" } : new[] { sede };
+        var sedi = sede == null ? new[] { "MIA", "MIB", "LCF", "MNI", "PCL", "CRG" } : new[] { sede };
         var results = new JArray();
 
         foreach (var item in sedi)
