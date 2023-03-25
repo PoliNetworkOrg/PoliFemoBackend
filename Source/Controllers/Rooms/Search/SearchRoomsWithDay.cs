@@ -1,7 +1,9 @@
-﻿#region
+#region
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion
@@ -18,7 +20,6 @@ public class SearchRoomsWithDayController : ControllerBase
     /// <summary>
     ///     Search for available rooms in a given date, from 8:00 to 20:00
     /// </summary>
-    /// <param name="sede" example="MIA">Possible values: MIA, MIB, LCF, MNI, PCL</param>
     /// <param name="date">Date in format yyyy-mm-dd</param>
     /// <returns>A JSON array of free rooms</returns>
     /// <response code="200">Request completed successfully</response>
@@ -26,8 +27,9 @@ public class SearchRoomsWithDayController : ControllerBase
     /// <response code="500">Can't connect to poli servers</response>
     [HttpGet]
     [ResponseCache(VaryByQueryKeys = new[] { "*" }, Duration = SecondsToCacheSearch)]
-    public async Task<IActionResult> SearchRooms([BindRequired] string sede, [BindRequired] string date)
+    public async Task<IActionResult> SearchRooms([BindRequired] string date)
     {
+        var sedi = new List<string> { "MIA", "MIB", "LCF", "MNI", "PCL", "CRG" };
         DateOnly dateOnly;
         try
         {
@@ -41,6 +43,19 @@ public class SearchRoomsWithDayController : ControllerBase
         var hourStart = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 8, 0, 0);
         var hourStop = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 20, 0, 0);
 
-        return await SearchRoomUtil.ReturnSearchResults(sede, hourStart, hourStop, this);
+        var jObject = new JObject();
+        var doneEnums = new List<DoneEnum>();
+        foreach (var sede in sedi)
+        {
+            var (jArrayResults, doneEnum) = await SearchRoomUtil.SearchRooms(sede, hourStart, hourStop);
+            jObject.Add(sede, jArrayResults);
+            doneEnums.Add(doneEnum);
+        }
+
+        return doneEnums.Contains(DoneEnum.ERROR)
+            ? SearchRoomUtil.ReturnActionResult(this, DoneEnum.ERROR, null)
+            : SearchRoomUtil.ReturnActionResult(this, jObject.Count == 0
+                ? DoneEnum.SKIPPED
+                : DoneEnum.DONE, jObject);
     }
 }

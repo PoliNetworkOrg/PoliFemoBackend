@@ -19,6 +19,7 @@ public static class GlobalVariables
     public static DbConfig? DbConfigVar { get; set; }
     public static MySqlConnection? DbConnection { get; set; }
     public static JwtSecurityTokenHandler? TokenHandler { get; set; }
+    public static bool? SkipDbSetup { get; set; }
 
     public static JToken? GetSecrets(string? v)
     {
@@ -30,12 +31,12 @@ public static class GlobalVariables
         _secrets = jObject;
     }
 
-    public static DbConfig? GetDbConfig(bool ignoreInitialScript = false)
+    public static DbConfig? GetDbConfig()
     {
         if (DbConfigVar != null)
             return DbConfigVar;
 
-        DbConfig.InitializeDbConfig(ignoreInitialScript);
+        DbConfig.InitializeDbConfig();
         return DbConfigVar;
     }
 }

@@ -3,9 +3,9 @@
 using System.Net;
 using System.Text;
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Web;
+using PoliFemoBackend.Source.Utils.Cache;
 
 #endregion
 
@@ -14,23 +14,29 @@ namespace PoliFemoBackend.Source.Utils.Html;
 public static class HtmlUtil
 {
     internal static Task<WebReply> DownloadHtmlAsync(
-        string urlAddress, 
-        bool useCache = true, 
+        string urlAddress,
+        bool useCache = true,
         CacheTypeEnum cacheTypeEnum = CacheTypeEnum.NONE)
     {
         try
         {
-            var resultFromCache = CheckIfToUseCache(urlAddress, useCache);
-            if (resultFromCache != null)
-                return Task.FromResult(resultFromCache);
-            
+            if (useCache)
+            {
+                var resultFromCache = CheckIfToUseCache(urlAddress);
+                if (resultFromCache != null)
+                    return Task.FromResult(resultFromCache);
+            }
+
             HttpClient httpClient = new();
             var task = httpClient.GetByteArrayAsync(urlAddress);
             task.Wait();
             var response = task.Result;
             var s = Encoding.UTF8.GetString(response, 0, response.Length);
             s = FixTableContentFromCache(cacheTypeEnum, s);
-            SaveResultInCache(urlAddress, useCache, s);
+
+            if (useCache)
+                SaveToCacheUtil.SaveToCache(urlAddress, s);
+
             return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
         }
         catch (Exception ex)
@@ -60,28 +66,10 @@ public static class HtmlUtil
         return s;
     }
 
-    private static void SaveResultInCache(string urlAddress, bool useCache, string s)
-    {
-        if (!useCache) 
-            return;
-        
-        var dictionary = new Dictionary<string, object?> { { "@url", urlAddress }, { "@content", s } };
-        const string q = "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAYS)";
-        Database.Database.Execute(q, GlobalVariables.DbConfigVar, dictionary);
-    }
 
-    private static WebReply? CheckIfToUseCache(string urlAddress, bool useCache)
+    private static WebReply? CheckIfToUseCache(string urlAddress)
     {
-        if (!useCache) 
-            return null;
-        
-        const string selectFromWebcacheWhereUrlUrl = "SELECT * FROM WebCache WHERE url = @url";
-        var dictionary = new Dictionary<string, object?> { { "@url", urlAddress } };
-        var q = Database.Database.ExecuteSelect(selectFromWebcacheWhereUrlUrl, GlobalVariables.DbConfigVar, dictionary);
-        if (!(q?.Rows.Count > 0)) 
-            return null;
-        
-        var sq = q?.Rows[0]["content"]?.ToString();
+        var sq = GetCacheUtil.GetCache(urlAddress);
         return sq != null ? new WebReply(sq, HttpStatusCode.OK) : null;
     }
 }
