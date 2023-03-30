@@ -1,8 +1,16 @@
 ﻿#region
 
 using System.Data;
+using System.Drawing;
+using System.Net;
+
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects.Articles;
+using System.Linq;
+using System.Drawing.;
+using System.Drawing.Imaging;
+using Blurhash.System.Drawing.Common;
+
 
 #endregion
 
@@ -29,6 +37,18 @@ public static class ArticleUtil
         foreach (var child in articles) result[Convert.ToUInt32(child["id"])] = child;
 
         return new Articles(result);
+    }
+
+    public static string GenerateBlurhash(string url)
+    {
+        //dowload image from url
+        var image = Image.FromStream(new HttpClient().GetStreamAsync(url).Result);
+
+        var hash = Blurhasher.Encode(image, 1, 1);
+
+    
+        
+
     }
 
     public static JObject ArticleAuthorsRowToJObject(DataRow row)
