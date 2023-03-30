@@ -1,7 +1,6 @@
 #region
 
 using System.Data;
-using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Data;
@@ -14,15 +13,15 @@ namespace PoliFemoBackend.Source.Utils.Database;
 [JsonObject(MemberSerialization.Fields)]
 public class DbConfig
 {
-    public string? DatabaseName;
     public string? Database;
+    public string? DatabaseName;
     public string? Host;
     public string? Password;
     public int Port;
     public string? User;
     public static DbConfig? DbConfigVar { get; set; }
 
-    public static void InitializeDbConfig(bool ignoreInitialScript = false)
+    public static void InitializeDbConfig()
     {
         ;
         if (!Directory.Exists(Constants.ConfigPath)) Directory.CreateDirectory(Constants.ConfigPath);
@@ -32,7 +31,6 @@ public class DbConfig
         {
             try
             {
-
                 var text = File.ReadAllText(configDbconfigJson);
                 DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
                 DbConfigVar?.FixName();
@@ -59,7 +57,7 @@ public class DbConfig
             if (GlobalVariables.DbConnection.State == ConnectionState.Open)
                 Logger.WriteLine("Connection to db on start works! Performing table checks...");
 
-            if (ignoreInitialScript == false)
+            if (GlobalVariables.SkipDbSetup is null or false)
             {
                 var sql = File.ReadAllText(Constants.SqlCommandsPath);
                 Utils.Database.Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
@@ -78,12 +76,11 @@ public class DbConfig
 
     private void FixName()
     {
-        if (string.IsNullOrEmpty(this.DatabaseName))
-            this.DatabaseName = this.Database;
-        
-        if (string.IsNullOrEmpty(this.Database))
-            this.Database = this.DatabaseName;
+        if (string.IsNullOrEmpty(DatabaseName))
+            DatabaseName = Database;
 
+        if (string.IsNullOrEmpty(Database))
+            Database = DatabaseName;
     }
 
 

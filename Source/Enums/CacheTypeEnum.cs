@@ -2,5 +2,6 @@
 
 public enum CacheTypeEnum
 {
-    NONE, ROOMTABLE
+    NONE,
+    ROOMTABLE
 }
