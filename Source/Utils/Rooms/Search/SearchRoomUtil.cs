@@ -143,14 +143,6 @@ public static class SearchRoomUtil
                 }
     }
 
-
-    internal static async Task<IActionResult> ReturnSearchResults(string? sede, DateTime? hourStart, DateTime? hourStop,
-        ControllerBase controllerBase)
-    {
-        var (jArrayResults, doneEnum) = await SearchRooms(sede, hourStart, hourStop);
-        return ReturnActionResult(controllerBase, doneEnum, jArrayResults);
-    }
-
     public static IActionResult ReturnActionResult(ControllerBase controllerBase, DoneEnum doneEnum,
         IEnumerable? jArrayResults)
     {

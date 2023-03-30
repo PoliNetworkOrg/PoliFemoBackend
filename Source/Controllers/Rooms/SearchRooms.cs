@@ -12,8 +12,8 @@ namespace PoliFemoBackend.Source.Controllers.Rooms.Search;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Rooms")]
-[Route("/rooms/search_day")]
-public class SearchRoomsWithDayController : ControllerBase
+[Route("/rooms/search")]
+public class SearchRoomsController : ControllerBase
 {
     private const int SecondsToCacheSearch = 60 * 60; //an hour
 
