@@ -43,7 +43,7 @@ public class GetUpdateAssetController : ControllerBase
         })
         .WithHandleFailure(async (c, e) =>
         {
-            c.Response.StatusCode = 403;
+            c.Response.StatusCode = 502;
             await c.Response.WriteAsync("Error while contacting GitHub");
         }).Build();
 
