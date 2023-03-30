@@ -29,7 +29,7 @@ public class SearchRoomsController : ControllerBase
     [ResponseCache(VaryByQueryKeys = new[] { "*" }, Duration = SecondsToCacheSearch)]
     public async Task<IActionResult> SearchRooms([BindRequired] string date)
     {
-        var sedi = new List<string> { "MIA", "MIB", "LCF", "MNI", "PCL" };
+        var sedi = new List<string> { "MIA", "MIB", "LCF", "MNI", "PCL", "CRG" };
         DateOnly dateOnly;
         try
         {
@@ -43,12 +43,12 @@ public class SearchRoomsController : ControllerBase
         var hourStart = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 8, 0, 0);
         var hourStop = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, 20, 0, 0);
 
-        var jObject = new List<JObject>();
+        var jObject = new JObject();
         var doneEnums = new List<DoneEnum>();
         foreach (var sede in sedi)
         {
             var (jArrayResults, doneEnum) = await SearchRoomUtil.SearchRooms(sede, hourStart, hourStop);
-            jObject.Add(new JObject { { sede, jArrayResults } });
+            jObject.Add(sede, jArrayResults);
             doneEnums.Add(doneEnum);
         }
 

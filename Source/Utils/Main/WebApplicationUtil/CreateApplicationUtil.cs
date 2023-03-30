@@ -1,6 +1,7 @@
 ﻿using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Prometheus;
+using AspNetCore.Proxy;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -23,6 +24,7 @@ public static class CreateApplicationUtil
         builder.Services.AddMvcCore(opts =>
             opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
         builder.Services.AddLogging();
+        builder.Services.AddProxies();
 
         var metrics = AppMetrics.CreateDefaultBuilder().Build();
 
