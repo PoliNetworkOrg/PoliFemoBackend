@@ -29,6 +29,8 @@ public static class Constants
     public const string AzureCommonIssuer =
         "https://login.microsoftonline.com/9188040d-6c67-4c5b-b112-36a304b66dad/v2.0";
 
+    public const string AssetsUrl = "https://polinetworkorg.github.io/PoliFemo/assets/";
+
     public const string Authorization = "Authorization";
     public const double MaxRate = 5;
     public const double MinRate = 1;
