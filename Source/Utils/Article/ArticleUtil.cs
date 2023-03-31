@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Data;
+using System.Drawing;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects.Articles;
 
@@ -31,6 +32,27 @@ public static class ArticleUtil
         return new Articles(result);
     }
 
+    public static async Task<string?> GenerateBlurhashAsync(string? url)
+    {
+        if (url == null) return null;
+        var image = Image.FromStream(await new HttpClient().GetStreamAsync(url));
+
+        Blurhash.Pixel[,] img = new Blurhash.Pixel[image.Width, image.Height];
+        Bitmap bmp = new Bitmap(image);
+        
+        for (int x = 0; x < image.Width; x++)
+        {
+            for (int y = 0; y < image.Height; y++)
+            {
+                var pixel = bmp.GetPixel(x, y);
+                img[x, y] = new Blurhash.Pixel((double)pixel.R/255, (double)pixel.G/255, (double)pixel.B/255);
+            }
+        }
+
+        return Blurhash.Core.Encode(img, 5, 5);
+        
+    }
+
     public static JObject ArticleAuthorsRowToJObject(DataRow row)
     {
         //convert results to json
@@ -54,7 +76,8 @@ public static class ArticleUtil
                 DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["target_time"].ToString() ?? ""))
             },
             { "content", row["content"].ToString() },
-            { "image", row["image"].ToString() == "" ? null : row["image"].ToString() }
+            { "image", row["image"].ToString() == "" ? null : row["image"].ToString() },
+            { "blurhash", row["blurhash"].ToString() == "" ? null : row["blurhash"].ToString() }
         };
 
 

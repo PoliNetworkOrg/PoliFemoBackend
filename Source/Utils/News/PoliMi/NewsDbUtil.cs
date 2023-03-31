@@ -1,6 +1,7 @@
 ﻿using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Articles.News;
+using PoliFemoBackend.Source.Utils.Article;
 
 namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
@@ -35,9 +36,10 @@ public static class NewsDbUtil
     private static void InsertItemInDb(NewsPolimi newsItem) //11111
     {
         const string query1 = "INSERT IGNORE INTO Articles " +
-                              "(title,subtitle,content,publish_time,source_url,author_id,image,tag_id) " +
+                              "(title,subtitle,content,publish_time,source_url,author_id,image,blurhash,tag_id) " +
                               "VALUES " +
-                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl, @author_id, @image, @tag)";
+                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl, @author_id, @image, @blurhash, @tag) " +
+                              "ON DUPLICATE KEY UPDATE article_id = LAST_INSERT_ID(article_id)";
         var args1 = new Dictionary<string, object?>
         {
             { "@sourceUrl", newsItem.GetUrl() },
@@ -47,6 +49,7 @@ public static class NewsDbUtil
             { "@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "@author_id", PoliMiAuthorId },
             { "@image", newsItem.GetImgUrl() },
+            { "@blurhash", ArticleUtil.GenerateBlurhashAsync(newsItem.GetImgUrl()).Result },
             { "@tag", newsItem.GetTag()?.ToUpper() == "" ? "ALTRO" : newsItem.GetTag()?.ToUpper() }
         };
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
