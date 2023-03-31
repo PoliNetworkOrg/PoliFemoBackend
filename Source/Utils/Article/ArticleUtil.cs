@@ -32,25 +32,24 @@ public static class ArticleUtil
         return new Articles(result);
     }
 
-    public static string? GenerateBlurhash(string? url)
+    public static async Task<string?> GenerateBlurhashAsync(string? url)
     {
         if (url == null) return null;
-        var image = Image.FromStream(new HttpClient().GetStreamAsync(url).Result);
+        var image = Image.FromStream(await new HttpClient().GetStreamAsync(url));
+
+        Blurhash.Pixel[,] img = new Blurhash.Pixel[image.Width, image.Height];
+        Bitmap bmp = new Bitmap(image);
         
-            Bitmap bmp = new Bitmap(image);
-            Blurhash.Pixel[,] img = new Blurhash.Pixel[bmp.Width, bmp.Height];
-
-
-            for (int x = 0; x < bmp.Width; x++)
+        for (int x = 0; x < image.Width; x++)
+        {
+            for (int y = 0; y < image.Height; y++)
             {
-                for (int y = 0; y < bmp.Height; y++)
-                {
-                    var pixel = bmp.GetPixel(x, y);
-                    img[x, y] = new Blurhash.Pixel((double)pixel.R / 255, (double)pixel.G / 255, (double)pixel.B / 255);
-                }
+                var pixel = bmp.GetPixel(x, y);
+                img[x, y] = new Blurhash.Pixel((double)pixel.R/255, (double)pixel.G/255, (double)pixel.B/255);
             }
+        }
 
-            return Blurhash.Core.Encode(img, 5, 5);
+        return Blurhash.Core.Encode(img, 5, 5);
         
     }
 

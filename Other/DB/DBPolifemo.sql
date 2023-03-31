@@ -62,7 +62,7 @@ create table if not exists Articles
     longitude   double        null,
     image       varchar(200)  null,
     author_id   int(10)       not null,
-    blurhash    varchar(100)  null,
+    blurhash    varchar(80)  null,
     source_url   varchar(1000) null,
     constraint Author___fk
         foreign key (author_id) references Authors (author_id),

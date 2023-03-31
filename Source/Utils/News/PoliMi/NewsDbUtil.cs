@@ -49,7 +49,7 @@ public static class NewsDbUtil
             { "@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "@author_id", PoliMiAuthorId },
             { "@image", newsItem.GetImgUrl() },
-            { "@blurhash", ArticleUtil.GenerateBlurhash(newsItem.GetImgUrl()) },
+            { "@blurhash", ArticleUtil.GenerateBlurhashAsync(newsItem.GetImgUrl()).Result },
             { "@tag", newsItem.GetTag()?.ToUpper() == "" ? "ALTRO" : newsItem.GetTag()?.ToUpper() }
         };
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
