@@ -45,7 +45,8 @@ create table if not exists Tags
 (
     `name`  varchar(100) not null
         primary key,
-    image varchar(100) null
+    image varchar(100) null,
+    blurhash varchar(80) null
 );
 
 create table if not exists Articles
@@ -62,6 +63,7 @@ create table if not exists Articles
     longitude   double        null,
     image       varchar(200)  null,
     author_id   int(10)       not null,
+    blurhash    varchar(80)  null,
     source_url   varchar(1000) null,
     constraint Author___fk
         foreign key (author_id) references Authors (author_id),
@@ -188,7 +190,7 @@ END;
 -- Minimal rows for the database to work --
 
 insert ignore into Authors values(1, "Politecnico di Milano", "https://www.polimi.it/", "https://techcamp.polimi.it/wp-content/uploads/2018/11/LogoPolimi-bianco-h324.png");
-insert ignore into Tags values("ALTRO", null);
-insert ignore into Tags values("ATENEO", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg");
-insert ignore into Tags values("RICERCA E INNOVAZIONE", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg");
-insert ignore into Tags values("STUDENTI", "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop");
+insert ignore into Tags values("ALTRO", null, null);
+insert ignore into Tags values("ATENEO", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg", "eWIYITE2%MWEt8F$Ipt8NHt8?wNHV@R*WB4;ofi^s.V@?boLnhoead");
+insert ignore into Tags values("RICERCA E INNOVAZIONE", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg", "eWIYITE2%MWEt8F$Ipt8NHt8?wNHV@R*WB4;ofi^s.V@?boLnhoead");
+insert ignore into Tags values("STUDENTI", "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop", "eIH_rg.9t,Z#tm~Ut58_%2xuxtROR.g4xu.TE1xtRkxZyEM|xEkCae");
