@@ -1,9 +1,10 @@
 ﻿#region
 
 using System.Data;
-using System.Drawing;
+using Blurhash.ImageSharp;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects.Articles;
+using Image = SixLabors.ImageSharp.Image;
 
 #endregion
 
@@ -34,23 +35,12 @@ public static class ArticleUtil
 
     public static async Task<string?> GenerateBlurhashAsync(string? url)
     {
-        if (url == null) return null;
-        var image = Image.FromStream(await new HttpClient().GetStreamAsync(url));
+        if (url == null || url == "") return null;
 
-        Blurhash.Pixel[,] img = new Blurhash.Pixel[image.Width, image.Height];
-        Bitmap bmp = new Bitmap(image);
-        
-        for (int x = 0; x < image.Width; x++)
-        {
-            for (int y = 0; y < image.Height; y++)
-            {
-                var pixel = bmp.GetPixel(x, y);
-                img[x, y] = new Blurhash.Pixel((double)pixel.R/255, (double)pixel.G/255, (double)pixel.B/255);
-            }
+        using(var bytes = await new HttpClient().GetStreamAsync(url)) {
+            var image = Image.Load<Rgba32>(bytes);
+            return Blurhasher.Encode(image, 5, 5);
         }
-
-        return Blurhash.Core.Encode(img, 5, 5);
-        
     }
 
     public static JObject ArticleAuthorsRowToJObject(DataRow row)
