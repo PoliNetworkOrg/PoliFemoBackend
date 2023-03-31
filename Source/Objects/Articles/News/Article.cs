@@ -3,7 +3,7 @@ namespace PoliFemoBackend.Source.Objects.Articles.News;
 public class Article
 {
     public Article(string title, string content, int author_id, string tag_id, string? subtitle, string? image,
-        DateTime? target_time, double? latitude, double? longitude, string blurhash)
+        DateTime? target_time, double? latitude, double? longitude, string? blurhash)
     {
         this.title = title;
         this.content = content;
@@ -26,5 +26,5 @@ public class Article
     public DateTime? target_time { get; set; }
     public double? latitude { get; set; }
     public double? longitude { get; set; }
-    public string blurhash { get; set; }
+    public string? blurhash { get; set; }
 }
