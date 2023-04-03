@@ -49,7 +49,7 @@
         <PackageReference Include="Mysql.Data" Version="8.0.32.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.28.0" />
     </ItemGroup>
 
     <ItemGroup>
