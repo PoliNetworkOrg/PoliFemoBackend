@@ -15,10 +15,10 @@ public static class DownloadNewsUtil
         var newsPolimi = PoliMiNewsUtil.GetNewsPoliMi(docPoliMi);
         var merged = MergeNewsUtil.Merge(urls?.ChildNodes, newsPolimi);
 
-        return DownloadCurrentNews2(merged);
+        return ProcessDownloadedNews(merged);
     }
 
-    private static IEnumerable<NewsPolimi> DownloadCurrentNews2(IEnumerable<HtmlNews> merged)
+    private static IEnumerable<NewsPolimi> ProcessDownloadedNews(IEnumerable<HtmlNews> merged)
     {
         var merged2 = merged.Select(ExtractNews).ToList();
         return (from item in merged2 where item.IsPresent select item.GetValue()).ToList();

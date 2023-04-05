@@ -34,7 +34,7 @@ public static class PoliMiNewsUtil
         try
         {
             var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
-            var p = NodeUtil.GetElementsByTagAndClassName(urls, "p")?.Select(x => x.InnerHtml).ToList();
+            var p = NodeUtil.GetElementsByTagAndClassName(urls, "p")?.Select(x => new ArticlePiece(Enums.ArticlePieceEnum.TEXT, x.InnerHtml)).ToList();
             if (p != null)
                 result?.SetContent(p);
         }

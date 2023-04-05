@@ -12,7 +12,7 @@ public class NewsPolimi
     private readonly string? _tag;
     private readonly string? _title;
     private readonly string? _url;
-    private List<string>? _content; //list of html objects (as strings)
+    private List<ArticlePiece>? _content; //list of html objects (as strings)
 
     public NewsPolimi()
     {
@@ -34,7 +34,7 @@ public class NewsPolimi
         return _url;
     }
 
-    public void SetContent(List<string> list)
+    public void SetContent(List<ArticlePiece> list)
     {
         _content = list;
     }
@@ -70,10 +70,10 @@ public class NewsPolimi
 
     public bool IsContentEmpty()
     {
-        return _content == null || _content.Count == 0 || _content.All(string.IsNullOrEmpty);
+        return _content == null || _content.Count == 0 || _content.All(x => x.IsEmpty());
     }
 
-    public List<string>? GetContentAsList()
+    public List<ArticlePiece>? GetContentAsList()
     {
         return _content;
     }
@@ -83,13 +83,9 @@ public class NewsPolimi
         if (_content == null)
             return;
 
-        for (var i = 0; i < _content.Count; i++)
+        foreach (var x in _content)
         {
-            var x = _content[i];
-            x = x.Replace("\n", "<br>");
-            x = x.Replace("<br>", "<br />");
-            x = x.Replace("<br /><br />", "<br />");
-            _content[i] = x;
+            x.FixContent();
         }
     }
 }
