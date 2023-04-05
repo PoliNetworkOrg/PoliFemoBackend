@@ -1,4 +1,5 @@
-﻿using PoliFemoBackend.Source.Enums;
+﻿using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Enums;
 
 namespace PoliFemoBackend.Source.Objects.Articles.News;
 
@@ -28,5 +29,19 @@ public class ArticlePiece
             ArticlePieceEnum.TEXT => string.IsNullOrEmpty(this._innerText),
             _ => throw new ArgumentOutOfRangeException()
         };
+    }
+
+    public JToken ToJson()
+    {
+        var jObject = new JObject
+        {
+            ["type"] = _articlePieceEnum.ToString(),
+            ["value"] = _articlePieceEnum switch
+            {
+                ArticlePieceEnum.TEXT => _innerText,
+                _ => throw new ArgumentOutOfRangeException()
+            }
+        };
+        return jObject;
     }
 }

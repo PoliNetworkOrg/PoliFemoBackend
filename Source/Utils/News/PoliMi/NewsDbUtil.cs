@@ -40,12 +40,13 @@ public static class NewsDbUtil
                               "VALUES " +
                               "(@title,@subtitle,@text_,@publishTime,@sourceUrl, @author_id, @image, @blurhash, @tag) " +
                               "ON DUPLICATE KEY UPDATE article_id = LAST_INSERT_ID(article_id)";
+        var content = newsItem.GetContentAsTextJson()?.ToString();
         var args1 = new Dictionary<string, object?>
         {
             { "@sourceUrl", newsItem.GetUrl() },
             { "@title", newsItem.GetTitle() },
             { "@subtitle", newsItem.GetSubtitle() },
-            { "@text_", newsItem.GetContentAsTextJson() },
+            { "@text_", content },
             { "@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "@author_id", PoliMiAuthorId },
             { "@image", newsItem.GetImgUrl() },

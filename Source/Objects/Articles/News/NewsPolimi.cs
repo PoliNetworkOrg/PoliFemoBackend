@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace PoliFemoBackend.Source.Objects.Articles.News;
 
@@ -59,13 +60,17 @@ public class NewsPolimi
         return _imgUrl;
     }
 
-    public string? GetContentAsTextJson()
+    public JArray? GetContentAsTextJson()
     {
         if (_content == null)
             return null;
 
-        var json = JsonConvert.SerializeObject(_content);
-        return json.Trim();
+        var result = new JArray();
+        foreach (var variable in _content)
+        {
+            result.Add(variable.ToJson());
+        }
+        return result;
     }
 
     public bool IsContentEmpty()
