@@ -35,9 +35,10 @@ public class NewsPolimi
         return _url;
     }
 
-    public void SetContent(List<ArticlePiece> list)
+    public void SetContent(List<ArticlePiece>? list)
     {
-        _content = list;
+        if (list != null)
+            _content = list;
     }
 
     public string? GetTitle()

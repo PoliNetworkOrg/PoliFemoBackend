@@ -33,10 +33,7 @@ public static class PoliMiNewsUtil
         var urls1 = doc.DocumentNode.SelectNodes("//div");
         try
         {
-            var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
-            var p = NodeUtil.GetElementsByTagAndClassName(urls, "p")?.Select(x => new ArticlePiece(Enums.ArticlePieceEnum.TEXT, x.InnerHtml)).ToList();
-            if (p != null)
-                result?.SetContent(p);
+            TrySetContent1(result, urls1);
         }
         catch
         {
@@ -46,10 +43,31 @@ public static class PoliMiNewsUtil
         if (!(result?.IsContentEmpty() ?? false))
             return;
 
+        try
+        {
+            TrySetContent2(result, urls1);
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    private static void TrySetContent2(NewsPolimi result, HtmlNodeCollection urls1)
+    {
         var urls2 = urls1.Where(x =>
             x.GetClasses().Contains("container") && !x.GetClasses().Contains("frame-type-header")
         ).ToList();
         HtmlNewsUtil.SetContent(urls2, result);
+    }
+
+    private static void TrySetContent1(NewsPolimi? result, HtmlNodeCollection urls1)
+    {
+        var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
+        var elementsByTagAndClassName = NodeUtil.GetElementsByTagAndClassName(urls, "p");
+        ArticlePiece Selector(HtmlNode x) => new(Enums.ArticlePieceEnum.TEXT, x.InnerHtml);
+        var p = elementsByTagAndClassName?.Select((Func<HtmlNode, ArticlePiece>)Selector).ToList();
+        result?.SetContent(p);
     }
 
 
