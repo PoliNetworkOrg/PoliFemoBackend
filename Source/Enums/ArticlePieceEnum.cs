@@ -5,5 +5,6 @@ namespace PoliFemoBackend.Source.Enums;
 public enum ArticlePieceEnum
 {
     TEXT,
-    IMG
+    IMG,
+    IFRAME
 }

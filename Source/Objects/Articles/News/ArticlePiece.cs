@@ -35,6 +35,7 @@ public class ArticlePiece
         {
             ArticlePieceEnum.TEXT => string.IsNullOrEmpty(this._innerText),
             ArticlePieceEnum.IMG => this._imageDb == null || string.IsNullOrEmpty(this._imageDb.Src),
+            ArticlePieceEnum.IFRAME => string.IsNullOrEmpty(this._innerText),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -47,7 +48,8 @@ public class ArticlePiece
             ["value"] = _articlePieceEnum switch
             {
                 ArticlePieceEnum.TEXT => _innerText,
-                ArticlePieceEnum.IMG => this._imageDb?.ToJson(),
+                ArticlePieceEnum.IMG => _imageDb?.ToJson(),
+                ArticlePieceEnum.IFRAME => _innerText,
                 _ => throw new ArgumentOutOfRangeException()
             }
         };

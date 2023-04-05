@@ -75,6 +75,8 @@ public static class PoliMiNewsUtil
                 return new ArticlePiece(Enums.ArticlePieceEnum.IMG,argInnerHtml);
             case "#comment":
                 return null;
+            case "iframe":
+                return new ArticlePiece(Enums.ArticlePieceEnum.IFRAME, x.Attributes["src"].Value.ToString());
             default:
                 Console.WriteLine(x.Name);
                 break;
