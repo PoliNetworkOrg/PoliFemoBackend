@@ -26,7 +26,7 @@ public static class PoliMiNewsUtil
         return slider5;
     }
 
-    internal static void GetContent(NewsPolimi? result)
+    internal static void TryAdjustContent(NewsPolimi? result)
     {
         var web = new HtmlWeb();
         var doc = web.Load(result?.GetUrl());

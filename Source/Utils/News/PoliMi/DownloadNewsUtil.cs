@@ -78,10 +78,10 @@ public static class DownloadNewsUtil
                 urlImgFinal ?? "");
 
             if (internalNews ?? false)
-                PoliMiNewsUtil.GetContent(result);
+                PoliMiNewsUtil.TryAdjustContent(result);
 
             if (result.IsContentEmpty())
-                PoliMiNewsUtil.GetContent(result);
+                PoliMiNewsUtil.TryAdjustContent(result);
 
             FixContent(result);
 
