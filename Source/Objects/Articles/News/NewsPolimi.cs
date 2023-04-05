@@ -13,7 +13,7 @@ public class NewsPolimi
     private readonly string? _tag;
     private readonly string? _title;
     private readonly string? _url;
-    private List<ArticlePiece>? _content; //list of html objects (as strings)
+    private List<ArticlePiece?>? _content; //list of html objects (as strings)
 
     public NewsPolimi()
     {
@@ -35,7 +35,7 @@ public class NewsPolimi
         return _url;
     }
 
-    public void SetContent(List<ArticlePiece>? list)
+    public void SetContent(List<ArticlePiece?>? list)
     {
         if (list != null)
             _content = list;
@@ -69,17 +69,18 @@ public class NewsPolimi
         var result = new JArray();
         foreach (var variable in _content)
         {
-            result.Add(variable.ToJson());
+            if (variable != null)
+                result.Add(variable.ToJson());
         }
         return result;
     }
 
     public bool IsContentEmpty()
     {
-        return _content == null || _content.Count == 0 || _content.All(x => x.IsEmpty());
+        return _content == null || _content.Count == 0 || _content.All(x => x == null || x.IsEmpty());
     }
 
-    public List<ArticlePiece>? GetContentAsList()
+    public List<ArticlePiece?>? GetContentAsList()
     {
         return _content;
     }
@@ -91,7 +92,7 @@ public class NewsPolimi
 
         foreach (var x in _content)
         {
-            x.FixContent();
+            x?.FixContent();
         }
     }
 }

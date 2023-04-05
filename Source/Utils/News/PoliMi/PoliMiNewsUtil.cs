@@ -62,7 +62,7 @@ public static class PoliMiNewsUtil
         HtmlNewsUtil.SetContent(urls2, result);
     }
 
-    internal static ArticlePiece Selector(HtmlNode x)
+    internal static ArticlePiece? Selector(HtmlNode x)
     {
         switch (x.Name)
         {
@@ -73,6 +73,8 @@ public static class PoliMiNewsUtil
             case "img":
                 var argInnerHtml = new ImageDb(x.Attributes["src"].Value, x.Attributes["alt"].Value.ToString());
                 return new ArticlePiece(Enums.ArticlePieceEnum.IMG,argInnerHtml);
+            case "#comment":
+                return null;
             default:
                 Console.WriteLine(x.Name);
                 break;
@@ -80,8 +82,12 @@ public static class PoliMiNewsUtil
         }
         return new ArticlePiece(Enums.ArticlePieceEnum.TEXT, x.InnerHtml);
     }
-    
 
+    public static bool Predicate(ArticlePiece? x)
+    {
+        return x != null && !x.IsEmpty();
+    }
+    
     private static void TrySetContent1(NewsPolimi? result, HtmlNodeCollection urls1)
     {
         var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
@@ -90,9 +96,8 @@ public static class PoliMiNewsUtil
         elementsByTagAndClassName = FlatMap(elementsByTagAndClassName);
 
 
-        var selector = (Func<HtmlNode, ArticlePiece>)Selector;
-        bool Predicate(ArticlePiece x) => !x.IsEmpty();
-        var predicate = (Func<ArticlePiece, bool>)Predicate;
+        var selector = (Func<HtmlNode, ArticlePiece?>)Selector;
+        var predicate = (Func<ArticlePiece?, bool>)Predicate;
         var articlePieces = elementsByTagAndClassName?.Select(selector);
         var enumerable = articlePieces?.Where(predicate);
         var p = enumerable?.ToList();
