@@ -7,11 +7,18 @@ public class ArticlePiece
 {
     private string? _innerText;
     private readonly ArticlePieceEnum _articlePieceEnum;
+    private readonly ImageDb? _imageDb;
 
     public ArticlePiece(ArticlePieceEnum articlePieceEnum, string argInnerHtml)
     {
         this._articlePieceEnum = articlePieceEnum;
         this._innerText = argInnerHtml;
+    }
+
+    public ArticlePiece(ArticlePieceEnum articlePieceEnum, ImageDb imageDb)
+    {
+        this._articlePieceEnum = articlePieceEnum;
+        this._imageDb = imageDb;
     }
 
     public void FixContent()
@@ -27,6 +34,7 @@ public class ArticlePiece
         return this._articlePieceEnum switch
         {
             ArticlePieceEnum.TEXT => string.IsNullOrEmpty(this._innerText),
+            ArticlePieceEnum.IMG => this._imageDb == null || string.IsNullOrEmpty(this._imageDb.Src),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -39,6 +47,7 @@ public class ArticlePiece
             ["value"] = _articlePieceEnum switch
             {
                 ArticlePieceEnum.TEXT => _innerText,
+                ArticlePieceEnum.IMG => this._imageDb?.ToJson(),
                 _ => throw new ArgumentOutOfRangeException()
             }
         };

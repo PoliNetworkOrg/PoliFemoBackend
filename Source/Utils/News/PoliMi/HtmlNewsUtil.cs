@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Utils.Html;
 
@@ -35,8 +34,8 @@ public static class HtmlNewsUtil
         var urls3 = NodeUtil.GetElementsByTagAndClassName(urls2, "img");
         AdaptImages(urls3);
 
-        ArticlePiece Selector(HtmlNode x) => new(ArticlePieceEnum.TEXT, x.OuterHtml);
-        var articlePieces = urls2.Select((Func<HtmlNode, ArticlePiece>)Selector).ToList();
+        var selector = (Func<HtmlNode, ArticlePiece>)PoliMiNewsUtil.Selector;
+        var articlePieces = urls2.Select(selector).ToList();
         newsPolimi.SetContent(articlePieces);
     }
 

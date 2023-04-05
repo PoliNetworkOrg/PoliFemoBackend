@@ -58,18 +58,72 @@ public static class PoliMiNewsUtil
         var urls2 = urls1.Where(x =>
             x.GetClasses().Contains("container") && !x.GetClasses().Contains("frame-type-header")
         ).ToList();
+        urls2 = FlatMap(urls2);
         HtmlNewsUtil.SetContent(urls2, result);
     }
+
+    internal static ArticlePiece Selector(HtmlNode x)
+    {
+        switch (x.Name)
+        {
+            case "#text":
+                return new ArticlePiece(Enums.ArticlePieceEnum.TEXT, x.InnerHtml);
+            case "br":
+                return new ArticlePiece(Enums.ArticlePieceEnum.TEXT, "\n");
+            case "img":
+                var argInnerHtml = new ImageDb(x.Attributes["src"].Value, x.Attributes["alt"].Value.ToString());
+                return new ArticlePiece(Enums.ArticlePieceEnum.IMG,argInnerHtml);
+            default:
+                Console.WriteLine(x.Name);
+                break;
+                    
+        }
+        return new ArticlePiece(Enums.ArticlePieceEnum.TEXT, x.InnerHtml);
+    }
+    
 
     private static void TrySetContent1(NewsPolimi? result, HtmlNodeCollection urls1)
     {
         var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
+
         var elementsByTagAndClassName = NodeUtil.GetElementsByTagAndClassName(urls, "p");
-        ArticlePiece Selector(HtmlNode x) => new(Enums.ArticlePieceEnum.TEXT, x.InnerHtml);
-        var p = elementsByTagAndClassName?.Select((Func<HtmlNode, ArticlePiece>)Selector).ToList();
+        elementsByTagAndClassName = FlatMap(elementsByTagAndClassName);
+
+
+        var selector = (Func<HtmlNode, ArticlePiece>)Selector;
+        bool Predicate(ArticlePiece x) => !x.IsEmpty();
+        var predicate = (Func<ArticlePiece, bool>)Predicate;
+        var articlePieces = elementsByTagAndClassName?.Select(selector);
+        var enumerable = articlePieces?.Where(predicate);
+        var p = enumerable?.ToList();
         result?.SetContent(p);
     }
 
+    private static List<HtmlNode> FlatMap(List<HtmlNode>? list)
+    {
+        if (list == null)
+            return new List<HtmlNode>();
+
+        while (true)
+        {
+            ;
+            if (list.All(x => x.ChildNodes.Count == 0))
+                return list;
+
+            var list2 = new List<HtmlNode>();
+            foreach (var v1 in list)
+            {
+                if (v1.ChildNodes.Count== 0)
+                    list2.Add(v1);
+                else
+                {
+                    list2.AddRange(v1.ChildNodes);
+                }
+            }
+
+            list = list2;
+        }
+    }
 
     /// <summary>
     ///     Loops every 30 mins to sync PoliMi news with the app db
