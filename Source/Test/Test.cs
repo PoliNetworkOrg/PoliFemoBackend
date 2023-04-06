@@ -33,7 +33,11 @@ public static class Test
         try
         {
             var r2 =  Utils.News.PoliMi.DownloadNewsUtil.DownloadCurrentNews();
-            Console.WriteLine(r2.Count());
+            foreach (var VARIABLE in r2)
+            {
+                Console.WriteLine(VARIABLE.GetContentAsTextJson());
+            }
+            
         }
         catch (Exception e)
         {
