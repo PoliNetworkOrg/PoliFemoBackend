@@ -64,10 +64,7 @@ public static class PoliMiNewsUtil
 
 
 
-    public static bool Predicate(ArticlePiece? x)
-    {
-        return x != null && !x.IsEmpty();
-    }
+
     
     private static void TrySetContent1(NewsPolimi? result, HtmlNodeCollection urls1)
     {
@@ -78,7 +75,7 @@ public static class PoliMiNewsUtil
 
 
         var selector = (Func<HtmlNode, ArticlePiece?>)ArticlePiece.Selector;
-        var predicate = (Func<ArticlePiece?, bool>)Predicate;
+        var predicate = (Func<ArticlePiece?, bool>)ArticlePiece.Predicate;
         var articlePieces = elementsByTagAndClassName.Select(selector);
         var enumerable = articlePieces.Where(predicate);
         var p = enumerable.ToList();

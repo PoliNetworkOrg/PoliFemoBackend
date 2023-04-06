@@ -111,4 +111,9 @@ public class ArticlePiece
         }
         return new ArticlePiece(Enums.ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
     }
+    
+    public static bool Predicate(ArticlePiece? x)
+    {
+        return x != null && !x.IsEmpty();
+    }
 }

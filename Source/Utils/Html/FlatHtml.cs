@@ -18,25 +18,28 @@ public static class FlatHtml
         {
             if (list.All(x => x.ChildNodes.Count == 0))
                 return list;
-
-            var list2 = new List<HtmlNode>();
-            foreach (var v1 in list)
-            {
-                if (v1.ChildNodes.Count== 0)
-                    list2.Add(v1);
-                else
-                {
-                    list2.AddRange(v1.ChildNodes.Select(variable => AddChild(variable, v1)));
-                }
-            }
-
-            list = list2;
+            
+            list = FlatStep(list)    //do a step of converting child list with childrent to a flat one
+                .SelectMany(x => x)    
+                .ToList();
         }
+    }
+
+    private static IEnumerable<IEnumerable<HtmlNode>> FlatStep(IEnumerable<HtmlNode> list)
+    {
+        var htmlNodeses = list.Select(v1 =>
+        {
+            HtmlNode Selector(HtmlNode variable) => AddChild(variable, v1);
+            var selector = (Func<HtmlNode, HtmlNode>)Selector;
+            return v1.ChildNodes.Count == 0
+                ? new List<HtmlNode> { v1 }
+                : v1.ChildNodes.Select(selector);
+        });
+        return htmlNodeses;
     }
 
     private static HtmlNode AddChild(HtmlNode child, HtmlNode parent)
     {
-        ;
         switch (parent.Name)
         {
             case "div":
@@ -66,8 +69,6 @@ public static class FlatHtml
                 child.Name = parent.Name;
                 return child;
             }
-            
-            
             
             default:
             {

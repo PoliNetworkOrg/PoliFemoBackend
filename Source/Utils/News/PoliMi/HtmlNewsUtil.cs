@@ -35,7 +35,7 @@ public static class HtmlNewsUtil
         AdaptImages(urls3);
 
         var selector = (Func<HtmlNode, ArticlePiece?>)ArticlePiece.Selector;
-        var predicate = (Func<ArticlePiece?, bool>)PoliMiNewsUtil.Predicate;
+        var predicate = (Func<ArticlePiece?, bool>)ArticlePiece.Predicate;
         var articlePieces = urls2.Select(selector).Where(predicate).ToList();
         newsPolimi.SetContent(articlePieces);
     }
