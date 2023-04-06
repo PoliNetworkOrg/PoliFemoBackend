@@ -6,5 +6,7 @@ public enum ArticlePieceEnum
 {
     TEXT,
     IMG,
-    IFRAME
+    IFRAME,
+    LINK,
+    LINE
 }

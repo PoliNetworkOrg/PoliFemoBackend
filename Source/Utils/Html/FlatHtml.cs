@@ -2,8 +2,13 @@
 
 namespace PoliFemoBackend.Source.Utils.Html;
 
-public class FlatHtml
+public static class FlatHtml
 {
+    /// <summary>
+    /// Prendi una lista di nodi e restituisci una lista piatta (di nodi senza figli)
+    /// </summary>
+    /// <param name="list"></param>
+    /// <returns></returns>
     internal static List<HtmlNode> FlatMap(List<HtmlNode>? list)
     {
         if (list == null)
@@ -11,7 +16,6 @@ public class FlatHtml
 
         while (true)
         {
-            ;
             if (list.All(x => x.ChildNodes.Count == 0))
                 return list;
 
@@ -22,11 +26,56 @@ public class FlatHtml
                     list2.Add(v1);
                 else
                 {
-                    list2.AddRange(v1.ChildNodes);
+                    list2.AddRange(v1.ChildNodes.Select(variable => AddChild(variable, v1)));
                 }
             }
 
             list = list2;
         }
+    }
+
+    private static HtmlNode AddChild(HtmlNode child, HtmlNode parent)
+    {
+        ;
+        switch (parent.Name)
+        {
+            case "div":
+            case "p":
+            case "span":
+            case "ul":
+            {
+                return child;
+            }
+
+            case "h1":
+            case "h2":
+            case "h3":
+            case "h4":
+            case "h5":
+            case "h6":
+            case "em":
+            case "a":
+            case "sub":
+            case "sup":
+            case "blockquote":
+            case "strong":
+            case "figure":
+            case "header":
+            case "li":
+            {
+                child.Name = parent.Name;
+                return child;
+            }
+            
+            
+            
+            default:
+            {
+                Console.WriteLine(parent.Name);
+                break;
+            }
+        }
+
+        return child;
     }
 }
