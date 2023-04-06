@@ -58,7 +58,7 @@ public static class PoliMiNewsUtil
         var urls2 = urls1.Where(x =>
             x.GetClasses().Contains("container") && !x.GetClasses().Contains("frame-type-header")
         ).ToList();
-        urls2 = FlatMap(urls2);
+        urls2 = FlatHtml.FlatMap(urls2);
         HtmlNewsUtil.SetContent(urls2, result);
     }
 
@@ -74,42 +74,17 @@ public static class PoliMiNewsUtil
         var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
 
         var elementsByTagAndClassName = NodeUtil.GetElementsByTagAndClassName(urls, "p");
-        elementsByTagAndClassName = FlatMap(elementsByTagAndClassName);
+        elementsByTagAndClassName = FlatHtml.FlatMap(elementsByTagAndClassName);
 
 
         var selector = (Func<HtmlNode, ArticlePiece?>)ArticlePiece.Selector;
         var predicate = (Func<ArticlePiece?, bool>)Predicate;
-        var articlePieces = elementsByTagAndClassName?.Select(selector);
-        var enumerable = articlePieces?.Where(predicate);
-        var p = enumerable?.ToList();
+        var articlePieces = elementsByTagAndClassName.Select(selector);
+        var enumerable = articlePieces.Where(predicate);
+        var p = enumerable.ToList();
         result?.SetContent(p);
     }
 
-    private static List<HtmlNode> FlatMap(List<HtmlNode>? list)
-    {
-        if (list == null)
-            return new List<HtmlNode>();
-
-        while (true)
-        {
-            ;
-            if (list.All(x => x.ChildNodes.Count == 0))
-                return list;
-
-            var list2 = new List<HtmlNode>();
-            foreach (var v1 in list)
-            {
-                if (v1.ChildNodes.Count== 0)
-                    list2.Add(v1);
-                else
-                {
-                    list2.AddRange(v1.ChildNodes);
-                }
-            }
-
-            list = list2;
-        }
-    }
 
     /// <summary>
     ///     Loops every 30 mins to sync PoliMi news with the app db
