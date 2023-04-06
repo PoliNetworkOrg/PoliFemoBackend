@@ -9,13 +9,13 @@ public class ArticlePiece
     private string? _innerText;
     private readonly ArticlePieceEnum _articlePieceEnum;
     private readonly ImageDb? _imageDb;
-    private string? htmlTag;
+    private readonly string? _htmlTag;
 
     private ArticlePiece(ArticlePieceEnum articlePieceEnum, string argInnerHtml, string htmlTag)
     {
         this._articlePieceEnum = articlePieceEnum;
         this._innerText = argInnerHtml;
-        this.htmlTag = htmlTag;
+        this._htmlTag = htmlTag;
     }
 
     private ArticlePiece(ArticlePieceEnum articlePieceEnum, ImageDb imageDb)
@@ -37,9 +37,8 @@ public class ArticlePiece
         _innerText = _innerText.Replace("<br /><br />", "<br />");
     }
 
-    public bool IsEmpty()
-    {
-        return this._articlePieceEnum switch
+    public bool IsEmpty() =>
+        _articlePieceEnum switch
         {
             ArticlePieceEnum.TEXT => string.IsNullOrEmpty(this._innerText),
             ArticlePieceEnum.IMG => this._imageDb == null || string.IsNullOrEmpty(this._imageDb.Src),
@@ -48,16 +47,14 @@ public class ArticlePiece
             ArticlePieceEnum.LINE => false,
             _ => throw new ArgumentOutOfRangeException()
         };
-    }
 
-    public JToken ToJson()
-    {
-        var jObject = new JObject
+    public JToken ToJson() =>
+        new JObject
         {
             ["type"] = _articlePieceEnum.ToString(),
             ["value"] = _articlePieceEnum switch
             {
-                ArticlePieceEnum.TEXT => _innerText,
+                ArticlePieceEnum.TEXT => TextFormat(),
                 ArticlePieceEnum.IMG => _imageDb?.ToJson(),
                 ArticlePieceEnum.IFRAME => _innerText,
                 ArticlePieceEnum.LINK => _imageDb?.ToJson(),
@@ -65,9 +62,14 @@ public class ArticlePiece
                 _ => throw new ArgumentOutOfRangeException()
             }
         };
-        return jObject;
-    }
-    
+
+    private JToken TextFormat() =>
+        new JObject
+        {
+            ["c"] = this._innerText,
+            ["h"] = this._htmlTag
+        };
+
     internal static ArticlePiece? Selector(HtmlNode x)
     {
         switch (x.Name)
@@ -85,6 +87,7 @@ public class ArticlePiece
             case "li":
             case "header":
             case "#text":
+            case "blockquote":
                 return new ArticlePiece(ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
             case "hr":
                 return new ArticlePiece(Enums.ArticlePieceEnum.LINE);
