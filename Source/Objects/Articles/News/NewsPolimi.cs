@@ -68,10 +68,8 @@ public class NewsPolimi
 
         var result = new JArray();
         foreach (var variable in _content)
-        {
             if (variable != null)
                 result.Add(variable.ToJson());
-        }
         return result;
     }
 
@@ -90,9 +88,6 @@ public class NewsPolimi
         if (_content == null)
             return;
 
-        foreach (var x in _content)
-        {
-            x?.FixContent();
-        }
+        foreach (var x in _content) x?.FixContent();
     }
 }

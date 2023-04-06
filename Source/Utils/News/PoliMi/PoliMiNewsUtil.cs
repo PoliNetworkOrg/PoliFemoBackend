@@ -63,9 +63,6 @@ public static class PoliMiNewsUtil
     }
 
 
-
-
-    
     private static void TrySetContent1(NewsPolimi? result, HtmlNodeCollection urls1)
     {
         var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));

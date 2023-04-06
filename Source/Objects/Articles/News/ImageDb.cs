@@ -4,13 +4,13 @@ namespace PoliFemoBackend.Source.Objects.Articles.News;
 
 public class ImageDb
 {
-    internal readonly string Src;
     private readonly string _alt;
+    internal readonly string Src;
 
     public ImageDb(string src, string alt)
     {
-        this.Src = src;
-        this._alt = alt;
+        Src = src;
+        _alt = alt;
     }
 
     public JToken ToJson()

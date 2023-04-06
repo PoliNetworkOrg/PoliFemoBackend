@@ -6,27 +6,27 @@ namespace PoliFemoBackend.Source.Objects.Articles.News;
 
 public class ArticlePiece
 {
-    private string? _innerText;
     private readonly ArticlePieceEnum _articlePieceEnum;
-    private readonly ImageDb? _imageDb;
     private readonly string? _htmlTag;
+    private readonly ImageDb? _imageDb;
+    private string? _innerText;
 
     private ArticlePiece(ArticlePieceEnum articlePieceEnum, string argInnerHtml, string htmlTag)
     {
-        this._articlePieceEnum = articlePieceEnum;
-        this._innerText = argInnerHtml;
-        this._htmlTag = htmlTag;
+        _articlePieceEnum = articlePieceEnum;
+        _innerText = argInnerHtml;
+        _htmlTag = htmlTag;
     }
 
     private ArticlePiece(ArticlePieceEnum articlePieceEnum, ImageDb imageDb)
     {
-        this._articlePieceEnum = articlePieceEnum;
-        this._imageDb = imageDb;
+        _articlePieceEnum = articlePieceEnum;
+        _imageDb = imageDb;
     }
 
     private ArticlePiece(ArticlePieceEnum articlePieceEnum)
     {
-        this._articlePieceEnum = articlePieceEnum;
+        _articlePieceEnum = articlePieceEnum;
     }
 
     public void FixContent()
@@ -37,19 +37,22 @@ public class ArticlePiece
         _innerText = _innerText.Replace("<br /><br />", "<br />");
     }
 
-    public bool IsEmpty() =>
-        _articlePieceEnum switch
+    public bool IsEmpty()
+    {
+        return _articlePieceEnum switch
         {
-            ArticlePieceEnum.TEXT => string.IsNullOrEmpty(this._innerText),
-            ArticlePieceEnum.IMG => this._imageDb == null || string.IsNullOrEmpty(this._imageDb.Src),
-            ArticlePieceEnum.IFRAME => string.IsNullOrEmpty(this._innerText),
-            ArticlePieceEnum.LINK => this._imageDb == null || string.IsNullOrEmpty(this._imageDb.Src),
+            ArticlePieceEnum.TEXT => string.IsNullOrEmpty(_innerText),
+            ArticlePieceEnum.IMG => _imageDb == null || string.IsNullOrEmpty(_imageDb.Src),
+            ArticlePieceEnum.IFRAME => string.IsNullOrEmpty(_innerText),
+            ArticlePieceEnum.LINK => _imageDb == null || string.IsNullOrEmpty(_imageDb.Src),
             ArticlePieceEnum.LINE => false,
             _ => throw new ArgumentOutOfRangeException()
         };
+    }
 
-    public JToken ToJson() =>
-        new JObject
+    public JToken ToJson()
+    {
+        return new JObject
         {
             ["type"] = _articlePieceEnum.ToString(),
             ["value"] = _articlePieceEnum switch
@@ -62,13 +65,16 @@ public class ArticlePiece
                 _ => throw new ArgumentOutOfRangeException()
             }
         };
+    }
 
-    private JToken TextFormat() =>
-        new JObject
+    private JToken TextFormat()
+    {
+        return new JObject
         {
-            ["c"] = this._innerText,
-            ["h"] = this._htmlTag
+            ["c"] = _innerText,
+            ["h"] = _htmlTag
         };
+    }
 
     internal static ArticlePiece? Selector(HtmlNode x)
     {
@@ -90,28 +96,28 @@ public class ArticlePiece
             case "blockquote":
                 return new ArticlePiece(ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
             case "hr":
-                return new ArticlePiece(Enums.ArticlePieceEnum.LINE);
+                return new ArticlePiece(ArticlePieceEnum.LINE);
             case "br":
-                return new ArticlePiece(Enums.ArticlePieceEnum.TEXT, "\n", x.Name);
+                return new ArticlePiece(ArticlePieceEnum.TEXT, "\n", x.Name);
             case "figure":
             case "img":
                 var a1 = new ImageDb(x.Attributes["src"].Value, x.Attributes["alt"].Value);
-                return new ArticlePiece(Enums.ArticlePieceEnum.IMG,a1);
+                return new ArticlePiece(ArticlePieceEnum.IMG, a1);
             case "#comment":
                 return null;
             case "a":
                 var argInnerHtml = new ImageDb(x.Attributes["src"].Value, x.Attributes["alt"].Value);
                 return new ArticlePiece(ArticlePieceEnum.LINK, argInnerHtml);
             case "iframe":
-                return new ArticlePiece(Enums.ArticlePieceEnum.IFRAME, x.Attributes["src"].Value, x.Name);
+                return new ArticlePiece(ArticlePieceEnum.IFRAME, x.Attributes["src"].Value, x.Name);
             default:
                 Console.WriteLine(x.Name);
                 break;
-                    
         }
-        return new ArticlePiece(Enums.ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
+
+        return new ArticlePiece(ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
     }
-    
+
     public static bool Predicate(ArticlePiece? x)
     {
         return x != null && !x.IsEmpty();

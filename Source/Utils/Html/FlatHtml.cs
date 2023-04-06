@@ -5,7 +5,7 @@ namespace PoliFemoBackend.Source.Utils.Html;
 public static class FlatHtml
 {
     /// <summary>
-    /// Prendi una lista di nodi e restituisci una lista piatta (di nodi senza figli)
+    ///     Prendi una lista di nodi e restituisci una lista piatta (di nodi senza figli)
     /// </summary>
     /// <param name="list"></param>
     /// <returns></returns>
@@ -18,9 +18,9 @@ public static class FlatHtml
         {
             if (list.All(x => x.ChildNodes.Count == 0))
                 return list;
-            
-            list = FlatStep(list)    //do a step of converting child list with childrent to a flat one
-                .SelectMany(x => x)    
+
+            list = FlatStep(list) //do a step of converting child list with childrent to a flat one
+                .SelectMany(x => x)
                 .ToList();
         }
     }
@@ -29,7 +29,11 @@ public static class FlatHtml
     {
         var htmlNodeses = list.Select(v1 =>
         {
-            HtmlNode Selector(HtmlNode variable) => AddChild(variable, v1);
+            HtmlNode Selector(HtmlNode variable)
+            {
+                return AddChild(variable, v1);
+            }
+
             var selector = (Func<HtmlNode, HtmlNode>)Selector;
             return v1.ChildNodes.Count == 0
                 ? new List<HtmlNode> { v1 }
@@ -69,7 +73,7 @@ public static class FlatHtml
                 child.Name = parent.Name;
                 return child;
             }
-            
+
             default:
             {
                 Console.WriteLine(parent.Name);

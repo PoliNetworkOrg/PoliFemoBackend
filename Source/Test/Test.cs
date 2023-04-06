@@ -1,9 +1,7 @@
 ﻿#region
 
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Objects.Articles.News;
-using PoliFemoBackend.Source.Utils.Rooms;
-using PoliFemoBackend.Source.Utils.Rooms.Search;
+using PoliFemoBackend.Source.Utils.News.PoliMi;
 
 #endregion
 
@@ -32,12 +30,8 @@ public static class Test
 
         try
         {
-            var r2 =  Utils.News.PoliMi.DownloadNewsUtil.DownloadCurrentNews();
-            foreach (var VARIABLE in r2)
-            {
-                Console.WriteLine(VARIABLE.GetContentAsTextJson());
-            }
-            
+            var r2 = DownloadNewsUtil.DownloadCurrentNews();
+            foreach (var VARIABLE in r2) Console.WriteLine(VARIABLE.GetContentAsTextJson());
         }
         catch (Exception e)
         {

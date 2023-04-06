@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace PoliFemoBackend.Source.Enums;
+﻿namespace PoliFemoBackend.Source.Enums;
 
 public enum ArticlePieceEnum
 {

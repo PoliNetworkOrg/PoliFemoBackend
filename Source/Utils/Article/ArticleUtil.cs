@@ -2,6 +2,7 @@
 
 using System.Data;
 using System.Drawing;
+using Blurhash;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects.Articles;
 
@@ -37,20 +38,17 @@ public static class ArticleUtil
         if (url == null) return null;
         var image = Image.FromStream(await new HttpClient().GetStreamAsync(url));
 
-        Blurhash.Pixel[,] img = new Blurhash.Pixel[image.Width, image.Height];
-        Bitmap bmp = new Bitmap(image);
-        
-        for (int x = 0; x < image.Width; x++)
+        var img = new Pixel[image.Width, image.Height];
+        var bmp = new Bitmap(image);
+
+        for (var x = 0; x < image.Width; x++)
+        for (var y = 0; y < image.Height; y++)
         {
-            for (int y = 0; y < image.Height; y++)
-            {
-                var pixel = bmp.GetPixel(x, y);
-                img[x, y] = new Blurhash.Pixel((double)pixel.R/255, (double)pixel.G/255, (double)pixel.B/255);
-            }
+            var pixel = bmp.GetPixel(x, y);
+            img[x, y] = new Pixel((double)pixel.R / 255, (double)pixel.G / 255, (double)pixel.B / 255);
         }
 
-        return Blurhash.Core.Encode(img, 5, 5);
-        
+        return Core.Encode(img, 5, 5);
     }
 
     public static JObject ArticleAuthorsRowToJObject(DataRow row)
