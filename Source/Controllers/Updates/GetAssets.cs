@@ -14,7 +14,7 @@ namespace PoliFemoBackend.Source.Controllers.Admin;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Updates")]
-[Route("/updates/download/{name}")]
+[Route("/updates/assets/{name}")]
 public class GetUpdateAssetController : ControllerBase
 {
     private readonly HttpProxyOptions _httpOptions = HttpProxyOptionsBuilder.Instance
