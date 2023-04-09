@@ -33,6 +33,12 @@ public static class Test
             var r2 = DownloadNewsUtil.DownloadCurrentNews();
             Console.WriteLine(r2.Count());
             ;
+            foreach (var VARIABLE in r2)
+            {
+                var r3 = VARIABLE.GetContentAsTextJson();
+                var r4 = r3?.ToString();
+                Console.WriteLine(r4);
+            }
         }
         catch (Exception e)
         {
