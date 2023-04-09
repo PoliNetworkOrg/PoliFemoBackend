@@ -51,10 +51,9 @@ public static class PoliMiNewsUtil
         {
             // ignored
         }
-        
     }
 
-    
+
     private static void TrySetContent2(NewsPolimi result, HtmlNodeCollection urls1)
     {
         var urls2 = urls1.Where(x =>

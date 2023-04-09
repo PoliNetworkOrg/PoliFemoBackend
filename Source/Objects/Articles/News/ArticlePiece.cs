@@ -109,9 +109,9 @@ public class ArticlePiece
                 case "#comment":
                     return null;
                 case "a":
-                    var value = htmlAttributeCollection.Contains("src") ?  htmlAttributeCollection["src"].Value : null;
+                    var value = htmlAttributeCollection.Contains("src") ? htmlAttributeCollection["src"].Value : null;
                     var alt = htmlAttributeCollection.Contains("alt") ? htmlAttributeCollection["alt"].Value : null;
-                    var argInnerHtml = new ImageDb( value, alt);
+                    var argInnerHtml = new ImageDb(value, alt);
                     return new ArticlePiece(ArticlePieceEnum.LINK, argInnerHtml);
                 case "iframe":
                     return new ArticlePiece(ArticlePieceEnum.IFRAME, htmlAttributeCollection["src"].Value, x.Name);
@@ -126,7 +126,6 @@ public class ArticlePiece
         }
 
         return new ArticlePiece(ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
-        
     }
 
     public static bool Predicate(ArticlePiece? x)
