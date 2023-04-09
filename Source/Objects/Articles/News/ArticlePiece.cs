@@ -60,7 +60,7 @@ public class ArticlePiece
                 ArticlePieceEnum.TEXT => TextFormat(),
                 ArticlePieceEnum.IMG => _imageDb?.ToJson(),
                 ArticlePieceEnum.IFRAME => _innerText,
-                ArticlePieceEnum.LINK => TextFormat(),
+                ArticlePieceEnum.LINK => _imageDb?.ToJson(),
                 ArticlePieceEnum.LINE => null,
                 _ => throw new ArgumentOutOfRangeException()
             }

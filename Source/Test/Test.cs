@@ -31,7 +31,7 @@ public static class Test
         try
         {
             var r2 = DownloadNewsUtil.DownloadCurrentNews();
-            foreach (var VARIABLE in r2) Console.WriteLine(VARIABLE.GetContentAsTextJson());
+            Console.WriteLine(r2.Count()); 
         }
         catch (Exception e)
         {
