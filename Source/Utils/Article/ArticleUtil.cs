@@ -45,7 +45,12 @@ public static class ArticleUtil
 
     public static JObject ArticleAuthorsRowToJObject(DataRow row)
     {
+        var contentString = row["content"].ToString();
+        var contentJArray = !string.IsNullOrEmpty(contentString) ? JArray.Parse(contentString) : null;
+        
         //convert results to json
+        var publishTime = DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["publish_time"].ToString() ?? ""));
+        var targetTime = DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["target_time"].ToString() ?? ""));
         var a = new JObject
         {
             { "id", Convert.ToInt32(row["article_id"]) },
@@ -58,14 +63,12 @@ public static class ArticleUtil
             },
             //change format of date
             {
-                "publish_time",
-                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["publish_time"].ToString() ?? ""))
+                "publish_time", publishTime
             },
             {
-                "target_time",
-                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["target_time"].ToString() ?? ""))
+                "target_time", targetTime
             },
-            { "content", row["content"].ToString() != "" ? JArray.Parse(row["content"].ToString() ?? "[]") : null},
+            { "content", contentJArray},
             { "image", row["image"].ToString() == "" ? null : row["image"].ToString() },
             { "blurhash", row["blurhash"].ToString() == "" ? null : row["blurhash"].ToString() }
         };
