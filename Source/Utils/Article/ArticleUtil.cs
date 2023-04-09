@@ -4,7 +4,6 @@ using System.Data;
 using Blurhash.ImageSharp;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects.Articles;
-using Image = SixLabors.ImageSharp.Image;
 
 #endregion
 
@@ -37,7 +36,8 @@ public static class ArticleUtil
     {
         if (url == null || url == "") return null;
 
-        using(var bytes = await new HttpClient().GetStreamAsync(url)) {
+        using (var bytes = await new HttpClient().GetStreamAsync(url))
+        {
             var image = Image.Load<Rgba32>(bytes);
             return Blurhasher.Encode(image, 5, 5);
         }
@@ -47,10 +47,12 @@ public static class ArticleUtil
     {
         var contentString = row["content"].ToString();
         var contentJArray = !string.IsNullOrEmpty(contentString) ? JArray.Parse(contentString) : null;
-        
+
         //convert results to json
-        var publishTime = DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["publish_time"].ToString() ?? ""));
-        var targetTime = DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["target_time"].ToString() ?? ""));
+        var publishTime =
+            DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["publish_time"].ToString() ?? ""));
+        var targetTime =
+            DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["target_time"].ToString() ?? ""));
         var a = new JObject
         {
             { "id", Convert.ToInt32(row["article_id"]) },
@@ -68,7 +70,7 @@ public static class ArticleUtil
             {
                 "target_time", targetTime
             },
-            { "content", contentJArray},
+            { "content", contentJArray },
             { "image", row["image"].ToString() == "" ? null : row["image"].ToString() },
             { "blurhash", row["blurhash"].ToString() == "" ? null : row["blurhash"].ToString() }
         };
