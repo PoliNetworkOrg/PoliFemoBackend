@@ -1,4 +1,6 @@
-﻿namespace PoliFemoBackend.Source.Enums;
+﻿// ReSharper disable InconsistentNaming
+
+namespace PoliFemoBackend.Source.Enums;
 
 public enum ArticlePieceEnum
 {

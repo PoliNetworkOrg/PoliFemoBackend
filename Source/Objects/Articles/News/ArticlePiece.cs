@@ -78,44 +78,55 @@ public class ArticlePiece
 
     internal static ArticlePiece? Selector(HtmlNode x)
     {
-        switch (x.Name)
+        try
         {
-            case "sup":
-            case "sub":
-            case "em":
-            case "h1":
-            case "h2":
-            case "h3":
-            case "h4":
-            case "h5":
-            case "h6":
-            case "strong":
-            case "li":
-            case "header":
-            case "#text":
-            case "blockquote":
-                return new ArticlePiece(ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
-            case "hr":
-                return new ArticlePiece(ArticlePieceEnum.LINE);
-            case "br":
-                return new ArticlePiece(ArticlePieceEnum.TEXT, "\n", x.Name);
-            case "figure":
-            case "img":
-                var a1 = new ImageDb(x.Attributes["src"].Value, x.Attributes["alt"].Value);
-                return new ArticlePiece(ArticlePieceEnum.IMG, a1);
-            case "#comment":
-                return null;
-            case "a":
-                var argInnerHtml = new ImageDb(x.Attributes["src"].Value, x.Attributes["alt"].Value);
-                return new ArticlePiece(ArticlePieceEnum.LINK, argInnerHtml);
-            case "iframe":
-                return new ArticlePiece(ArticlePieceEnum.IFRAME, x.Attributes["src"].Value, x.Name);
-            default:
-                Console.WriteLine(x.Name);
-                break;
+            var htmlAttributeCollection = x.Attributes;
+            switch (x.Name)
+            {
+                case "sup":
+                case "sub":
+                case "em":
+                case "h1":
+                case "h2":
+                case "h3":
+                case "h4":
+                case "h5":
+                case "h6":
+                case "strong":
+                case "li":
+                case "header":
+                case "#text":
+                case "blockquote":
+                    return new ArticlePiece(ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
+                case "hr":
+                    return new ArticlePiece(ArticlePieceEnum.LINE);
+                case "br":
+                    return new ArticlePiece(ArticlePieceEnum.TEXT, "\n", x.Name);
+                case "figure":
+                case "img":
+                    var a1 = new ImageDb(htmlAttributeCollection["src"].Value, htmlAttributeCollection["alt"].Value);
+                    return new ArticlePiece(ArticlePieceEnum.IMG, a1);
+                case "#comment":
+                    return null;
+                case "a":
+                    var value = htmlAttributeCollection.Contains("src") ?  htmlAttributeCollection["src"].Value : null;
+                    var alt = htmlAttributeCollection.Contains("alt") ? htmlAttributeCollection["alt"].Value : null;
+                    var argInnerHtml = new ImageDb( value, alt);
+                    return new ArticlePiece(ArticlePieceEnum.LINK, argInnerHtml);
+                case "iframe":
+                    return new ArticlePiece(ArticlePieceEnum.IFRAME, htmlAttributeCollection["src"].Value, x.Name);
+                default:
+                    Console.WriteLine(x.Name);
+                    break;
+            }
+        }
+        catch
+        {
+            ;
         }
 
         return new ArticlePiece(ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
+        
     }
 
     public static bool Predicate(ArticlePiece? x)
