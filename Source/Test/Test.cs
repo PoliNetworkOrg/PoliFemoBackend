@@ -31,12 +31,10 @@ public static class Test
         try
         {
             var r2 = DownloadNewsUtil.DownloadCurrentNews();
-            Console.WriteLine(r2.Count());
-            ;
-            foreach (var VARIABLE in r2)
+            var newsPolimis = r2.ToList();
+            Console.WriteLine(newsPolimis.Count);
+            foreach (var r4 in newsPolimis.Select(variable => variable.GetContentAsTextJson()).Select(r3 => r3?.ToString()))
             {
-                var r3 = VARIABLE.GetContentAsTextJson();
-                var r4 = r3?.ToString();
                 Console.WriteLine(r4);
             }
         }
