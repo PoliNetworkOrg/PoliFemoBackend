@@ -60,7 +60,7 @@ public class ArticlePiece
                 ArticlePieceEnum.TEXT => TextFormat(),
                 ArticlePieceEnum.IMG => _imageDb?.ToJson(),
                 ArticlePieceEnum.IFRAME => _innerText,
-                ArticlePieceEnum.LINK => _imageDb?.ToJson(),
+                ArticlePieceEnum.LINK => TextFormat(),
                 ArticlePieceEnum.LINE => null,
                 _ => throw new ArgumentOutOfRangeException()
             }
@@ -109,7 +109,7 @@ public class ArticlePiece
                 case "#comment":
                     return null;
                 case "a":
-                    var value = htmlAttributeCollection.Contains("src") ? htmlAttributeCollection["src"].Value : null;
+                    var value = htmlAttributeCollection.Contains("href") ? htmlAttributeCollection["href"].Value : null;
                     var alt = htmlAttributeCollection.Contains("alt") ? htmlAttributeCollection["alt"].Value : null;
                     var argInnerHtml = new ImageDb(value, alt);
                     return new ArticlePiece(ArticlePieceEnum.LINK, argInnerHtml);
