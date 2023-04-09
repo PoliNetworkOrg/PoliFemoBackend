@@ -31,7 +31,8 @@ public static class Test
         try
         {
             var r2 = DownloadNewsUtil.DownloadCurrentNews();
-            Console.WriteLine(r2.Count()); 
+            Console.WriteLine(r2.Count());
+            ;
         }
         catch (Exception e)
         {
