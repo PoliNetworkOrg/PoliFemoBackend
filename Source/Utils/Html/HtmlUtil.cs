@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using HtmlAgilityPack;
 using PoliFemoBackend.Source.Enums;
+using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Objects.Web;
 using PoliFemoBackend.Source.Utils.Cache;
 
@@ -60,9 +61,9 @@ public static class HtmlUtil
     {
         var doc = new HtmlDocument();
         doc.LoadHtml(s);
-        var t1 = NodeUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "BoxInfoCard", 1);
+        var t1 = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(doc.DocumentNode), "", "BoxInfoCard", 1);
         var t3 = NodeUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
-        s = t3?[0].InnerHtml ?? "";
+        s = t3?[0]?.HtmlNode?.InnerHtml ?? "";
         return s;
     }
 

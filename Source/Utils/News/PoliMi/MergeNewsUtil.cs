@@ -6,7 +6,7 @@ namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
 public static class MergeNewsUtil
 {
-    internal static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls, IReadOnlyCollection<HtmlNode>? newsPolimi)
+    internal static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls, IReadOnlyCollection<HtmlNodeExtended?>? newsPolimi)
     {
         var result = new List<HtmlNews>();
         switch (urls)
@@ -15,7 +15,7 @@ public static class MergeNewsUtil
                 return result;
             case null:
             {
-                result.AddRange(newsPolimi.Select(item => new HtmlNews { NodePoliMiHomePage = item }));
+                result.AddRange(newsPolimi.Select(item => new HtmlNews { NodePoliMiHomePage = item?.HtmlNode }));
                 return result;
             }
             case not null when newsPolimi == null:
@@ -25,7 +25,7 @@ public static class MergeNewsUtil
             }
         }
 
-        var nodiPoliMiHomePage = newsPolimi.Select(item => new NodeFlagged { HtmlNode = item }).ToList();
+        var nodiPoliMiHomePage = newsPolimi.Select(item => new NodeFlagged { HtmlNode = item?.HtmlNode }).ToList();
         var nodiInEvidenza = urls.Select(item => new NodeFlagged { HtmlNode = item }).ToList();
 
         return MergeNotNull(nodiPoliMiHomePage, nodiInEvidenza);
@@ -69,20 +69,20 @@ public static class MergeNewsUtil
         if (itemHomePage.HtmlNode == null || itemInEvidenza.HtmlNode == null)
             return false;
 
-        var hrefHomePage = NodeUtil.GetElementsByTagAndClassName(itemHomePage.HtmlNode, "a")?.First().Attributes;
-        var hrefInEvidenza = NodeUtil.GetElementsByTagAndClassName(itemInEvidenza.HtmlNode, "a")?.First().Attributes;
+        var hrefHomePage = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(itemHomePage.HtmlNode), "a")?.First()?.GetAttributes();
+        var hrefInEvidenza = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(itemInEvidenza.HtmlNode), "a")?.First()?.GetAttributes();
 
         if (hrefHomePage == null || hrefInEvidenza == null)
             return false;
 
-        var isPresentHrefInHomePage = hrefHomePage.Contains("href");
-        var isPresentHrefInEvidenza = hrefInEvidenza.Contains("href");
+        var isPresentHrefInHomePage = hrefHomePage.ContainsKey("href");
+        var isPresentHrefInEvidenza = hrefInEvidenza.ContainsKey("href");
 
         if (!isPresentHrefInEvidenza || !isPresentHrefInHomePage)
             return false;
 
-        var hInHomePage = hrefHomePage["href"].Value;
-        var hInEvidenza = hrefInEvidenza["href"].Value;
+        var hInHomePage = hrefHomePage["href"];
+        var hInEvidenza = hrefInEvidenza["href"];
 
         if (string.IsNullOrEmpty(hInHomePage) || string.IsNullOrEmpty(hInEvidenza))
             return false;

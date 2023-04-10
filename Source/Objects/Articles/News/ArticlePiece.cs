@@ -11,7 +11,7 @@ public class ArticlePiece
     private readonly ImageDb? _imageDb;
     private string? _innerText;
 
-    private ArticlePiece(ArticlePieceEnum articlePieceEnum, string argInnerHtml, string htmlTag)
+    private ArticlePiece(ArticlePieceEnum articlePieceEnum, string? argInnerHtml, string? htmlTag)
     {
         _articlePieceEnum = articlePieceEnum;
         _innerText = argInnerHtml;
@@ -76,12 +76,16 @@ public class ArticlePiece
         };
     }
 
-    internal static ArticlePiece? Selector(HtmlNode x)
+    internal static ArticlePiece? Selector(HtmlNodeExtended? x)
     {
+        var htmlNodeName = x?.HtmlNode?.Name;
         try
         {
-            var htmlAttributeCollection = x.Attributes;
-            switch (x.Name)
+            var htmlAttributeCollection = x?.GetAttributes();
+            var b = htmlAttributeCollection?.ContainsKey("src") ?? false;
+            var htmlAttribute = b ?  htmlAttributeCollection?["src"] : null;
+
+            switch (x?.HtmlNode?.Name)
             {
                 case "sup":
                 case "sub":
@@ -97,26 +101,28 @@ public class ArticlePiece
                 case "header":
                 case "#text":
                 case "blockquote":
-                    return new ArticlePiece(ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
+                    return new ArticlePiece(ArticlePieceEnum.TEXT, x.HtmlNode.InnerHtml, htmlNodeName);
                 case "hr":
                     return new ArticlePiece(ArticlePieceEnum.LINE);
                 case "br":
-                    return new ArticlePiece(ArticlePieceEnum.TEXT, "\n", x.Name);
+                    return new ArticlePiece(ArticlePieceEnum.TEXT, "\n", htmlNodeName);
                 case "figure":
                 case "img":
-                    var a1 = new ImageDb(htmlAttributeCollection["src"].Value, htmlAttributeCollection["alt"].Value);
+                    var a1 = new ImageDb(htmlAttribute, htmlAttributeCollection?["alt"]);
                     return new ArticlePiece(ArticlePieceEnum.IMG, a1);
                 case "#comment":
                     return null;
                 case "a":
-                    var value = htmlAttributeCollection.Contains("href") ? htmlAttributeCollection["href"].Value : null;
-                    var alt = htmlAttributeCollection.Contains("alt") ? htmlAttributeCollection["alt"].Value : null;
+                    var containsKey = htmlAttributeCollection?.ContainsKey("href") ?? false;
+                    var value = containsKey ? htmlAttributeCollection?["href"] : null;
+                    var key = htmlAttributeCollection?.ContainsKey("alt")??false;
+                    var alt = key ? htmlAttributeCollection?["alt"] : null;
                     var argInnerHtml = new ImageDb(value, alt);
                     return new ArticlePiece(ArticlePieceEnum.LINK, argInnerHtml);
                 case "iframe":
-                    return new ArticlePiece(ArticlePieceEnum.IFRAME, htmlAttributeCollection["src"].Value, x.Name);
+                    return new ArticlePiece(ArticlePieceEnum.IFRAME, htmlAttribute, htmlNodeName);
                 default:
-                    Console.WriteLine(x.Name);
+                    Console.WriteLine(x?.HtmlNode?.Name);
                     break;
             }
         }
@@ -125,7 +131,7 @@ public class ArticlePiece
             ;
         }
 
-        return new ArticlePiece(ArticlePieceEnum.TEXT, x.InnerHtml, x.Name);
+        return new ArticlePiece(ArticlePieceEnum.TEXT, x?.HtmlNode?.InnerHtml, htmlNodeName);
     }
 
     public static bool Predicate(ArticlePiece? x)

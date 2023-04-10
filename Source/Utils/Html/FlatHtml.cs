@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using PoliFemoBackend.Source.Objects.Articles.News;
 
 namespace PoliFemoBackend.Source.Utils.Html;
 
@@ -9,42 +10,54 @@ public static class FlatHtml
     /// </summary>
     /// <param name="list"></param>
     /// <returns></returns>
-    internal static List<HtmlNode> FlatMap(List<HtmlNode>? list)
+    internal static List<HtmlNodeExtended?> FlatMap(List<HtmlNodeExtended?>? list)
     {
         if (list == null)
-            return new List<HtmlNode>();
+            return new List<HtmlNodeExtended?>();
 
         while (true)
         {
-            if (list.All(x => x.ChildNodes.Count == 0))
+            if (list.All(x => x?.HtmlNode == null || x.HtmlNode?.ChildNodes.Count == 0))
                 return list;
 
             list = FlatStep(list) //do a step of converting child list with childrent to a flat one
-                .SelectMany(x => x)
+                .SelectMany(x => x ?? new List<HtmlNodeExtended>())
                 .ToList();
         }
     }
 
-    private static IEnumerable<IEnumerable<HtmlNode>> FlatStep(IEnumerable<HtmlNode> list)
+    private static IEnumerable<IEnumerable<HtmlNodeExtended?>?> FlatStep(IEnumerable<HtmlNodeExtended?> list)
     {
         var htmlNodeses = list.Select(v1 =>
         {
-            HtmlNode Selector(HtmlNode variable)
+            HtmlNodeExtended? Selector(HtmlNodeExtended? variable)
             {
                 return AddChild(variable, v1);
             }
 
-            var selector = (Func<HtmlNode, HtmlNode>)Selector;
-            return v1.ChildNodes.Count == 0
-                ? new List<HtmlNode> { v1 }
-                : v1.ChildNodes.Select(selector);
+            var selector = (Func<HtmlNodeExtended, HtmlNodeExtended?>)Selector;
+            if (v1 == null)
+                return new List<HtmlNodeExtended?>();
+            
+            var b =  v1.HtmlNode == null || v1.HtmlNode?.ChildNodes.Count == 0;
+            return b
+                ? new List<HtmlNodeExtended> { v1 }
+                : v1.HtmlNode?.ChildNodes.Select(x =>
+                {
+  
+                    return selector(HtmlNodeExtended.From(x));
+                });
         });
         return htmlNodeses;
     }
 
-    private static HtmlNode AddChild(HtmlNode child, HtmlNode parent)
+    private static HtmlNodeExtended? AddChild(HtmlNodeExtended? child, HtmlNodeExtended? parent)
     {
-        switch (parent.Name)
+        if (parent == null)
+            return null;
+        
+        var htmlNodeName = parent.HtmlNode?.Name;
+        switch (htmlNodeName)
         {
             case "div":
             case "p":
@@ -54,6 +67,24 @@ public static class FlatHtml
                 return child;
             }
 
+            case "a":
+            {
+                if (child?.HtmlNode != null) 
+                    child.HtmlNode.Name = htmlNodeName;
+                var parentHtmlAttributeCollection = (parent.HtmlAttributeCollection) ?? ToDict(parent.HtmlNode?.Attributes);
+                if (child != null)
+                {
+                    child.HtmlAttributeCollection ??= new Dictionary<string, string?>();
+                    foreach (var variable in parentHtmlAttributeCollection)
+                    {
+                        child.HtmlAttributeCollection[variable.Key] = variable.Value;
+                    }
+
+                    return child;
+                }
+
+                return null;
+            }
             case "h1":
             case "h2":
             case "h3":
@@ -61,7 +92,7 @@ public static class FlatHtml
             case "h5":
             case "h6":
             case "em":
-            case "a":
+         
             case "sub":
             case "sup":
             case "blockquote":
@@ -70,17 +101,31 @@ public static class FlatHtml
             case "header":
             case "li":
             {
-                child.Name = parent.Name;
+                if (child is { HtmlNode: not null }) child.HtmlNode.Name = htmlNodeName;
                 return child;
             }
 
             default:
             {
-                Console.WriteLine(parent.Name);
+                Console.WriteLine(htmlNodeName);
                 break;
             }
         }
 
         return child;
+    }
+
+    public static Dictionary<string, string?> ToDict(HtmlAttributeCollection? htmlNodeAttributes)
+    {
+        if (htmlNodeAttributes == null)
+            return new Dictionary<string, string?>();
+        
+        var r = new Dictionary<string, string?>();
+        foreach (var variable in htmlNodeAttributes)
+        {
+            r[variable.Name] = variable.Value;
+        }
+
+        return r;
     }
 }

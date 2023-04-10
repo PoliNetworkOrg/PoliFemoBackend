@@ -16,13 +16,15 @@ public static class PoliMiNewsUtil
     internal const string UrlPoliMiHomePage = "https://www.polimi.it/";
 
 
-    internal static List<HtmlNode>? GetNewsPoliMi(HtmlDocument? docPoliMi)
+    internal static List<HtmlNodeExtended?>? GetNewsPoliMi(HtmlDocument? docPoliMi)
     {
-        var slider = NodeUtil.GetElementsByTagAndClassName(docPoliMi?.DocumentNode, "body", null);
+        var slider = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(docPoliMi?.DocumentNode), "body", null);
         var slider2 = NodeUtil.GetElementsByTagAndClassName(slider?.First(), "section");
-        var slider3 = slider2?.First(x => x.Id == "news");
+        var slider3 = slider2?.First(x => x?.HtmlNode?.Id == "news");
         var slider4 = NodeUtil.GetElementsByTagAndClassName(slider3, "div");
-        var slider5 = slider4?.Where(x => x.GetClasses().Contains("sp-slide")).ToList();
+        bool? Predicate(HtmlNodeExtended? x) => x?.HtmlNode?.GetClasses().Contains("sp-slide");
+        var predicate = (Func<HtmlNodeExtended?, bool?>)Predicate;
+        var slider5 = slider4?.Where(x => (predicate(x) ??false)).ToList();
         return slider5;
     }
 
@@ -35,9 +37,9 @@ public static class PoliMiNewsUtil
         {
             TrySetContent1(result, urls1);
         }
-        catch
+        catch (Exception ex)
         {
-            // ignored
+            Console.WriteLine(ex);
         }
 
         if (!(result?.IsContentEmpty() ?? false))
@@ -47,18 +49,23 @@ public static class PoliMiNewsUtil
         {
             TrySetContent2(result, urls1);
         }
-        catch
+        catch (Exception ex)
         {
-            // ignored
+            Console.WriteLine(ex);
         }
     }
 
 
     private static void TrySetContent2(NewsPolimi result, HtmlNodeCollection urls1)
     {
-        var urls2 = urls1.Where(x =>
+        var htmlNodeExtendeds = urls1.Where(x =>
             x.GetClasses().Contains("container") && !x.GetClasses().Contains("frame-type-header")
-        ).ToList();
+        ).Select(HtmlNodeExtended.From).ToList();
+        List<HtmlNodeExtended?> urls2 = new List<HtmlNodeExtended?>();
+        foreach (var variable in htmlNodeExtendeds)
+        {
+            urls2.Add(variable);
+        }
         urls2 = FlatHtml.FlatMap(urls2);
         HtmlNewsUtil.SetContent(urls2, result);
     }
@@ -68,13 +75,13 @@ public static class PoliMiNewsUtil
     {
         var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
 
-        var elementsByTagAndClassName = NodeUtil.GetElementsByTagAndClassName(urls, "p");
-        elementsByTagAndClassName = FlatHtml.FlatMap(elementsByTagAndClassName);
+        var elementsByTagAndClassName = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(urls), "p");
+        var e  = FlatHtml.FlatMap(elementsByTagAndClassName);
 
 
-        var selector = (Func<HtmlNode, ArticlePiece?>)ArticlePiece.Selector;
+        var selector = (Func<HtmlNodeExtended?, ArticlePiece?>)ArticlePiece.Selector;
         var predicate = (Func<ArticlePiece?, bool>)ArticlePiece.Predicate;
-        var articlePieces = elementsByTagAndClassName.Select(selector);
+        var articlePieces = e.Select(x => selector(x));
         var enumerable = articlePieces.Where(predicate);
         var p = enumerable.ToList();
         result?.SetContent(p);

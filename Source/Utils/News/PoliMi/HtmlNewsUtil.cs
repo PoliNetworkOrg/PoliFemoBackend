@@ -29,18 +29,18 @@ public static class HtmlNewsUtil
         return aS2.Count != bS2.Count ? 0 : aS2.Where((t, i) => t == bS2[i]).Count();
     }
 
-    internal static void SetContent(IReadOnlyCollection<HtmlNode> urls2, NewsPolimi newsPolimi)
+    internal static void SetContent(IReadOnlyCollection<HtmlNodeExtended?> urls2, NewsPolimi newsPolimi)
     {
         var urls3 = NodeUtil.GetElementsByTagAndClassName(urls2, "img");
         AdaptImages(urls3);
 
-        var selector = (Func<HtmlNode, ArticlePiece?>)ArticlePiece.Selector;
+        var selector = (Func<HtmlNodeExtended?, ArticlePiece?>)ArticlePiece.Selector;
         var predicate = (Func<ArticlePiece?, bool>)ArticlePiece.Predicate;
         var articlePieces = urls2.Select(selector).Where(predicate).ToList();
         newsPolimi.SetContent(articlePieces);
     }
 
-    private static void AdaptImages(IEnumerable<HtmlNode>? urls3)
+    private static void AdaptImages(IEnumerable<HtmlNodeExtended?>? urls3)
     {
         if (urls3 == null) return;
 
@@ -48,14 +48,18 @@ public static class HtmlNewsUtil
     }
 
 
-    private static void AdaptImage(HtmlNode htmlNode)
+    private static void AdaptImage(HtmlNodeExtended? htmlNode)
     {
-        var src = htmlNode.Attributes.Contains("src") ? htmlNode.Attributes["src"].Value : "";
+        var att = htmlNode?.GetAttributes();
 
-        if (!src.StartsWith("http"))
+        var containsKey = att?.ContainsKey("src") ?? false;
+        var src = containsKey ? att?["src"] : null;
+
+        var startsWith = src?.StartsWith("http") ??false;
+        if (!startsWith)
             src = "https://polimi.it" + src;
 
-        htmlNode.SetAttributeValue("src", src);
+        htmlNode?.SetAttributeValue("src", src);
     }
 
     internal static HtmlDocument? LoadUrl(string url)
