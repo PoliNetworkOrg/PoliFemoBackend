@@ -7,7 +7,7 @@ public class ArticlePiece
 {
     private readonly ArticlePieceEnum _articlePieceEnum;
     private readonly string? _htmlTag;
-    private readonly ImageDb? _imageDb;
+    private readonly LinkImageDb? _linkImageDb;
     private string? _innerText;
 
     private ArticlePiece(ArticlePieceEnum articlePieceEnum, string? argInnerHtml, string? htmlTag)
@@ -17,10 +17,10 @@ public class ArticlePiece
         _htmlTag = htmlTag;
     }
 
-    private ArticlePiece(ArticlePieceEnum articlePieceEnum, ImageDb imageDb)
+    private ArticlePiece(ArticlePieceEnum articlePieceEnum, LinkImageDb linkImageDb)
     {
         _articlePieceEnum = articlePieceEnum;
-        _imageDb = imageDb;
+        _linkImageDb = linkImageDb;
     }
 
     private ArticlePiece(ArticlePieceEnum articlePieceEnum)
@@ -41,9 +41,9 @@ public class ArticlePiece
         return _articlePieceEnum switch
         {
             ArticlePieceEnum.TEXT => string.IsNullOrEmpty(_innerText),
-            ArticlePieceEnum.IMG => _imageDb == null || string.IsNullOrEmpty(_imageDb.Src),
+            ArticlePieceEnum.IMG => _linkImageDb == null || string.IsNullOrEmpty(_linkImageDb.Src),
             ArticlePieceEnum.IFRAME => string.IsNullOrEmpty(_innerText),
-            ArticlePieceEnum.LINK => _imageDb == null || string.IsNullOrEmpty(_imageDb.Src),
+            ArticlePieceEnum.LINK => _linkImageDb == null || string.IsNullOrEmpty(_linkImageDb.Src),
             ArticlePieceEnum.LINE => false,
             _ => throw new ArgumentOutOfRangeException()
         };
@@ -57,9 +57,9 @@ public class ArticlePiece
             ["value"] = _articlePieceEnum switch
             {
                 ArticlePieceEnum.TEXT => TextFormat(),
-                ArticlePieceEnum.IMG => _imageDb?.ToJson(),
+                ArticlePieceEnum.IMG => _linkImageDb?.ToJson(),
                 ArticlePieceEnum.IFRAME => _innerText,
-                ArticlePieceEnum.LINK => _imageDb?.ToJson(),
+                ArticlePieceEnum.LINK => _linkImageDb?.ToJson(),
                 ArticlePieceEnum.LINE => null,
                 _ => throw new ArgumentOutOfRangeException()
             }
@@ -83,6 +83,7 @@ public class ArticlePiece
             var htmlAttributeCollection = x?.GetAttributes();
             var b = htmlAttributeCollection?.ContainsKey("src") ?? false;
             var htmlAttribute = b ? htmlAttributeCollection?["src"] : null;
+            var htmlNodeInnerHtml = x?.HtmlNode?.InnerHtml;
 
             switch (x?.HtmlNode?.Name)
             {
@@ -100,14 +101,14 @@ public class ArticlePiece
                 case "header":
                 case "#text":
                 case "blockquote":
-                    return new ArticlePiece(ArticlePieceEnum.TEXT, x.HtmlNode.InnerHtml, htmlNodeName);
+                    return new ArticlePiece(ArticlePieceEnum.TEXT, htmlNodeInnerHtml, htmlNodeName);
                 case "hr":
                     return new ArticlePiece(ArticlePieceEnum.LINE);
                 case "br":
                     return new ArticlePiece(ArticlePieceEnum.TEXT, "\n", htmlNodeName);
                 case "figure":
                 case "img":
-                    var a1 = new ImageDb(htmlAttribute, htmlAttributeCollection?["alt"]);
+                    var a1 = new LinkImageDb(htmlAttribute, htmlAttributeCollection?["alt"], htmlNodeInnerHtml);
                     return new ArticlePiece(ArticlePieceEnum.IMG, a1);
                 case "#comment":
                     return null;
@@ -116,7 +117,7 @@ public class ArticlePiece
                     var value = containsKey ? htmlAttributeCollection?["href"] : null;
                     var key = htmlAttributeCollection?.ContainsKey("alt") ?? false;
                     var alt = key ? htmlAttributeCollection?["alt"] : null;
-                    var argInnerHtml = new ImageDb(value, alt);
+                    var argInnerHtml = new LinkImageDb(value, alt, htmlNodeInnerHtml);
                     return new ArticlePiece(ArticlePieceEnum.LINK, argInnerHtml);
                 case "iframe":
                     return new ArticlePiece(ArticlePieceEnum.IFRAME, htmlAttribute, htmlNodeName);
@@ -125,9 +126,9 @@ public class ArticlePiece
                     break;
             }
         }
-        catch
+        catch (Exception ex)
         {
-            ;
+            Console.WriteLine(ex);
         }
 
         return new ArticlePiece(ArticlePieceEnum.TEXT, x?.HtmlNode?.InnerHtml, htmlNodeName);
