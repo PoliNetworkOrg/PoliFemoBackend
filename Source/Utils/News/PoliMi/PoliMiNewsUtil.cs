@@ -76,7 +76,18 @@ public static class PoliMiNewsUtil
         ;
         try
         {
-            var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
+            HtmlNode? urls = null;
+            try
+            {
+                urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
+            }
+            catch (Exception ex2)
+            {
+                ;
+            }
+
+            if (urls == null)
+                return;
 
             var elementsByTagAndClassName = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(urls), "p");
             var e = FlatHtml.FlatMap(elementsByTagAndClassName);

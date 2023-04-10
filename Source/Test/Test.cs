@@ -33,7 +33,9 @@ public static class Test
             var r2 = DownloadNewsUtil.DownloadCurrentNews();
             var newsPolimis = r2.ToList();
             Console.WriteLine(newsPolimis.Count);
-            foreach (var r4 in newsPolimis.Select(variable => variable.GetContentAsTextJson()).Select(r3 => r3?.ToString()))
+            var enumerable = newsPolimis.Select(variable => variable.GetContentAsTextJson());
+            var objects = enumerable.Select(r3 => r3?.ToString());
+            foreach (var r4 in objects)
             {
                 Console.WriteLine(r4);
             }
