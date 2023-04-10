@@ -73,18 +73,28 @@ public static class PoliMiNewsUtil
 
     private static void TrySetContent1(NewsPolimi? result, HtmlNodeCollection urls1)
     {
-        var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
+        ;
+        try
+        {
+            var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
 
-        var elementsByTagAndClassName = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(urls), "p");
-        var e  = FlatHtml.FlatMap(elementsByTagAndClassName);
+            var elementsByTagAndClassName = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(urls), "p");
+            var e = FlatHtml.FlatMap(elementsByTagAndClassName);
 
 
-        var selector = (Func<HtmlNodeExtended?, ArticlePiece?>)ArticlePiece.Selector;
-        var predicate = (Func<ArticlePiece?, bool>)ArticlePiece.Predicate;
-        var articlePieces = e.Select(x => selector(x));
-        var enumerable = articlePieces.Where(predicate);
-        var p = enumerable.ToList();
-        result?.SetContent(p);
+            var selector = (Func<HtmlNodeExtended?, ArticlePiece?>)ArticlePiece.Selector;
+            var predicate = (Func<ArticlePiece?, bool>)ArticlePiece.Predicate;
+            var articlePieces = e.Select(x => selector(x));
+            var enumerable = articlePieces.Where(predicate);
+            var p = enumerable.ToList();
+            result?.SetContent(p);
+        }
+        catch (Exception ex)
+        { 
+            Console.WriteLine(ex);   
+        }
+
+        ;
     }
 
 

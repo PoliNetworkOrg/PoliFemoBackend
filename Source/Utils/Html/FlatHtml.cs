@@ -72,18 +72,15 @@ public static class FlatHtml
                 if (child?.HtmlNode != null) 
                     child.HtmlNode.Name = htmlNodeName;
                 var parentHtmlAttributeCollection = (parent.HtmlAttributeCollection) ?? ToDict(parent.HtmlNode?.Attributes);
-                if (child != null)
+                if (child == null) return null;
+                child.HtmlAttributeCollection ??= new Dictionary<string, string?>();
+                foreach (var variable in parentHtmlAttributeCollection)
                 {
-                    child.HtmlAttributeCollection ??= new Dictionary<string, string?>();
-                    foreach (var variable in parentHtmlAttributeCollection)
-                    {
-                        child.HtmlAttributeCollection[variable.Key] = variable.Value;
-                    }
-
-                    return child;
+                    child.HtmlAttributeCollection[variable.Key] = variable.Value;
                 }
 
-                return null;
+                return child;
+
             }
             case "h1":
             case "h2":
