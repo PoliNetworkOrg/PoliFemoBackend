@@ -87,6 +87,13 @@ public class ArticlePiece
 
             switch (x?.HtmlNode?.Name)
             {
+                case "ul":
+                case "li":
+                {
+                    ;
+                    return new ArticlePiece(ArticlePieceEnum.TEXT, htmlNodeInnerHtml, htmlNodeName);
+                }
+
                 case "sup":
                 case "sub":
                 case "em":
@@ -97,7 +104,6 @@ public class ArticlePiece
                 case "h5":
                 case "h6":
                 case "strong":
-                case "li":
                 case "header":
                 case "#text":
                 case "blockquote":

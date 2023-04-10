@@ -42,7 +42,7 @@ public static class FlatHtml
             var b = v1.HtmlNode == null || v1.HtmlNode?.ChildNodes.Count == 0;
             return b
                 ? new List<HtmlNodeExtended> { v1 }
-                : v1.HtmlNode?.ChildNodes.Select(x => { return selector(HtmlNodeExtended.From(x)); });
+                : v1.HtmlNode?.ChildNodes.Select(x => selector(HtmlNodeExtended.From(x)));
         });
         return htmlNodeses;
     }
@@ -55,10 +55,15 @@ public static class FlatHtml
         var htmlNodeName = parent.HtmlNode?.Name;
         switch (htmlNodeName)
         {
+            case "ul":
+            {
+                return child;
+            }
+            
             case "div":
             case "p":
             case "span":
-            case "ul":
+
             {
                 return child;
             }
@@ -92,6 +97,7 @@ public static class FlatHtml
             case "header":
             case "li":
             {
+                ;
                 if (child is { HtmlNode: not null }) child.HtmlNode.Name = htmlNodeName;
                 return child;
             }

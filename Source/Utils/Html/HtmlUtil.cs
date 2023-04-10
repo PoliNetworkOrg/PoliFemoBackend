@@ -61,8 +61,8 @@ public static class HtmlUtil
     {
         var doc = new HtmlDocument();
         doc.LoadHtml(s);
-        var t1 = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(doc.DocumentNode), "", "BoxInfoCard", 1);
-        var t3 = NodeUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
+        var t1 = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(doc.DocumentNode), null, "BoxInfoCard", 1);
+        var t3 = NodeUtil.GetElementsByTagAndClassName(t1?[0], null, "scrollContent");
         s = t3?[0]?.HtmlNode?.InnerHtml ?? "";
         return s;
     }

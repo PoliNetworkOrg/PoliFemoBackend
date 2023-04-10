@@ -4,13 +4,13 @@ namespace PoliFemoBackend.Source.Utils.Html;
 
 public static class NodeUtil
 {
-    internal static List<HtmlNodeExtended?>? GetElementsByTagAndClassName(HtmlNodeExtended? doc, string tag = "",
+    internal static List<HtmlNodeExtended?>? GetElementsByTagAndClassName(HtmlNodeExtended? doc, List<string>? tag = null,
         string? className = "", long? limit = null)
     {
         if (doc == null) return null;
 
         var lst = new List<HtmlNodeExtended?>();
-        var emptyTag = string.IsNullOrEmpty(tag);
+        var emptyTag = tag == null || tag.Count == 0;
         var emptyCn = string.IsNullOrEmpty(className);
         if (emptyTag && emptyCn) return null;
 
@@ -37,7 +37,7 @@ public static class NodeUtil
 
 
     public static IEnumerable<HtmlNodeExtended?> GetElementsByTagAndClassName(IEnumerable<HtmlNodeExtended?> list,
-        string tag)
+        List<string>? tag)
     {
         var results = new List<HtmlNodeExtended?>();
         foreach (var r in list.Select(x => GetElementsByTagAndClassName(x, tag)))

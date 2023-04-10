@@ -70,9 +70,9 @@ public static class MergeNewsUtil
         if (itemHomePage.HtmlNode == null || itemInEvidenza.HtmlNode == null)
             return false;
 
-        var hrefHomePage = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(itemHomePage.HtmlNode), "a")
+        var hrefHomePage = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(itemHomePage.HtmlNode), new List<string>(){"a"})
             ?.First()?.GetAttributes();
-        var hrefInEvidenza = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(itemInEvidenza.HtmlNode), "a")
+        var hrefInEvidenza = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(itemInEvidenza.HtmlNode), new List<string>(){"a"})
             ?.First()?.GetAttributes();
 
         if (hrefHomePage == null || hrefInEvidenza == null)
