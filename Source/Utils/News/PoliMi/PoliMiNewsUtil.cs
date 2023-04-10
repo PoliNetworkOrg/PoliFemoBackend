@@ -18,13 +18,19 @@ public static class PoliMiNewsUtil
 
     internal static List<HtmlNodeExtended?>? GetNewsPoliMi(HtmlDocument? docPoliMi)
     {
-        var slider = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(docPoliMi?.DocumentNode), "body", null);
+        var slider =
+            NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(docPoliMi?.DocumentNode), "body", null);
         var slider2 = NodeUtil.GetElementsByTagAndClassName(slider?.First(), "section");
         var slider3 = slider2?.First(x => x?.HtmlNode?.Id == "news");
         var slider4 = NodeUtil.GetElementsByTagAndClassName(slider3, "div");
-        bool? Predicate(HtmlNodeExtended? x) => x?.HtmlNode?.GetClasses().Contains("sp-slide");
+
+        bool? Predicate(HtmlNodeExtended? x)
+        {
+            return x?.HtmlNode?.GetClasses().Contains("sp-slide");
+        }
+
         var predicate = (Func<HtmlNodeExtended?, bool?>)Predicate;
-        var slider5 = slider4?.Where(x => (predicate(x) ??false)).ToList();
+        var slider5 = slider4?.Where(x => predicate(x) ?? false).ToList();
         return slider5;
     }
 
@@ -61,11 +67,8 @@ public static class PoliMiNewsUtil
         var htmlNodeExtendeds = urls1.Where(x =>
             x.GetClasses().Contains("container") && !x.GetClasses().Contains("frame-type-header")
         ).Select(HtmlNodeExtended.From).ToList();
-        List<HtmlNodeExtended?> urls2 = new List<HtmlNodeExtended?>();
-        foreach (var variable in htmlNodeExtendeds)
-        {
-            urls2.Add(variable);
-        }
+        var urls2 = new List<HtmlNodeExtended?>();
+        foreach (var variable in htmlNodeExtendeds) urls2.Add(variable);
         urls2 = FlatHtml.FlatMap(urls2);
         HtmlNewsUtil.SetContent(urls2, result);
     }
@@ -101,8 +104,8 @@ public static class PoliMiNewsUtil
             result?.SetContent(p);
         }
         catch (Exception ex)
-        { 
-            Console.WriteLine(ex);   
+        {
+            Console.WriteLine(ex);
         }
 
         ;

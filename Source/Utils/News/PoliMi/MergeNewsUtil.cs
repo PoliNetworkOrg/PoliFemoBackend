@@ -6,7 +6,8 @@ namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
 public static class MergeNewsUtil
 {
-    internal static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls, IReadOnlyCollection<HtmlNodeExtended?>? newsPolimi)
+    internal static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls,
+        IReadOnlyCollection<HtmlNodeExtended?>? newsPolimi)
     {
         var result = new List<HtmlNews>();
         switch (urls)
@@ -69,8 +70,10 @@ public static class MergeNewsUtil
         if (itemHomePage.HtmlNode == null || itemInEvidenza.HtmlNode == null)
             return false;
 
-        var hrefHomePage = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(itemHomePage.HtmlNode), "a")?.First()?.GetAttributes();
-        var hrefInEvidenza = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(itemInEvidenza.HtmlNode), "a")?.First()?.GetAttributes();
+        var hrefHomePage = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(itemHomePage.HtmlNode), "a")
+            ?.First()?.GetAttributes();
+        var hrefInEvidenza = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(itemInEvidenza.HtmlNode), "a")
+            ?.First()?.GetAttributes();
 
         if (hrefHomePage == null || hrefInEvidenza == null)
             return false;

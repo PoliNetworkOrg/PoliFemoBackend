@@ -38,15 +38,11 @@ public static class FlatHtml
             var selector = (Func<HtmlNodeExtended, HtmlNodeExtended?>)Selector;
             if (v1 == null)
                 return new List<HtmlNodeExtended?>();
-            
-            var b =  v1.HtmlNode == null || v1.HtmlNode?.ChildNodes.Count == 0;
+
+            var b = v1.HtmlNode == null || v1.HtmlNode?.ChildNodes.Count == 0;
             return b
                 ? new List<HtmlNodeExtended> { v1 }
-                : v1.HtmlNode?.ChildNodes.Select(x =>
-                {
-  
-                    return selector(HtmlNodeExtended.From(x));
-                });
+                : v1.HtmlNode?.ChildNodes.Select(x => { return selector(HtmlNodeExtended.From(x)); });
         });
         return htmlNodeses;
     }
@@ -55,7 +51,7 @@ public static class FlatHtml
     {
         if (parent == null)
             return null;
-        
+
         var htmlNodeName = parent.HtmlNode?.Name;
         switch (htmlNodeName)
         {
@@ -69,18 +65,16 @@ public static class FlatHtml
 
             case "a":
             {
-                if (child?.HtmlNode != null) 
+                if (child?.HtmlNode != null)
                     child.HtmlNode.Name = htmlNodeName;
-                var parentHtmlAttributeCollection = (parent.HtmlAttributeCollection) ?? ToDict(parent.HtmlNode?.Attributes);
+                var parentHtmlAttributeCollection =
+                    parent.HtmlAttributeCollection ?? ToDict(parent.HtmlNode?.Attributes);
                 if (child == null) return null;
                 child.HtmlAttributeCollection ??= new Dictionary<string, string?>();
                 foreach (var variable in parentHtmlAttributeCollection)
-                {
                     child.HtmlAttributeCollection[variable.Key] = variable.Value;
-                }
 
                 return child;
-
             }
             case "h1":
             case "h2":
@@ -89,7 +83,7 @@ public static class FlatHtml
             case "h5":
             case "h6":
             case "em":
-         
+
             case "sub":
             case "sup":
             case "blockquote":
@@ -116,12 +110,9 @@ public static class FlatHtml
     {
         if (htmlNodeAttributes == null)
             return new Dictionary<string, string?>();
-        
+
         var r = new Dictionary<string, string?>();
-        foreach (var variable in htmlNodeAttributes)
-        {
-            r[variable.Name] = variable.Value;
-        }
+        foreach (var variable in htmlNodeAttributes) r[variable.Name] = variable.Value;
 
         return r;
     }

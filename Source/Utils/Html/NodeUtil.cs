@@ -1,5 +1,4 @@
-﻿using HtmlAgilityPack;
-using PoliFemoBackend.Source.Objects.Articles.News;
+﻿using PoliFemoBackend.Source.Objects.Articles.News;
 
 namespace PoliFemoBackend.Source.Utils.Html;
 
@@ -37,7 +36,8 @@ public static class NodeUtil
     }
 
 
-    public static IEnumerable<HtmlNodeExtended?> GetElementsByTagAndClassName(IEnumerable<HtmlNodeExtended?> list, string tag)
+    public static IEnumerable<HtmlNodeExtended?> GetElementsByTagAndClassName(IEnumerable<HtmlNodeExtended?> list,
+        string tag)
     {
         var results = new List<HtmlNodeExtended?>();
         foreach (var r in list.Select(x => GetElementsByTagAndClassName(x, tag)))

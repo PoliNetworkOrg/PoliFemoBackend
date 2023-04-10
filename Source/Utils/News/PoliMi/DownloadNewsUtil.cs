@@ -40,17 +40,23 @@ public static class DownloadNewsUtil
             string? urlImgFinal = null;
             string? tagFinal = null;
 
-            var elementsByTagAndClassName = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage), "img");
+            var elementsByTagAndClassName =
+                NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage), "img");
             var dictionary = elementsByTagAndClassName?.First()?.GetAttributes();
             if (htmlNews.NodeInEvidenza == null)
             {
                 var containsKey = dictionary?.ContainsKey("src") ?? false;
                 var img = containsKey ? dictionary?["src"] : "";
 
-                bool Predicate(HtmlNodeExtended? x) => x?.HtmlNode?.GetClasses().Contains("newsCategory") ?? false;
-                tagFinal = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage), "span")
+                bool Predicate(HtmlNodeExtended? x)
+                {
+                    return x?.HtmlNode?.GetClasses().Contains("newsCategory") ?? false;
+                }
+
+                tagFinal = NodeUtil
+                    .GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage), "span")
                     ?.First(Predicate)?.HtmlNode?.InnerHtml.Trim();
-                var startsWith = img?.StartsWith("http") ??false;
+                var startsWith = img?.StartsWith("http") ?? false;
                 urlImgFinal = startsWith ? img : "https://polimi.it" + img;
             }
             else
@@ -72,11 +78,16 @@ public static class DownloadNewsUtil
                 if (htmlNews.NodePoliMiHomePage != null)
                 {
                     var attributes = dictionary;
-                    var containsKey = (attributes?.ContainsKey("src") ?? false);
+                    var containsKey = attributes?.ContainsKey("src") ?? false;
                     var img = containsKey ? attributes?["src"] : "";
 
-                    bool Predicate(HtmlNodeExtended? x) => x?.HtmlNode?.GetClasses().Contains("newsCategory") ?? false;
-                    tagFinal = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From( htmlNews.NodePoliMiHomePage), "span")
+                    bool Predicate(HtmlNodeExtended? x)
+                    {
+                        return x?.HtmlNode?.GetClasses().Contains("newsCategory") ?? false;
+                    }
+
+                    tagFinal = NodeUtil
+                        .GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage), "span")
                         ?.First(Predicate)?.HtmlNode?.InnerHtml.Trim();
                     var startsWith = img?.StartsWith("http") ?? false;
                     urlImgFinal = startsWith ? img : "https://polimi.it" + img;

@@ -55,7 +55,7 @@ public static class HtmlNewsUtil
         var containsKey = att?.ContainsKey("src") ?? false;
         var src = containsKey ? att?["src"] : null;
 
-        var startsWith = src?.StartsWith("http") ??false;
+        var startsWith = src?.StartsWith("http") ?? false;
         if (!startsWith)
             src = "https://polimi.it" + src;
 

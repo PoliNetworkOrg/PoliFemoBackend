@@ -1,5 +1,4 @@
-﻿using HtmlAgilityPack;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Enums;
 
 namespace PoliFemoBackend.Source.Objects.Articles.News;
@@ -83,7 +82,7 @@ public class ArticlePiece
         {
             var htmlAttributeCollection = x?.GetAttributes();
             var b = htmlAttributeCollection?.ContainsKey("src") ?? false;
-            var htmlAttribute = b ?  htmlAttributeCollection?["src"] : null;
+            var htmlAttribute = b ? htmlAttributeCollection?["src"] : null;
 
             switch (x?.HtmlNode?.Name)
             {
@@ -115,7 +114,7 @@ public class ArticlePiece
                 case "a":
                     var containsKey = htmlAttributeCollection?.ContainsKey("href") ?? false;
                     var value = containsKey ? htmlAttributeCollection?["href"] : null;
-                    var key = htmlAttributeCollection?.ContainsKey("alt")??false;
+                    var key = htmlAttributeCollection?.ContainsKey("alt") ?? false;
                     var alt = key ? htmlAttributeCollection?["alt"] : null;
                     var argInnerHtml = new ImageDb(value, alt);
                     return new ArticlePiece(ArticlePieceEnum.LINK, argInnerHtml);
