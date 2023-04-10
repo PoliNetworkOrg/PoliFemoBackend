@@ -17,7 +17,7 @@ public static class NodeFilterUtil
             var htmlNodeName = lst[i]?.HtmlNode?.Name;
             if (htmlNodeName != null)
             {
-                var contains1 = tag?.Contains( htmlNodeName) ?? false;
+                var contains1 = tag?.Contains(htmlNodeName) ?? false;
                 if (contains && contains1)
                 {
                     result?.Add(lst[i]);
@@ -45,7 +45,7 @@ public static class NodeFilterUtil
             var htmlNodeName = lst[i]?.HtmlNode?.Name;
             if (htmlNodeName != null)
             {
-                var contains = tag?.Contains( htmlNodeName) ?? false;
+                var contains = tag?.Contains(htmlNodeName) ?? false;
                 if (contains)
                 {
                     result.Add(lst[i]);
@@ -98,7 +98,7 @@ public static class NodeFilterUtil
             var htmlNodeName = lst[i]?.HtmlNode?.Name;
             if (htmlNodeName != null)
             {
-                var contains1 = tag?.Contains( htmlNodeName) ?? false;
+                var contains1 = tag?.Contains(htmlNodeName) ?? false;
                 if (contains && contains1) result.Add(lst[i]);
             }
 

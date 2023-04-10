@@ -14,14 +14,16 @@ public static class DownloadNewsUtil
 
         var merged = HtmlNewsList(urls);
 
+        /*
         var filtroTest = merged.Where(x =>
         {
             var argNodePoliMiHomePage = x.NodeInEvidenza ?? x.NodePoliMiHomePage;
             return argNodePoliMiHomePage?.InnerText.ToLower().Contains("pasqua") ?? false;
         }).ToList();
+        */
 
         //Console.WriteLine(merged.Count);
-        return ProcessDownloadedNews(filtroTest);
+        return ProcessDownloadedNews(merged);
     }
 
     private static IEnumerable<HtmlNews> HtmlNewsList(HtmlNode? urls)
@@ -54,17 +56,15 @@ public static class DownloadNewsUtil
             string? tagFinal = null;
 
             var elementsByTagAndClassName =
-                NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage), new List<string>(){"img"});
+                NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage),
+                    new List<string> { "img" });
             var dictionary = elementsByTagAndClassName?.First()?.GetAttributes();
             if (htmlNews.NodeInEvidenza == null)
-            {
                 tagFinal = TagFinal(htmlNews, dictionary, out urlImgFinal);
-            }
             else
-            {
-                internalNews = InternalNews(htmlNews, dictionary, out url2, out title, ref subtitle, ref tagFinal, ref urlImgFinal);
-            }
-            
+                internalNews = InternalNews(htmlNews, dictionary, out url2, out title, ref subtitle, ref tagFinal,
+                    ref urlImgFinal);
+
             return Optional(internalNews, url2, title, subtitle, tagFinal, urlImgFinal);
         }
         catch (Exception ex)
@@ -75,7 +75,8 @@ public static class DownloadNewsUtil
         return new Optional<NewsPolimi>();
     }
 
-    private static Optional<NewsPolimi> Optional(bool? internalNews, string? url2, string? title, string? subtitle, string? tagFinal,
+    private static Optional<NewsPolimi> Optional(bool? internalNews, string? url2, string? title, string? subtitle,
+        string? tagFinal,
         string? urlImgFinal)
     {
         var result = new NewsPolimi(internalNews ?? false, url2 ?? "", title ?? "", subtitle ?? "", tagFinal ?? "",
@@ -92,7 +93,8 @@ public static class DownloadNewsUtil
         return new Optional<NewsPolimi>(result);
     }
 
-    private static bool? InternalNews(HtmlNews htmlNews, IReadOnlyDictionary<string, string?>? dictionary, out string url2, out string? title,
+    private static bool? InternalNews(HtmlNews htmlNews, IReadOnlyDictionary<string, string?>? dictionary,
+        out string url2, out string? title,
         ref string? subtitle, ref string? tagFinal, ref string? urlImgFinal)
     {
         var selectMany = htmlNews.NodeInEvidenza?.ChildNodes.SelectMany(x => x.ChildNodes);
@@ -111,7 +113,7 @@ public static class DownloadNewsUtil
 
         if (htmlNews.NodePoliMiHomePage == null)
             return internalNews;
-        
+
         var containsKey = dictionary?.ContainsKey("src") ?? false;
         var img = containsKey ? dictionary?["src"] : "";
 
@@ -121,16 +123,18 @@ public static class DownloadNewsUtil
         }
 
         tagFinal = NodeUtil
-            .GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage), new List<string>(){"span"})
+            .GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage),
+                new List<string> { "span" })
             ?.First(Predicate)?.HtmlNode?.InnerHtml.Trim();
         var startsWith = img?.StartsWith("http") ?? false;
         urlImgFinal = startsWith ? img : "https://polimi.it" + img;
-        
+
 
         return internalNews;
     }
 
-    private static string? TagFinal(HtmlNews htmlNews, IReadOnlyDictionary<string, string?>? dictionary, out string? urlImgFinal)
+    private static string? TagFinal(HtmlNews htmlNews, IReadOnlyDictionary<string, string?>? dictionary,
+        out string? urlImgFinal)
     {
         var containsKey = dictionary?.ContainsKey("src") ?? false;
         var img = containsKey ? dictionary?["src"] : "";
@@ -141,7 +145,8 @@ public static class DownloadNewsUtil
         }
 
         var tagFinal = NodeUtil
-            .GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage), new List<string>(){"span"})
+            .GetElementsByTagAndClassName(HtmlNodeExtended.From(htmlNews.NodePoliMiHomePage),
+                new List<string> { "span" })
             ?.First(Predicate)?.HtmlNode?.InnerHtml.Trim();
         var startsWith = img?.StartsWith("http") ?? false;
         urlImgFinal = startsWith ? img : "https://polimi.it" + img;

@@ -19,10 +19,11 @@ public static class PoliMiNewsUtil
     internal static List<HtmlNodeExtended?>? GetNewsPoliMi(HtmlDocument? docPoliMi)
     {
         var slider =
-            NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(docPoliMi?.DocumentNode),  new List<string>(){"body"}, null);
-        var slider2 = NodeUtil.GetElementsByTagAndClassName(slider?.First(), new List<string>(){"section"});
+            NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(docPoliMi?.DocumentNode),
+                new List<string> { "body" }, null);
+        var slider2 = NodeUtil.GetElementsByTagAndClassName(slider?.First(), new List<string> { "section" });
         var slider3 = slider2?.First(x => x?.HtmlNode?.Id == "news");
-        var slider4 = NodeUtil.GetElementsByTagAndClassName(slider3, new List<string>(){"div"});
+        var slider4 = NodeUtil.GetElementsByTagAndClassName(slider3, new List<string> { "div" });
 
         bool? Predicate(HtmlNodeExtended? x)
         {
@@ -92,7 +93,8 @@ public static class PoliMiNewsUtil
             if (urls == null)
                 return;
 
-            var elementsByTagAndClassName = NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(urls), new List<string>(){"p", "ul"});
+            var elementsByTagAndClassName =
+                NodeUtil.GetElementsByTagAndClassName(HtmlNodeExtended.From(urls), new List<string> { "p", "ul" });
             var e = FlatHtml.FlatMap(elementsByTagAndClassName);
 
 

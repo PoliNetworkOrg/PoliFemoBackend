@@ -77,7 +77,7 @@ public class ArticlePiece
 
     internal static ArticlePiece? Selector(HtmlNodeExtended? x)
     {
-        var htmlNodeName = x?.HtmlNode?.Name;
+        var nodeName = x?.HtmlNode?.Name;
         try
         {
             var htmlAttributeCollection = x?.GetAttributes();
@@ -85,13 +85,13 @@ public class ArticlePiece
             var htmlAttribute = b ? htmlAttributeCollection?["src"] : null;
             var htmlNodeInnerHtml = x?.HtmlNode?.InnerHtml;
 
-            switch (x?.HtmlNode?.Name)
+            switch (nodeName)
             {
                 case "ul":
                 case "li":
                 {
                     ;
-                    return new ArticlePiece(ArticlePieceEnum.TEXT, htmlNodeInnerHtml, htmlNodeName);
+                    return new ArticlePiece(ArticlePieceEnum.TEXT, htmlNodeInnerHtml, nodeName);
                 }
 
                 case "sup":
@@ -107,11 +107,11 @@ public class ArticlePiece
                 case "header":
                 case "#text":
                 case "blockquote":
-                    return new ArticlePiece(ArticlePieceEnum.TEXT, htmlNodeInnerHtml, htmlNodeName);
+                    return new ArticlePiece(ArticlePieceEnum.TEXT, htmlNodeInnerHtml, nodeName);
                 case "hr":
                     return new ArticlePiece(ArticlePieceEnum.LINE);
                 case "br":
-                    return new ArticlePiece(ArticlePieceEnum.TEXT, "\n", htmlNodeName);
+                    return new ArticlePiece(ArticlePieceEnum.TEXT, "\n", nodeName);
                 case "figure":
                 case "img":
                     var a1 = new LinkImageDb(htmlAttribute, htmlAttributeCollection?["alt"], htmlNodeInnerHtml);
@@ -126,9 +126,9 @@ public class ArticlePiece
                     var argInnerHtml = new LinkImageDb(value, alt, htmlNodeInnerHtml);
                     return new ArticlePiece(ArticlePieceEnum.LINK, argInnerHtml);
                 case "iframe":
-                    return new ArticlePiece(ArticlePieceEnum.IFRAME, htmlAttribute, htmlNodeName);
+                    return new ArticlePiece(ArticlePieceEnum.IFRAME, htmlAttribute, nodeName);
                 default:
-                    Console.WriteLine(x?.HtmlNode?.Name);
+                    Console.WriteLine(nodeName);
                     break;
             }
         }
@@ -137,7 +137,7 @@ public class ArticlePiece
             Console.WriteLine(ex);
         }
 
-        return new ArticlePiece(ArticlePieceEnum.TEXT, x?.HtmlNode?.InnerHtml, htmlNodeName);
+        return new ArticlePiece(ArticlePieceEnum.TEXT, x?.HtmlNode?.InnerHtml, nodeName);
     }
 
     public static bool Predicate(ArticlePiece? x)

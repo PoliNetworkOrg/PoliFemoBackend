@@ -59,7 +59,7 @@ public static class FlatHtml
             {
                 return child;
             }
-            
+
             case "div":
             case "p":
             case "span":

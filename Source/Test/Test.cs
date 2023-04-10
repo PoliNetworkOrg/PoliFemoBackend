@@ -35,7 +35,7 @@ public static class Test
             Console.WriteLine(newsPolimis.Count);
             var enumerable = newsPolimis.Select(variable => variable.GetContentAsTextJson());
             var objects = enumerable.Select(r3 => r3?.ToString());
-            foreach (var r4 in objects) 
+            foreach (var r4 in objects)
                 Console.WriteLine(r4);
         }
         catch (Exception e)
