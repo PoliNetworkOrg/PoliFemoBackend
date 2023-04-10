@@ -2,7 +2,6 @@
 
 using HtmlAgilityPack;
 using PoliFemoBackend.Source.Enums;
-using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Objects.Threading;
 using PoliFemoBackend.Source.Utils.Html;
 
@@ -24,32 +23,6 @@ public static class PoliMiNewsUtil
         var slider4 = NodeUtil.GetElementsByTagAndClassName(slider3, "div");
         var slider5 = slider4?.Where(x => x.GetClasses().Contains("sp-slide")).ToList();
         return slider5;
-    }
-
-    internal static void GetContent(NewsPolimi? result)
-    {
-        var web = new HtmlWeb();
-        var doc = web.Load(result?.GetUrl());
-        var urls1 = doc.DocumentNode.SelectNodes("//div");
-        try
-        {
-            var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
-            var p = NodeUtil.GetElementsByTagAndClassName(urls, "p")?.Select(x => x.InnerHtml).ToList();
-            if (p != null)
-                result?.SetContent(p);
-        }
-        catch
-        {
-            // ignored
-        }
-
-        if (!(result?.IsContentEmpty() ?? false))
-            return;
-
-        var urls2 = urls1.Where(x =>
-            x.GetClasses().Contains("container") && !x.GetClasses().Contains("frame-type-header")
-        ).ToList();
-        HtmlNewsUtil.SetContent(urls2, result);
     }
 
 

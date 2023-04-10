@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using HtmlAgilityPack;
+using Jsonize;
+using Jsonize.Parser;
+using Jsonize.Serializer;
+using Newtonsoft.Json;
 
 namespace PoliFemoBackend.Source.Objects.Articles.News;
 
@@ -12,7 +16,7 @@ public class NewsPolimi
     private readonly string? _tag;
     private readonly string? _title;
     private readonly string? _url;
-    private List<string>? _content; //list of html objects (as strings)
+    private string? _content; //json representation of the content
 
     public NewsPolimi()
     {
@@ -34,9 +38,14 @@ public class NewsPolimi
         return _url;
     }
 
-    public void SetContent(List<string> list)
+    public void SetContent(string? text)
     {
-        _content = list;
+        _content = text;
+    }
+
+    public string? GetContent()
+    {
+        return _content;
     }
 
     public string? GetTitle()
@@ -59,37 +68,29 @@ public class NewsPolimi
         return _imgUrl;
     }
 
-    public string? GetContentAsTextJson()
-    {
-        if (_content == null)
-            return null;
-
-        var json = JsonConvert.SerializeObject(_content);
-        return json.Trim();
-    }
 
     public bool IsContentEmpty()
     {
-        return _content == null || _content.Count == 0 || _content.All(string.IsNullOrEmpty);
+        return _content == null || _content == "";
     }
 
-    public List<string>? GetContentAsList()
+    public void SetContent()
     {
-        return _content;
-    }
-
-    public void FixContent()
-    {
-        if (_content == null)
-            return;
-
-        for (var i = 0; i < _content.Count; i++)
+        var web = new HtmlWeb();
+        var doc = web.Load(_url);
+        var urls1 = doc.DocumentNode.SelectNodes("//div");
+        try
         {
-            var x = _content[i];
-            x = x.Replace("\n", "<br>");
-            x = x.Replace("<br>", "<br />");
-            x = x.Replace("<br /><br />", "<br />");
-            _content[i] = x;
+            var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
+            JsonizeParser jsonizeParser = new JsonizeParser();
+            JsonizeSerializer jsonizeSerializer = new JsonizeSerializer();
+            Jsonizer jsonizer = new Jsonizer(jsonizeParser, jsonizeSerializer);
+
+            _content = jsonizer.ParseToStringAsync(urls.InnerHtml).Result;
+        }
+        catch
+        {
+            _content = "";
         }
     }
 }
