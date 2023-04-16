@@ -36,12 +36,7 @@ public static class HtmlToJsonUtil
         }
         
 
-        if (urls != null)
-        {
-            return H(urls);
-        }
-
-        return null;
+        return urls != null ? H(urls) : null;
     }
 
  
