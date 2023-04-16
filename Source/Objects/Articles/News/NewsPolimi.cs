@@ -3,6 +3,7 @@ using Jsonize;
 using Jsonize.Parser;
 using Jsonize.Serializer;
 using Newtonsoft.Json;
+using PoliFemoBackend.Source.Utils.Article;
 
 namespace PoliFemoBackend.Source.Objects.Articles.News;
 
@@ -69,28 +70,15 @@ public class NewsPolimi
     }
 
 
-    public bool IsContentEmpty()
-    {
-        return _content == null || _content == "";
-    }
+    public bool IsContentEmpty() => string.IsNullOrEmpty(_content);
 
     public void SetContent()
     {
         var web = new HtmlWeb();
         var doc = web.Load(_url);
         var urls1 = doc.DocumentNode.SelectNodes("//div");
-        try
-        {
-            var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
-            JsonizeParser jsonizeParser = new JsonizeParser();
-            JsonizeSerializer jsonizeSerializer = new JsonizeSerializer();
-            Jsonizer jsonizer = new Jsonizer(jsonizeParser, jsonizeSerializer);
-
-            _content = jsonizer.ParseToStringAsync(urls.InnerHtml).Result;
-        }
-        catch
-        {
-            _content = "";
-        }
+        _content = HtmlToJsonUtil.GetContentFromHtml(urls1);
     }
+
+
 }
