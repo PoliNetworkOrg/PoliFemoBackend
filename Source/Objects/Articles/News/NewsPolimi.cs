@@ -74,10 +74,17 @@ public class NewsPolimi
 
     public void SetContent()
     {
-        var web = new HtmlWeb();
-        var doc = web.Load(_url);
-        var urls1 = doc.DocumentNode.SelectNodes("//div");
-        _content = HtmlToJsonUtil.GetContentFromHtml(urls1);
+        try
+        {
+            var web = new HtmlWeb();
+            var doc = web.Load(_url);
+            var urls1 = doc.DocumentNode.SelectNodes("//div");
+            _content = HtmlToJsonUtil.GetContentFromHtml(urls1);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
 

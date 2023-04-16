@@ -11,11 +11,34 @@ public static class HtmlToJsonUtil
 {
     public static string? GetContentFromHtml(HtmlNodeCollection urls1)
     {
-        var urls = urls1.First(x => x.GetClasses().Contains("news-single-item"));
+        List<HtmlNode>? urls = null;
+        try
+        {
+            var x = urls1.First(x => x.GetClasses().Contains("news-single-item"));
+            urls = new List<HtmlNode>() { x };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+        try
+        {
+            var x = urls1.Where(x => x.GetClasses().Contains("container") && !x.GetClasses().Contains("frame-type-header"));
+            urls = new List<HtmlNode>();
+            foreach (var VARIABLE in x)
+            {
+                urls.Add(VARIABLE);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+        
+
         if (urls != null)
         {
             return H(urls);
-            return S(urls);
         }
 
         return null;
@@ -23,8 +46,9 @@ public static class HtmlToJsonUtil
 
  
 
-    private static string? H(HtmlNode urls)
+    private static string? H(List<HtmlNode> urls)
     {
+
         var hj = GetHj(urls);
         hj.FixContent();
         var list = hj.Flat();
@@ -84,15 +108,37 @@ public static class HtmlToJsonUtil
         return j;
     }
 
-    private static HJ GetHj(HtmlNode urls)
+    private static HJ GetHj(List<HtmlNode> urls)
     {
-        var hj2 = HJ.FromSingle(urls);
-        foreach (var variable in urls.ChildNodes)
+        if (urls.Count == 0)
         {
-            hj2.Children ??= new List<HJ>();
-            hj2.Children.Add(GetHj(variable));
+            var v = urls[0];
+            var hj2 = HJ.FromSingle(v);
+            foreach (var variable in v.ChildNodes)
+            {
+                hj2.Children ??= new List<HJ>();
+                hj2.Children.Add(GetHj(new List<HtmlNode>(){variable}));
+            }
+
+            return hj2;
         }
-        return hj2;
+        
+        var result = new HJ();
+
+        foreach (var v in urls)
+        {
+            var hj2 = HJ.FromSingle(v);
+            foreach (var variable in v.ChildNodes)
+            {
+                hj2.Children ??= new List<HJ>();
+                hj2.Children.Add(GetHj(new List<HtmlNode>(){variable}));
+            }
+
+            result.Children ??= new List<HJ>();
+            result.Children.Add(hj2);
+        }
+
+        return result;
     }
 
     private static string? S(HtmlNode urls)
