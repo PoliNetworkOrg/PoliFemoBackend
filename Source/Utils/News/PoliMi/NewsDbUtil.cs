@@ -22,7 +22,7 @@ public static class NewsDbUtil
             return DoneEnum.SKIPPED;
 
         var result = Database.Database.GetFirstValueFromDataTable(results);
-        if (result == null)
+        if (result == null || newsItem.IsContentEmpty())
             return DoneEnum.SKIPPED;
 
         var num = Convert.ToInt32(result);
@@ -45,7 +45,7 @@ public static class NewsDbUtil
             { "@sourceUrl", newsItem.GetUrl() },
             { "@title", newsItem.GetTitle() },
             { "@subtitle", newsItem.GetSubtitle() },
-            { "@text_", newsItem.GetContentAsTextJson() },
+            { "@text_", newsItem.GetContent() },
             { "@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "@author_id", PoliMiAuthorId },
             { "@image", newsItem.GetImgUrl() },
