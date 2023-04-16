@@ -8,7 +8,7 @@ public class HJ
     private HtmlNode? h;
 
     public List<HJ>? Children;
-    public List<HJ>? Parents;
+    internal List<HJ>? Parents;
     
     public JObject? j;
 
@@ -26,10 +26,25 @@ public class HJ
     {
         JObject j = new JObject
         {
-            ["tag"] = urls.Name
+            ["tag"] = urls.Name,
+            ["att"] = ToJObject(urls.Attributes),
+            ["text"] = urls.ChildNodes.Count == 0 ? urls.InnerText : null
         };
         ;
         return j;
+    }
+
+    private static JToken ToJObject(HtmlAttributeCollection urlsAttributes)
+    {
+        var r = new JObject();
+        foreach (var variable in urlsAttributes)
+        {
+            if (variable != null)
+            {
+                r[variable.Name] = r[variable.Value];
+            }
+        }
+        return r;
     }
 
     public void FixContent()
@@ -41,28 +56,44 @@ public class HJ
     // r[a,b[c,d]] => [a(r),c(b,r),d(b,r)]
     public List<HJ?>? Flat()
     {
-        var result = new List<HJ?>();
+        List<HJ?> result = new List<HJ?>();
 
-        if (h == null) 
-            return null;
-        
-        result.Add(this);
+        if (this.Children == null || this.Children.Count == 0)
+            return new List<HJ?>() { this };
 
-        if (Children == null) 
-            return result;
-        
-        foreach (var child in Children)
+        foreach (var variable in this.Children)
         {
-            var flatChildren = child.Flat();
-            if (flatChildren == null) continue;
-            
-            foreach (var variable in flatChildren)
-            {
-                if (variable != null) result.Add(variable);
-            }
-            result.AddRange(flatChildren);
+            Flat2(new List<HJ?>() { this }, variable, result);
         }
 
         return result;
+    }
+
+    private static void Flat2(List<HJ?> list, HJ variable, ICollection<HJ?> result)
+    {
+        if (variable.Children == null || variable.Children.Count == 0)
+        {
+            variable.Parents ??= new List<HJ>();
+            foreach (var v in list)
+            {
+                if (v != null) 
+                    variable.Parents.Add(v);
+            }
+            result.Add(variable);
+            return;
+        }
+
+        //se ha dei figli estraimoli
+        List<HJ?> parentList = new List<HJ?>();
+        foreach (var v in list)
+        {
+            if (v != null) 
+                parentList.Add(v);
+        }
+        parentList.Add(variable);
+        foreach (var child in variable.Children)
+        {
+            Flat2(parentList, child, result);
+        }
     }
 }

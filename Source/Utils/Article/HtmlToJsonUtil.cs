@@ -37,18 +37,51 @@ public static class HtmlToJsonUtil
 
     private static JArray? GetJArray(List<HJ?>? list)
     {
-        var r = new JArray();
-        if (list == null) 
-            return null;
-        
-        foreach (var VARIABLE in list)
+        ;
+        ;
+        try
         {
-            var variableJ = VARIABLE?.j;
-            if (variableJ != null) 
-                r.Add(variableJ);
+            var r = new JArray();
+            if (list == null)
+                return null;
+
+            foreach (var variable in list)
+            {
+                var variableJ = variable?.j;
+
+                if (variableJ != null)
+                {
+                    variableJ["parents"] = GetParents(variable);
+                    r.Add(variableJ);
+                }
+            }
+
+            return r;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
         }
 
-        return r;
+        ;
+        ;
+        return null;
+    }
+
+    private static JArray GetParents(HJ? variableJ)
+    {
+        var j = new JArray();
+        var variableJParents = variableJ?.Parents;
+        if (variableJParents == null) 
+            return j;
+        
+        foreach (var singleParent in variableJParents)
+        {
+            var jObject = singleParent.j;
+            if (jObject != null) 
+                j.Add(jObject);
+        }
+        return j;
     }
 
     private static HJ GetHj(HtmlNode urls)
