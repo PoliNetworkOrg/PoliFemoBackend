@@ -24,6 +24,8 @@ public class HJ
 
     private static JObject JObjectFromSingle(HtmlNode urls)
     {
+
+        
         JObject j = new JObject
         {
             ["tag"] = urls.Name,
@@ -41,7 +43,7 @@ public class HJ
         {
             if (variable != null)
             {
-                r[variable.Name] = r[variable.Value];
+                r[variable.Name] = variable.Value;
             }
         }
         return r;
