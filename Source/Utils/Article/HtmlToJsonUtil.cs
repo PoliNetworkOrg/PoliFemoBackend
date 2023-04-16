@@ -24,11 +24,7 @@ public static class HtmlToJsonUtil
         try
         {
             var x = urls1.Where(x => x.GetClasses().Contains("container") && !x.GetClasses().Contains("frame-type-header"));
-            urls = new List<HtmlNode>();
-            foreach (var VARIABLE in x)
-            {
-                urls.Add(VARIABLE);
-            }
+            urls = x.ToList();
         }
         catch (Exception ex)
         {
@@ -54,7 +50,7 @@ public static class HtmlToJsonUtil
         return s;
     }
 
-    private static JArray? GetJArray(List<HJ?>? list)
+    private static JArray? GetJArray(List<Hj?>? list)
     {
         ;
         ;
@@ -66,7 +62,7 @@ public static class HtmlToJsonUtil
 
             foreach (var variable in list)
             {
-                var variableJ = variable?.j;
+                var variableJ = variable?.J;
 
                 if (variableJ != null)
                 {
@@ -87,7 +83,7 @@ public static class HtmlToJsonUtil
         return null;
     }
 
-    private static JArray GetParents(HJ? variableJ)
+    private static JArray GetParents(Hj? variableJ)
     {
         var j = new JArray();
         var variableJParents = variableJ?.Parents;
@@ -96,40 +92,40 @@ public static class HtmlToJsonUtil
         
         foreach (var singleParent in variableJParents)
         {
-            var jObject = singleParent.j;
+            var jObject = singleParent.J;
             if (jObject != null) 
                 j.Add(jObject);
         }
         return j;
     }
 
-    private static HJ GetHj(List<HtmlNode> urls)
+    private static Hj GetHj(List<HtmlNode> urls)
     {
         if (urls.Count == 0)
         {
             var v = urls[0];
-            var hj2 = HJ.FromSingle(v);
+            var hj2 = Hj.FromSingle(v);
             foreach (var variable in v.ChildNodes)
             {
-                hj2.Children ??= new List<HJ>();
+                hj2.Children ??= new List<Hj>();
                 hj2.Children.Add(GetHj(new List<HtmlNode>(){variable}));
             }
 
             return hj2;
         }
         
-        var result = new HJ();
+        var result = new Hj();
 
         foreach (var v in urls)
         {
-            var hj2 = HJ.FromSingle(v);
+            var hj2 = Hj.FromSingle(v);
             foreach (var variable in v.ChildNodes)
             {
-                hj2.Children ??= new List<HJ>();
+                hj2.Children ??= new List<Hj>();
                 hj2.Children.Add(GetHj(new List<HtmlNode>(){variable}));
             }
 
-            result.Children ??= new List<HJ>();
+            result.Children ??= new List<Hj>();
             result.Children.Add(hj2);
         }
 
