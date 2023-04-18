@@ -26,27 +26,40 @@ public static class FlatUtil
     {
         if (variable.Children == null || variable.Children.Count == 0)
         {
-            variable.Parents ??= new List<Hj>();
-            foreach (var v in list)
-            {
-                if (v != null) 
-                    variable.Parents.Add(v);
-            }
-            result.Add(variable);
+            Flat3(list, variable, result);
             return;
         }
 
         //se ha dei figli estraimoli
-        List<Hj?> parentList = new List<Hj?>();
+        Flat4(list, variable, result);
+    }
+
+    private static void Flat4(List<Hj?> list, Hj variable, ICollection<Hj?> result)
+    {
+        var parentList = new List<Hj?>();
         foreach (var v in list)
         {
-            if (v != null) 
+            if (v != null)
                 parentList.Add(v);
         }
+
         parentList.Add(variable);
+        if (variable.Children == null) return;
         foreach (var child in variable.Children)
         {
             Flat2(parentList, child, result);
         }
+    }
+
+    private static void Flat3(List<Hj?> list, Hj variable, ICollection<Hj?> result)
+    {
+        variable.Parents ??= new List<Hj>();
+        foreach (var v in list)
+        {
+            if (v != null)
+                variable.Parents.Add(v);
+        }
+
+        result.Add(variable);
     }
 }

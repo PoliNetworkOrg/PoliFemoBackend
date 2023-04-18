@@ -2,8 +2,6 @@
 
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.News.PoliMi;
-using PoliFemoBackend.Source.Utils.Rooms;
-using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion
 
