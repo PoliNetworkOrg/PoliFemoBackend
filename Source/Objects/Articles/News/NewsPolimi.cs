@@ -67,7 +67,10 @@ public class NewsPolimi
     }
 
 
-    public bool IsContentEmpty() => string.IsNullOrEmpty(_content);
+    public bool IsContentEmpty()
+    {
+        return string.IsNullOrEmpty(_content);
+    }
 
     public void SetContent()
     {
@@ -83,6 +86,4 @@ public class NewsPolimi
             Console.WriteLine(ex);
         }
     }
-
-
 }

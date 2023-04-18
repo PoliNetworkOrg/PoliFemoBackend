@@ -27,13 +27,9 @@ public class DbConfig
 
         const string configDbconfigJson = Constants.DbConfig;
         if (File.Exists(configDbconfigJson))
-        {
             ConfigExists(configDbconfigJson);
-        }
         else
-        {
             GenerateDbConfigEmpty();
-        }
 
 
         GlobalVariables.DbConnection = new MySqlConnection(GlobalVariables.DbConfigVar?.GetConnectionString());

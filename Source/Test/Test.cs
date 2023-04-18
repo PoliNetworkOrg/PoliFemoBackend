@@ -33,7 +33,6 @@ public static class Test
             var r2 = DownloadNewsUtil.DownloadCurrentNews();
             var newsPolimis = r2.ToList();
             Console.WriteLine(newsPolimis.Count);
-
         }
         catch (Exception e)
         {

@@ -1,13 +1,18 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects.Articles.News;
+using PoliFemoBackend.Source.Utils.Html.Flat;
 
 namespace PoliFemoBackend.Source.Utils.Article;
 
 public static class HtmlToJsonUtil
 {
     private static readonly Func<HtmlNode, bool> News1 = x => x.GetClasses().Contains("news-single-item");
-    private static readonly Func<HtmlNode, bool> News2 = x => x.GetClasses().Contains("container") && !x.GetClasses().Contains("frame-type-header");
+
+    private static readonly Func<HtmlNode, bool> News2 = x =>
+        x.GetClasses().Contains("container") && !x.GetClasses().Contains("frame-type-header");
+
     public static string? GetContentFromHtml(HtmlNodeCollection urls1)
     {
         List<HtmlNode>? urls = null;
@@ -20,6 +25,7 @@ public static class HtmlToJsonUtil
         {
             Console.WriteLine(ex);
         }
+
         try
         {
             var x = urls1.Where(News2);
@@ -29,23 +35,22 @@ public static class HtmlToJsonUtil
         {
             Console.WriteLine(ex);
         }
-        
+
         return urls != null ? H(urls) : null;
     }
 
- 
 
     private static string? H(IReadOnlyList<HtmlNode> urls)
     {
         var j = H2(urls);
-        return j == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(j);
+        return j == null ? null : JsonConvert.SerializeObject(j);
     }
 
     private static JArray? H2(IReadOnlyList<HtmlNode> urls)
     {
         var hj = GetHj(urls);
         hj.FixContent();
-        var list = Html.Flat.FlatUtil.Flat(hj);
+        var list = FlatUtil.Flat(hj);
         return GetJArray(list);
     }
 
@@ -57,10 +62,7 @@ public static class HtmlToJsonUtil
             if (list == null)
                 return null;
 
-            foreach (var variable in list)
-            {
-                AddHjToJArray(variable, r);
-            }
+            foreach (var variable in list) AddHjToJArray(variable, r);
 
             return r;
         }
@@ -85,15 +87,16 @@ public static class HtmlToJsonUtil
     {
         var j = new JArray();
         var variableJParents = variableJ?.Parents;
-        if (variableJParents == null) 
+        if (variableJParents == null)
             return j;
-        
+
         foreach (var singleParent in variableJParents)
         {
             var jObject = singleParent.J;
-            if (jObject != null) 
+            if (jObject != null)
                 j.Add(jObject);
         }
+
         return j;
     }
 
@@ -113,7 +116,7 @@ public static class HtmlToJsonUtil
 
         return result;
     }
-    
+
     private static Hj GetHjSingle2(HtmlNode v)
     {
         var hj2 = Hj.FromSingle(v);
@@ -133,6 +136,4 @@ public static class HtmlToJsonUtil
 
         return hj2;
     }
-
-
 }

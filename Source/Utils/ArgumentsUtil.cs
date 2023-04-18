@@ -10,20 +10,16 @@ public class ArgumentsUtil
     {
         GlobalVariables.BasePath = "/";
         foreach (var arg in args)
-        
+
             ArgumentSingle(arg);
     }
 
     private void ArgumentSingle(string arg)
     {
         if (arg.Contains('='))
-        {
             KeyValuePairs(arg);
-        }
         else
-        {
             Flags(arg);
-        }
     }
 
     private void Flags(string arg)

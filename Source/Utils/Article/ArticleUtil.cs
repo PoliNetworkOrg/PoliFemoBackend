@@ -4,7 +4,6 @@ using System.Data;
 using Blurhash.ImageSharp;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects.Articles;
-using Image = SixLabors.ImageSharp.Image;
 
 #endregion
 
@@ -64,7 +63,7 @@ public static class ArticleUtil
                 "target_time",
                 DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["target_time"].ToString() ?? ""))
             },
-            { "content", JArray.Parse(row["content"].ToString() ?? "")},
+            { "content", JArray.Parse(row["content"].ToString() ?? "") },
             { "image", row["image"].ToString() == "" ? null : row["image"].ToString() },
             { "blurhash", row["blurhash"].ToString() == "" ? null : row["blurhash"].ToString() }
         };

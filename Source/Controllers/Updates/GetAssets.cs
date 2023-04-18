@@ -39,7 +39,7 @@ public class GetUpdateAssetController : ControllerBase
             await c.Response.WriteAsync("Error while contacting GitHub");
         }).Build();
 
-        
+
     /// <summary>
     ///     Get an update asset
     /// </summary>
@@ -49,7 +49,8 @@ public class GetUpdateAssetController : ControllerBase
     public Task GetAsset([BindRequired] string name)
     {
         if (name.Split(".").Length != 2)
-            return BadRequest().ExecuteResultAsync(new ActionContext(HttpContext, new RouteData(), new ActionDescriptor()));
+            return BadRequest()
+                .ExecuteResultAsync(new ActionContext(HttpContext, new RouteData(), new ActionDescriptor()));
 
         var ext = name.Split(".")[1];
         return this.HttpProxyAsync(Constants.AssetsUrl + name.Split(".")[0], _httpOptions);
