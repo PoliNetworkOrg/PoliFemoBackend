@@ -3,7 +3,7 @@ using HtmlAgilityPack;
 
 namespace PoliFemoBackend.Source.Utils.Html;
 
-public class NodeFilterUtil
+public static class NodeFilterUtil
 {
     internal static List<HtmlNode>? HasClassnameAndTagAndLimit(HtmlNode doc, string tag, string? className,
         [DisallowNull] long? limit,

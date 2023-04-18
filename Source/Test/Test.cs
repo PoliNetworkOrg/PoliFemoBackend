@@ -1,6 +1,7 @@
 ﻿#region
 
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Utils.News.PoliMi;
 using PoliFemoBackend.Source.Utils.Rooms;
 using PoliFemoBackend.Source.Utils.Rooms.Search;
 
@@ -27,18 +28,14 @@ public static class Test
     {
         Console.WriteLine("Test");
 
-        FixGlobalDbConfig();
+        //FixGlobalDbConfig();
 
         try
         {
-            var r2 = await SingleRoomUtil.GetRoomById(32);
-            Console.WriteLine(r2);
-            var hourStart = new DateTime(2023, 02, 27, 8, 0, 0);
-            var hourStop = new DateTime(2023, 02, 27, 20, 0, 0);
-            ;
-            var r = await SearchRoomUtil.SearchRooms("MIA", hourStart, hourStop);
-            ;
-            Console.WriteLine(r);
+            var r2 = DownloadNewsUtil.DownloadCurrentNews();
+            var newsPolimis = r2.ToList();
+            Console.WriteLine(newsPolimis.Count);
+
         }
         catch (Exception e)
         {
