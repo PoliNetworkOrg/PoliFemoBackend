@@ -35,12 +35,11 @@ public static class ArticleUtil
 
     public static async Task<string?> GenerateBlurhashAsync(string? url)
     {
-        if (url == null || url == "") return null;
+        if (string.IsNullOrEmpty(url)) return null;
 
-        using(var bytes = await new HttpClient().GetStreamAsync(url)) {
-            var image = Image.Load<Rgba32>(bytes);
-            return Blurhasher.Encode(image, 5, 5);
-        }
+        await using var bytes = await new HttpClient().GetStreamAsync(url);
+        var image = Image.Load<Rgba32>(bytes);
+        return Blurhasher.Encode(image, 5, 5);
     }
 
     public static JObject ArticleAuthorsRowToJObject(DataRow row)
