@@ -67,48 +67,54 @@ public static class FreeRoomsUtil
         // the first two children are not time slots
         for (var i = 2; i < node.ChildNodes.Count; i++)
         {
-            var iTime = new TimeOnly(8, 0, 0);
-            iTime = iTime.AddMinutes(colsizetotal * 15);
-
-            var nodeChildNode = node.ChildNodes[i];
-
-            var colsize =
-                // for each column, take it's span as the colsize
-                nodeChildNode.Attributes.Contains("colspan")
-                    ? (int)Convert.ToInt64(nodeChildNode.Attributes["colspan"].Value)
-                    : 1;
-
-            // the time start in shifts for each column, is the previous total
-            var vStart = colsizetotal;
-            colsizetotal += colsize;
-            var vEnd = colsizetotal; // the end is the new total (prev + colsize)
-
-
-            // this is the trickery, if any column ends before the shift start or starts before
-            // the shift end, then we skip
-            var inScopeSearch = vEnd >= shiftStart && vStart <= shiftEnd;
-
-
-            // if one of the not-skipped column represents an actual lesson, then return false,
-            // the room is occupied
-            var occupiedBool = !string.IsNullOrEmpty(nodeChildNode.InnerHtml.Trim());
-            var roomOccupancyEnum = occupiedBool ? RoomOccupancyEnum.OCCUPIED : RoomOccupancyEnum.FREE;
-
-            //now mark the occupancies of the room
-            var htmlNodes = nodeChildNode.ChildNodes.Where(x => x.Name == "a").ToList();
-            string? text = null;
-            if (htmlNodes.Count > 0)
-            {
-                var htmlNode = htmlNodes.First();
-                text = HttpUtility.HtmlDecode(htmlNode?.InnerHtml.Trim());
-            }
-
-
-            occupied.Add(new RoomOccupancyResultObject(iTime, roomOccupancyEnum, text));
+            colsizetotal = IsRoomFree2(node, shiftStart, shiftEnd, colsizetotal, i, occupied);
         }
 
         // if no lesson takes place in the room in the time window, the room is free (duh)
         var filterDuplicates = ExtractHtmlRoomUtil.FilterDuplicates(occupied);
         return filterDuplicates;
+    }
+
+    private static int IsRoomFree2(HtmlNode node, int shiftStart, int shiftEnd, int colsizetotal, int i, List<RoomOccupancyResultObject> occupied)
+    {
+        var iTime = new TimeOnly(8, 0, 0);
+        iTime = iTime.AddMinutes(colsizetotal * 15);
+
+        var nodeChildNode = node.ChildNodes[i];
+
+        var colsize =
+            // for each column, take it's span as the colsize
+            nodeChildNode.Attributes.Contains("colspan")
+                ? (int)Convert.ToInt64(nodeChildNode.Attributes["colspan"].Value)
+                : 1;
+
+        // the time start in shifts for each column, is the previous total
+        var vStart = colsizetotal;
+        colsizetotal += colsize;
+        var vEnd = colsizetotal; // the end is the new total (prev + colsize)
+
+
+        // this is the trickery, if any column ends before the shift start or starts before
+        // the shift end, then we skip
+        var inScopeSearch = vEnd >= shiftStart && vStart <= shiftEnd;
+
+
+        // if one of the not-skipped column represents an actual lesson, then return false,
+        // the room is occupied
+        var occupiedBool = !string.IsNullOrEmpty(nodeChildNode.InnerHtml.Trim());
+        var roomOccupancyEnum = occupiedBool ? RoomOccupancyEnum.OCCUPIED : RoomOccupancyEnum.FREE;
+
+        //now mark the occupancies of the room
+        var htmlNodes = nodeChildNode.ChildNodes.Where(x => x.Name == "a").ToList();
+        string? text = null;
+        if (htmlNodes.Count > 0)
+        {
+            var htmlNode = htmlNodes.First();
+            text = HttpUtility.HtmlDecode(htmlNode?.InnerHtml.Trim());
+        }
+
+
+        occupied.Add(new RoomOccupancyResultObject(iTime, roomOccupancyEnum, text));
+        return colsizetotal;
     }
 }
