@@ -5,34 +5,24 @@ namespace PoliFemoBackend.Source.Objects.Articles.News;
 
 public class Hj
 {
-    //private HtmlNode? _h;
-
     public List<Hj>? Children;
     internal List<Hj>? Parents;
     
     public JObject? J;
 
-    public static Hj FromSingle(HtmlNode urls)
-    {
-        var r = new Hj
+    public static Hj FromSingle(HtmlNode urls) =>
+        new()
         {
-            //_h = urls,
             J = JObjectFromSingle(urls)
         };
-        return r;
-    }
 
-    private static JObject JObjectFromSingle(HtmlNode urls)
-    {
-        var j = new JObject
+    private static JObject JObjectFromSingle(HtmlNode urls) =>
+        new()
         {
             ["tag"] = urls.Name,
             ["att"] = ToJObject(urls.Attributes),
             ["text"] = urls.ChildNodes.Count == 0 ? urls.InnerText : null
         };
-        ;
-        return j;
-    }
 
     private static JToken ToJObject(HtmlAttributeCollection urlsAttributes)
     {
