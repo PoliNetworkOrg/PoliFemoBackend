@@ -14,7 +14,7 @@ public static class HtmlToJsonUtil
         try
         {
             var x = urls1.First(News1);
-            urls = new List<HtmlNode>() { x };
+            urls = new List<HtmlNode> { x };
         }
         catch (Exception ex)
         {

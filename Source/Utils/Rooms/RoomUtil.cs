@@ -16,7 +16,7 @@ public static class RoomUtil
     internal static async Task<Tuple<List<HtmlNode>?, string>> GetDailySituationOnDate(DateTime? date, string sede)
     {
         date ??= DateTime.Today;
-        var day = date?.Day;
+        var day = date.Value.Day;
         var month = date?.Month;
         var year = date?.Year;
 

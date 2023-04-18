@@ -20,6 +20,7 @@ public static class NodeUtil
 
         if (emptyTag && limit == null) return NodeFilterUtil.EmptyTagAndNoLimit(doc, className, lst, result);
 
+        // ReSharper disable once ConvertIfStatementToSwitchStatement
         if (emptyCn && limit == null) return NodeFilterUtil.EmptyClassnameAndNoLimit(doc, tag, lst, result);
 
         if (!emptyCn && emptyTag == false && limit == null)
@@ -27,6 +28,7 @@ public static class NodeUtil
 
         if (emptyTag && limit != null) return NodeFilterUtil.HasTagAndLimit(doc, className, limit, lst, result);
 
+        // ReSharper disable once ConvertIfStatementToSwitchStatement
         if (emptyCn && limit != null) return NodeFilterUtil.HasNoClassnameAndLimit(doc, tag, limit, lst, result);
 
         if (!emptyCn && emptyTag == false && limit != null)

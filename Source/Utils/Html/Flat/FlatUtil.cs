@@ -12,11 +12,11 @@ public static class FlatUtil
         var result = new List<Hj?>();
 
         if (thisHj.Children == null || thisHj.Children.Count == 0)
-            return new List<Hj?>() { thisHj };
+            return new List<Hj?> { thisHj };
 
         foreach (var variable in thisHj.Children)
         {
-            Flat2(new List<Hj?>() { thisHj }, variable, result);
+            Flat2(new List<Hj?> { thisHj }, variable, result);
         }
 
         return result;

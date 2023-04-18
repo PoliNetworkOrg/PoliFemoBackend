@@ -2,6 +2,7 @@
 
 namespace PoliFemoBackend.Source.Utils.Danger;
 
+// ReSharper disable once UnusedType.Global
 public static class GracefullyShutdown
 {
     public static void ShutdownGracefully()
