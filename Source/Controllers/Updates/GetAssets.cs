@@ -16,26 +16,17 @@ namespace PoliFemoBackend.Source.Controllers.Admin;
 [Route("/updates/assets/{name}")]
 public class GetUpdateAssetController : ControllerBase
 {
-    private HttpProxyOptions _httpOptions = HttpProxyOptionsBuilder.Instance
+    private readonly HttpProxyOptions _httpOptions = HttpProxyOptionsBuilder.Instance
         .WithAfterReceive((c, hrm) =>
         {
-            MediaTypeHeaderValue header;
             var ext = c.Request.Path.Value?.Split(".")[1];
-            switch (ext) 
+            var header = ext switch
             {
-                case "svg":
-                    header = new MediaTypeHeaderValue("image/svg+xml");
-                    break;
-                case "png":
-                    header = new MediaTypeHeaderValue("image/png");
-                    break;
-                case "ttf":
-                    header = new MediaTypeHeaderValue("font/ttf");
-                    break;
-                default:
-                    header = new MediaTypeHeaderValue("application/octet-stream");
-                    break;
-            }
+                "svg" => new MediaTypeHeaderValue("image/svg+xml"),
+                "png" => new MediaTypeHeaderValue("image/png"),
+                "ttf" => new MediaTypeHeaderValue("font/ttf"),
+                _ => new MediaTypeHeaderValue("application/octet-stream")
+            };
 
             hrm.Content.Headers.ContentType = header;
 
