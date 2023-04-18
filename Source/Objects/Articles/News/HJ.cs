@@ -3,30 +3,28 @@ using Newtonsoft.Json.Linq;
 
 namespace PoliFemoBackend.Source.Objects.Articles.News;
 
-public class HJ
+public class Hj
 {
-    private HtmlNode? h;
+    //private HtmlNode? _h;
 
-    public List<HJ>? Children;
-    internal List<HJ>? Parents;
+    public List<Hj>? Children;
+    internal List<Hj>? Parents;
     
-    public JObject? j;
+    public JObject? J;
 
-    public static HJ FromSingle(HtmlNode urls)
+    public static Hj FromSingle(HtmlNode urls)
     {
-        var r = new HJ
+        var r = new Hj
         {
-            h = urls,
-            j = JObjectFromSingle(urls)
+            //_h = urls,
+            J = JObjectFromSingle(urls)
         };
         return r;
     }
 
     private static JObject JObjectFromSingle(HtmlNode urls)
     {
-
-        
-        JObject j = new JObject
+        var j = new JObject
         {
             ["tag"] = urls.Name,
             ["att"] = ToJObject(urls.Attributes),
@@ -56,26 +54,26 @@ public class HJ
     
     // Presa una lista di elementi con figli, parti dai figli e restituisci insieme a loro i genitori
     // r[a,b[c,d]] => [a(r),c(b,r),d(b,r)]
-    public List<HJ?>? Flat()
+    public List<Hj?>? Flat()
     {
-        List<HJ?> result = new List<HJ?>();
+        var result = new List<Hj?>();
 
         if (this.Children == null || this.Children.Count == 0)
-            return new List<HJ?>() { this };
+            return new List<Hj?>() { this };
 
         foreach (var variable in this.Children)
         {
-            Flat2(new List<HJ?>() { this }, variable, result);
+            Flat2(new List<Hj?>() { this }, variable, result);
         }
 
         return result;
     }
 
-    private static void Flat2(List<HJ?> list, HJ variable, ICollection<HJ?> result)
+    private static void Flat2(List<Hj?> list, Hj variable, ICollection<Hj?> result)
     {
         if (variable.Children == null || variable.Children.Count == 0)
         {
-            variable.Parents ??= new List<HJ>();
+            variable.Parents ??= new List<Hj>();
             foreach (var v in list)
             {
                 if (v != null) 
@@ -86,7 +84,7 @@ public class HJ
         }
 
         //se ha dei figli estraimoli
-        List<HJ?> parentList = new List<HJ?>();
+        List<Hj?> parentList = new List<Hj?>();
         foreach (var v in list)
         {
             if (v != null) 
