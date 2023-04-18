@@ -12,7 +12,7 @@ public static class Constants
 
     public const string DataPath = "./data";
 
-    public const string LogsPath = "./logs";
+    private const string LogsPath = "./logs";
 
     public const string SqlCommandsPath = "./Other/DB/DBPolifemo.sql";
 

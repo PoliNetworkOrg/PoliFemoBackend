@@ -37,6 +37,7 @@ public class Hj
         return r;
     }
 
+    // ReSharper disable once MemberCanBeMadeStatic.Global
     public void FixContent()
     {
         //todo!

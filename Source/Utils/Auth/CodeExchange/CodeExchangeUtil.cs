@@ -38,7 +38,7 @@ public static class CodeExchangeUtil
             });
 
         var loginResultObject = LoginUtil.LoginUser(codeExchangeController, responseJson);
-        if (loginResultObject is { ActionResult: { } })
+        if (loginResultObject is { ActionResult: not null })
             return loginResultObject.ActionResult;
 
         AddUserToDb(loginResultObject?.Subject, loginResultObject?.Acctype);

@@ -17,8 +17,8 @@ public static class RoomUtil
     {
         date ??= DateTime.Today;
         var day = date.Value.Day;
-        var month = date?.Month;
-        var year = date?.Year;
+        var month = date.Value.Month;
+        var year = date.Value.Year;
 
         if (string.IsNullOrEmpty(sede)) return new Tuple<List<HtmlNode>?, string>(null, "sede empty");
 

@@ -54,7 +54,7 @@ public class Articles
     public List<JToken> FilterByAuthor(string author)
     {
         return string.IsNullOrEmpty(author) ? new List<JToken>() :
-            _articlesByAuthor.ContainsKey(author) ? _articlesByAuthor[author] : new List<JToken>();
+            _articlesByAuthor.TryGetValue(author, out var value) ? value : new List<JToken>();
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class Articles
 
     public JToken? GetArticleById(uint id)
     {
-        return _articles.ContainsKey(id) ? _articles[id] : null;
+        return _articles.TryGetValue(id, out var article) ? article : null;
     }
 
     /// <summary>

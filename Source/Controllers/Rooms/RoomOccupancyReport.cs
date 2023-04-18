@@ -86,7 +86,7 @@ public class RoomOccupancyReport : ControllerBase
         return Ok(result);
     }
 
-    public static JObject? GetReportedOccupancyJObject(uint id)
+    private static JObject? GetReportedOccupancyJObject(uint id)
     {
         const string q = "SELECT SUM(x.w * x.rate)/SUM(x.w) " +
                          "FROM (" +
