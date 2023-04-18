@@ -42,7 +42,7 @@ public static class HtmlToJsonUtil
 
         var hj = GetHj(urls);
         hj.FixContent();
-        var list = hj.Flat();
+        var list = Utils.Html.Flat.FlatUtil.Flat(hj);
         var j = GetJArray(list);
         if (j == null)
             return null;
