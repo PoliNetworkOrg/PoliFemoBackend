@@ -36,9 +36,9 @@ public static class NewsDbUtil
     private static void InsertItemInDb(NewsPolimi newsItem) //11111
     {
         const string query1 = "INSERT IGNORE INTO Articles " +
-                              "(title,subtitle,content,publish_time,source_url,author_id,image,blurhash,tag_id) " +
+                              "(title,subtitle,content,publish_time,source_url,author_id,image,blurhash,tag_id, platforms) " +
                               "VALUES " +
-                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl, @author_id, @image, @blurhash, @tag) " +
+                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl, @author_id, @image, @blurhash, @tag, @platforms) " +
                               "ON DUPLICATE KEY UPDATE article_id = LAST_INSERT_ID(article_id)";
         var args1 = new Dictionary<string, object?>
         {
@@ -50,7 +50,8 @@ public static class NewsDbUtil
             { "@author_id", PoliMiAuthorId },
             { "@image", newsItem.GetImgUrl() },
             { "@blurhash", ArticleUtil.GenerateBlurhashAsync(newsItem.GetImgUrl()).Result },
-            { "@tag", newsItem.GetTag()?.ToUpper() == "" ? "ALTRO" : newsItem.GetTag()?.ToUpper() }
+            { "@tag", newsItem.GetTag()?.ToUpper() == "" ? "ALTRO" : newsItem.GetTag()?.ToUpper() },
+            { "@platforms", 1}
         };
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
     }
