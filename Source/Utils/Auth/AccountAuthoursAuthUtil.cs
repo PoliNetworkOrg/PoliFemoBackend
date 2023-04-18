@@ -2,7 +2,7 @@
 
 namespace PoliFemoBackend.Source.Utils.Auth;
 
-public class AccountAuthoursAuthUtil
+public static class AccountAuthoursAuthUtil
 {
     public static string?[] GetAuthorizedAuthors(string? userid)
     {

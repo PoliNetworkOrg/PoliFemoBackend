@@ -42,36 +42,11 @@ public static class DownloadNewsUtil
 
             if (htmlNews.NodeInEvidenza == null)
             {
-                var img = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")?.First()
-                    .Attributes["src"].Value ?? "";
-                tagFinal = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
-                    ?.First(x => x.GetClasses().Contains("newsCategory")).InnerHtml.Trim();
-                urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
+                tagFinal = NodeInEvidenzaNull(htmlNews, out urlImgFinal);
             }
             else
             {
-                var selectMany = htmlNews.NodeInEvidenza?.ChildNodes.SelectMany(x => x.ChildNodes);
-                var htmlNodes = selectMany?.Where(x => x.Attributes.Contains("href"));
-                var enumerable = htmlNodes?.Select(x => x.Attributes["href"].Value);
-                var where = enumerable?.Where(x => !string.IsNullOrEmpty(x));
-                var url1 = where?.FirstOrDefault("") ?? "";
-
-                internalNews = !(url1.StartsWith("https://") || url1.StartsWith("http://"));
-                url2 = !(internalNews ?? false) ? url1 : "https://www.polimi.it" + url1;
-                var child = htmlNews.NodeInEvidenza?.ChildNodes;
-                title = child?[0].InnerText.Trim();
-                var child2 = child?[1].ChildNodes;
-                if (child2?.Count > 0)
-                    subtitle = child2[0].InnerText.Trim();
-
-                if (htmlNews.NodePoliMiHomePage != null)
-                {
-                    var img = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")?.First()
-                        .Attributes["src"].Value ?? "";
-                    tagFinal = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
-                        ?.First(x => x.GetClasses().Contains("newsCategory")).InnerHtml.Trim();
-                    urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
-                }
+                internalNews = NodeInEvidenzaNotNull(htmlNews, out url2, out title, ref subtitle, ref tagFinal, ref urlImgFinal);
             }
 
 
@@ -89,5 +64,42 @@ public static class DownloadNewsUtil
         }
 
         return new Optional<NewsPolimi>();
+    }
+
+    private static bool? NodeInEvidenzaNotNull(HtmlNews htmlNews, out string url2, out string? title, ref string? subtitle,
+        ref string? tagFinal, ref string? urlImgFinal)
+    {
+        var selectMany = htmlNews.NodeInEvidenza?.ChildNodes.SelectMany(x => x.ChildNodes);
+        var htmlNodes = selectMany?.Where(x => x.Attributes.Contains("href"));
+        var enumerable = htmlNodes?.Select(x => x.Attributes["href"].Value);
+        var where = enumerable?.Where(x => !string.IsNullOrEmpty(x));
+        var url1 = where?.FirstOrDefault("") ?? "";
+
+        bool? internalNews = !(url1.StartsWith("https://") || url1.StartsWith("http://"));
+        url2 = !(internalNews ?? false) ? url1 : "https://www.polimi.it" + url1;
+        var child = htmlNews.NodeInEvidenza?.ChildNodes;
+        title = child?[0].InnerText.Trim();
+        var child2 = child?[1].ChildNodes;
+        if (child2?.Count > 0)
+            subtitle = child2[0].InnerText.Trim();
+
+        if (htmlNews.NodePoliMiHomePage == null) return internalNews;
+        var img = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")?.First()
+            .Attributes["src"].Value ?? "";
+        tagFinal = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
+            ?.First(x => x.GetClasses().Contains("newsCategory")).InnerHtml.Trim();
+        urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
+
+        return internalNews;
+    }
+
+    private static string? NodeInEvidenzaNull(HtmlNews htmlNews, out string urlImgFinal)
+    {
+        var img = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")?.First()
+            .Attributes["src"].Value ?? "";
+        var tagFinal = NodeUtil.GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
+            ?.First(x => x.GetClasses().Contains("newsCategory")).InnerHtml.Trim();
+        urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
+        return tagFinal;
     }
 }

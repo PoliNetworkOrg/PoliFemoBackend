@@ -27,12 +27,7 @@ public static class HtmlUtil
                     return Task.FromResult(resultFromCache);
             }
 
-            HttpClient httpClient = new();
-            var task = httpClient.GetByteArrayAsync(urlAddress);
-            task.Wait();
-            var response = task.Result;
-            var s = Encoding.UTF8.GetString(response, 0, response.Length);
-            s = FixTableContentFromCache(cacheTypeEnum, s);
+            var s = DownloadHtml2(urlAddress, cacheTypeEnum);
 
             if (useCache)
                 SaveToCacheUtil.SaveToCache(urlAddress, s);
@@ -44,6 +39,17 @@ public static class HtmlUtil
             Console.WriteLine(ex);
             return Task.FromResult(new WebReply(null, HttpStatusCode.ExpectationFailed));
         }
+    }
+
+    private static string DownloadHtml2(string urlAddress, CacheTypeEnum cacheTypeEnum)
+    {
+        HttpClient httpClient = new();
+        var task = httpClient.GetByteArrayAsync(urlAddress);
+        task.Wait();
+        var response = task.Result;
+        var s = Encoding.UTF8.GetString(response, 0, response.Length);
+        s = FixTableContentFromCache(cacheTypeEnum, s);
+        return s;
     }
 
     private static string FixTableContentFromCache(CacheTypeEnum cacheTypeEnum, string s)
