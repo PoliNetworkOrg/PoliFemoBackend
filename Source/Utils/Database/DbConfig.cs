@@ -23,26 +23,12 @@ public class DbConfig
 
     public static void InitializeDbConfig()
     {
-        ;
         if (!Directory.Exists(Constants.ConfigPath)) Directory.CreateDirectory(Constants.ConfigPath);
 
         const string configDbconfigJson = Constants.DbConfig;
         if (File.Exists(configDbconfigJson))
         {
-            try
-            {
-                var text = File.ReadAllText(configDbconfigJson);
-                DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
-                DbConfigVar?.FixName();
-                GlobalVariables.DbConfigVar = DbConfigVar;
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(ex);
-            }
-
-            if (DbConfigVar == null)
-                GenerateDbConfigEmpty();
+            ConfigExists(configDbconfigJson);
         }
         else
         {
@@ -72,6 +58,24 @@ public class DbConfig
             Logger.WriteLine(ex.Message, LogSeverityLevel.Critical);
             Environment.Exit(1);
         }
+    }
+
+    private static void ConfigExists(string configDbconfigJson)
+    {
+        try
+        {
+            var text = File.ReadAllText(configDbconfigJson);
+            DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
+            DbConfigVar?.FixName();
+            GlobalVariables.DbConfigVar = DbConfigVar;
+        }
+        catch (Exception ex)
+        {
+            Logger.WriteLine(ex);
+        }
+
+        if (DbConfigVar == null)
+            GenerateDbConfigEmpty();
     }
 
     private void FixName()

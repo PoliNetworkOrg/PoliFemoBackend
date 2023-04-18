@@ -10,7 +10,7 @@ using PoliFemoBackend.Source.Data;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Admin;
+namespace PoliFemoBackend.Source.Controllers.Updates;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Updates")]

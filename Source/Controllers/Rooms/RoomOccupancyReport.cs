@@ -46,15 +46,7 @@ public class RoomOccupancyReport : ControllerBase
                 { "error", "Rate must between " + Constants.MinRate + " and " + Constants.MaxRate }
             });
 
-        const string q =
-            "REPLACE INTO RoomOccupancyReports (room_id, user_id, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
-        var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>
-        {
-            { "@id_room", id },
-            { "@id_user", jwt.Subject },
-            { "@rate", rate },
-            { "@when_reported", whenReported }
-        });
+        var count = ReportOccupancy(id, rate, jwt.Subject, whenReported);
 
         if (count <= 0)
             return StatusCode(500, new JObject
@@ -63,6 +55,20 @@ public class RoomOccupancyReport : ControllerBase
             });
 
         return Ok("");
+    }
+
+    private static int ReportOccupancy(uint id, float rate, string subject, DateTime whenReported)
+    {
+        const string q =
+            "REPLACE INTO RoomOccupancyReports (room_id, user_id, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
+        var count = Database.Execute(q, DbConfig.DbConfigVar, new Dictionary<string, object?>
+        {
+            { "@id_room", id },
+            { "@id_user", subject },
+            { "@rate", rate },
+            { "@when_reported", whenReported }
+        });
+        return count;
     }
 
 
