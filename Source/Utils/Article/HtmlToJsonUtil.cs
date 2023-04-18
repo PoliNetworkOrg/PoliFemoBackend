@@ -1,7 +1,4 @@
 ﻿using HtmlAgilityPack;
-using Jsonize;
-using Jsonize.Parser;
-using Jsonize.Serializer;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Objects.Articles.News;
 
@@ -52,8 +49,6 @@ public static class HtmlToJsonUtil
 
     private static JArray? GetJArray(List<Hj?>? list)
     {
-        ;
-        ;
         try
         {
             var r = new JArray();
@@ -62,13 +57,7 @@ public static class HtmlToJsonUtil
 
             foreach (var variable in list)
             {
-                var variableJ = variable?.J;
-
-                if (variableJ != null)
-                {
-                    variableJ["parents"] = GetParents(variable);
-                    r.Add(variableJ);
-                }
+                AddHjToJArray(variable, r);
             }
 
             return r;
@@ -78,9 +67,16 @@ public static class HtmlToJsonUtil
             Console.WriteLine(ex);
         }
 
-        ;
-        ;
         return null;
+    }
+
+    private static void AddHjToJArray(Hj? variable, JArray r)
+    {
+        var variableJ = variable?.J;
+
+        if (variableJ == null) return;
+        variableJ["parents"] = GetParents(variable);
+        r.Add(variableJ);
     }
 
     private static JArray GetParents(Hj? variableJ)
@@ -101,28 +97,19 @@ public static class HtmlToJsonUtil
 
     private static Hj GetHj(List<HtmlNode> urls)
     {
-        if (urls.Count == 0)
-        {
-            var v = urls[0];
-            var hj2 = Hj.FromSingle(v);
-            foreach (var variable in v.ChildNodes)
-            {
-                hj2.Children ??= new List<Hj>();
-                hj2.Children.Add(GetHj(new List<HtmlNode>(){variable}));
-            }
+        return urls.Count == 0 ? GetHjSingle(urls) : GetHjList(urls);
+    }
 
-            return hj2;
-        }
-        
+    private static Hj GetHjList(List<HtmlNode> urls)
+    {
         var result = new Hj();
-
         foreach (var v in urls)
         {
             var hj2 = Hj.FromSingle(v);
             foreach (var variable in v.ChildNodes)
             {
                 hj2.Children ??= new List<Hj>();
-                hj2.Children.Add(GetHj(new List<HtmlNode>(){variable}));
+                hj2.Children.Add(GetHj(new List<HtmlNode>() { variable }));
             }
 
             result.Children ??= new List<Hj>();
@@ -132,22 +119,16 @@ public static class HtmlToJsonUtil
         return result;
     }
 
-    private static string? S(HtmlNode urls)
+    private static Hj GetHjSingle(IReadOnlyList<HtmlNode> urls)
     {
-        try
+        var v = urls[0];
+        var hj2 = Hj.FromSingle(v);
+        foreach (var variable in v.ChildNodes)
         {
-            var jsonizeParser = new JsonizeParser();
-            var jsonizeSerializer = new JsonizeSerializer();
-            var jsonizer = new Jsonizer(jsonizeParser, jsonizeSerializer);
-
-            var c = jsonizer.ParseToStringAsync(urls.InnerHtml).Result;
-            return c;
-        }
-        catch
-        {
-            // ignored
+            hj2.Children ??= new List<Hj>();
+            hj2.Children.Add(GetHj(new List<HtmlNode>() { variable }));
         }
 
-        return null;
+        return hj2;
     }
 }

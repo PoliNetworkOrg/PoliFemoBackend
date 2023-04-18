@@ -1,7 +1,4 @@
 ﻿using HtmlAgilityPack;
-using Jsonize;
-using Jsonize.Parser;
-using Jsonize.Serializer;
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Utils.Article;
 
