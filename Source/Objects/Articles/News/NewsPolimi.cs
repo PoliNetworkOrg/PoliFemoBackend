@@ -88,6 +88,7 @@ public class NewsPolimi
             var urls = urls1.Where(x => x.GetClasses().Contains("news-single-item"));
             _content = converter.Convert(urls.First().InnerHtml);
             _content = _content.Split("* * *\r\n\r\n")[1]; // Remove title, subtitle, and publish date
+            _content = _content.Replace("\r\n\r\n* * *", ""); // Remove the final horizontal line
             _content = _content.Replace("\r\n", "<br>"); // Replace new lines with <br>
         }
         catch (IndexOutOfRangeException)
