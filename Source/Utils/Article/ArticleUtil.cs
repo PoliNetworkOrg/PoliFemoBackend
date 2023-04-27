@@ -65,7 +65,11 @@ public static class ArticleUtil
                 "target_time",
                 DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["target_time"].ToString() ?? ""))
             },
-            { "content", JArray.Parse(row["content"].ToString() ?? "")},
+            {
+                "hidden_until",
+                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["hidden_until"].ToString() ?? ""))
+            },
+            { "content", row["content"].ToString() ?? ""},
             { "image", row["image"].ToString() == "" ? null : row["image"].ToString() },
             { "blurhash", row["blurhash"].ToString() == "" ? null : row["blurhash"].ToString() }
         };

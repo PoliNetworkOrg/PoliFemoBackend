@@ -1,7 +1,5 @@
 ﻿using HtmlAgilityPack;
-using Jsonize;
-using Jsonize.Parser;
-using Jsonize.Serializer;
+using ReverseMarkdown;
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Utils.Article;
 
@@ -17,7 +15,15 @@ public class NewsPolimi
     private readonly string? _tag;
     private readonly string? _title;
     private readonly string? _url;
-    private string? _content; //json representation of the content
+    private string? _content; 
+
+    private static Config config = new ReverseMarkdown.Config
+    {
+        RemoveComments = true,
+        GithubFlavored = true
+    };
+
+    private static Converter converter = new Converter(config);
 
     public NewsPolimi()
     {
@@ -79,7 +85,15 @@ public class NewsPolimi
             var web = new HtmlWeb();
             var doc = web.Load(_url);
             var urls1 = doc.DocumentNode.SelectNodes("//div");
-            _content = HtmlToJsonUtil.GetContentFromHtml(urls1);
+            var urls = urls1.Where(x => x.GetClasses().Contains("news-single-item"));
+            _content = converter.Convert(urls.First().InnerHtml);
+            _content = _content.Split("* * *\r\n\r\n")[1]; // Remove title, subtitle, and publish date
+            _content = _content.Replace("\r\n\r\n* * *", ""); // Remove the final horizontal line
+            _content = _content.Replace("\r\n", "<br>"); // Replace new lines with <br>
+        }
+        catch (IndexOutOfRangeException)
+        {
+            // The article has a strange format, not cutting anything
         }
         catch (Exception ex)
         {

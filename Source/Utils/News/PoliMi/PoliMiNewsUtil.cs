@@ -66,7 +66,7 @@ public static class PoliMiNewsUtil
         foreach (var newsItem in news)
             try
             {
-                var r = NewsDbUtil.UpdateDbWithNews(newsItem);
+                var r = NewsDbUtil.UpdateDbWithNews(newsItem);  //TODO: Convert all NewsPolimi to Article objects
                 if (r == DoneEnum.DONE)
                     count++;
             }

@@ -40,6 +40,11 @@ public static class InsertArticleUtil
             {
                 { "error", "Invalid latitude or longitude" }
             });
+        if (data.platforms is < 0 or > 3)
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "Invalid platforms" }
+            });
 
         return InsertArticleDb(data, insertArticle);
     }
@@ -48,8 +53,8 @@ public static class InsertArticleUtil
     private static ObjectResult InsertArticleDb(Objects.Articles.News.Article data, ControllerBase insertArticle)
     {
         const string insertQuery =
-            @"INSERT INTO Articles(tag_id, title, subtitle, content, publish_time, target_time, latitude, longitude, image, author_id, source_url) 
-            VALUES (@id_tag, @title, @subtitle, @content, NOW(), @targetTimeConverted, @latitude, @longitude, @image, @id_author, null)";
+            @"INSERT INTO Articles(tag_id, title, subtitle, content, publish_time, target_time, latitude, longitude, image, author_id, source_url, platforms, hidden_until, blurhash) 
+            VALUES (@id_tag, @title, @subtitle, @content, NOW(), @targetTimeConverted, @latitude, @longitude, @image, @id_author, null, @platforms, @hiddenUntil, @blurhash)";
 
 
         var result = Database.Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
@@ -63,7 +68,10 @@ public static class InsertArticleUtil
                 { "@id_author", data.author_id },
                 { "@id_tag", data.tag_id },
                 { "@subtitle", data.subtitle },
-                { "@targetTimeConverted", data.target_time }
+                { "@targetTimeConverted", data.target_time },
+                { "@platforms", data.platforms },
+                { "@hiddenUntil", data.hidden_until },
+                { "@blurhash", ArticleUtil.GenerateBlurhashAsync(data.image).Result }
             }
         );
         if (result >= 0)
