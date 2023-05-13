@@ -6,7 +6,7 @@ namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
 public static class DownloadNewsUtil
 {
-    internal static IEnumerable<NewsPolimi> DownloadCurrentNews()
+    internal static IEnumerable<ArticleNews> DownloadCurrentNews()
     {
         // Get news from the Polimi news page
         var docNews = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
@@ -26,10 +26,10 @@ public static class DownloadNewsUtil
     }
 
 
-    private static Optional<NewsPolimi> ExtractNews(HtmlNews htmlNews)
+    private static Optional<ArticleNews> ExtractNews(HtmlNews htmlNews)
     {
         if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
-            return new Optional<NewsPolimi>();
+            return new Optional<ArticleNews>();
 
         try
         {
@@ -74,20 +74,17 @@ public static class DownloadNewsUtil
                 }
             }
 
-
-            var result = new NewsPolimi(internalNews ?? false, url2 ?? "", title ?? "", subtitle ?? "", tagFinal ?? "",
-                urlImgFinal ?? "");
-
+            var result = new ArticleNews(title ?? "", tagFinal ?? "", subtitle ?? "", urlImgFinal ?? "", url2 ?? "");
             if (internalNews ?? false)
                 result.SetContent();
 
-            return new Optional<NewsPolimi>(result);
+            return new Optional<ArticleNews>(result);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
         }
 
-        return new Optional<NewsPolimi>();
+        return new Optional<ArticleNews>();
     }
 }

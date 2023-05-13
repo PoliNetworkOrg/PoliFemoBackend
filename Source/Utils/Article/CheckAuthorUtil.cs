@@ -15,7 +15,7 @@ public static class CheckAuthorUtil
     /// <param name="insertArticle"></param>
     /// <param name="sub"></param>
     /// <returns>if there is an error, return it, null otherwise</returns>
-    internal static ObjectResult? CheckAuthourErros(Objects.Articles.News.Article data, InsertArticle insertArticle,
+    internal static ObjectResult? CheckAuthourErros(Objects.Articles.News.ArticleNews data, InsertArticle insertArticle,
         string? sub)
     {
         if (data.author_id == 0)

@@ -35,8 +35,11 @@ public class ArticleNews
         this.internalNews = true;
     }
 
+    public ArticleNews(){
 
-    public string title { get; set; }
+    }
+
+    public string? title { get; set; }
     public string? content { get; set; }
     public int author_id { get; set; }
     public string? tag_id { get; set; }
@@ -47,8 +50,8 @@ public class ArticleNews
     public double? latitude { get; set; }
     public double? longitude { get; set; }
     public string? blurhash { get; set; }
-    public int platforms { get; set; }
-    public bool internalNews { get; set; }
+    public int? platforms { get; set; }
+    public bool? internalNews { get; set; }
     public string? tag { get; set; }
     public string? url { get; set;}
 
@@ -61,10 +64,10 @@ public class ArticleNews
 
     private static Converter converter = new Converter(config);
 
-    public bool isContentEmpty() => string.IsNullOrEmpty(content);
+    public bool IsContentEmpty() => string.IsNullOrEmpty(content);
 
     public void SetContent(){
-        if(!internalNews)
+        if(!(internalNews ?? true))
             throw new InvalidOperationException("The article isn't of internal news type");
         try
         {

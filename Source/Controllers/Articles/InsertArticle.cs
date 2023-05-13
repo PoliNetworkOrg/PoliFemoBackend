@@ -42,7 +42,7 @@ public class InsertArticle : ControllerBase
     [HttpPost]
     [Authorize]
     public ObjectResult InsertArticleDb(
-        [FromBody] Article data
+        [FromBody] ArticleNews data
     )
     {
         return InsertArticleUtil.InsertArticleDbMethod(data, this);

@@ -9,7 +9,7 @@ namespace PoliFemoBackend.Source.Utils.Article;
 
 public static class InsertArticleUtil
 {
-    internal static ObjectResult InsertArticleDbMethod(Objects.Articles.News.Article data, InsertArticle insertArticle)
+    internal static ObjectResult InsertArticleDbMethod(Objects.Articles.News.ArticleNews data, InsertArticle insertArticle)
     {
         var isValidTag = Database.Database.ExecuteSelect("SELECT * FROM Tags WHERE name = @tag",
             GlobalVariables.DbConfigVar,
@@ -50,7 +50,7 @@ public static class InsertArticleUtil
     }
 
 
-    private static ObjectResult InsertArticleDb(Objects.Articles.News.Article data, ControllerBase insertArticle)
+    private static ObjectResult InsertArticleDb(Objects.Articles.News.ArticleNews data, ControllerBase insertArticle)
     {
         const string insertQuery =
             @"INSERT INTO Articles(tag_id, title, subtitle, content, publish_time, target_time, latitude, longitude, image, author_id, source_url, platforms, hidden_until, blurhash) 
@@ -58,10 +58,11 @@ public static class InsertArticleUtil
 
 
         var result = Database.Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
+            
             new Dictionary<string, object?>
             {
                 { "@title", data.title },
-                { "@content", new JArray(data.content).ToString(Formatting.None) },
+                { "@content", new JArray(data.content ?? "").ToString(Formatting.None) },
                 { "@latitude", data.latitude == 0 ? null : data.latitude },
                 { "@longitude", data.longitude == 0 ? null : data.longitude },
                 { "@image", data.image },

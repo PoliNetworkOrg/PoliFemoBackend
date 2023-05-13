@@ -9,9 +9,9 @@ public static class NewsDbUtil
 {
     private const int PoliMiAuthorId = 1;
 
-    internal static DoneEnum UpdateDbWithNews(NewsPolimi newsItem)
+    internal static DoneEnum UpdateDbWithNews(ArticleNews newsItem)
     {
-        var url = newsItem.GetUrl();
+        var url = newsItem.url;
         if (string.IsNullOrEmpty(url))
             return DoneEnum.ERROR;
 
@@ -33,7 +33,7 @@ public static class NewsDbUtil
         return DoneEnum.DONE;
     }
 
-    private static void InsertItemInDb(NewsPolimi newsItem) //11111
+    private static void InsertItemInDb(ArticleNews newsItem) //11111
     {
         const string query1 = "INSERT IGNORE INTO Articles " +
                               "(title,subtitle,content,publish_time,source_url,author_id,image,blurhash,tag_id, platforms) " +
@@ -42,15 +42,15 @@ public static class NewsDbUtil
                               "ON DUPLICATE KEY UPDATE article_id = LAST_INSERT_ID(article_id)";
         var args1 = new Dictionary<string, object?>
         {
-            { "@sourceUrl", newsItem.GetUrl() },
-            { "@title", newsItem.GetTitle() },
-            { "@subtitle", newsItem.GetSubtitle() },
-            { "@text_", newsItem.GetContent() },
+            { "@sourceUrl", newsItem.url },
+            { "@title", newsItem.title },
+            { "@subtitle", newsItem.subtitle},
+            { "@text_", newsItem.content },
             { "@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "@author_id", PoliMiAuthorId },
-            { "@image", newsItem.GetImgUrl() },
-            { "@blurhash", ArticleUtil.GenerateBlurhashAsync(newsItem.GetImgUrl()).Result },
-            { "@tag", newsItem.GetTag()?.ToUpper() == "" ? "ALTRO" : newsItem.GetTag()?.ToUpper() },
+            { "@image", newsItem.image },
+            { "@blurhash", ArticleUtil.GenerateBlurhashAsync(newsItem.image).Result },
+            { "@tag", newsItem.tag?.ToUpper() == "" ? "ALTRO" : newsItem.tag?.ToUpper() },
             { "@platforms", 1}
         };
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
