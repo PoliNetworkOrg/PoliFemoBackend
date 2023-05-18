@@ -58,8 +58,7 @@ public class ArticleNews
     //internal News
     private static Config config = new ReverseMarkdown.Config
     {
-        RemoveComments = true,
-        GithubFlavored = true
+        RemoveComments = true
     };
 
     private static Converter converter = new Converter(config);
@@ -77,8 +76,8 @@ public class ArticleNews
             var urls = urls1.Where(x => x.GetClasses().Contains("news-single-item"));
             content = converter.Convert(urls.First().InnerHtml);
             content = content.Split("* * *\r\n\r\n")[1]; // Remove title, subtitle, and publish date
+            content = content.Replace("](/", "](https://www.polimi.it/"); // Replace relative PoliMi links with absolute ones
             content = content.Replace("\r\n\r\n* * *", ""); // Remove the final horizontal line
-            content = content.Replace("\r\n", "<br>"); // Replace new lines with <br>
         }
         catch (IndexOutOfRangeException)
         {
