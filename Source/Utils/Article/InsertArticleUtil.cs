@@ -9,13 +9,13 @@ namespace PoliFemoBackend.Source.Utils.Article;
 
 public static class InsertArticleUtil
 {
-    internal static ObjectResult InsertArticleDbMethod(Objects.Articles.News.Article data, InsertArticle insertArticle)
+    internal static ObjectResult InsertArticleDbMethod(Objects.Articles.News.ArticleNews data, InsertArticle insertArticle)
     {
         var isValidTag = Database.Database.ExecuteSelect("SELECT * FROM Tags WHERE name = @tag",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
-                { "@tag", data.tag_id }
+                { "@tag", data.tag }
             });
         if (isValidTag == null)
             return new BadRequestObjectResult(new JObject
@@ -50,31 +50,63 @@ public static class InsertArticleUtil
     }
 
 
-    private static ObjectResult InsertArticleDb(Objects.Articles.News.Article data, ControllerBase insertArticle)
+    private static ObjectResult InsertArticleDb(Objects.Articles.News.ArticleNews data, ControllerBase insertArticle)
     {
-        const string insertQuery =
-            @"INSERT INTO Articles(tag_id, title, subtitle, content, publish_time, target_time, latitude, longitude, image, author_id, source_url, platforms, hidden_until, blurhash) 
-            VALUES (@id_tag, @title, @subtitle, @content, NOW(), @targetTimeConverted, @latitude, @longitude, @image, @id_author, null, @platforms, @hiddenUntil, @blurhash)";
+        List<int> idContent = new();
 
+        foreach (var articlecontent in data.content) {
 
-        var result = Database.Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
+            if (articlecontent.title == null)
+                return insertArticle.BadRequest(new JObject
+                {
+                    { "error", "All languages must have a valid title" }
+                });
+
+            var query = "INSERT INTO ArticleContent(title,subtitle,content,url) VALUES(@title,@subtitle,@content,@url) RETURNING id";
+            var result = Database.Database.ExecuteSelect(query, GlobalVariables.DbConfigVar,
+                new Dictionary<string, object?>
+                {
+                    { "@title", articlecontent.title },
+                    { "@subtitle", articlecontent.subtitle },
+                    { "@content", articlecontent.content },
+                    { "@url", null }
+                });
+        
+            idContent.Add(Convert.ToInt32(Database.Database.GetFirstValueFromDataTable(result)));
+        }
+
+        var insertQuery =
+            @"INSERT INTO Articles(tag_id, publish_time, target_time, hidden_until, latitude, longitude, image, author_id, platforms, blurhash, content_it, content_en) 
+            VALUES (@id_tag, NOW(), @targetTimeConverted, @hiddenUntil, @latitude, @longitude, @image, @id_author, @platforms, @blurhash, @ctit, @cten)";
+
+        string? blurhash = null;
+        try {
+            blurhash = ArticleUtil.GenerateBlurhashAsync(data.image).Result;
+        } catch (Exception) {
+            return insertArticle.BadRequest(new JObject
+            {
+                { "error", "Invalid image" }
+            });
+        }
+
+        var resultins = Database.Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
+            
             new Dictionary<string, object?>
             {
-                { "@title", data.title },
-                { "@content", new JArray(data.content).ToString(Formatting.None) },
                 { "@latitude", data.latitude == 0 ? null : data.latitude },
                 { "@longitude", data.longitude == 0 ? null : data.longitude },
                 { "@image", data.image },
                 { "@id_author", data.author_id },
-                { "@id_tag", data.tag_id },
-                { "@subtitle", data.subtitle },
+                { "@id_tag", data.tag },
                 { "@targetTimeConverted", data.target_time },
                 { "@platforms", data.platforms },
                 { "@hiddenUntil", data.hidden_until },
-                { "@blurhash", ArticleUtil.GenerateBlurhashAsync(data.image).Result }
+                { "@blurhash", blurhash },
+                { "@ctit", idContent[0] },
+                { "@cten", idContent.Count > 1 ? idContent[1] : null }
             }
         );
-        if (result >= 0)
+        if (resultins >= 0)
             return insertArticle.Created("", new JObject
             {
                 { "message", "Article created successfully" }

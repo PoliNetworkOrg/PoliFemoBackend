@@ -47,13 +47,13 @@ public class DeleteArticle : ControllerBase
             });
         }
 
-        var result = Database.Execute("DELETE FROM Articles WHERE article_id=@id",
+        var result = Database.ExecuteSelect("SELECT deleteArticle(@id) as result",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
                 { "@id", id }
             });
-        if (result >= 0) return Ok("");
+        if (result?.Rows[0]["result"].ToString() == "0") return Ok("");
         Response.StatusCode = 500;
         return new ObjectResult(new JObject
         {

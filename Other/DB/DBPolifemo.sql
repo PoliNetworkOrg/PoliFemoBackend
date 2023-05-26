@@ -51,24 +51,38 @@ create table if not exists Tags
 
 create table if not exists Articles
 (
-    article_id  int unsigned auto_increment
+    article_id   int unsigned auto_increment
         primary key,
-    tag_id      varchar(100)  null,
-    title       varchar(100)  not null,
-    subtitle    varchar(200)  null,
-    content     text          not null,
-    publish_time datetime      not null,
-    target_time  datetime      null,
-    latitude    double        null,
-    longitude   double        null,
-    image       varchar(200)  null,
-    author_id   int(10)       not null,
-    blurhash    varchar(80)  null,
-    source_url   varchar(1000) null,
+    tag_id       varchar(100) null,
+    publish_time datetime     not null,
+    target_time  datetime     null,
+    hidden_until datetime     null,
+    latitude     double       null,
+    longitude    double       null,
+    image        varchar(200) null,
+    author_id    int(10)      not null,
+    blurhash     varchar(80)  null,
+    platforms    int          null,
+    content_it   int          null,
+    content_en   int          null,
+    constraint ArticleEN___fk
+        foreign key (content_en) references ArticleContent (id),
+    constraint ArticleIT___fk
+        foreign key (content_it) references ArticleContent (id),
     constraint Author___fk
         foreign key (author_id) references Authors (author_id),
     constraint Tags___fk
-        foreign key (tag_id) references Tags (`name`)
+        foreign key (tag_id) references Tags (name)
+);
+
+create table if not exists ArticleContent
+(
+    id       int auto_increment
+        primary key,
+    title    varchar(100) not null,
+    subtitle varchar(200) null,
+    content  text         not null,
+    url      varchar(500) null
 );
 
 create table if not exists Types
@@ -133,23 +147,34 @@ create table if not exists WebCache
 );
 
 create view if not exists ArticlesWithAuthors_View as
-select `art`.`article_id`  AS `article_id`,
-       `art`.`tag_id`      AS `tag_id`,
-       `art`.`title`       AS `title`,
-       `art`.`subtitle`    AS `subtitle`,
-       `art`.`content`     AS `content`,
-       `art`.`publish_time` AS `publish_time`,
-       `art`.`target_time`  AS `target_time`,
-       `art`.`latitude`    AS `latitude`,
-       `art`.`longitude`   AS `longitude`,
-       `art`.`image`       AS `image`,
-       `art`.`author_id`   AS `author_id`,
-       `art`.`source_url`   AS `source_url`,
+select `a`.`article_id`   AS `article_id`,
+       `a`.`tag_id`       AS `tag_id`,
+       `a`.`publish_time` AS `publish_time`,
+       `a`.`target_time`  AS `target_time`,
+       `a`.`hidden_until` AS `hidden_until`,
+       `a`.`latitude`     AS `latitude`,
+       `a`.`longitude`    AS `longitude`,
+       `a`.`image`        AS `article_image`,
+       `a`.`blurhash`     AS `blurhash`,
+       `a`.`platforms`    AS `platforms`,
+       `ac_it`.`title`    AS `title_it`,
+       `ac_it`.`subtitle` AS `subtitle_it`,
+       `ac_it`.`content`  AS `content_it`,
+       `ac_it`.`url`      AS `url_it`,
+       `ac_en`.`title`    AS `title_en`,
+       `ac_en`.`subtitle` AS `subtitle_en`,
+       `ac_en`.`content`  AS `content_en`,
+       `ac_en`.`url`      AS `url_en`,
        `aut`.`name`       AS `author_name`,
-       `aut`.`link`        AS `author_link`,
-       `aut`.`image`       AS `author_image`
-from (`Articles` `art` join `Authors` `aut`)
-where `art`.`author_id` = `aut`.`author_id`;
+       `aut`.`link`       AS `author_link`,
+       `aut`.`image`      AS `author_image`,
+       `aut`.`author_id`  AS `author_id`
+from (((`Articles` `a` join `ArticleContent` `ac_it`
+        on (`a`.`content_it` = `ac_it`.`id`)) left join `ArticleContent` `ac_en`
+        on (`a`.`content_en` = `ac_en`.`id`)) join `Authors` `aut`
+        on (`a`.`author_id` = `aut`.`author_id`));
+
+
 
 create
     function if not exists deleteUser(userid varchar(100)) returns int
@@ -159,6 +184,21 @@ BEGIN
     DELETE FROM RoomOccupancyReports WHERE user_id=userid;
     DELETE FROM Users WHERE user_id=userid;
 
+    RETURN 0;
+
+END;
+
+create
+    function if not exists deleteArticle(id int) returns int
+BEGIN
+
+    DECLARE ct_en, ct_it INT;
+
+    SELECT content_en, content_it INTO ct_en, ct_it FROM Articles WHERE article_id = id;
+
+    DELETE FROM Articles WHERE article_id = id;
+    DELETE FROM ArticleContent WHERE ArticleContent.id IN (ct_en, ct_it);
+    
     RETURN 0;
 
 END;
@@ -194,3 +234,4 @@ insert ignore into Tags values("ALTRO", null, null);
 insert ignore into Tags values("ATENEO", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg", "eWIYITE2%MWEt8F$Ipt8NHt8?wNHV@R*WB4;ofi^s.V@?boLnhoead");
 insert ignore into Tags values("RICERCA E INNOVAZIONE", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg", "eWIYITE2%MWEt8F$Ipt8NHt8?wNHV@R*WB4;ofi^s.V@?boLnhoead");
 insert ignore into Tags values("STUDENTI", "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop", "eIH_rg.9t,Z#tm~Ut58_%2xuxtROR.g4xu.TE1xtRkxZyEM|xEkCae");
+insert ignore into Tags values("POLIMIWORLD", null, null);

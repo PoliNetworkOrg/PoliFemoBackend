@@ -6,7 +6,7 @@ namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
 public static class DownloadNewsUtil
 {
-    internal static IEnumerable<NewsPolimi> DownloadCurrentNews()
+    internal static IEnumerable<ArticleNews> DownloadCurrentNews()
     {
         // Get news from the Polimi news page
         var docNews = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
@@ -26,17 +26,15 @@ public static class DownloadNewsUtil
     }
 
 
-    private static Optional<NewsPolimi> ExtractNews(HtmlNews htmlNews)
+    private static Optional<ArticleNews> ExtractNews(HtmlNews htmlNews)
     {
         if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
-            return new Optional<NewsPolimi>();
+            return new Optional<ArticleNews>();
 
         try
         {
             bool? internalNews = null;
             string? url2 = null;
-            string? title = null;
-            string? subtitle = null;
             string? urlImgFinal = null;
             string? tagFinal = null;
 
@@ -58,11 +56,6 @@ public static class DownloadNewsUtil
 
                 internalNews = !(url1.StartsWith("https://") || url1.StartsWith("http://"));
                 url2 = !(internalNews ?? false) ? url1 : "https://www.polimi.it" + url1;
-                var child = htmlNews.NodeInEvidenza?.ChildNodes;
-                title = child?[0].InnerText.Trim();
-                var child2 = child?[1].ChildNodes;
-                if (child2?.Count > 0)
-                    subtitle = child2[0].InnerText.Trim();
 
                 if (htmlNews.NodePoliMiHomePage != null)
                 {
@@ -74,20 +67,19 @@ public static class DownloadNewsUtil
                 }
             }
 
-
-            var result = new NewsPolimi(internalNews ?? false, url2 ?? "", title ?? "", subtitle ?? "", tagFinal ?? "",
-                urlImgFinal ?? "");
-
-            if (internalNews ?? false)
-                result.SetContent();
-
-            return new Optional<NewsPolimi>(result);
+            var result = new ArticleNews(tagFinal ?? "", urlImgFinal ?? "");
+            if (internalNews ?? false) {
+                var cts = ArticleContent.LoadContentFromURL(url2 ?? "");
+                result.AddContent(cts[0]);
+                result.AddContent(cts[1]);
+            }
+            return new Optional<ArticleNews>(result);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
         }
 
-        return new Optional<NewsPolimi>();
+        return new Optional<ArticleNews>();
     }
 }
