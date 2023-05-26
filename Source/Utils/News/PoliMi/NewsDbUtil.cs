@@ -11,18 +11,21 @@ public static class NewsDbUtil
 
     internal static DoneEnum UpdateDbWithNews(ArticleNews newsItem)
     {
-        var url = newsItem.url;
+        if (newsItem.ShouldBeSkipped()) {
+            return DoneEnum.SKIPPED;
+        }
+        var url = newsItem.content[0].url;
         if (string.IsNullOrEmpty(url))
             return DoneEnum.ERROR;
 
-        const string query = "SELECT COUNT(*) FROM Articles WHERE source_url = @url";
+        const string query = "SELECT COUNT(*) FROM ArticleContent WHERE url LIKE @url";
         var args = new Dictionary<string, object?> { { "@url", url } };
         var results = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
         if (results == null)
             return DoneEnum.SKIPPED;
 
         var result = Database.Database.GetFirstValueFromDataTable(results);
-        if (result == null || newsItem.IsContentEmpty())
+        if (result == null)
             return DoneEnum.SKIPPED;
 
         var num = Convert.ToInt32(result);
@@ -35,23 +38,44 @@ public static class NewsDbUtil
 
     private static void InsertItemInDb(ArticleNews newsItem) //11111
     {
+
+        var contentids = new int[newsItem.content.Length];
+
+        foreach (var content in newsItem.content)
+        {
+            if (content.title == null) {
+                contentids[Array.IndexOf(newsItem.content, content)] = -1;
+                continue;
+            }
+            const string query = "INSERT INTO ArticleContent (url, title, subtitle, content) " +
+                                 "VALUES (@url, @title, @subtitle, @content) RETURNING id";
+            var args = new Dictionary<string, object?>
+            {
+                { "@url", content.url },
+                { "@title", content.title },
+                { "@subtitle", content.subtitle },
+                { "@content", content.content },
+            };
+            var rt = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
+            contentids[Array.IndexOf(newsItem.content, content)] = Convert.ToInt32(rt?.Rows[0][0]);
+        }
+
+
         const string query1 = "INSERT IGNORE INTO Articles " +
-                              "(title,subtitle,content,publish_time,source_url,author_id,image,blurhash,tag_id, platforms) " +
+                              "(publish_time,author_id,image,blurhash,tag_id, platforms,content_it,content_en) " +
                               "VALUES " +
-                              "(@title,@subtitle,@text_,@publishTime,@sourceUrl, @author_id, @image, @blurhash, @tag, @platforms) " +
+                              "(@publishTime, @author_id, @image, @blurhash, @tag, @platforms, @plit, @plen) " +
                               "ON DUPLICATE KEY UPDATE article_id = LAST_INSERT_ID(article_id)";
         var args1 = new Dictionary<string, object?>
         {
-            { "@sourceUrl", newsItem.url },
-            { "@title", newsItem.title },
-            { "@subtitle", newsItem.subtitle},
-            { "@text_", newsItem.content },
             { "@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "@author_id", PoliMiAuthorId },
-            { "@image", newsItem.image },
+            { "@image", newsItem.image != "" ? newsItem.image : null },
             { "@blurhash", ArticleUtil.GenerateBlurhashAsync(newsItem.image).Result },
             { "@tag", newsItem.tag?.ToUpper() == "" ? "ALTRO" : newsItem.tag?.ToUpper() },
-            { "@platforms", 1}
+            { "@platforms", 1},
+            { "@plit", contentids[0] },
+            { "@plen", contentids[1] != -1 ? contentids[1] : null}
         };
         Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
     }

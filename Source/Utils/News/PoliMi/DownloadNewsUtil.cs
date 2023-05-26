@@ -35,8 +35,6 @@ public static class DownloadNewsUtil
         {
             bool? internalNews = null;
             string? url2 = null;
-            string? title = null;
-            string? subtitle = null;
             string? urlImgFinal = null;
             string? tagFinal = null;
 
@@ -58,11 +56,6 @@ public static class DownloadNewsUtil
 
                 internalNews = !(url1.StartsWith("https://") || url1.StartsWith("http://"));
                 url2 = !(internalNews ?? false) ? url1 : "https://www.polimi.it" + url1;
-                var child = htmlNews.NodeInEvidenza?.ChildNodes;
-                title = child?[0].InnerText.Trim();
-                var child2 = child?[1].ChildNodes;
-                if (child2?.Count > 0)
-                    subtitle = child2[0].InnerText.Trim();
 
                 if (htmlNews.NodePoliMiHomePage != null)
                 {
@@ -74,10 +67,12 @@ public static class DownloadNewsUtil
                 }
             }
 
-            var result = new ArticleNews(title ?? "", tagFinal ?? "", subtitle ?? "", urlImgFinal ?? "", url2 ?? "");
-            if (internalNews ?? false)
-                result.SetContent();
-
+            var result = new ArticleNews(tagFinal ?? "", urlImgFinal ?? "");
+            if (internalNews ?? false) {
+                var cts = ArticleContent.LoadContentFromURL(url2 ?? "");
+                result.AddContent(cts[0]);
+                result.AddContent(cts[1]);
+            }
             return new Optional<ArticleNews>(result);
         }
         catch (Exception ex)

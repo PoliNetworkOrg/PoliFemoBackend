@@ -61,7 +61,7 @@ public class ArticlesByParameters : ControllerBase
         if (end != null) query += "publish_time <= @end AND ";
         if (tag != null) query += "tag_id = @tag AND ";
         if (author_id != null) query += "author_id = @author_id AND ";
-        if (title != null) query += "title LIKE @title AND ";
+        if (title != null) query += "(title_it LIKE @title OR title_en LIKE @title) AND ";
 
         query = query[..^4]; // removes last "and"
 

@@ -12,27 +12,6 @@ namespace PoliFemoBackend.Source.Utils.Article;
 
 public static class ArticleUtil
 {
-    /// <summary>
-    /// </summary>
-    /// <complexity>
-    ///     <best>O(1)</best>
-    ///     <average>O(n)</average>
-    ///     <worst>O(n)</worst>
-    /// </complexity>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    private static Articles? Parse(string data)
-    {
-        var parsed = JObject.Parse(data);
-        var articles = parsed["articles"];
-        if (articles == null) return null;
-
-        var result = new Dictionary<uint, JToken>();
-        foreach (var child in articles) result[Convert.ToUInt32(child["id"])] = child;
-
-        return new Articles(result);
-    }
-
     public static async Task<string?> GenerateBlurhashAsync(string? url)
     {
         if (url == null || url == "") return null;
@@ -50,8 +29,6 @@ public static class ArticleUtil
         {
             { "id", Convert.ToInt32(row["article_id"]) },
             { "tag_id", row["tag_id"].ToString() },
-            { "title", row["title"].ToString() },
-            { "subtitle", row["subtitle"].ToString() == "" ? null : row["subtitle"].ToString() },
             { "latitude", GetValue(row["latitude"]) },
             {
                 "longitude", GetValue(row["longitude"])
@@ -69,10 +46,25 @@ public static class ArticleUtil
                 "hidden_until",
                 DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["hidden_until"].ToString() ?? ""))
             },
-            { "content", row["content"].ToString() ?? ""},
-            { "image", row["image"].ToString() == "" ? null : row["image"].ToString() },
+            { "image", row["article_image"].ToString() == "" ? null : row["article_image"].ToString() },
             { "blurhash", row["blurhash"].ToString() == "" ? null : row["blurhash"].ToString() }
         };
+
+        var contit = new JObject
+            {
+                { "title", row["title_it"].ToString() },
+                { "subtitle", row["subtitle_it"].ToString() != "" ? row["subtitle_it"].ToString() : null },
+                { "content", row["content_it"].ToString() },
+                { "url", row["url_it"].ToString() != "" ? row["url_it"].ToString() : null}
+            };
+
+        var conten = row["title_en"].ToString() != "" ? new JObject
+            {
+                { "title", row["title_en"].ToString() },
+                { "subtitle", row["subtitle_en"].ToString() != "" ? row["subtitle_en"].ToString() : null },
+                { "content", row["content_en"].ToString() },
+                { "url", row["url_en"].ToString() != "" ? row["url_en"].ToString() : null }
+            } : null;
 
 
         var b = new JObject
@@ -82,7 +74,14 @@ public static class ArticleUtil
             { "image", row["author_image"].ToString() }
         };
 
+        var content = new JObject
+        {
+            { "it", contit },
+            { "en", conten }
+        };
+
         a.Add("author", b);
+        a.Add("content", content);
         return a;
     }
 
