@@ -28,6 +28,8 @@ jobs:
     # Update references
     - name: Git Sumbodule Update
       run: |
+        git config --global user.email "polinetwork@outlook.com"
+        git config --global user.name "PoliNetwork"
         git config --global pull.rebase false --allow-unrelated-histories
         git pull origin   ${{ steps.extract_branch.outputs.branch }} --recurse-submodules --allow-unrelated-histories
         git submodule update --remote --recursive  
