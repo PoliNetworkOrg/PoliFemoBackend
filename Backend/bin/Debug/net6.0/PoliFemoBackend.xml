@@ -1,0 +1,434 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PoliFemoBackend</name>
+    </assembly>
+    <members>
+        <member name="M:PoliFemoBackend.Source.Controllers.Accounts.ArticleByIdController.ProfileDetails">
+            <summary>
+                Get basic information about the current user
+            </summary>
+            <remarks>
+                Use this endpoint to retrieve the User ID and permissions
+            </remarks>
+            <response code="200">Request completed successfully</response>
+            <response code="401">Authorization error</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Accounts.ArticleByIdController.DeleteAccount">
+            <summary>
+                Delete the user's account and data
+            </summary>
+            <response code="200">Request completed successfully</response>
+            <response code="400">Invalid token received</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Accounts.AccountExportController.ExportData">
+            <summary>
+                Get a file with all of the user's data
+            </summary>
+            <response code="200">Request completed successfully</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Accounts.AccountSettings.GetSettings">
+            <summary>
+                Get the settings for the account
+            </summary>
+            <response code="200">Request completed successfully</response>
+            <response code="400">The key is incorrect</response>
+            <response code="401">Invalid authentication</response>
+            <response code="500">Can't connect to server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Accounts.AccountSettings.SetSettings(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+                Change the settings for the account
+            </summary>
+            <response code="200">Request completed successfully</response>
+            <response code="400">The key is incorrect</response>
+            <response code="401">Invalid authentication</response>
+            <response code="500">Can't connect to server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Accounts.EditPermissions.GrantPermission(System.String,PoliFemoBackend.Source.Objects.Permissions.Grant)">
+            <summary>
+                Grant a permission to a user
+            </summary>
+            <remarks>
+                The body is a Grant object
+            </remarks>
+            <param name="id">User ID</param>
+            <param name="grant">The Grant object</param>
+            <response code="200">Request completed successfully</response>
+            <response code="401">Authorization error</response>
+            <response code="403">The user does not have enough permissions</response>
+            <response code="400">The permission was already granted</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Accounts.EditPermissions.RevokePermission(System.String,PoliFemoBackend.Source.Objects.Permissions.Grant)">
+            <summary>
+                Revoke a permission from a user
+            </summary>
+            <remarks>
+                The body is a Grant object
+            </remarks>
+            <param name="id">User ID</param>
+            <param name="grant">The Grant object</param>
+            <response code="200">Permissions updated successfully</response>
+            <response code="400">The selected permission was already revoked</response>
+            <response code="403">The user does not have enough permissions</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Accounts.GetPermissionsController.GetPermissions(System.String)">
+            <summary>
+                Get the permissions of the user
+            </summary>
+            <param name="id">User ID</param>
+            <response code="200">Request completed successfully</response>
+            <response code="401">Authorization error</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Admin.GetUptimeController.GetUptime">
+            <summary>
+                Get the uptime of the backend server
+            </summary>
+            <returns>The number of seconds of uptime</returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Admin.GetUpdateAssetController.GetAsset(System.String)">
+            <summary>
+                Get an update asset
+            </summary>
+            <param name="name">The name of the asset</param>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Articles.ArticleByIdController.SearchArticlesById(System.Int32)">
+            <summary>
+                Search an article by ID
+            </summary>
+            <returns>A JSON object of article</returns>
+            <response code="200">Request completed successfully</response>
+            <response code="404">No available articles</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Articles.ArticlesByParameters.SearchArticlesByDateRange(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String,System.Nullable{System.Int32},System.String,System.UInt32,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.String)">
+            <summary>
+                Search articles by parameters
+            </summary>
+            <param name="start" example="2022-05-18T12:15:00Z">Start time</param>
+            <param name="end" example="2022-05-18T12:15:00Z">End time</param>
+            <param name="tag" example="STUDENTI">Tag name</param>
+            <param name="author_id" example="1">Author ID</param>
+            <param name="title" example="Titolo...">Article title</param>
+            <param name="platform" example="1">Platform for which the article is visible</param>
+            <param name="limit" example="30">Limit of results (can be null)</param>
+            <param name="pageOffset">Offset page for limit (can be null)</param>
+            <param name="sort" example="date">Sort by column</param>
+            <remarks>
+                At least one of the parameters must be specified.
+            </remarks>
+            <returns>A JSON list of articles</returns>
+            <response code="200">Request completed successfully</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Articles.DeleteArticle.DeleteArticleDb(System.Int32)">
+            <summary>
+                Remove an article
+            </summary>
+            <param name="id">Article ID</param>
+            <response code="200">Request completed successfully</response>
+            <response code="401">Authorization error</response>
+            <response code="403">The user does not have enough permissions</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Articles.InsertArticle.InsertArticleDb(PoliFemoBackend.Source.Objects.Articles.News.ArticleNews)">
+            <summary>
+                Add a new article
+            </summary>
+            <remarks>
+                All parameters must be passed in the body of the request formatted as a JSON object.
+                The following parameters are required:
+                - title: String
+                - content: String
+                - author_id: Integer
+                - tag_id: String
+                <br />
+                <br />
+                The following parameters are optional:
+                - subtitle: String
+                - image: String
+                - target_time: DateTime
+                - latitude: Double
+                - longitude: Double
+            </remarks>
+            <response code="200">Request completed successfully</response>
+            <response code="401">Authorization error</response>
+            <response code="403">The user does not have enough permissions</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Auth.CodeExchangeController.CodeExchange(System.String,System.Int32)">
+            <summary>
+                Get access and refresh token from Microsoft and perform user checks
+            </summary>
+            <remarks>
+                This is a callback endpoint. DO NOT call manually.
+            </remarks>
+            <param name="code">The authorization code</param>
+            <param name="state">App ID</param>
+            <response code="200">Request completed successfully</response>
+            <response code="400">The code is not valid</response>
+            <response code="403">The user is not using a valid org email</response>
+            <returns>An access and a refresh token</returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Auth.RefreshTokenController.RefreshToken">
+            <summary>
+                Get a new access token from Microsoft
+            </summary>
+            <remarks>
+                The refresh token is sent in the "Token" header
+            </remarks>
+            <response code="200">Request completed successfully</response>
+            <response code="400">The refresh token is not valid</response>
+            <returns>A new access token</returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Calendar.AddExam.AddExamDb(System.Collections.Generic.List{Microsoft.AspNetCore.Http.IFormFile})">
+            <summary>
+                Adds exams on Database
+            </summary>
+            <returns>Nothing</returns>
+            <response code="200">Exams Added</response>
+            <response code="500">Can't connect to server or Exams not Added</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Calendar.ModifyDateControllers.ModifiedTypeDateDb(System.DateTime,System.Int32,System.Int32)">
+            <summary>
+                Modifies date on Database
+            </summary>
+            <param name="date" example="2022-08-01">Date</param>
+            <param name="tipologia_new" example="1">
+                Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
+                5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività
+            </param>
+            <param name="tipologia_old" example="1">
+                Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
+                5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività
+            </param>
+            <returns>Nothing</returns>
+            <response code="200">Date modified</response>
+            <response code="500">Can't connect to server or Date not modified</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Calendar.ModifyDateControllers.AddTypeDateDb(System.DateTime,System.Int32)">
+            <summary>
+                Adds date on Database
+            </summary>
+            <param name="date" example="2022-08-01">Date</param>
+            <param name="tipologia" example="1">
+                Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
+                5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività
+            </param>
+            <returns>Nothing</returns>
+            <response code="200">Date added</response>
+            <response code="500">Can't connect to server or Date not added</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Calendar.ModifyDateControllers.RemoveTypeDateDb(System.DateTime,System.Int32)">
+            <summary>
+                Deletes date from Database
+            </summary>
+            <param name="date" example="2022-08-01">Date</param>
+            <param name="tipologia" example="1">
+                Possible values: 1=Festivo, 2=Esame, 3=Esame di Profitto, 4=Lauree Magistrali,
+                5=Lezione, 6= Sabato, 7=Lauree 1 liv, 8=Vacanza, 9=altre attività
+            </param>
+            <returns>Nothing</returns>
+            <response code="200">Date removed</response>
+            <response code="500">Can't connect to server or Date not removed</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Calendar.Populate.PopulateCalendarTable.AddCalendarDb2(System.Collections.Generic.List{Microsoft.AspNetCore.Http.IFormFile},System.String)">
+            <summary>
+                Adds date on Database
+            </summary>
+            <returns>Nothing</returns>
+            <response code="200">Days Added</response>
+            <response code="500">Can't connect to server or Days not Added</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Calendar.SearchExam.SearchExamDb(System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
+            <summary>
+                Searches for available groups
+            </summary>
+            <param name="cod_mat" example="056951">Course code</param>
+            <param name="insegnamento" example="ALGEBRA LINEARE E GEOMETRIA">Course name</param>
+            <param name="sede" example="MI">Possible values: MI, BV</param>
+            <param name="semestre" example="2">Possible values: 1, 2</param>
+            <param name="docente" example="LELLA PAOLO">Teacher name</param>
+            <param name="orario" example="15:00:00">Time</param>
+            <param name="giorno" example="17-06-2022">Date</param>
+            <param name="lista" example="365 - ingegneria matematica">Part of Cds name</param>
+            <returns>List of exams</returns>
+            <response code="200">Returns the array of exams</response>
+            <response code="500">Can't connect to server</response>
+            <response code="204">No available exam</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Calendar.SearchRangeOfDate.SearchDateDb(System.DateTime,System.DateTime)">
+            <summary>
+                Searches for available groups
+            </summary>
+            <param name="start" example="2022-09-12">Start date</param>
+            <param name="end" example="2023-06-04">End date</param>
+            <returns>A range of date and their typology</returns>
+            <response code="200">Returns the array of date</response>
+            <response code="500">Can't connect to server</response>
+            <response code="204">No available date</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Calendar.SearchRangeOfDate.GetArrayString(System.Data.DataTable,System.String)">
+            <summary>
+                METHOD RETURN A STRING WITH ALL TYPOLOGIES OF A DAY
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Rooms.RoomDetailsController.GetRoomDetails(System.Int32)">
+            <summary>
+                Get room details by ID
+            </summary>
+            <param name="id" example="4635">Room ID</param>
+            <returns>Room name, address, capacity, building, power</returns>
+            <response code="200">Request completed successfully</response>
+            <response code="500">Can't connect to poli servers</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Rooms.RoomOccupancyReport.ReportOccupancy(System.UInt32,System.Single)">
+            <summary>
+                Send a report about the occupancy of a room
+            </summary>
+            <remarks>
+                The rate must be between 1 and 5
+            </remarks>
+            <param name="id">Room ID</param>
+            <param name="rate">Occupancy rate</param>
+            <response code="200">Request completed successfully</response>
+            <response code="400">The rate is not valid</response>
+            <response code="401">Authorization error</response>
+            <response code="403">The user does not have enough permissions</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Rooms.RoomOccupancyReport.GetReportedOccupancy(System.UInt32)">
+            <summary>
+                Get the occupancy rate of a room
+            </summary>
+            <param name="id">Room ID</param>
+            <response code="200">Request completed successfully</response>
+            <response code="400">The room ID is not valid</response>
+            <returns>The occupancy rate and the room ID</returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Rooms.Search.SearchRoomsController.SearchRooms(System.String)">
+            <summary>
+                Search for available rooms in a given date, from 8:00 to 20:00
+            </summary>
+            <param name="date">Date in format yyyy-mm-dd</param>
+            <returns>A JSON array of free rooms</returns>
+            <response code="200">Request completed successfully</response>
+            <response code="204">No available rooms</response>
+            <response code="500">Can't connect to poli servers</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Controllers.Tags.TagByIdController.SearchTags">
+            <summary>
+                Get a list of article tags
+            </summary>
+            <returns>A JSON array of tags</returns>
+            <response code="200">Request completed successfully</response>
+            <response code="404">No available tags</response>
+            <response code="500">Can't connect to the server</response>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Main.Program.Main(System.String[])">
+            <summary>
+                The main entry point for the application.
+            </summary>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Objects.Articles.Articles.FillAuthors(System.Collections.Generic.Dictionary{System.UInt32,Newtonsoft.Json.Linq.JToken})">
+            <summary>
+            </summary>
+            <complexity>
+                <best>O(n)</best>
+                <average>O(n)</average>
+                <worst>O(n)</worst>
+            </complexity>
+            <param name="articles"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Objects.Articles.Articles.FilterByAuthor(System.String)">
+            <summary>
+            </summary>
+            <complexity>
+                <best>O(1)</best>
+                <average>O(1)</average>
+                <worst>O(1)</worst>
+            </complexity>
+            <param name="author"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Objects.Articles.Articles.Search(System.Func{System.Collections.Generic.KeyValuePair{System.UInt32,Newtonsoft.Json.Linq.JToken},System.Boolean})">
+            <summary>
+            </summary>
+            <complexity>
+                <best>O(n)</best>
+                <average>O(n)</average>
+                <worst>O(n)</worst>
+            </complexity>
+            <param name="func"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Objects.Articles.Articles.FilterByStartingId(System.UInt32)">
+            <summary>
+                <complexity>
+                    <best>O(1)</best>
+                    <average>O(10)</average> // 10 is the number of new articles that we expect the client is missing on average
+                    <worst>O(n)</worst>
+                </complexity>
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Utils.Account.AccountDeletionUtil.DeleteAccountSingle(System.String,System.Boolean)">
+            <summary>
+                Delete an user.
+            </summary>
+            <param name="sub">sub (user)</param>
+            <param name="hashed">if sub is alreadt hashed or not</param>
+            <returns>True if deleted successfully</returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Utils.Article.CheckAuthorUtil.CheckAuthourErros(PoliFemoBackend.Source.Objects.Articles.News.ArticleNews,PoliFemoBackend.Source.Controllers.Articles.InsertArticle,System.String)">
+            <summary>
+                Get author errors (if any)
+            </summary>
+            <param name="data"></param>
+            <param name="insertArticle"></param>
+            <param name="sub"></param>
+            <returns>if there is an error, return it, null otherwise</returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Utils.Auth.AuthUtil.GetSubjectFromHttpRequest(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+                Get user/subject from HttpRequest
+            </summary>
+            <param name="httpRequest">HttpRequest containing the token</param>
+            <returns>Subject/User</returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Utils.Auth.CodeExchange.CodeExchangeUtil.CodeExchangeMethod(System.String,System.Int32,PoliFemoBackend.Source.Controllers.Auth.CodeExchangeController)">
+            <summary>
+                Get access and refresh token from Microsoft and perform user checks
+            </summary>
+            <remarks>
+                This is a callback endpoint. DO NOT call manually.
+            </remarks>
+            <param name="code">The authorization code</param>
+            <param name="state">App ID</param>
+            <param name="codeExchangeController">instance of the CodeExchangeController</param>
+            <response code="200">Request completed successfully</response>
+            <response code="400">The code is not valid</response>
+            <response code="403">The user is not using a valid org email</response>
+            <returns>An access and a refresh token</returns>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Utils.News.PoliMi.PoliMiNewsUtil.LoopGetNews(PoliFemoBackend.Source.Objects.Threading.ThreadWithAction)">
+            <summary>
+                Loops every 30 mins to sync PoliMi news with the app db
+            </summary>
+            <param name="threadWithAction">The running thread</param>
+        </member>
+        <member name="M:PoliFemoBackend.Source.Utils.News.PoliMi.PoliMiNewsUtil.GetNews">
+            <summary>
+                Get the latest news from PoliMi and stores them in the database
+            </summary>
+        </member>
+    </members>
+</doc>

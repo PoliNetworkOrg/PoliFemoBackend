@@ -1,0 +1,21 @@
+#@#LOG ENTRY#@#2023-02-15 12:56:28.144 | Critical | Initialized DBConfig to empty!
+#@#LOG ENTRY#@#2023-02-15 12:58:35.444 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-02-15 12:58:35.452 | Critical | Unable to connect to any of the specified MySQL hosts.
+#@#LOG ENTRY#@#2023-02-15 12:58:57.484 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-02-15 12:58:57.489 | Critical | Unable to connect to any of the specified MySQL hosts.
+#@#LOG ENTRY#@#2023-02-15 12:59:15.891 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-02-15 12:59:15.892 | Critical | Unable to connect to any of the specified MySQL hosts.
+#@#LOG ENTRY#@#2023-02-22 13:43:42.296 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-02-22 13:43:42.299 | Critical | Unable to connect to any of the specified MySQL hosts.
+#@#LOG ENTRY#@#2023-02-22 13:43:48.096 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-03-16 15:07:49.711 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-03-16 15:07:50.770 | Critical | Unable to connect to any of the specified MySQL hosts.
+#@#LOG ENTRY#@#2023-03-16 15:54:20.425 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-03-16 15:55:12.693 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-03-17 20:32:27.100 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-03-17 20:32:27.102 | Critical | Unable to connect to any of the specified MySQL hosts.
+#@#LOG ENTRY#@#2023-04-05 21:46:36.717 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-04-05 21:46:36.722 | Critical | Authentication method 'auth_gssapi_client' not supported by any of the available plugins.
+#@#LOG ENTRY#@#2023-04-05 21:46:57.439 | Critical | An error occurred while initializing the database. Check the details and try again.
+#@#LOG ENTRY#@#2023-04-05 21:46:57.440 | Critical | Authentication method 'auth_gssapi_client' not supported by any of the available plugins.
+#@#LOG ENTRY#@#2023-04-16 13:23:49.324 | Critical | An error occurred while initializing the database. Check the details and try again.

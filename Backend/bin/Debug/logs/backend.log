@@ -1,0 +1,5 @@
+#@#LOG ENTRY#@#2022-11-25 22:50:12.269 | Critical | Initialized DBConfig to empty!
+#@#LOG ENTRY#@#2022-11-29 19:56:23.697 | DatabaseQuery | INSERT IGNORE INTO Articles (title,subtitle,content,publishTime,sourceUrl,id_author,image,id_tag) VALUES (@title,@subtitle,@text_,@publishTime,@sourceUrl,@author_id,@image,@tag)
+#@#LOG ENTRY#@#2022-11-29 21:04:32.009 | DatabaseQuery | SELECT id_article, content FROM Articles
+#@#LOG ENTRY#@#2022-11-29 21:07:39.526 | DatabaseQuery | SELECT id_article, content FROM Articles
+#@#LOG ENTRY#@#2022-11-29 21:09:20.211 | DatabaseQuery | SELECT id_article, content FROM Articles
