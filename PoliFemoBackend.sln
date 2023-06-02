@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliFemoBackend", "Backend\PoliFemoBackend.csproj", "{64116B5A-19C7-4B74-91A7-559F58726BA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleNuGet", "TestNugetPackage\SampleNuGet\SampleNuGet.csproj", "{7475B261-1D58-437D-B3F5-0865A3AC8B1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,14 @@ Global
 		{64116B5A-19C7-4B74-91A7-559F58726BA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{64116B5A-19C7-4B74-91A7-559F58726BA6}.Release|x64.ActiveCfg = Release|x64
 		{64116B5A-19C7-4B74-91A7-559F58726BA6}.Release|x64.Build.0 = Release|x64
+		{7475B261-1D58-437D-B3F5-0865A3AC8B1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7475B261-1D58-437D-B3F5-0865A3AC8B1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7475B261-1D58-437D-B3F5-0865A3AC8B1E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7475B261-1D58-437D-B3F5-0865A3AC8B1E}.Debug|x64.Build.0 = Debug|Any CPU
+		{7475B261-1D58-437D-B3F5-0865A3AC8B1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7475B261-1D58-437D-B3F5-0865A3AC8B1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7475B261-1D58-437D-B3F5-0865A3AC8B1E}.Release|x64.ActiveCfg = Release|Any CPU
+		{7475B261-1D58-437D-B3F5-0865A3AC8B1E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
