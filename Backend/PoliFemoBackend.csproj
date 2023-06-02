@@ -70,4 +70,8 @@
       <Folder Include="Source\Utils\Temp\Migrate\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\TestNugetPackage\SampleNuGet\SampleNuGet.csproj" />
+    </ItemGroup>
+
 </Project>
