@@ -16,7 +16,7 @@ public class ArticleContent {
     private static Converter converter = new Converter(config);
 
 
-    public ArticleContent(string? title, string? subtitle, string? content) {
+    public ArticleContent(string title, string? subtitle, string content) {
         this.title = title;
         this.subtitle = subtitle;
         this.content = content;
