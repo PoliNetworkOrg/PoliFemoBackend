@@ -88,10 +88,10 @@ public class SearchExam : ControllerBase
 
         if (results.Rows.Count == 0) return NoContent();
 
-        var sg = JsonConvert.SerializeObject(results);
+        var sg = SampleNuGet.Utils.SerializeUtil.JsonToString(results);
         HttpContext.Response.ContentType = "application/json";
 
-        var ag = JsonConvert.DeserializeObject(sg) as JArray;
+        var ag = JsonConvert.DeserializeObject(sg ?? "") as JArray;
 
         var o = new JObject { { "groups", ag } };
         return Ok(o);

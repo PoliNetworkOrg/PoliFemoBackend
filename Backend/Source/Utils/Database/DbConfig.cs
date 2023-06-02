@@ -88,7 +88,7 @@ public class DbConfig
     {
         DbConfigVar = new DbConfig();
         GlobalVariables.DbConfigVar = DbConfigVar;
-        var x = JsonConvert.SerializeObject(DbConfigVar);
+        var x = SampleNuGet.Utils.SerializeUtil.JsonToString(DbConfigVar);
         FileInfo file = new(Constants.DbConfig);
         file.Directory?.Create();
         File.WriteAllText(file.FullName, x);

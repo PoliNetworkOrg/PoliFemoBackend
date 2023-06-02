@@ -24,6 +24,6 @@ public static class ProgramUtil
             json["reason"] = "Not a Bearer token";
 
         context.HandleResponse();
-        await context.Response.WriteAsync(JsonConvert.SerializeObject(json));
+        await context.Response.WriteAsync(SampleNuGet.Utils.SerializeUtil.JsonToString(json) ?? "");
     }
 }
