@@ -28,7 +28,7 @@ jobs:
     # Update references
     - name: Git Sumbodule Update
       run: |
-        git pull --recurse-submodules  ${{ steps.extract_branch.outputs.branch }}
+        git pull origin   ${{ steps.extract_branch.outputs.branch }} --recurse-submodules
         git submodule update --remote --recursive  
         
     - name: Restore dependencies
