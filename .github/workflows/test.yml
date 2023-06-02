@@ -34,6 +34,12 @@ jobs:
         git pull origin   ${{ steps.extract_branch.outputs.branch }} --recurse-submodules --allow-unrelated-histories
         git submodule update --remote --recursive  
         
+    # LS
+    - name: List files
+      run: |
+        ls -l
+        
+        
     - name: Restore dependencies
       run: dotnet restore
       
