@@ -38,6 +38,8 @@ jobs:
     - name: List files
       run: |
         ls -l
+        cd TestNugetPackage
+        ls -l
         
         
     - name: Restore dependencies
