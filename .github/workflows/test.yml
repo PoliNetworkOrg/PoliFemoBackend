@@ -19,11 +19,17 @@ jobs:
       with:
         dotnet-version: 6.0.x
         
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      id: extract_branch
+
+        
     # Update references
     - name: Git Sumbodule Update
       run: |
-        git pull --recurse-submodules
-        git submodule update --remote --recursive
+        git pull --recurse-submodules  ${{ steps.extract_branch.outputs.branch }}
+        git submodule update --remote --recursive  
         
     - name: Restore dependencies
       run: dotnet restore
