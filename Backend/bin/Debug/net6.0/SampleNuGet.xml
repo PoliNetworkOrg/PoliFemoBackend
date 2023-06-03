@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SampleNuGet</name>
+    </assembly>
+    <members>
+        <member name="M:SampleNuGet.Utils.DatabaseUtils.BulkInsert.CreateTable_DestroyIfExist(System.Data.DataTable,System.String,SampleNuGet.Objects.DbConfigConnection)">
+            <summary>
+                Destroy the table if exists and recreate it
+            </summary>
+            <param name="table">DataTable of new table</param>
+            <param name="tableName">Name of new table</param>
+            <param name="dbConfigConnection">Connessione </param>
+        </member>
+        <member name="T:SampleNuGet.Utils.FileUtil">
+            <summary>
+            Class util for files
+            </summary>
+        </member>
+        <member name="M:SampleNuGet.Utils.FileUtil.FindFile(System.String,System.String,System.Int32)">
+            <summary>
+            Find file, searching subdirectories but can also search in upper directories
+            </summary>
+            <param name="searchPattern">Search pattern (all "*.*")</param>
+            <param name="startingPath">Starting path</param>
+            <param name="howManyFoldersUp">How many folders we can go up to search (default 10)</param>
+            <returns>File path of found file, null if no file found</returns>
+        </member>
+        <member name="M:SampleNuGet.Utils.FileUtil.FindFilesAlsoInSubdirectories(System.String,System.String)">
+            <summary>
+            Finds files, also in subdirectories
+            </summary>
+            <param name="startingPath">Starting path</param>
+            <param name="searchPattern">Search pattern (all "*.*")</param>
+            <returns>An array of files, can be empty</returns>
+            <example>func("./","*.*")</example>
+        </member>
+        <member name="T:SampleNuGet.Utils.SerializeUtil">
+            <summary>
+            Serialization util
+            </summary>
+        </member>
+        <member name="M:SampleNuGet.Utils.SerializeUtil.SerializeObject(System.Object)">
+            <summary>
+            Serialize object
+            </summary>
+            <param name="value">object to serialize</param>
+            <returns>byte array of serialized object</returns>
+        </member>
+        <member name="M:SampleNuGet.Utils.SerializeUtil.DeserializeObject``1(System.Byte[])">
+            <summary>
+            Deserialize object, given the type (T)
+            </summary>
+            <param name="bytes">byte array of the serialized object to deserialize</param>
+            <typeparam name="T">type of the object</typeparam>
+            <returns>the deserialized object</returns>
+        </member>
+        <member name="M:SampleNuGet.Utils.SerializeUtil.GetMemoryStreamFromByteArray(System.Byte[])">
+            <summary>
+            Get memory stream from byte array
+            </summary>
+            <param name="bytes">byte array</param>
+            <returns>memory stream</returns>
+        </member>
+        <member name="M:SampleNuGet.Utils.SerializeUtil.ReadFromBinaryFile``1(System.String)">
+            <summary>
+                Reads an object instance from a binary file.
+            </summary>
+            <typeparam name="T">The type of object to read from the binary file.</typeparam>
+            <param name="filePath">The file path to read the object instance from.</param>
+            <returns>Returns a new instance of the object read from the binary file.</returns>
+        </member>
+        <member name="T:SampleNuGet.Utils.TestUtils">
+            <summary>
+            Dummy class
+            </summary>
+        </member>
+        <member name="M:SampleNuGet.Utils.TestUtils.Sum(System.Int32,System.Int32)">
+            <summary>
+            Sum
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns>a+b</returns>
+        </member>
+    </members>
+</doc>
