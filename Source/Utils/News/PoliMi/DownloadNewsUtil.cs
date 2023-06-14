@@ -1,5 +1,4 @@
 ﻿using PoliFemoBackend.Source.Objects.Articles.News;
-using PoliFemoBackend.Source.Objects.Types;
 using PoliFemoBackend.Source.Utils.Html;
 
 namespace PoliFemoBackend.Source.Utils.News.PoliMi;
@@ -22,15 +21,14 @@ public static class DownloadNewsUtil
         // Filter & parse the news
         var newsobjlist = newslist.Select(ExtractNews).ToList();
 
-        return (from item in newsobjlist where item.IsPresent select item.GetValue()).ToList();
+        return (from item in newsobjlist where item != null select item).ToList();
     }
 
 
-    private static Optional<ArticleNews> ExtractNews(HtmlNews htmlNews)
+    private static ArticleNews? ExtractNews(HtmlNews htmlNews)
     {
         if (htmlNews.NodeInEvidenza == null && htmlNews.NodePoliMiHomePage == null)
-            return new Optional<ArticleNews>();
-
+            return null;
         try
         {
             bool? internalNews = null;
@@ -73,13 +71,12 @@ public static class DownloadNewsUtil
                 result.AddContent(cts[0]);
                 result.AddContent(cts[1]);
             }
-            return new Optional<ArticleNews>(result);
+            return result;
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
+            return null;
         }
-
-        return new Optional<ArticleNews>();
     }
 }
