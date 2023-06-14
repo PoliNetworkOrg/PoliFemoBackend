@@ -1,4 +1,6 @@
 using HtmlAgilityPack;
+using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Article;
 using ReverseMarkdown;
 
 namespace PoliFemoBackend.Source.Objects.Articles.News;
@@ -29,37 +31,44 @@ public class ArticleContent {
         ArticleContent[] r = new ArticleContent[2];
         r[0] = new ArticleContent();
         r[1] = new ArticleContent();
+        if (url.Contains("landingpages")) {
+            return r; // If this is a landing page, return an empty array as this is not a news article
+        }
         var web = new HtmlWeb();
 
         for (int i=0; i<2; i++) {
             var doc = web.Load(url);
             var urls1 = doc.DocumentNode.SelectNodes("//div");
             try {
-                var urls = urls1.Where(x => x.GetClasses().Contains("news-single-item")).First();
+                // Try to get the news-single-item class, if none are found, try to get the content id
+                var urls = urls1.FirstOrDefault(x => x.GetAttributeValue("class", "") == "news-single-item");
+                
+                // If empty, try to get the "content" id
+                if (urls == null) {
+                    Logger.WriteLine("No news-single-item class found, trying to get the content element");
+                    urls = urls1.First(x => x.GetAttributeValue("id", "") == "content");
+                }
 
-                r[i].title = urls.SelectSingleNode("//h1").InnerHtml;
-                r[i].subtitle = urls.SelectSingleNode("//h2").InnerHtml;
+                r[i].title = urls.SelectSingleNode("//h1").InnerHtml.Trim();
+                r[i].subtitle = urls.SelectSingleNode("//h2").InnerHtml.Trim();
 
 
-
-                var content = converter.Convert(urls.InnerHtml);
-                content = content.Split("* * *\r\n\r\n")[1]; // Remove title, subtitle, and publish date
+                var content = converter.Convert(ArticleContentUtil.CleanContentString(urls.InnerHtml));
                 content = content.Replace("](/", "](https://www.polimi.it/"); // Replace relative PoliMi links with absolute ones
                 content = content.Replace("\r\n\r\n* * *", ""); // Remove the final horizontal line
-                r[i].content = content;
+                r[i].content = content.Trim();
                 r[i].url = url;
 
                 if (i==0) {
-                    var path = doc.DocumentNode
+                    var pathnode = doc.DocumentNode
                         .Descendants("li")
                         .FirstOrDefault(li => li.GetAttributeValue("id", "") == "lienglish")
-                        ?.Descendants("span")
-                        .FirstOrDefault()
-                        ?.Descendants("a")
-                        .First()
-                        .GetAttributeValue("href", "");
+                        ?.Descendants("span").First().Descendants("a").FirstOrDefault();
+                    if (pathnode == null) {
+                        break;
+                    }
                     //var b = a.SelectSingleNode("//span").InnerHtml;
-                    url = "https://polimi.it" + path;
+                    url = "https://polimi.it" + pathnode.GetAttributeValue("href", "");
                 }
             } catch (Exception) {
                 r[i].title = null;
