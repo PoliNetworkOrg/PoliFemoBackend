@@ -3,7 +3,6 @@
 using System.Data;
 using Blurhash.ImageSharp;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Objects.Articles;
 using Image = SixLabors.ImageSharp.Image;
 
 #endregion

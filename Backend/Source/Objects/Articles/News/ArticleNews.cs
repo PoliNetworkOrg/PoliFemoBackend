@@ -6,10 +6,6 @@ namespace PoliFemoBackend.Source.Objects.Articles.News;
 
 public class ArticleNews
 {
-    //news from DB
-
-
-    //news from Polimi 
     public ArticleNews(string? tag, string? image) {
         this.tag = tag;
         this.image = image;
@@ -18,7 +14,7 @@ public class ArticleNews
         this.content = new ArticleContent[2];
     }
 
-    public ArticleNews(int author_id, string? image, DateTime? target_time, DateTime? hidden_until, double? latitude, double? longitude, string? blurhash, int? platforms, bool? internalNews, string? tag, ArticleContent[] content) {
+    public ArticleNews(int author_id, string? image, DateTime target_time, DateTime? hidden_until, double? latitude, double? longitude, string? blurhash, int platforms, bool? internalNews, string? tag, ArticleContent[] content) {
         this.author_id = author_id;
         this.image = image;
         this.target_time = target_time;
