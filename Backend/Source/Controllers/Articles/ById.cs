@@ -32,7 +32,7 @@ public class ArticleByIdController : ControllerBase
 
     private static JObject? SearchArticlesByIdObject(int id)
     {
-        var results = Database.ExecuteSelect(
+        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
             "SELECT * FROM ArticlesWithAuthors_View WHERE article_id = @id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>

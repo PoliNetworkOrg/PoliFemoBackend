@@ -70,7 +70,7 @@ public class ArticlesByParameters : ControllerBase
         query += limitOffset.GetLimitQuery();
         JArray resultsJArray = new();
 
-        var results = Database.ExecuteSelect(
+        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
             query, // Remove last AND
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>

@@ -24,7 +24,7 @@ public static class Start
 
         try
         {
-            DbConfig.InitializeDbConfig();
+            DbConfigUtil.InitializeDbConfig();
         }
         catch (Exception ex)
         {

@@ -29,7 +29,7 @@ public class DeleteArticle : ControllerBase
     public ObjectResult DeleteArticleDb(int id)
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        var article = Database.ExecuteSelect("SELECT author_id from Articles WHERE article_id=@id",
+        var article = PoliNetwork.Db.Utils.Database.ExecuteSelect("SELECT author_id from Articles WHERE article_id=@id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -37,7 +37,7 @@ public class DeleteArticle : ControllerBase
             });
         if (article == null)
             return new NotFoundObjectResult("");
-        var idAuthor = Convert.ToInt32(Database.GetFirstValueFromDataTable(article));
+        var idAuthor = Convert.ToInt32(PoliNetwork.Db.Utils.Database.GetFirstValueFromDataTable(article));
         if (!AccountAuthUtil.HasGrantAndObjectPermission(sub, "authors", idAuthor))
         {
             Response.StatusCode = 403;
@@ -47,7 +47,7 @@ public class DeleteArticle : ControllerBase
             });
         }
 
-        var result = Database.ExecuteSelect("SELECT deleteArticle(@id) as result",
+        var result = PoliNetwork.Db.Utils.Database.ExecuteSelect("SELECT deleteArticle(@id) as result",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {

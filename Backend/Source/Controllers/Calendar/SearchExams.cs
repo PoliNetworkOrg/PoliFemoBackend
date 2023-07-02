@@ -80,7 +80,7 @@ public class SearchExam : ControllerBase
             d.Add("@lista", lista);
         }
 
-        var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
+        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
 
         if (results == null) return StatusCode(500);
         if (results.Rows.Count == 0) return NoContent();

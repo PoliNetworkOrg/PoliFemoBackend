@@ -97,7 +97,7 @@ public class AddExam : ControllerBase
                         }
                 }
 
-                var results = Database.Execute(query, GlobalVariables.DbConfigVar);
+                var results = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar);
             }
         }
 

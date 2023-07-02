@@ -23,7 +23,7 @@ public static class PopulateCalendarUtil
 
             var query = "INSERT IGNORE INTO Days VALUES ( '" + d.ToString("yyyy-MM-dd") + "' );";
             var date = cell.Value.ToString();
-            var results = Database.Database.Execute(query, GlobalVariables.DbConfigVar);
+            var results = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar);
 
             //save  name of color of cell
             var color = cell.Style.Fill.BackgroundColor.Rgb;

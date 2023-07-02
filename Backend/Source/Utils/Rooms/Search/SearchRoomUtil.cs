@@ -110,7 +110,7 @@ public static class SearchRoomUtil
         {
             { "@yesterday", DateTime.Now.AddDays(-1) }
         };
-        var q2 = Database.Database.ExecuteSelect(q, GlobalVariables.DbConfigVar, dict);
+        var q2 = PoliNetwork.Db.Utils.Database.ExecuteSelect(q, GlobalVariables.DbConfigVar, dict);
         if (!(q2?.Rows.Count > 0))
             return;
 

@@ -15,7 +15,7 @@ public static class SaveToCacheUtil
                 { "@url", url },
                 { "@content", content }
             };
-            Database.Database.Execute(qi, GlobalVariables.DbConfigVar, objects);
+            PoliNetwork.Db.Utils.Database.Execute(qi, GlobalVariables.DbConfigVar, objects);
         }
         catch (Exception ex)
         {

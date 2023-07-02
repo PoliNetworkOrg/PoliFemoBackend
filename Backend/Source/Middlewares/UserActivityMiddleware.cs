@@ -53,7 +53,7 @@ public class UserActivityMiddleware
             { "@subject", handlerSubject }
         };
 
-        var results = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
+        var results = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
         return results > 0;
     }
 }

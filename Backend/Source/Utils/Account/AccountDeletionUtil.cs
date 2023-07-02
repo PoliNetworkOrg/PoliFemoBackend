@@ -23,7 +23,7 @@ public static class AccountDeletionUtil
         };
 
         var queryToRun = hashed ? queryHashed : queryNotHashed;
-        var r = Database.Database.ExecuteSelect(queryToRun, GlobalVariables.DbConfigVar, parameters);
+        var r = PoliNetwork.Db.Utils.Database.ExecuteSelect(queryToRun, GlobalVariables.DbConfigVar, parameters);
         return r != null;
     }
 }

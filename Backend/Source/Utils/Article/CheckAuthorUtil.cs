@@ -24,7 +24,7 @@ public static class CheckAuthorUtil
                 { "error", "Invalid author" }
             });
 
-        var isValidAuthor = Database.Database.ExecuteSelect("SELECT * FROM Authors WHERE author_id = @id",
+        var isValidAuthor = PoliNetwork.Db.Utils.Database.ExecuteSelect("SELECT * FROM Authors WHERE author_id = @id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
