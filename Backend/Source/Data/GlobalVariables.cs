@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils.Database;
+using PoliNetwork.Db.Utils;
 
 #endregion
 
@@ -36,7 +37,7 @@ public static class GlobalVariables
         if (DbConfigVar != null)
             return DbConfigVar;
 
-        DbConfig.InitializeDbConfig();
+        DbConfigUtil.InitializeDbConfig();
         return DbConfigVar;
     }
 }

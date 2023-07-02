@@ -11,7 +11,7 @@ public static class InsertArticleUtil
 {
     internal static ObjectResult InsertArticleDbMethod(Objects.Articles.News.ArticleNews data, InsertArticle insertArticle)
     {
-        var isValidTag = Database.Database.ExecuteSelect("SELECT * FROM Tags WHERE name = @tag",
+        var isValidTag = PoliNetwork.Db.Utils.Database.ExecuteSelect("SELECT * FROM Tags WHERE name = @tag",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -63,7 +63,7 @@ public static class InsertArticleUtil
                 });
 
             var query = "INSERT INTO ArticleContent(title,subtitle,content,url) VALUES(@title,@subtitle,@content,@url) RETURNING id";
-            var result = Database.Database.ExecuteSelect(query, GlobalVariables.DbConfigVar,
+            var result = PoliNetwork.Db.Utils.Database.ExecuteSelect(query, GlobalVariables.DbConfigVar,
                 new Dictionary<string, object?>
                 {
                     { "@title", articlecontent.title },
@@ -72,7 +72,7 @@ public static class InsertArticleUtil
                     { "@url", null }
                 });
         
-            idContent.Add(Convert.ToInt32(Database.Database.GetFirstValueFromDataTable(result)));
+            idContent.Add(Convert.ToInt32(PoliNetwork.Db.Utils.Database.GetFirstValueFromDataTable(result)));
         }
 
         var insertQuery =
@@ -89,7 +89,7 @@ public static class InsertArticleUtil
             });
         }
 
-        var resultins = Database.Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
+        var resultins = PoliNetwork.Db.Utils.Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
             
             new Dictionary<string, object?>
             {

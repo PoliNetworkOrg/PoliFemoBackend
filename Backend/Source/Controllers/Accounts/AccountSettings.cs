@@ -34,8 +34,8 @@ public class AccountSettings : ControllerBase
             { "@sub", sub }
         };
 
-        var r = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
-        var value = Database.GetFirstValueFromDataTable(r);
+        var r = PoliNetwork.Db.Utils.Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
+        var value = PoliNetwork.Db.Utils.Database.GetFirstValueFromDataTable(r);
         if (value == null)
             return StatusCode(500, "");
 
@@ -90,7 +90,7 @@ public class AccountSettings : ControllerBase
             }
         }
 
-        var r = Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
+        var r = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
         return r != 1 ? StatusCode(500, "") : Ok("");
     }
 }

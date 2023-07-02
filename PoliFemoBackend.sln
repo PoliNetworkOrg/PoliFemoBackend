@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliFemoBackend", "Backend\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliNetwork.Core", "Lib_CSharp\PoliNetwork.Core\PoliNetwork.Core.csproj", "{F790A064-439C-4783-AA2D-7BD60936C689}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliNetwork.Db", "Lib_CSharp\PoliNetwork.Db\PoliNetwork.Db.csproj", "{D2A71EB4-30D9-440F-B87B-81DA5A3BF409}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,14 @@ Global
 		{F790A064-439C-4783-AA2D-7BD60936C689}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F790A064-439C-4783-AA2D-7BD60936C689}.Release|x64.ActiveCfg = Release|Any CPU
 		{F790A064-439C-4783-AA2D-7BD60936C689}.Release|x64.Build.0 = Release|Any CPU
+		{D2A71EB4-30D9-440F-B87B-81DA5A3BF409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2A71EB4-30D9-440F-B87B-81DA5A3BF409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2A71EB4-30D9-440F-B87B-81DA5A3BF409}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D2A71EB4-30D9-440F-B87B-81DA5A3BF409}.Debug|x64.Build.0 = Debug|Any CPU
+		{D2A71EB4-30D9-440F-B87B-81DA5A3BF409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2A71EB4-30D9-440F-B87B-81DA5A3BF409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2A71EB4-30D9-440F-B87B-81DA5A3BF409}.Release|x64.ActiveCfg = Release|Any CPU
+		{D2A71EB4-30D9-440F-B87B-81DA5A3BF409}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,30 +1,22 @@
-#region
-
-using System.Data;
+﻿using System.Data;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Data;
-
-#endregion
+using PoliNetwork.Db.Utils;
 
 namespace PoliFemoBackend.Source.Utils.Database;
 
-[Serializable]
-[JsonObject(MemberSerialization.Fields)]
-public class DbConfig
+public class DbConfigUtil
 {
-    public string? Database;
-    public string? DatabaseName;
-    public string? Host;
-    public string? Password;
-    public int Port;
-    public string? User;
     public static DbConfig? DbConfigVar { get; set; }
 
+    
     public static void InitializeDbConfig()
     {
         ;
-        if (!Directory.Exists(Constants.ConfigPath)) Directory.CreateDirectory(Constants.ConfigPath);
+        
+        if (!Directory.Exists(Constants.ConfigPath)) 
+            Directory.CreateDirectory(Constants.ConfigPath);
 
         const string configDbconfigJson = Constants.DbConfig;
         if (File.Exists(configDbconfigJson))
@@ -60,30 +52,22 @@ public class DbConfig
             if (GlobalVariables.SkipDbSetup is null or false)
             {
                 var sql = File.ReadAllText(Constants.SqlCommandsPath);
-                Utils.Database.Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
+                PoliNetwork.Db.Utils.Database.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
             }
 
             Logger.WriteLine("Table checks completed! Starting application...");
         }
         catch (Exception ex)
         {
+            /*
             Logger.WriteLine("An error occurred while initializing the database. Check the details and try again.",
                 LogSeverityLevel.Critical);
             Logger.WriteLine(ex.Message, LogSeverityLevel.Critical);
+            */
             Environment.Exit(1);
         }
     }
-
-    private void FixName()
-    {
-        if (string.IsNullOrEmpty(DatabaseName))
-            DatabaseName = Database;
-
-        if (string.IsNullOrEmpty(Database))
-            Database = DatabaseName;
-    }
-
-
+    
     private static void GenerateDbConfigEmpty()
     {
         DbConfigVar = new DbConfig();
@@ -95,15 +79,7 @@ public class DbConfig
         Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.Critical);
         throw new Exception("Database failed to initialize, we generated an empty file to fill");
     }
-
-    public string GetConnectionString()
-    {
-        return string.IsNullOrEmpty(Password)
-            ? "server='" + Host + "';user='" + User + "';database='" + DatabaseName + "';port=" + Port
-            : "server='" + Host + "';user='" + User + "';database='" + DatabaseName + "';port=" + Port + ";password='" +
-              Password + "'";
-    }
-
+    
     public static DbConfig? GetDbConfigNew()
     {
         return GlobalVariables.GetDbConfig();

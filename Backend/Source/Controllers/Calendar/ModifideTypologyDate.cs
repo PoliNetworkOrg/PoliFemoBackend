@@ -33,7 +33,7 @@ public class ModifyDateControllers : ControllerBase
     {
         var query = "UPDATE belongsTo SET id_tipologia = " + tipologia_new + " WHERE id_giorno = '" +
                     date.ToString("yyyy-MM-dd") + "' AND id_tipologia = " + tipologia_old + " ;";
-        int? results = Database.Execute(query, GlobalVariables.DbConfigVar);
+        int? results = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar);
 
 
         return results switch
@@ -60,7 +60,7 @@ public class ModifyDateControllers : ControllerBase
     public ObjectResult AddTypeDateDb(DateTime date, int tipologia)
     {
         var query = "INSERT IGNORE INTO belongsTo VALUES ('" + date.ToString("yyyy-MM-dd") + "', " + tipologia + " );";
-        int? results = Database.Execute(query, GlobalVariables.DbConfigVar);
+        int? results = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar);
 
         return results switch
         {
@@ -86,7 +86,7 @@ public class ModifyDateControllers : ControllerBase
     {
         var query = "DELETE FROM belongsTo WHERE id_tipologia = " + tipologia + " AND id_giorno = '" +
                     date.ToString("yyyy-MM-dd") + "';";
-        int? results = Database.Execute(query, GlobalVariables.DbConfigVar);
+        int? results = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar);
 
         return results switch
         {

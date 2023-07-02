@@ -25,7 +25,7 @@ public class TagByIdController : ControllerBase
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult SearchTags()
     {
-        var results = Database.ExecuteSelect(
+        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
             "SELECT * FROM Tags",
             GlobalVariables.DbConfigVar);
 

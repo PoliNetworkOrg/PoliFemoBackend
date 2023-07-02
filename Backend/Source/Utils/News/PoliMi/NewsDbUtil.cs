@@ -20,11 +20,11 @@ public static class NewsDbUtil
 
         const string query = "SELECT COUNT(*) FROM ArticleContent WHERE url LIKE @url";
         var args = new Dictionary<string, object?> { { "@url", url } };
-        var results = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
+        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
         if (results == null)
             return DoneEnum.SKIPPED;
 
-        var result = Database.Database.GetFirstValueFromDataTable(results);
+        var result = PoliNetwork.Db.Utils.Database.GetFirstValueFromDataTable(results);
         if (result == null)
             return DoneEnum.SKIPPED;
 
@@ -56,7 +56,7 @@ public static class NewsDbUtil
                 { "@subtitle", content.subtitle },
                 { "@content", content.content },
             };
-            var rt = Database.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
+            var rt = PoliNetwork.Db.Utils.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
             contentids[Array.IndexOf(newsItem.content, content)] = Convert.ToInt32(rt?.Rows[0][0]);
         }
 
@@ -77,6 +77,6 @@ public static class NewsDbUtil
             { "@plit", contentids[0] },
             { "@plen", contentids[1] != -1 ? contentids[1] : null}
         };
-        Database.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
+        PoliNetwork.Db.Utils.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
     }
 }
