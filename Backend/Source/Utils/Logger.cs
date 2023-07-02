@@ -87,8 +87,11 @@ public static class Logger
         return DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
     }
 
-    public static void LogQuery(string query, Dictionary<string, object?>? args)
+    public static void LogQuery(string? query, Dictionary<string, object?>? args)
     {
+        if (string.IsNullOrEmpty(query))
+            return;
+        
         if (args != null)
             foreach (var (key, value) in args)
                 query = query.Replace(key, value?.ToString() ?? "NULL");
