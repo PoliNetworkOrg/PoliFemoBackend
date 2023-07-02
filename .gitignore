@@ -11,3 +11,4 @@ bin/*
 /config
 /logs
 out/*
+Backend/bin/
