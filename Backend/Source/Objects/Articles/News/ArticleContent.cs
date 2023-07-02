@@ -53,7 +53,7 @@ public class ArticleContent {
                 r[i].subtitle = urls.SelectSingleNode("//h2").InnerHtml.Trim();
 
 
-                var content = converter.Convert(ArticleContentUtil.CleanContentString(urls.InnerHtml));
+                var content = converter.Convert((urls.InnerHtml));
                 content = content.Replace("](/", "](https://www.polimi.it/"); // Replace relative PoliMi links with absolute ones
                 content = content.Replace("\r\n\r\n* * *", ""); // Remove the final horizontal line
                 r[i].content = content.Trim();
