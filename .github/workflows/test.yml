@@ -17,10 +17,35 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
+        
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      id: extract_branch
+
+        
+    # Update references
+    - name: Git Sumbodule Update
+      run: |
+        git config --global user.email "polinetwork@outlook.com"
+        git config --global user.name "PoliNetwork"
+        git config --global pull.rebase false --allow-unrelated-histories
+        git pull origin   ${{ steps.extract_branch.outputs.branch }} --recurse-submodules --allow-unrelated-histories
+        git submodule update --remote --recursive  
+        
+    # LS
+    - name: List files
+      run: |
+        ls -l
+        cd Lib_CSharp
+        git submodule init
+        git submodule update
+        ls -l
+        
         
     - name: Restore dependencies
       run: dotnet restore
       
     - name: Build
-      run: dotnet build PoliFemoBackend.csproj /p:DeployOnBuild=true /p:Configuration=Release /p:Platform="x64" /p:PublishProfile=Properties/PublishProfiles/linux-x64.pubxml
+      run: dotnet build Backend/PoliFemoBackend.csproj /p:DeployOnBuild=true /p:Configuration=Release /p:Platform="x64" /p:PublishProfile=Properties/PublishProfiles/linux-x64.pubxml
