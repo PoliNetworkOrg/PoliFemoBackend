@@ -12,3 +12,5 @@ bin/*
 /logs
 out/*
 Backend/bin/
+
+Backend/.idea/
