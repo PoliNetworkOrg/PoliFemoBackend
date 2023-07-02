@@ -64,7 +64,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
     }
 
-    public void Configure(string name, SwaggerGenOptions options)
+    public void Configure(string? name, SwaggerGenOptions options)
     {
         Configure(options);
     }

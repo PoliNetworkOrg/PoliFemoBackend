@@ -60,13 +60,13 @@ public static class AuthUtil
         return GetSubjectFromToken(token);
     }
 
-    private static string? GetSubjectFromToken(string token)
+    private static string? GetSubjectFromToken(string? token)
     {
         var jwtSecurityToken = GetJwtSecurityTokenFromStringToken(token);
         return jwtSecurityToken?.Subject;
     }
 
-    private static JwtSecurityToken? GetJwtSecurityTokenFromStringToken(string token)
+    private static JwtSecurityToken? GetJwtSecurityTokenFromStringToken(string? token)
     {
         if (string.IsNullOrEmpty(token))
             return null;
