@@ -15,6 +15,8 @@ internal static class Program
     [STAThread]
     private static void Main(string[] args)
     {
+        FirstThingsToDo();
+        
         if (args.Length > 0 && args[0] == "test")
         {
             Test.Test.RunTest();
@@ -22,6 +24,11 @@ internal static class Program
         }
 
         RunServer(args);
+    }
+
+    private static void FirstThingsToDo()
+    {
+        PoliNetwork.Db.Utils.LoggerDb.Logger = Logger.LogQuery;
     }
 
     private static void RunServer(string[] args)
