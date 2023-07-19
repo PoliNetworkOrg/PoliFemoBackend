@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Auth;
-using PoliFemoBackend.Source.Utils.Database;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Controllers.Accounts;
 
@@ -34,8 +34,8 @@ public class AccountSettings : ControllerBase
             { "@sub", sub }
         };
 
-        var r = PoliNetwork.Db.Utils.Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
-        var value = PoliNetwork.Db.Utils.Database.GetFirstValueFromDataTable(r);
+        var r = DB.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
+        var value = DB.GetFirstValueFromDataTable(r);
         if (value == null)
             return StatusCode(500, "");
 

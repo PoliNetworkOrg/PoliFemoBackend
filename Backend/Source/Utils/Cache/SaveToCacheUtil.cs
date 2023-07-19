@@ -19,7 +19,7 @@ public static class SaveToCacheUtil
         }
         catch (Exception ex)
         {
-            Logger.WriteLine(ex);
+            GlobalVariables.Logger.Error(ex.ToString());
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using HtmlAgilityPack;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Rooms;
 
@@ -49,7 +50,7 @@ public static class FreeRoomsUtil
         }
         catch (Exception ex)
         {
-            Logger.WriteLine(ex);
+            GlobalVariables.Logger.Error(ex.ToString());
             throw;
         }
     }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Database;
+using DB = PoliNetwork.Db.Utils.Database;
 
 #endregion
 
@@ -25,7 +26,7 @@ public class TagByIdController : ControllerBase
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult SearchTags()
     {
-        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
+        var results = DB.ExecuteSelect(
             "SELECT * FROM Tags",
             GlobalVariables.DbConfigVar);
 

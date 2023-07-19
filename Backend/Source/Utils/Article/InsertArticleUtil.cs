@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Controllers.Articles;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Auth;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Utils.Article;
 
@@ -11,7 +11,7 @@ public static class InsertArticleUtil
 {
     internal static ObjectResult InsertArticleDbMethod(Objects.Articles.News.ArticleNews data, InsertArticle insertArticle)
     {
-        var isValidTag = PoliNetwork.Db.Utils.Database.ExecuteSelect("SELECT * FROM Tags WHERE name = @tag",
+        var isValidTag = DB.ExecuteSelect("SELECT * FROM Tags WHERE name = @tag",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
@@ -63,7 +63,7 @@ public static class InsertArticleUtil
                 });
 
             var query = "INSERT INTO ArticleContent(title,subtitle,content,url) VALUES(@title,@subtitle,@content,@url) RETURNING id";
-            var result = PoliNetwork.Db.Utils.Database.ExecuteSelect(query, GlobalVariables.DbConfigVar,
+            var result = DB.ExecuteSelect(query, GlobalVariables.DbConfigVar,
                 new Dictionary<string, object?>
                 {
                     { "@title", articlecontent.title },
@@ -72,7 +72,7 @@ public static class InsertArticleUtil
                     { "@url", null }
                 });
         
-            idContent.Add(Convert.ToInt32(PoliNetwork.Db.Utils.Database.GetFirstValueFromDataTable(result)));
+            idContent.Add(Convert.ToInt32(DB.GetFirstValueFromDataTable(result)));
         }
 
         var insertQuery =
@@ -89,7 +89,7 @@ public static class InsertArticleUtil
             });
         }
 
-        var resultins = PoliNetwork.Db.Utils.Database.Execute(insertQuery, GlobalVariables.DbConfigVar,
+        var resultins = DB.Execute(insertQuery, GlobalVariables.DbConfigVar,
             
             new Dictionary<string, object?>
             {

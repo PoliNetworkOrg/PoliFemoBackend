@@ -2,6 +2,7 @@
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Utils.Article;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
@@ -20,11 +21,11 @@ public static class NewsDbUtil
 
         const string query = "SELECT COUNT(*) FROM ArticleContent WHERE url LIKE @url";
         var args = new Dictionary<string, object?> { { "@url", url } };
-        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
+        var results = DB.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
         if (results == null)
             return DoneEnum.SKIPPED;
 
-        var result = PoliNetwork.Db.Utils.Database.GetFirstValueFromDataTable(results);
+        var result = DB.GetFirstValueFromDataTable(results);
         if (result == null)
             return DoneEnum.SKIPPED;
 
@@ -56,7 +57,7 @@ public static class NewsDbUtil
                 { "@subtitle", content.subtitle },
                 { "@content", content.content },
             };
-            var rt = PoliNetwork.Db.Utils.Database.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
+            var rt = DB.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
             contentids[Array.IndexOf(newsItem.content, content)] = Convert.ToInt32(rt?.Rows[0][0]);
         }
 
@@ -77,6 +78,6 @@ public static class NewsDbUtil
             { "@plit", contentids[0] },
             { "@plen", contentids[1] != -1 ? contentids[1] : null}
         };
-        PoliNetwork.Db.Utils.Database.Execute(query1, GlobalVariables.GetDbConfig(), args1);
+        DB.Execute(query1, GlobalVariables.GetDbConfig(), args1);
     }
 }
