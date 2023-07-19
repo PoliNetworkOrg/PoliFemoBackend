@@ -1,4 +1,5 @@
 ﻿using PoliFemoBackend.Source.Data;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Utils.Cache;
 
@@ -15,7 +16,7 @@ public static class SaveToCacheUtil
                 { "@url", url },
                 { "@content", content }
             };
-            PoliNetwork.Db.Utils.Database.Execute(qi, GlobalVariables.DbConfigVar, objects);
+            DB.Execute(qi, GlobalVariables.DbConfigVar, objects);
         }
         catch (Exception ex)
         {

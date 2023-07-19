@@ -90,7 +90,7 @@ public class AccountSettings : ControllerBase
             }
         }
 
-        var r = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
+        var r = DB.Execute(query, GlobalVariables.DbConfigVar, parameters);
         return r != 1 ? StatusCode(500, "") : Ok("");
     }
 }

@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Controllers.Auth;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Utils.Auth.CodeExchange;
 
@@ -64,6 +65,6 @@ public static class CodeExchangeUtil
             { "@subject", subject },
             { "@acctype", acctype }
         };
-        var results = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
+        var results = DB.Execute(query, GlobalVariables.DbConfigVar, parameters);
     }
 }

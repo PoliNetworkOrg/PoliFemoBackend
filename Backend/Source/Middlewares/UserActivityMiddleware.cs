@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils.Database;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Middlewares;
 
@@ -53,7 +53,7 @@ public class UserActivityMiddleware
             { "@subject", handlerSubject }
         };
 
-        var results = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar, parameters);
+        var results = DB.Execute(query, GlobalVariables.DbConfigVar, parameters);
         return results > 0;
     }
 }
