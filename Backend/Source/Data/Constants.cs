@@ -1,4 +1,6 @@
-﻿namespace PoliFemoBackend.Source.Data;
+﻿using PoliNetwork.Core.Utils.LoggerNS;
+
+namespace PoliFemoBackend.Source.Data;
 
 public static class Constants
 {

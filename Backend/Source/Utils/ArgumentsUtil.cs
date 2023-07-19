@@ -1,4 +1,5 @@
 using PoliFemoBackend.Source.Data;
+using PoliNetwork.Core.Utils.LoggerNS;
 
 namespace PoliFemoBackend.Source.Utils;
 
@@ -24,6 +25,7 @@ public class ArgumentsUtil
                         break;
                     case "log-level":
                         GlobalVariables.LogLevel = int.Parse(value);
+                        GlobalVariables.Logger = new Logger((PoliNetwork.Core.Utils.LoggerNS.LogLevel)GlobalVariables.LogLevel, "logs");
                         break;
                     case "no-db-setup":
                         GlobalVariables.SkipDbSetup = value == "true";

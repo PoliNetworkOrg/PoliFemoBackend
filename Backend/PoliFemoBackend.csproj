@@ -30,16 +30,16 @@
         <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.3.0" />
         <PackageReference Include="AspNetCore.Proxy" Version="4.4.0" />
         <PackageReference Include="Blurhash.ImageSharp" Version="3.0.0" />
-        <PackageReference Include="EPPlus" Version="6.2.6" />
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.49" />
+        <PackageReference Include="EPPlus" Version="6.2.7" />
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.50" />
         <PackageReference Include="Jsonize" Version="3.1.1" />
         <PackageReference Include="Jsonize.Parser" Version="3.1.1" />
         <PackageReference Include="Jsonize.Serializer" Version="3.1.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.19" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.19" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
-        <PackageReference Include="Mysql.Data" Version="8.0.33" />
+        <PackageReference Include="Mysql.Data" Version="8.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="ReverseMarkdown" Version="3.25.0" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
@@ -62,6 +62,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Lib_CSharp\PoliNetwork.Db\PoliNetwork.Db.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Lib_CSharp\PoliNetwork.Core\PoliNetwork.Core.csproj" />
     </ItemGroup>
 
 </Project>

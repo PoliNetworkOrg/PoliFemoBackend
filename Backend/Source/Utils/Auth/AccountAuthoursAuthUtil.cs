@@ -1,4 +1,5 @@
 ﻿using PoliFemoBackend.Source.Data;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Utils.Auth;
 
@@ -6,7 +7,7 @@ public class AccountAuthoursAuthUtil
 {
     public static string?[] GetAuthorizedAuthors(string? userid)
     {
-        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
+        var results = DB.ExecuteSelect(
             "SELECT a.* FROM Authors a, permissions p WHERE p.user_id = sha2(@userid, 256) AND a.author_id = p.object_id AND p.grant_id = 'authors'",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>

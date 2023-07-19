@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Article;
-using PoliFemoBackend.Source.Utils.Database;
+using DB = PoliNetwork.Db.Utils.Database;
 
 #endregion
 
@@ -32,7 +32,7 @@ public class ArticleByIdController : ControllerBase
 
     private static JObject? SearchArticlesByIdObject(int id)
     {
-        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
+        var results = DB.ExecuteSelect(
             "SELECT * FROM ArticlesWithAuthors_View WHERE article_id = @id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
