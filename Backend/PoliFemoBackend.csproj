@@ -15,10 +15,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="Other\DB\DBPolifemo.sql" />
-    </ItemGroup>
-
-    <ItemGroup>
         <_WebToolingArtifacts Remove="Properties\PublishProfiles\linux-x64.pubxml" />
         <_WebToolingArtifacts Remove="Properties\PublishProfiles\win-x64.pubxml" />
     </ItemGroup>
@@ -27,12 +23,6 @@
         <Content Include="Other\DB\DBPolifemo.sql">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="run.sh">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
     </ItemGroup>
 
     <ItemGroup>

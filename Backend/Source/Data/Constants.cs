@@ -14,7 +14,7 @@ public static class Constants
 
     public const string LogsPath = "./logs";
 
-    public const string SqlCommandsPath = "./Other/DB/DBPolifemo.sql";
+    public static readonly string SqlCommandsPath = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "./Backend/Other/DB/DBPolifemo.sql" : "Other/DB/DBPolifemo.sql";
 
     public const string AzureClientId = "a06b160b-8d5d-4be2-b452-ea3b768998ed";
 
