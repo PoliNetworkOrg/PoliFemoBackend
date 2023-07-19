@@ -6,7 +6,7 @@ using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.DbObjects;
 using PoliFemoBackend.Source.Utils;
 using PoliFemoBackend.Source.Utils.Article;
-using PoliFemoBackend.Source.Utils.Database;
+using DB = PoliNetwork.Db.Utils.Database;
 
 #endregion
 
@@ -70,7 +70,7 @@ public class ArticlesByParameters : ControllerBase
         query += limitOffset.GetLimitQuery();
         JArray resultsJArray = new();
 
-        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
+        var results = DB.ExecuteSelect(
             query, // Remove last AND
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>

@@ -1,4 +1,5 @@
 ﻿using PoliFemoBackend.Source.Data;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Utils.Account;
 
@@ -23,7 +24,7 @@ public static class AccountDeletionUtil
         };
 
         var queryToRun = hashed ? queryHashed : queryNotHashed;
-        var r = PoliNetwork.Db.Utils.Database.ExecuteSelect(queryToRun, GlobalVariables.DbConfigVar, parameters);
+        var r = DB.ExecuteSelect(queryToRun, GlobalVariables.DbConfigVar, parameters);
         return r != null;
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace PoliFemoBackend.Source.Data;
+﻿using PoliNetwork.Core.Utils.LoggerNS;
+
+namespace PoliFemoBackend.Source.Data;
 
 public static class Constants
 {
@@ -14,7 +16,7 @@ public static class Constants
 
     public const string LogsPath = "./logs";
 
-    public const string SqlCommandsPath = "./Other/DB/DBPolifemo.sql";
+    public const string SqlCommandsPath = "./Backend/Other/DB/DBPolifemo.sql";
 
     public const string AzureClientId = "a06b160b-8d5d-4be2-b452-ea3b768998ed";
 

@@ -1,5 +1,5 @@
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Article;
 using ReverseMarkdown;
 
@@ -45,7 +45,7 @@ public class ArticleContent {
                 
                 // If empty, try to get the "content" id
                 if (urls == null) {
-                    Logger.WriteLine("No news-single-item class found, trying to get the content element");
+                    GlobalVariables.Logger.Info("No news-single-item class found, trying to get the content element");
                     urls = urls1.First(x => x.GetAttributeValue("id", "") == "content");
                 }
 

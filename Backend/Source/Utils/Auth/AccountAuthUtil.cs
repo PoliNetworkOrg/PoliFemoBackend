@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Permissions;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Utils.Auth;
 
@@ -8,7 +9,7 @@ public static class AccountAuthUtil
 {
     public static string GetAccountType(JwtSecurityToken jwtSecurityToken)
     {
-        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
+        var results = DB.ExecuteSelect(
             "SELECT account_type FROM Users WHERE user_id = sha2(@userid, 256)",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
@@ -25,7 +26,7 @@ public static class AccountAuthUtil
         if (convert) query += "AND Users.user_id=sha2(@userid, 256)";
         else query += "AND Users.user_id=@userid";
 
-        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
+        var results = DB.ExecuteSelect(
             query,
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
@@ -45,7 +46,7 @@ public static class AccountAuthUtil
 
     public static bool HasPermission(string? userid, string permission)
     {
-        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
+        var results = DB.ExecuteSelect(
             "SELECT grant_id FROM permissions, Grants, Users WHERE Users.user_id=sha2(@userid, 256) AND grant_id=@permission",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
@@ -58,7 +59,7 @@ public static class AccountAuthUtil
 
     public static bool HasGrantAndObjectPermission(string? userid, string permission, int objectid)
     {
-        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(
+        var results = DB.ExecuteSelect(
             "SELECT grant_id FROM permissions WHERE user_id=sha2(@userid, 256) AND grant_id=@permission AND object_id=@objectid",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>

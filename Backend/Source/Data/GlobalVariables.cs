@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils.Database;
 using PoliNetwork.Db.Utils;
+using PoliNetwork.Core.Utils.LoggerNS;
 
 #endregion
 
@@ -13,6 +14,7 @@ namespace PoliFemoBackend.Source.Data;
 public static class GlobalVariables
 {
     public static readonly DateTime Start = DateTime.Now;
+    public static Logger Logger { get; set; } = new Logger(PoliNetwork.Core.Utils.LoggerNS.LogLevel.WARNING, Constants.LogsPath);
     private static JObject? _secrets;
     public static WebApplication? App;
     public static string? BasePath { get; set; }

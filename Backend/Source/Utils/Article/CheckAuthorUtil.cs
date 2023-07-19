@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Controllers.Articles;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Auth;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Utils.Article;
 
@@ -24,7 +25,7 @@ public static class CheckAuthorUtil
                 { "error", "Invalid author" }
             });
 
-        var isValidAuthor = PoliNetwork.Db.Utils.Database.ExecuteSelect("SELECT * FROM Authors WHERE author_id = @id",
+        var isValidAuthor = DB.ExecuteSelect("SELECT * FROM Authors WHERE author_id = @id",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {

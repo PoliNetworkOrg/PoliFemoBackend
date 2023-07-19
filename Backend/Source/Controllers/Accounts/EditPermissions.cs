@@ -5,6 +5,7 @@ using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Permissions;
 using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Database;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Controllers.Accounts;
 
@@ -45,7 +46,7 @@ public class EditPermissions : ControllerBase
             "INSERT IGNORE INTO permissions (grant_id, user_id, object_id) VALUES (@id_grant, @id_user, @id_object)";
         try
         {
-            var count = PoliNetwork.Db.Utils.Database.Execute(q, DbConfigUtil.DbConfigVar, new Dictionary<string, object?>
+            var count = DB.Execute(q, DbConfigUtil.DbConfigVar, new Dictionary<string, object?>
             {
                 { "@id_grant", grant.grant },
                 { "@id_user", id },
@@ -98,7 +99,7 @@ public class EditPermissions : ControllerBase
 
         const string q =
             "DELETE FROM permissions WHERE grant_id= @id_grant AND user_id = @id_user AND object_id = @id_object";
-        var count = PoliNetwork.Db.Utils.Database.Execute(q, DbConfigUtil.DbConfigVar, new Dictionary<string, object?>
+        var count = DB.Execute(q, DbConfigUtil.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id_grant", grant.grant },
             { "@id_user", id },

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Auth;
-using PoliFemoBackend.Source.Utils.Database;
+using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Controllers.Rooms;
 
@@ -48,7 +48,7 @@ public class RoomOccupancyReport : ControllerBase
 
         const string q =
             "REPLACE INTO RoomOccupancyReports (room_id, user_id, rate, when_reported) VALUES (@id_room, sha2(@id_user, 256), @rate, @when_reported)";
-        var count = PoliNetwork.Db.Utils.Database.Execute(q, DbConfigUtil.DbConfigVar, new Dictionary<string, object?>
+        var count = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id_room", id },
             { "@id_user", jwt.Subject },
@@ -99,11 +99,11 @@ public class RoomOccupancyReport : ControllerBase
             { "@room_id", id },
             { "@yesterday", DateTime.Now.AddDays(-1) }
         };
-        var r = PoliNetwork.Db.Utils.Database.ExecuteSelect(q, DbConfigUtil.DbConfigVar, dict);
+        var r = DB.ExecuteSelect(q, GlobalVariables.DbConfigVar, dict);
         if (r == null || r.Rows.Count == 0 || r.Rows[0].ItemArray.Length == 0)
             return null;
 
-        var rate = PoliNetwork.Db.Utils.Database.GetFirstValueFromDataTable(r);
+        var rate = DB.GetFirstValueFromDataTable(r);
 
         var jObject = new JObject
         {
