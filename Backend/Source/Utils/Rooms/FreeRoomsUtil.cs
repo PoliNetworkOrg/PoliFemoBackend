@@ -1,8 +1,8 @@
 ﻿using System.Web;
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Rooms;
+using PoliNetwork.Core.Data;
 
 namespace PoliFemoBackend.Source.Utils.Rooms;
 
@@ -50,7 +50,7 @@ public static class FreeRoomsUtil
         }
         catch (Exception ex)
         {
-            PoliNetwork.Core.Data.Variables.DefaultLogger.Error(ex.ToString());
+            Variables.DefaultLogger.Error(ex.ToString());
             throw;
         }
     }

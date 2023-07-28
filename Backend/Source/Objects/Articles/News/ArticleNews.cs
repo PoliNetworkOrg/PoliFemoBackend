@@ -1,20 +1,31 @@
-using HtmlAgilityPack;
 using ReverseMarkdown;
-using Newtonsoft.Json;
-namespace PoliFemoBackend.Source.Objects.Articles.News;
 
+namespace PoliFemoBackend.Source.Objects.Articles.News;
 
 public class ArticleNews
 {
-    public ArticleNews(string? tag, string? image) {
+    //internal News
+    private static readonly Config config = new()
+    {
+        RemoveComments = true
+    };
+
+    private static Converter converter = new(config);
+
+    public ArticleContent[] content = new ArticleContent[2];
+
+    public ArticleNews(string? tag, string? image)
+    {
         this.tag = tag;
         this.image = image;
-        this.internalNews = true;
-        this.author_id = 1;
-        this.content = new ArticleContent[2];
+        internalNews = true;
+        author_id = 1;
+        content = new ArticleContent[2];
     }
 
-    public ArticleNews(int author_id, string? image, DateTime target_time, DateTime? hidden_until, double? latitude, double? longitude, string? blurhash, int platforms, bool? internalNews, string? tag, ArticleContent[] content) {
+    public ArticleNews(int author_id, string? image, DateTime target_time, DateTime? hidden_until, double? latitude,
+        double? longitude, string? blurhash, int platforms, bool? internalNews, string? tag, ArticleContent[] content)
+    {
         this.author_id = author_id;
         this.image = image;
         this.target_time = target_time;
@@ -28,11 +39,10 @@ public class ArticleNews
         this.content = content;
     }
 
-    public ArticleNews(){
-
+    public ArticleNews()
+    {
     }
 
-    public ArticleContent[] content  = new ArticleContent[2];
     public int author_id { get; set; }
     public string? image { get; set; }
     public DateTime? target_time { get; set; }
@@ -44,29 +54,18 @@ public class ArticleNews
     public bool? internalNews { get; set; }
     public string? tag { get; set; }
 
-    //internal News
-    private static Config config = new ReverseMarkdown.Config
+    public void AddContent(ArticleContent c)
     {
-        RemoveComments = true
-    };
-
-    private static Converter converter = new Converter(config);
-
-    public void AddContent(ArticleContent c) {
-        if (content[0] == null) {
+        if (content[0] == null)
             content[0] = c;
-        } else {
+        else
             content[1] = c;
-        }
     }
 
-    public bool ShouldBeSkipped() {
-        if (content[0] == null) {
-            return true;
-        }
-        if (content[0].url == null) {
-            return true;
-        }
+    public bool ShouldBeSkipped()
+    {
+        if (content[0] == null) return true;
+        if (content[0].url == null) return true;
         return false;
     }
 }

@@ -4,6 +4,7 @@ using HtmlAgilityPack;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Threading;
 using PoliFemoBackend.Source.Utils.Html;
+using PoliNetwork.Core.Data;
 
 #endregion
 
@@ -47,7 +48,7 @@ public static class PoliMiNewsUtil
             catch (Exception ex)
             {
                 threadWithAction.Failed++;
-                PoliNetwork.Core.Data.Variables.DefaultLogger.Error(ex.ToString());
+                Variables.DefaultLogger.Error(ex.ToString());
             }
 
             Thread.Sleep(timeToWait);

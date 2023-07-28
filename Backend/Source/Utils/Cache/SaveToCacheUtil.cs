@@ -1,4 +1,5 @@
 ﻿using PoliFemoBackend.Source.Data;
+using PoliNetwork.Core.Data;
 using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Utils.Cache;
@@ -20,7 +21,7 @@ public static class SaveToCacheUtil
         }
         catch (Exception ex)
         {
-            PoliNetwork.Core.Data.Variables.DefaultLogger.Error(ex.ToString());
+            Variables.DefaultLogger.Error(ex.ToString());
         }
     }
 }

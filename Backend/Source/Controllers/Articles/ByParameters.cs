@@ -46,7 +46,8 @@ public class ArticlesByParameters : ControllerBase
                 error = "Invalid parameters"
             });
 
-        var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, platform, new LimitOffset(limit, pageOffset),
+        var r = SearchArticlesByParamsAsJobject(start, end, tag, author_id, title, platform,
+            new LimitOffset(limit, pageOffset),
             sort);
         return Ok(r);
     }

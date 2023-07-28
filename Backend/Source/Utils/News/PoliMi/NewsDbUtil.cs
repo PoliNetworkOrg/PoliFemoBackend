@@ -12,9 +12,7 @@ public static class NewsDbUtil
 
     internal static DoneEnum UpdateDbWithNews(ArticleNews newsItem)
     {
-        if (newsItem.ShouldBeSkipped()) {
-            return DoneEnum.SKIPPED;
-        }
+        if (newsItem.ShouldBeSkipped()) return DoneEnum.SKIPPED;
         var url = newsItem.content[0].url;
         if (string.IsNullOrEmpty(url))
             return DoneEnum.ERROR;
@@ -39,15 +37,16 @@ public static class NewsDbUtil
 
     private static void InsertItemInDb(ArticleNews newsItem) //11111
     {
-
         var contentids = new int[newsItem.content.Length];
 
         foreach (var content in newsItem.content)
         {
-            if (content.title == null) {
+            if (content.title == null)
+            {
                 contentids[Array.IndexOf(newsItem.content, content)] = -1;
                 continue;
             }
+
             const string query = "INSERT INTO ArticleContent (url, title, subtitle, content) " +
                                  "VALUES (@url, @title, @subtitle, @content) RETURNING id";
             var args = new Dictionary<string, object?>
@@ -55,7 +54,7 @@ public static class NewsDbUtil
                 { "@url", content.url },
                 { "@title", content.title },
                 { "@subtitle", content.subtitle },
-                { "@content", content.content },
+                { "@content", content.content }
             };
             var rt = DB.ExecuteSelect(query, GlobalVariables.GetDbConfig(), args);
             contentids[Array.IndexOf(newsItem.content, content)] = Convert.ToInt32(rt?.Rows[0][0]);
@@ -74,9 +73,9 @@ public static class NewsDbUtil
             { "@image", newsItem.image != "" ? newsItem.image : null },
             { "@blurhash", ArticleUtil.GenerateBlurhashAsync(newsItem.image).Result },
             { "@tag", newsItem.tag?.ToUpper() == "" ? "ALTRO" : newsItem.tag?.ToUpper() },
-            { "@platforms", 1},
+            { "@platforms", 1 },
             { "@plit", contentids[0] },
-            { "@plen", contentids[1] != -1 ? contentids[1] : null}
+            { "@plen", contentids[1] != -1 ? contentids[1] : null }
         };
         DB.Execute(query1, GlobalVariables.GetDbConfig(), args1);
     }

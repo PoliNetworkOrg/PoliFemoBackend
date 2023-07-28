@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Data;
+using PoliNetwork.Core.Data;
 using PoliNetwork.Db.Utils;
 using DB = PoliNetwork.Db.Utils.Database;
 
@@ -11,12 +12,10 @@ public static class DbConfigUtil
 {
     public static DbConfig? DbConfigVar { get; set; }
 
-    
+
     public static void InitializeDbConfig()
     {
-
-        
-        if (!Directory.Exists(Constants.ConfigPath)) 
+        if (!Directory.Exists(Constants.ConfigPath))
             Directory.CreateDirectory(Constants.ConfigPath);
 
         const string configDbconfigJson = Constants.DbConfig;
@@ -27,15 +26,12 @@ public static class DbConfigUtil
                 var text = File.ReadAllText(configDbconfigJson);
                 DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
                 DbConfigVar?.FixName();
-                if (DbConfigVar != null)
-                {
-                    DbConfigVar.Logger = PoliNetwork.Core.Data.Variables.DefaultLogger;
-                }
+                if (DbConfigVar != null) DbConfigVar.Logger = Variables.DefaultLogger;
                 GlobalVariables.DbConfigVar = DbConfigVar;
             }
             catch (Exception ex)
             {
-                PoliNetwork.Core.Data.Variables.DefaultLogger.Error(ex.ToString());
+                Variables.DefaultLogger.Error(ex.ToString());
             }
 
             if (DbConfigVar == null)
@@ -52,7 +48,7 @@ public static class DbConfigUtil
         {
             GlobalVariables.DbConnection.Open();
             if (GlobalVariables.DbConnection.State == ConnectionState.Open)
-                PoliNetwork.Core.Data.Variables.DefaultLogger.Info("Connection to db on start works! Performing table checks...");
+                Variables.DefaultLogger.Info("Connection to db on start works! Performing table checks...");
 
             if (GlobalVariables.SkipDbSetup is null or false)
             {
@@ -60,30 +56,30 @@ public static class DbConfigUtil
                 DB.ExecuteSelect(sql, GlobalVariables.DbConfigVar);
             }
 
-            PoliNetwork.Core.Data.Variables.DefaultLogger.Info("Table checks completed! Starting application...");
+            Variables.DefaultLogger.Info("Table checks completed! Starting application...");
         }
         catch (Exception ex)
         {
-            
-            PoliNetwork.Core.Data.Variables.DefaultLogger.Emergency("An error occurred while initializing the database. Check the details and try again.");
-            PoliNetwork.Core.Data.Variables.DefaultLogger.Emergency(ex.Message);
-            
+            Variables.DefaultLogger.Emergency(
+                "An error occurred while initializing the database. Check the details and try again.");
+            Variables.DefaultLogger.Emergency(ex.Message);
+
             Environment.Exit(1);
         }
     }
-    
+
     private static void GenerateDbConfigEmpty()
     {
-        DbConfigVar = new DbConfig(PoliNetwork.Core.Data.Variables.DefaultLogger);
+        DbConfigVar = new DbConfig(Variables.DefaultLogger);
         GlobalVariables.DbConfigVar = DbConfigVar;
         var x = JsonConvert.SerializeObject(DbConfigVar);
         FileInfo file = new(Constants.DbConfig);
         file.Directory?.Create();
         File.WriteAllText(file.FullName, x);
-        PoliNetwork.Core.Data.Variables.DefaultLogger.Info("Initialized DBConfig to empty!");
+        Variables.DefaultLogger.Info("Initialized DBConfig to empty!");
         throw new Exception("Database failed to initialize, we generated an empty file to fill");
     }
-    
+
     public static DbConfig? GetDbConfigNew()
     {
         return GlobalVariables.GetDbConfig();

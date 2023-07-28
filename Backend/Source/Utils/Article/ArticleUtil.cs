@@ -3,7 +3,6 @@
 using System.Data;
 using Blurhash.ImageSharp;
 using Newtonsoft.Json.Linq;
-using Image = SixLabors.ImageSharp.Image;
 
 #endregion
 
@@ -15,7 +14,8 @@ public static class ArticleUtil
     {
         if (url == null || url == "") return null;
 
-        using(var bytes = await new HttpClient().GetStreamAsync(url)) {
+        using (var bytes = await new HttpClient().GetStreamAsync(url))
+        {
             var image = Image.Load<Rgba32>(bytes);
             return Blurhasher.Encode(image, 5, 5);
         }
@@ -50,20 +50,22 @@ public static class ArticleUtil
         };
 
         var contit = new JObject
-            {
-                { "title", row["title_it"].ToString() },
-                { "subtitle", row["subtitle_it"].ToString() != "" ? row["subtitle_it"].ToString() : null },
-                { "content", row["content_it"].ToString() },
-                { "url", row["url_it"].ToString() != "" ? row["url_it"].ToString() : null}
-            };
+        {
+            { "title", row["title_it"].ToString() },
+            { "subtitle", row["subtitle_it"].ToString() != "" ? row["subtitle_it"].ToString() : null },
+            { "content", row["content_it"].ToString() },
+            { "url", row["url_it"].ToString() != "" ? row["url_it"].ToString() : null }
+        };
 
-        var conten = row["title_en"].ToString() != "" ? new JObject
+        var conten = row["title_en"].ToString() != ""
+            ? new JObject
             {
                 { "title", row["title_en"].ToString() },
                 { "subtitle", row["subtitle_en"].ToString() != "" ? row["subtitle_en"].ToString() : null },
                 { "content", row["content_en"].ToString() },
                 { "url", row["url_en"].ToString() != "" ? row["url_en"].ToString() : null }
-            } : null;
+            }
+            : null;
 
 
         var b = new JObject

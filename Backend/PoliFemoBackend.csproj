@@ -15,8 +15,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <_WebToolingArtifacts Remove="Properties\PublishProfiles\linux-x64.pubxml" />
-        <_WebToolingArtifacts Remove="Properties\PublishProfiles\win-x64.pubxml" />
+        <_WebToolingArtifacts Remove="Properties\PublishProfiles\linux-x64.pubxml"/>
+        <_WebToolingArtifacts Remove="Properties\PublishProfiles\win-x64.pubxml"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -26,25 +26,25 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="4.3.0" />
-        <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.3.0" />
-        <PackageReference Include="AspNetCore.Proxy" Version="4.4.0" />
-        <PackageReference Include="Blurhash.ImageSharp" Version="3.0.0" />
-        <PackageReference Include="EPPlus" Version="6.2.7" />
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.50" />
-        <PackageReference Include="Jsonize" Version="3.1.1" />
-        <PackageReference Include="Jsonize.Parser" Version="3.1.1" />
-        <PackageReference Include="Jsonize.Serializer" Version="3.1.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.9" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
-        <PackageReference Include="Mysql.Data" Version="8.1.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="ReverseMarkdown" Version="3.25.0" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.1" />
+        <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="4.3.0"/>
+        <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.3.0"/>
+        <PackageReference Include="AspNetCore.Proxy" Version="4.4.0"/>
+        <PackageReference Include="Blurhash.ImageSharp" Version="3.0.0"/>
+        <PackageReference Include="EPPlus" Version="6.2.7"/>
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.50"/>
+        <PackageReference Include="Jsonize" Version="3.1.1"/>
+        <PackageReference Include="Jsonize.Parser" Version="3.1.1"/>
+        <PackageReference Include="Jsonize.Serializer" Version="3.1.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.9"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0"/>
+        <PackageReference Include="Mysql.Data" Version="8.1.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="ReverseMarkdown" Version="3.25.0"/>
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.1"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -57,15 +57,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Source\Utils\Temp\Migrate\" />
+        <Folder Include="Source\Utils\Temp\Migrate\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Lib_CSharp\PoliNetwork.Db\PoliNetwork.Db.csproj" />
+        <ProjectReference Include="..\Lib_CSharp\PoliNetwork.Db\PoliNetwork.Db.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Lib_CSharp\PoliNetwork.Core\PoliNetwork.Core.csproj" />
+        <ProjectReference Include="..\Lib_CSharp\PoliNetwork.Core\PoliNetwork.Core.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Controllers.Articles;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Utils.Auth;
 using DB = PoliNetwork.Db.Utils.Database;
 
@@ -9,7 +10,7 @@ namespace PoliFemoBackend.Source.Utils.Article;
 
 public static class InsertArticleUtil
 {
-    internal static ObjectResult InsertArticleDbMethod(Objects.Articles.News.ArticleNews data, InsertArticle insertArticle)
+    internal static ObjectResult InsertArticleDbMethod(ArticleNews data, InsertArticle insertArticle)
     {
         var isValidTag = DB.ExecuteSelect("SELECT * FROM Tags WHERE name = @tag",
             GlobalVariables.DbConfigVar,
@@ -50,19 +51,20 @@ public static class InsertArticleUtil
     }
 
 
-    private static ObjectResult InsertArticleDb(Objects.Articles.News.ArticleNews data, ControllerBase insertArticle)
+    private static ObjectResult InsertArticleDb(ArticleNews data, ControllerBase insertArticle)
     {
         List<int> idContent = new();
 
-        foreach (var articlecontent in data.content) {
-
+        foreach (var articlecontent in data.content)
+        {
             if (articlecontent.title == null)
                 return insertArticle.BadRequest(new JObject
                 {
                     { "error", "All languages must have a valid title" }
                 });
 
-            var query = "INSERT INTO ArticleContent(title,subtitle,content,url) VALUES(@title,@subtitle,@content,@url) RETURNING id";
+            var query =
+                "INSERT INTO ArticleContent(title,subtitle,content,url) VALUES(@title,@subtitle,@content,@url) RETURNING id";
             var result = DB.ExecuteSelect(query, GlobalVariables.DbConfigVar,
                 new Dictionary<string, object?>
                 {
@@ -71,7 +73,7 @@ public static class InsertArticleUtil
                     { "@content", articlecontent.content },
                     { "@url", null }
                 });
-        
+
             idContent.Add(Convert.ToInt32(DB.GetFirstValueFromDataTable(result)));
         }
 
@@ -80,9 +82,12 @@ public static class InsertArticleUtil
             VALUES (@id_tag, NOW(), @targetTimeConverted, @hiddenUntil, @latitude, @longitude, @image, @id_author, @platforms, @blurhash, @ctit, @cten)";
 
         string? blurhash = null;
-        try {
+        try
+        {
             blurhash = ArticleUtil.GenerateBlurhashAsync(data.image).Result;
-        } catch (Exception) {
+        }
+        catch (Exception)
+        {
             return insertArticle.BadRequest(new JObject
             {
                 { "error", "Invalid image" }
@@ -90,7 +95,6 @@ public static class InsertArticleUtil
         }
 
         var resultins = DB.Execute(insertQuery, GlobalVariables.DbConfigVar,
-            
             new Dictionary<string, object?>
             {
                 { "@latitude", data.latitude == 0 ? null : data.latitude },

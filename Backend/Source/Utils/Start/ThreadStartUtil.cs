@@ -1,6 +1,6 @@
-﻿using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Objects.Threading;
+﻿using PoliFemoBackend.Source.Objects.Threading;
 using PoliFemoBackend.Source.Utils.News.PoliMi;
+using PoliNetwork.Core.Data;
 
 namespace PoliFemoBackend.Source.Utils.Start;
 
@@ -18,7 +18,7 @@ public static class ThreadStartUtil
         }
         else
         {
-            PoliNetwork.Core.Data.Variables.DefaultLogger.Info("--no-news flag found. We will not search for news.");
+            Variables.DefaultLogger.Info("--no-news flag found. We will not search for news.");
         }
     }
 }

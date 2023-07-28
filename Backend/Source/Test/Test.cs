@@ -2,8 +2,6 @@
 
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.News.PoliMi;
-using PoliFemoBackend.Source.Utils.Rooms;
-using PoliFemoBackend.Source.Utils.Rooms.Search;
 
 #endregion
 
@@ -35,7 +33,6 @@ public static class Test
             var r2 = DownloadNewsUtil.DownloadCurrentNews();
             var newsPolimis = r2.ToList();
             Console.WriteLine(newsPolimis.Count);
-
         }
         catch (Exception e)
         {

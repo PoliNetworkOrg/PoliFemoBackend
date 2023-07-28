@@ -1,5 +1,7 @@
 using PoliFemoBackend.Source.Data;
+using PoliNetwork.Core.Data;
 using PoliNetwork.Core.Utils.LoggerNS;
+using LogLevel = PoliNetwork.Core.Utils.LoggerNS.LogLevel;
 
 namespace PoliFemoBackend.Source.Utils;
 
@@ -25,7 +27,7 @@ public class ArgumentsUtil
                         break;
                     case "log-level":
                         var logConfig = GetLogConfig(value);
-                        PoliNetwork.Core.Data.Variables.DefaultLogger.SetLogConfing(logConfig);
+                        Variables.DefaultLogger.SetLogConfing(logConfig);
                         break;
                     case "no-db-setup":
                         GlobalVariables.SkipDbSetup = value == "true";
@@ -47,7 +49,7 @@ public class ArgumentsUtil
     private static LogConfig GetLogConfig(string value)
     {
         GlobalVariables.LogLevel = int.Parse(value);
-        var logLevel = (PoliNetwork.Core.Utils.LoggerNS.LogLevel)GlobalVariables.LogLevel;
+        var logLevel = (LogLevel)GlobalVariables.LogLevel;
         var logConfig = new LogConfig(logLevel, true, "logs");
         return logConfig;
     }

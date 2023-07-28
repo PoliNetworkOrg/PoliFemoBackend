@@ -16,7 +16,7 @@ internal static class Program
     private static void Main(string[] args)
     {
         //FirstThingsToDo();
-        
+
         if (args.Length > 0 && args[0] == "test")
         {
             Test.Test.RunTest();

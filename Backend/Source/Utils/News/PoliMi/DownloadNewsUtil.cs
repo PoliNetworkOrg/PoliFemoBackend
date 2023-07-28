@@ -66,11 +66,13 @@ public static class DownloadNewsUtil
             }
 
             var result = new ArticleNews(tagFinal ?? "", urlImgFinal ?? "");
-            if (internalNews ?? false) {
+            if (internalNews ?? false)
+            {
                 var cts = ArticleContent.LoadContentFromURL(url2 ?? "");
                 result.AddContent(cts[0]);
                 result.AddContent(cts[1]);
             }
+
             return result;
         }
         catch (Exception ex)

@@ -1,6 +1,4 @@
-﻿using PoliNetwork.Core.Utils.LoggerNS;
-
-namespace PoliFemoBackend.Source.Data;
+﻿namespace PoliFemoBackend.Source.Data;
 
 public static class Constants
 {
@@ -15,8 +13,6 @@ public static class Constants
     public const string DataPath = "./data";
 
     public const string LogsPath = "./logs";
-
-    public static readonly string SqlCommandsPath = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "./Backend/Other/DB/DBPolifemo.sql" : "Other/DB/DBPolifemo.sql";
 
     public const string AzureClientId = "a06b160b-8d5d-4be2-b452-ea3b768998ed";
 
@@ -36,6 +32,11 @@ public static class Constants
     public const string Authorization = "Authorization";
     public const double MaxRate = 5;
     public const double MinRate = 1;
+
+    public static readonly string SqlCommandsPath =
+        Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
+            ? "./Backend/Other/DB/DBPolifemo.sql"
+            : "Other/DB/DBPolifemo.sql";
 
     public static class Permissions
     {

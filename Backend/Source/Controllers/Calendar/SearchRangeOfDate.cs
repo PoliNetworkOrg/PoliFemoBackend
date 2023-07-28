@@ -4,7 +4,7 @@ using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils.Database;
+using PoliNetwork.Db.Utils;
 
 #endregion
 
@@ -33,7 +33,7 @@ public class SearchRangeOfDate : ControllerBase
         query = query.Replace("@start", start.ToString("yyyy-MM-dd"));
         query = query.Replace("@end", end.ToString("yyyy-MM-dd"));
 
-        var results = PoliNetwork.Db.Utils.Database.ExecuteSelect(query, GlobalVariables.DbConfigVar);
+        var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar);
 
         if (results == null) return StatusCode(500);
         if (results.Rows.Count == 0) return NoContent();

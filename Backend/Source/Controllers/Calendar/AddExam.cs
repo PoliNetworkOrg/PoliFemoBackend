@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils.Database;
+using PoliNetwork.Db.Utils;
 
 #endregion
 
@@ -97,7 +97,7 @@ public class AddExam : ControllerBase
                         }
                 }
 
-                var results = PoliNetwork.Db.Utils.Database.Execute(query, GlobalVariables.DbConfigVar);
+                var results = Database.Execute(query, GlobalVariables.DbConfigVar);
             }
         }
 
