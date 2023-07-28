@@ -1,4 +1,6 @@
-﻿using App.Metrics;
+﻿#region
+
+using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Prometheus;
 using AspNetCore.Proxy;
@@ -10,6 +12,8 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using PoliFemoBackend.Source.Configure;
 using PoliFemoBackend.Source.Data;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Main.WebApplicationUtil;
 

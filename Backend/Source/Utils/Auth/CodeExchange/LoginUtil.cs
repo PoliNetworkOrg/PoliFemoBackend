@@ -1,9 +1,13 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿#region
+
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Auth;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Auth.CodeExchange;
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿#region
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
@@ -6,6 +8,8 @@ using PoliFemoBackend.Source.Objects.Permissions;
 using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Database;
 using DB = PoliNetwork.Db.Utils.Database;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Controllers.Accounts;
 

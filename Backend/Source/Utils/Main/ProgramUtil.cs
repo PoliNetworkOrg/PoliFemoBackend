@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿#region
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Main;
 

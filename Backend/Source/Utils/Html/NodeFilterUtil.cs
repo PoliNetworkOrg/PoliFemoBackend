@@ -1,5 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿#region
+
+using System.Diagnostics.CodeAnalysis;
 using HtmlAgilityPack;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Html;
 

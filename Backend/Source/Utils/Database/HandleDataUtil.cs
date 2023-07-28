@@ -1,5 +1,9 @@
-﻿using System.Data;
+﻿#region
+
+using System.Data;
 using Newtonsoft.Json.Linq;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Database;
 

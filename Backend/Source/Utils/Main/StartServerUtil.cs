@@ -1,6 +1,10 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿#region
+
+using System.IdentityModel.Tokens.Jwt;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Main.WebApplicationUtil;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Main;
 

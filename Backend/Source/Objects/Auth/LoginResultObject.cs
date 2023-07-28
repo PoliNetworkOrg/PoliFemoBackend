@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#region
+
+using Microsoft.AspNetCore.Mvc;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Objects.Auth;
 

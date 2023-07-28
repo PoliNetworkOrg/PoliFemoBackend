@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿#region
+
+using Newtonsoft.Json.Linq;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Objects.Permissions;
 

@@ -1,7 +1,11 @@
-﻿using HtmlAgilityPack;
+﻿#region
+
+using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Rooms;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Rooms;
 

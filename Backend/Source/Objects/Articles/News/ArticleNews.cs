@@ -1,4 +1,8 @@
+#region
+
 using ReverseMarkdown;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Objects.Articles.News;
 

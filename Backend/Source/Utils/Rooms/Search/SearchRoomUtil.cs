@@ -1,3 +1,5 @@
+#region
+
 using System.Collections;
 using System.Data;
 using System.Net;
@@ -7,6 +9,8 @@ using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils.Cache;
 using DB = PoliNetwork.Db.Utils.Database;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Rooms.Search;
 

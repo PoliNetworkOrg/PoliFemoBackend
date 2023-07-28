@@ -1,7 +1,11 @@
+#region
+
 using HtmlAgilityPack;
 using PoliFemoBackend.Source.Utils.Article;
 using PoliNetwork.Core.Data;
 using ReverseMarkdown;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Objects.Articles.News;
 

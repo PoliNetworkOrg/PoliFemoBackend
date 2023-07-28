@@ -1,6 +1,10 @@
+#region
+
 using Microsoft.AspNetCore.Authorization;
 using PoliFemoBackend.Source.Data;
 using DB = PoliNetwork.Db.Utils.Database;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Middlewares;
 

@@ -1,10 +1,14 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿#region
+
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Auth;
 using DB = PoliNetwork.Db.Utils.Database;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Controllers.Rooms;
 

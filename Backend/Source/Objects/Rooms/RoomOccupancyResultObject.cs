@@ -1,4 +1,8 @@
-﻿using PoliFemoBackend.Source.Enums;
+﻿#region
+
+using PoliFemoBackend.Source.Enums;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Objects.Rooms;
 

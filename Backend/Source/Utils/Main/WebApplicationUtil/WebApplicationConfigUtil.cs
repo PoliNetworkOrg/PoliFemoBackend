@@ -1,6 +1,10 @@
-﻿using PoliFemoBackend.Source.Data;
+﻿#region
+
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Middlewares;
 using Swashbuckle.AspNetCore.SwaggerUI;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Main.WebApplicationUtil;
 

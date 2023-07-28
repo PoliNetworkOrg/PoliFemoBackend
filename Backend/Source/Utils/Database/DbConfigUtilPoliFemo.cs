@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿#region
+
+using System.Data;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliFemoBackend.Source.Data;
@@ -6,6 +8,8 @@ using PoliNetwork.Db.Objects;
 using PoliNetwork.Db.Utils;
 using DB = PoliNetwork.Db.Utils.Database;
 using GlobalVariables = PoliNetwork.Core.Data.GlobalVariables;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Database;
 

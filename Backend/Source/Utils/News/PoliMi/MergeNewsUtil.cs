@@ -1,6 +1,10 @@
-﻿using HtmlAgilityPack;
+﻿#region
+
+using HtmlAgilityPack;
 using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Utils.Html;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 

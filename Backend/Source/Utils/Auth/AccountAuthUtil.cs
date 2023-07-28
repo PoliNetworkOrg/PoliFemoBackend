@@ -1,7 +1,11 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿#region
+
+using System.IdentityModel.Tokens.Jwt;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Permissions;
 using DB = PoliNetwork.Db.Utils.Database;
+
+#endregion
 
 namespace PoliFemoBackend.Source.Utils.Auth;
 
