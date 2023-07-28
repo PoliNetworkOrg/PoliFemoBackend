@@ -50,7 +50,7 @@ public static class FreeRoomsUtil
         }
         catch (Exception ex)
         {
-            GlobalVariables.Logger.Error(ex.ToString());
+            PoliNetwork.Core.Data.Variables.DefaultLogger.Error(ex.ToString());
             throw;
         }
     }

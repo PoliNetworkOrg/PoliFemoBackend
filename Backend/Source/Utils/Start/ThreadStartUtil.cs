@@ -18,7 +18,7 @@ public static class ThreadStartUtil
         }
         else
         {
-            GlobalVariables.Logger.Info("--no-news flag found. We will not search for news.");
+            PoliNetwork.Core.Data.Variables.DefaultLogger.Info("--no-news flag found. We will not search for news.");
         }
     }
 }

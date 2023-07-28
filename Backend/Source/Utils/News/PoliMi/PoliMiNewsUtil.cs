@@ -1,7 +1,6 @@
 ﻿#region
 
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Threading;
 using PoliFemoBackend.Source.Utils.Html;
@@ -48,7 +47,7 @@ public static class PoliMiNewsUtil
             catch (Exception ex)
             {
                 threadWithAction.Failed++;
-                GlobalVariables.Logger.Error(ex.ToString());
+                PoliNetwork.Core.Data.Variables.DefaultLogger.Error(ex.ToString());
             }
 
             Thread.Sleep(timeToWait);

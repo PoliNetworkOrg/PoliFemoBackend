@@ -18,7 +18,7 @@ public static class GlobalVariables
     public static WebApplication? App;
     private static readonly LogConfig LogConfig =
         new(PoliNetwork.Core.Utils.LoggerNS.LogLevel.WARNING, true, Constants.LogsPath);
-    public static Logger Logger { get; set; } = new Logger(LogConfig);
+
     public static string? BasePath { get; set; }
     public static int LogLevel { get; set; }
     public static DbConfig? DbConfigVar { get; set; }

@@ -25,12 +25,11 @@ public class ArgumentsUtil
                         break;
                     case "log-level":
                         var logConfig = GetLogConfig(value);
-                        GlobalVariables.Logger = new Logger(logConfig);
+                        PoliNetwork.Core.Data.Variables.DefaultLogger.SetLogConfing(logConfig);
                         break;
                     case "no-db-setup":
                         GlobalVariables.SkipDbSetup = value == "true";
                         break;
-                        ;
                 }
             }
             //flags

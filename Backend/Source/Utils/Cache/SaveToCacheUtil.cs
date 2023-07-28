@@ -20,7 +20,7 @@ public static class SaveToCacheUtil
         }
         catch (Exception ex)
         {
-            GlobalVariables.Logger.Error(ex.ToString());
+            PoliNetwork.Core.Data.Variables.DefaultLogger.Error(ex.ToString());
         }
     }
 }
