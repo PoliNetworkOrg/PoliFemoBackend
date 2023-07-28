@@ -18,7 +18,7 @@ public static class ThreadStartUtil
         }
         else
         {
-            Variables.DefaultLogger.Info("--no-news flag found. We will not search for news.");
+            GlobalVariables.DefaultLogger.Info("--no-news flag found. We will not search for news.");
         }
     }
 }

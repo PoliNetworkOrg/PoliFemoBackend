@@ -50,7 +50,7 @@ public static class FreeRoomsUtil
         }
         catch (Exception ex)
         {
-            Variables.DefaultLogger.Error(ex.ToString());
+            GlobalVariables.DefaultLogger.Error(ex.ToString());
             throw;
         }
     }

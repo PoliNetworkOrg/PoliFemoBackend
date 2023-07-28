@@ -48,7 +48,7 @@ public static class PoliMiNewsUtil
             catch (Exception ex)
             {
                 threadWithAction.Failed++;
-                Variables.DefaultLogger.Error(ex.ToString());
+                GlobalVariables.DefaultLogger.Error(ex.ToString());
             }
 
             Thread.Sleep(timeToWait);

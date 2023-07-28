@@ -5,7 +5,7 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils.Database;
 using PoliNetwork.Core.Utils.LoggerNS;
-using PoliNetwork.Db.Utils;
+using PoliNetwork.Db.Objects;
 
 #endregion
 
@@ -42,7 +42,7 @@ public static class GlobalVariables
         if (DbConfigVar != null)
             return DbConfigVar;
 
-        DbConfigUtil.InitializeDbConfig();
+        DbConfigUtilPoliFemo.InitializeDbConfig();
         return DbConfigVar;
     }
 }

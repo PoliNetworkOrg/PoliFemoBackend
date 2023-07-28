@@ -24,7 +24,7 @@ public static class Start
 
         try
         {
-            DbConfigUtil.InitializeDbConfig();
+            DbConfigUtilPoliFemo.InitializeDbConfig();
         }
         catch (Exception ex)
         {
