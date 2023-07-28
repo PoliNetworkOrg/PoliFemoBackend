@@ -24,8 +24,8 @@ public class ArgumentsUtil
                         GlobalVariables.BasePath = value;
                         break;
                     case "log-level":
-                        GlobalVariables.LogLevel = int.Parse(value);
-                        GlobalVariables.Logger = new Logger((PoliNetwork.Core.Utils.LoggerNS.LogLevel)GlobalVariables.LogLevel, "logs");
+                        var logConfig = GetLogConfig(value);
+                        GlobalVariables.Logger = new Logger(logConfig);
                         break;
                     case "no-db-setup":
                         GlobalVariables.SkipDbSetup = value == "true";
@@ -43,5 +43,13 @@ public class ArgumentsUtil
                     _ => UseNews
                 };
             }
+    }
+
+    private static LogConfig GetLogConfig(string value)
+    {
+        GlobalVariables.LogLevel = int.Parse(value);
+        var logLevel = (PoliNetwork.Core.Utils.LoggerNS.LogLevel)GlobalVariables.LogLevel;
+        var logConfig = new LogConfig(logLevel, true, "logs");
+        return logConfig;
     }
 }
