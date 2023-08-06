@@ -49,9 +49,9 @@ public static class DbConfigUtilPoliFemo
 
 
         var connectionString = DbConfigUtils.GetConnectionString(Data.GlobalVariables.DbConfigVar);
-        if (string.IsNullOrEmpty(connectionString)) 
+        if (string.IsNullOrEmpty(connectionString))
             return;
-        
+
         Data.GlobalVariables.DbConnection = new MySqlConnection(connectionString);
         try
         {
