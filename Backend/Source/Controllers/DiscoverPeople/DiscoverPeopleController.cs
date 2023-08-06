@@ -42,7 +42,12 @@ public class DiscoverPeopleController : ControllerBase
         var results = DB.ExecuteSelect(
             "SELECT user_id, discover_bio " +
             "FROM Users " +
-            "WHERE user_id NOT IN (SELECT to_person PeopleDiscoverMatch WHERE from_person = @id) ORDER BY RAND()  LIMIT 10",
+            "WHERE user_id NOT IN (SELECT to_person PeopleDiscoverMatch WHERE from_person = @id) " +
+            "AND discover_bio IS NOT NULL " +
+            "AND discover_bio != '' " +
+            "AND discover_link IS NOT NULL " +
+            "AND discover_link != '' " +
+            "ORDER BY RAND()  LIMIT 10",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
