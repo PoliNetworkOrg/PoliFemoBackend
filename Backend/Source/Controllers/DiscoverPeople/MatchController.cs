@@ -67,19 +67,18 @@ public class MatchController : ControllerBase
             "(SELECT COALESCE(MAX(ms), 0) + 1 FROM PeopleDiscoverMatch), " +
             "@ms" +
             ")";
-        
+
         var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             { "@p1", fromUser },
             { "@p2", toUser },
             { "@a", yesOrNo },
-            {"@mn", 0},
-            {"@ms", sRandom}
+            { "@ms", sRandom }
         });
         return discoverPeopleController.Ok(new JObject { { "r", i } });
     }
 
-    static string GenerateRandomHash(int length)
+    private static string GenerateRandomHash(int length)
     {
         var randomBytes = new byte[length];
         using (var rng = RandomNumberGenerator.Create())
@@ -90,10 +89,7 @@ public class MatchController : ControllerBase
         var hashBytes = SHA256.HashData(randomBytes);
 
         var hashStringBuilder = new StringBuilder();
-        foreach (var b in hashBytes)
-        {
-            hashStringBuilder.Append(b.ToString("x2"));
-        }
+        foreach (var b in hashBytes) hashStringBuilder.Append(b.ToString("x2"));
 
         return hashStringBuilder.ToString()[..length];
     }
@@ -102,7 +98,7 @@ public class MatchController : ControllerBase
     {
         /*
             tu = {tempSub} (@id)
-            
+
             u.id  = altro
             p1.from = tu
             p1.to = altro
@@ -115,16 +111,17 @@ public class MatchController : ControllerBase
             p1.from = p2.to
 
          */
-        const string q = "SELECT u.user_id, u.discover_bio, u.discover_link, p1.mn as mn1, p1.ms as ms1, p2.mn as mn2, p2.ms as ms2 " +
-                         "FROM Users u, PeopleDiscoverMatch p1, PeopleDiscoverMatch p2 " +
-                         "WHERE u.user_id = p1.to_person " +
-                         "AND p1.from_person = SHA2(@id,256) " +
-                         "AND p1.answer = TRUE " +
-                         "AND p1.to_person = p2.from_person " +
-                         "AND p2.from_person = p1.to_person " +
-                         "AND p2.to_person = SHA2(@id,256) " +
-                         "AND p2.answer = TRUE";
-        
+        const string q =
+            "SELECT u.user_id, u.discover_bio, u.discover_link, p1.mn as mn1, p1.ms as ms1, p2.mn as mn2, p2.ms as ms2 " +
+            "FROM Users u, PeopleDiscoverMatch p1, PeopleDiscoverMatch p2 " +
+            "WHERE u.user_id = p1.to_person " +
+            "AND p1.from_person = SHA2(@id,256) " +
+            "AND p1.answer = TRUE " +
+            "AND p1.to_person = p2.from_person " +
+            "AND p2.from_person = p1.to_person " +
+            "AND p2.to_person = SHA2(@id,256) " +
+            "AND p2.answer = TRUE";
+
         var dictionary = new Dictionary<string, object?>
         {
             { "@id", tempSub }
