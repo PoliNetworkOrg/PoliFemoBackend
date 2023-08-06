@@ -22,11 +22,11 @@ public static class Test
         }
     }
 
-    private static async Task TestMain()
+    private static Task TestMain()
     {
         Console.WriteLine("Test");
 
-        //FixGlobalDbConfig();
+        FixGlobalDbConfig();
 
         try
         {
@@ -39,6 +39,8 @@ public static class Test
             Console.WriteLine(e);
             throw;
         }
+
+        return Task.CompletedTask;
 
 
         //DbConfig.InitializeDbConfig();

@@ -36,6 +36,8 @@ public class ArticleByIdController : ControllerBase
             return null;
 
         var userid = GetUserId(tempSub);
+        if (string.IsNullOrEmpty(userid))
+            return null;
 
         var permissions = AccountAuthUtil.GetPermissions(tempSub);
         var permArray = Grant.GetFormattedPerms(permissions);
@@ -48,8 +50,11 @@ public class ArticleByIdController : ControllerBase
         });
     }
 
-    public string GetUserId(string sub)
+    public string? GetUserId(string sub)
     {
+        if (string.IsNullOrEmpty(sub))
+            return null;
+
         var sourceBytes = Encoding.UTF8.GetBytes(sub);
         var hashBytes = SHA256.HashData(sourceBytes);
         var userid = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
