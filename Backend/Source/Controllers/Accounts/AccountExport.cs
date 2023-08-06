@@ -39,15 +39,15 @@ public class AccountExportController : ControllerBase
             { "@sub", sub }
         };
         var q = DB.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
-        var lastActivity = DateTime.Parse(q?.Rows[0]["last_activity"]?.ToString() ?? "");
-        var id = q?.Rows[0]["user_id"]?.ToString() ?? "";
-        var accountType = q?.Rows[0]["account_type"]?.ToString() ?? "";
-        var expiresDays = int.Parse(q?.Rows[0]["expires_days"]?.ToString() ?? "0");
+        var lastActivity = DateTime.Parse(q?.Rows[0]["last_activity"].ToString() ?? "");
+        var id = q?.Rows[0]["user_id"].ToString() ?? "";
+        var accountType = q?.Rows[0]["account_type"].ToString() ?? "";
+        var expiresDays = int.Parse(q?.Rows[0]["expires_days"].ToString() ?? "0");
 
         var other = new JObject
         {
-            ["discover_bio"] = q?.Rows[0]["discover_bio"]?.ToString(),
-            ["discover_link"] = q?.Rows[0]["discover_link"]?.ToString()
+            ["discover_bio"] = q?.Rows[0]["discover_bio"].ToString(),
+            ["discover_link"] = q?.Rows[0]["discover_link"].ToString()
         };
 
         query = "SELECT * FROM RoomOccupancyReports WHERE user_id = SHA2(@sub, 256)";
@@ -77,7 +77,8 @@ public class AccountExportController : ControllerBase
             account_type = accountType,
             expires_days = eDays,
             permissions = Grant.GetFormattedPerms(AccountAuthUtil.GetPermissions(sub)),
-            room_occupancy_reports = roc
+            room_occupancy_reports = roc,
+            other
         });
         var fileContents = Encoding.UTF8.GetBytes(fromObject.ToString());
         var fileDownloadName = id + ".json";
