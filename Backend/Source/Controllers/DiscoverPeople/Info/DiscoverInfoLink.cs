@@ -49,6 +49,9 @@ public class DiscoverInfoLink : ControllerBase
 
     private static ActionResult SetLink(string tempSub, string stringLink, ControllerBase discoverInfo)
     {
+        if (IsValidHttpOrHttpsLink(stringLink) == false)
+            return discoverInfo.BadRequest();
+        
         const string q = "UPDATE Users SET discover_link = @link WHERE user_id = @id";
         var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
@@ -56,5 +59,11 @@ public class DiscoverInfoLink : ControllerBase
             { "@link", stringLink }
         });
         return discoverInfo.Ok(i);
+    }
+    
+    static bool IsValidHttpOrHttpsLink(string input)
+    {
+        return Uri.TryCreate(input, UriKind.Absolute, out Uri? result) &&
+               (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps);
     }
 }
