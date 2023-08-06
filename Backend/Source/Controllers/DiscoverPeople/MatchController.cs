@@ -1,8 +1,6 @@
 #region
 
 using System.Data;
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -26,7 +24,7 @@ public class MatchController : ControllerBase
     public ActionResult SetAnswerMatchYes(string id)
     {
         var tempSub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        return string.IsNullOrEmpty(tempSub) ? new EmptyResult() : SetAnswerMatch(tempSub, id, true, this);
+        return string.IsNullOrEmpty(tempSub) ? new EmptyResult() : MatchUtil.SetAnswerMatch(tempSub, id, true, this);
     }
 
 
@@ -50,49 +48,9 @@ public class MatchController : ControllerBase
     public ActionResult SetAnswerMatchNo(string id)
     {
         var tempSub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        return string.IsNullOrEmpty(tempSub) ? new EmptyResult() : SetAnswerMatch(tempSub, id, false, this);
+        return string.IsNullOrEmpty(tempSub) ? new EmptyResult() : MatchUtil.SetAnswerMatch(tempSub, id, false, this);
     }
 
-    private static ActionResult SetAnswerMatch(string fromUser, string toUser, bool yesOrNo,
-        ControllerBase discoverPeopleController)
-    {
-        var sRandom = GenerateRandomHash(20);
-        const string q =
-            "INSERT IGNORE INTO PeopleDiscoverMatch " +
-            "(from_person, to_person, answer, mn, ms) " +
-            "VALUES " +
-            "(SHA2(@p1,256)," +
-            "SHA2(@p2,256)," +
-            "@a," +
-            "(SELECT COALESCE(MAX(ms), 0) + 1 FROM PeopleDiscoverMatch), " +
-            "@ms" +
-            ")";
-
-        var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
-        {
-            { "@p1", fromUser },
-            { "@p2", toUser },
-            { "@a", yesOrNo },
-            { "@ms", sRandom }
-        });
-        return discoverPeopleController.Ok(new JObject { { "r", i } });
-    }
-
-    private static string GenerateRandomHash(int length)
-    {
-        var randomBytes = new byte[length];
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            rng.GetBytes(randomBytes);
-        }
-
-        var hashBytes = SHA256.HashData(randomBytes);
-
-        var hashStringBuilder = new StringBuilder();
-        foreach (var b in hashBytes) hashStringBuilder.Append(b.ToString("x2"));
-
-        return hashStringBuilder.ToString()[..length];
-    }
 
     private static JArray? GetMatched(string tempSub)
     {
