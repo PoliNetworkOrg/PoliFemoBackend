@@ -51,7 +51,7 @@ public class DiscoverInfoLink : ControllerBase
     {
         if (IsValidHttpOrHttpsLink(stringLink) == false)
             return discoverInfo.BadRequest();
-        
+
         const string q = "UPDATE Users SET discover_link = @link WHERE user_id = SHA2(@id,256)";
         var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
@@ -60,10 +60,10 @@ public class DiscoverInfoLink : ControllerBase
         });
         return discoverInfo.Ok(i);
     }
-    
-    static bool IsValidHttpOrHttpsLink(string input)
+
+    private static bool IsValidHttpOrHttpsLink(string input)
     {
-        return Uri.TryCreate(input, UriKind.Absolute, out Uri? result) &&
+        return Uri.TryCreate(input, UriKind.Absolute, out var result) &&
                (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps);
     }
 }

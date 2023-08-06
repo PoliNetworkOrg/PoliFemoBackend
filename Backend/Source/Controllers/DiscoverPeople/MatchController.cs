@@ -54,7 +54,8 @@ public class MatchController : ControllerBase
     private static ActionResult SetAnswerMatch(string fromUser, string toUser, bool yesOrNo,
         ControllerBase discoverPeopleController)
     {
-        const string q = "INSERT IGNORE INTO PeopleDiscoverMatch (from_person, to_person, answer) VALUES (SHA2(@p1,256),SHA2(@p2,256),@a)";
+        const string q =
+            "INSERT IGNORE INTO PeopleDiscoverMatch (from_person, to_person, answer) VALUES (SHA2(@p1,256),SHA2(@p2,256),@a)";
         var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             { "@p1", fromUser },

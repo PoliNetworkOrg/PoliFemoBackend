@@ -44,7 +44,7 @@ public class AccountExportController : ControllerBase
         var accountType = q?.Rows[0]["account_type"]?.ToString() ?? "";
         var expiresDays = int.Parse(q?.Rows[0]["expires_days"]?.ToString() ?? "0");
 
-        JObject other = new JObject
+        var other = new JObject
         {
             ["discover_bio"] = q?.Rows[0]["discover_bio"]?.ToString(),
             ["discover_link"] = q?.Rows[0]["discover_link"]?.ToString()
