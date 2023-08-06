@@ -1,6 +1,8 @@
 #region
 
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -54,25 +56,75 @@ public class MatchController : ControllerBase
     private static ActionResult SetAnswerMatch(string fromUser, string toUser, bool yesOrNo,
         ControllerBase discoverPeopleController)
     {
+        var sRandom = GenerateRandomHash(20);
         const string q =
-            "INSERT IGNORE INTO PeopleDiscoverMatch (from_person, to_person, answer) VALUES (SHA2(@p1,256),SHA2(@p2,256),@a)";
+            "INSERT IGNORE INTO PeopleDiscoverMatch " +
+            "(from_person, to_person, answer, mn, ms) " +
+            "VALUES " +
+            "(SHA2(@p1,256)," +
+            "SHA2(@p2,256)," +
+            "@a," +
+            "(SELECT COALESCE(MAX(ms), 0) + 1 FROM PeopleDiscoverMatch), " +
+            "@ms" +
+            ")";
+        
         var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             { "@p1", fromUser },
             { "@p2", toUser },
-            { "@a", yesOrNo }
+            { "@a", yesOrNo },
+            {"@mn", 0},
+            {"@ms", sRandom}
         });
         return discoverPeopleController.Ok(new JObject { { "r", i } });
     }
 
+    static string GenerateRandomHash(int length)
+    {
+        var randomBytes = new byte[length];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomBytes);
+        }
+
+        var hashBytes = SHA256.HashData(randomBytes);
+
+        var hashStringBuilder = new StringBuilder();
+        foreach (var b in hashBytes)
+        {
+            hashStringBuilder.Append(b.ToString("x2"));
+        }
+
+        return hashStringBuilder.ToString()[..length];
+    }
 
     private static JArray? GetMatched(string tempSub)
     {
-        const string q = "SELECT user_id, discover_bio, discover_link " +
-                         "FROM Users u " +
-                         "WHERE u.user_id IN (SELECT p1.to_person FROM PeopleDiscoverMatch p1 WHERE p1.from_person = SHA2(@id,256) AND p1.answer = TRUE AND p1.to_person IN (" +
-                         "SELECT p2.from_person FROM PeopleDiscoverMatch p2 WHERE p2.from_person = p1.to_person AND p2.to_person = SHA2(@id,256) AND p2.answer = TRUE" +
-                         "))";
+        /*
+            tu = {tempSub} (@id)
+            
+            u.id  = altro
+            p1.from = tu
+            p1.to = altro
+            p2.from = altro
+            p1.to = tu
+
+            u.id = p1.to
+            p1.to = p2.from
+            p1.from = @id
+            p1.from = p2.to
+
+         */
+        const string q = "SELECT u.user_id, u.discover_bio, u.discover_link, p1.mn as mn1, p1.ms as ms1, p2.mn as mn2, p2.ms as ms2 " +
+                         "FROM Users u, PeopleDiscoverMatch p1, PeopleDiscoverMatch p2 " +
+                         "WHERE u.user_id = p1.to_person " +
+                         "AND p1.from_person = SHA2(@id,256) " +
+                         "AND p1.answer = TRUE " +
+                         "AND p1.to_person = p2.from_person " +
+                         "AND p2.from_person = p1.to_person " +
+                         "AND p2.to_person = SHA2(@id,256) " +
+                         "AND p2.answer = TRUE";
+        
         var dictionary = new Dictionary<string, object?>
         {
             { "@id", tempSub }
