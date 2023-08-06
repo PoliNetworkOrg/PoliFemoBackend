@@ -21,9 +21,9 @@ public static class SingleRoomUtil
         /*
         example of property tag
         <td colspan="1" rowspan="1" style="width: 33%" class="ElementInfoCard1 jaf-card-element">
-			<i>Codice vano</i>
-			<br>&nbsp;LCF040800S042
-		</td>
+            <i>Codice vano</i>
+            <br>&nbsp;LCF040800S042
+        </td>
         (parsing doesn't work very well, regex++)
         */
         var fetchedHtml = html.GetData() ?? "";

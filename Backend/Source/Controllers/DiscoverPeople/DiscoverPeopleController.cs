@@ -1,6 +1,5 @@
 ﻿#region
 
-using System.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -32,11 +31,11 @@ public class DiscoverPeopleController : ControllerBase
         var tempSub = AuthUtil.GetSubjectFromHttpRequest(Request);
         if (string.IsNullOrEmpty(tempSub))
             return new EmptyResult();
-        
+
         var a = NewPeople(tempSub);
         return a == null ? NotFound() : Ok(a);
     }
- 
+
 
     private static JObject? NewPeople(string tempSub)
     {
@@ -53,6 +52,4 @@ public class DiscoverPeopleController : ControllerBase
         var row = results?.Rows[0];
         return row == null ? null : UserUtil.GetUser(row);
     }
-
-
 }

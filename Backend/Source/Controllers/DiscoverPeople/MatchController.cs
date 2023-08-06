@@ -1,3 +1,5 @@
+#region
+
 using System.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -5,6 +7,8 @@ using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.Auth;
 using DB = PoliNetwork.Db.Utils.Database;
+
+#endregion
 
 
 namespace PoliFemoBackend.Source.Controllers.DiscoverPeople;
@@ -51,13 +55,13 @@ public class MatchController : ControllerBase
         ControllerBase discoverPeopleController)
     {
         const string q = "INSERT IGNORE INTO PeopleDiscoverMatch (from_person, to_person, answer) VALUES (@p1,@p2,@a)";
-        var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>()
+        var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             { "@p1", fromUser },
             { "@p2", toUser },
             { "@a", yesOrNo }
         });
-        return discoverPeopleController.Ok(new JObject() { { "r", i } });
+        return discoverPeopleController.Ok(new JObject { { "r", i } });
     }
 
 
@@ -76,14 +80,14 @@ public class MatchController : ControllerBase
 
         if (results == null)
             return null;
-        
+
         var jArray = new JArray();
         foreach (DataRow variable in results.Rows)
         {
             var j = UserUtil.GetUser(variable);
             jArray.Add(j);
         }
-        return jArray;
 
+        return jArray;
     }
 }
