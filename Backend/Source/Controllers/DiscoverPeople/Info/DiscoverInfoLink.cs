@@ -35,7 +35,7 @@ public class DiscoverInfoLink : ControllerBase
 
     private static ActionResult GetLinkUtil(string tempSub, ControllerBase discoverInfo)
     {
-        const string q = "SELECT discover_link FROM Users WHERE user_id = @id";
+        const string q = "SELECT discover_link FROM Users WHERE user_id = SHA2(@id,256)";
         var i = DB.ExecuteSelect(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id", tempSub }
@@ -52,7 +52,7 @@ public class DiscoverInfoLink : ControllerBase
         if (IsValidHttpOrHttpsLink(stringLink) == false)
             return discoverInfo.BadRequest();
         
-        const string q = "UPDATE Users SET discover_link = @link WHERE user_id = @id";
+        const string q = "UPDATE Users SET discover_link = @link WHERE user_id = SHA2(@id,256)";
         var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id", tempSub },

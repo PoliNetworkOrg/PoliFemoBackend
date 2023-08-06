@@ -54,7 +54,7 @@ public class MatchController : ControllerBase
     private static ActionResult SetAnswerMatch(string fromUser, string toUser, bool yesOrNo,
         ControllerBase discoverPeopleController)
     {
-        const string q = "INSERT IGNORE INTO PeopleDiscoverMatch (from_person, to_person, answer) VALUES (@p1,@p2,@a)";
+        const string q = "INSERT IGNORE INTO PeopleDiscoverMatch (from_person, to_person, answer) VALUES (SHA2(@p1,256),SHA2(@p2,256),@a)";
         var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             { "@p1", fromUser },
@@ -69,8 +69,8 @@ public class MatchController : ControllerBase
     {
         const string q = "SELECT user_id, discover_bio, discover_link " +
                          "FROM Users u " +
-                         "WHERE u.user_id IN (SELECT p1.to_person FROM PeopleDiscoverMatch p1 WHERE p1.from_person = @id AND p1.answer = TRUE AND p1.to_person IN (" +
-                         "SELECT p2.from_person FROM PeopleDiscoverMatch p2 WHERE p2.from_person = p1.to_person AND p2.to_person = @id AND p2.answer = TRUE" +
+                         "WHERE u.user_id IN (SELECT p1.to_person FROM PeopleDiscoverMatch p1 WHERE p1.from_person = SHA2(@id,256) AND p1.answer = TRUE AND p1.to_person IN (" +
+                         "SELECT p2.from_person FROM PeopleDiscoverMatch p2 WHERE p2.from_person = p1.to_person AND p2.to_person = SHA2(@id,256) AND p2.answer = TRUE" +
                          "))";
         var dictionary = new Dictionary<string, object?>
         {

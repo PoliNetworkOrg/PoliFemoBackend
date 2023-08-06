@@ -42,7 +42,7 @@ public class DiscoverPeopleController : ControllerBase
         var results = DB.ExecuteSelect(
             "SELECT user_id, discover_bio " +
             "FROM Users " +
-            "WHERE user_id NOT IN (SELECT to_person PeopleDiscoverMatch WHERE from_person = @id) " +
+            "WHERE user_id NOT IN (SELECT to_person PeopleDiscoverMatch WHERE from_person = SHA2(@id,256)) " +
             "AND discover_bio IS NOT NULL " +
             "AND discover_bio != '' " +
             "AND discover_link IS NOT NULL " +

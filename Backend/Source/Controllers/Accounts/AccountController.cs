@@ -29,28 +29,31 @@ public class ArticleByIdController : ControllerBase
     /// <response code="500">Can't connect to the server</response>
     [HttpGet]
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-    public ObjectResult ProfileDetails()
+    public ObjectResult? ProfileDetails()
     {
-        string userid;
         var tempSub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        var sub = tempSub ?? "";
-        var permissions = AccountAuthUtil.GetPermissions(sub);
-        using (var sha256Hash = SHA256.Create())
-        {
-            //From String to byte array
-            var sourceBytes = Encoding.UTF8.GetBytes(sub);
-            var hashBytes = sha256Hash.ComputeHash(sourceBytes);
-            userid = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
-        }
+        if (string.IsNullOrEmpty(tempSub))
+            return null;
 
-        var permarray = Grant.GetFormattedPerms(permissions);
+        var userid = GetUserId(tempSub);
+
+        var permissions = AccountAuthUtil.GetPermissions(tempSub);
+        var permArray = Grant.GetFormattedPerms(permissions);
 
         return new ObjectResult(new
         {
             id = userid.ToLower(),
-            permissions = permarray,
-            authorized_authors = AccountAuthoursAuthUtil.GetAuthorizedAuthors(sub)
+            permissions = permArray,
+            authorized_authors = AccountAuthoursAuthUtil.GetAuthorizedAuthors(tempSub)
         });
+    }
+
+    public string GetUserId(string sub)
+    {
+        var sourceBytes = Encoding.UTF8.GetBytes(sub);
+        var hashBytes = SHA256.HashData(sourceBytes);
+        var userid = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
+        return userid;
     }
 
 

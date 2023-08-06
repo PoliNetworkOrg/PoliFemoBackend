@@ -35,7 +35,7 @@ public class DiscoverInfoBio : ControllerBase
 
     private static ActionResult GetBioUtil(string tempSub, ControllerBase discoverInfo)
     {
-        const string q = "SELECT discover_bio FROM Users WHERE user_id = @id";
+        const string q = "SELECT discover_bio FROM Users WHERE user_id = SHA2(@id,256)";
         var i = DB.ExecuteSelect(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id", tempSub }
@@ -49,7 +49,7 @@ public class DiscoverInfoBio : ControllerBase
 
     private static ActionResult SetBio(string tempSub, string stringBio, ControllerBase discoverInfo)
     {
-        const string q = "UPDATE Users SET discover_bio = @bio WHERE user_id = @id";
+        const string q = "UPDATE Users SET discover_bio = @bio WHERE user_id = SHA2(@id,256)";
         var i = DB.Execute(q, GlobalVariables.DbConfigVar, new Dictionary<string, object?>
         {
             { "@id", tempSub },
