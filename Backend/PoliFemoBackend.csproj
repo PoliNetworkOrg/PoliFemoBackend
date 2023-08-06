@@ -57,6 +57,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="Source\Controllers\DiscoverPeople\" />
         <Folder Include="Source\Utils\Temp\Migrate\"/>
     </ItemGroup>
 
