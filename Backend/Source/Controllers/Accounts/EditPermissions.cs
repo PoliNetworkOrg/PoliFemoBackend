@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Permissions;
+using PoliFemoBackend.Source.Utils.Attributes;
 using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Database;
 using DB = PoliNetwork.Db.Utils.Database;
@@ -15,6 +16,7 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Accounts")]
+[RequiresPermission("permissions")]
 [Route("/accounts/{id}/permissions")]
 public class EditPermissions : ControllerBase
 {
@@ -35,16 +37,6 @@ public class EditPermissions : ControllerBase
     [Authorize]
     public ObjectResult GrantPermission(string id, [FromBody] Grant grant)
     {
-        var canGrantPermissions = AccountAuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
-            Constants.Permissions.ManagePermissions);
-        if (!canGrantPermissions)
-        {
-            Response.StatusCode = 403;
-            return new ObjectResult(new JObject
-            {
-                { "error", "You don't have enough permissions" }
-            });
-        }
 
         const string q =
             "INSERT IGNORE INTO permissions (grant_id, user_id, object_id) VALUES (@id_grant, @id_user, @id_object)";
@@ -90,16 +82,6 @@ public class EditPermissions : ControllerBase
     [Authorize]
     public ObjectResult RevokePermission(string id, [FromBody] Grant grant)
     {
-        var canRevokePermissions = AccountAuthUtil.HasPermission(AuthUtil.GetSubjectFromHttpRequest(Request),
-            Constants.Permissions.ManagePermissions);
-        if (!canRevokePermissions)
-        {
-            Response.StatusCode = 403;
-            return new ObjectResult(new JObject
-            {
-                { "error", "You don't have enough permissions" }
-            });
-        }
 
         const string q =
             "DELETE FROM permissions WHERE grant_id= @id_grant AND user_id = @id_user AND object_id = @id_object";
