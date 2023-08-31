@@ -16,7 +16,7 @@ namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Accounts")]
-[RequiresPermission("permissions")]
+[RequiresPermission(Constants.Permissions.ManagePermissions)]
 [Route("/accounts/{id}/permissions")]
 public class EditPermissions : ControllerBase
 {
