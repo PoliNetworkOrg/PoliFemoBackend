@@ -18,7 +18,7 @@ public class RequiresPermissionAttribute : Attribute, IActionFilter
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(context.HttpContext.Request);
         if (AccountAuthUtil.HasPermission(sub, _permValue)) return;
-        context.Result = new UnauthorizedResult();
+        context.Result = new ForbidResult();
     }
 
     public void OnActionExecuted(ActionExecutedContext context)
