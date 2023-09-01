@@ -48,9 +48,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Update="Other\Examples\articles_sample.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
         <Content Update="Other\Examples\roomsWithPower.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
