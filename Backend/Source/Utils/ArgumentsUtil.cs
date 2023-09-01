@@ -30,7 +30,7 @@ public class ArgumentsUtil
                         break;
                     case "log-level":
                         var logConfig = GetLogConfig(value);
-                        PoliNetwork.Core.Data.GlobalVariables.DefaultLogger.SetLogConfing(logConfig);
+                        PoliNetwork.Core.Data.GlobalVariables.DefaultLogger.SetLogConfig(logConfig);
                         break;
                     case "no-db-setup":
                         GlobalVariables.SkipDbSetup = value == "true";
