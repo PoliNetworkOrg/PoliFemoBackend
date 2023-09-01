@@ -33,23 +33,29 @@ public class AccountExportController : ControllerBase
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
 
         var query =
-            "SELECT user_id, last_activity, account_type, expires_days FROM Users WHERE user_id = SHA2(@sub, 256)";
+            "SELECT user_id, last_activity, account_type, expires_days, discover_bio, discover_link FROM Users WHERE user_id = SHA2(@sub, 256)";
         var parameters = new Dictionary<string, object?>
         {
             { "@sub", sub }
         };
         var q = DB.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
-        var lastActivity = DateTime.Parse(q?.Rows[0]["last_activity"]?.ToString() ?? "");
-        var id = q?.Rows[0]["user_id"]?.ToString() ?? "";
-        var accountType = q?.Rows[0]["account_type"]?.ToString() ?? "";
-        var expiresDays = int.Parse(q?.Rows[0]["expires_days"]?.ToString() ?? "0");
+        var lastActivity = DateTime.Parse(q?.Rows[0]["last_activity"].ToString() ?? "");
+        var id = q?.Rows[0]["user_id"].ToString() ?? "";
+        var accountType = q?.Rows[0]["account_type"].ToString() ?? "";
+        var expiresDays = int.Parse(q?.Rows[0]["expires_days"].ToString() ?? "0");
+
+        var other = new JObject
+        {
+            ["discover_bio"] = q?.Rows[0]["discover_bio"].ToString(),
+            ["discover_link"] = q?.Rows[0]["discover_link"].ToString()
+        };
 
         query = "SELECT * FROM RoomOccupancyReports WHERE user_id = SHA2(@sub, 256)";
         q = DB.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
         var occupancyReports = q?.Rows;
         var roc = new JArray();
         if (occupancyReports == null)
-            return FileExport(id, lastActivity, accountType, expiresDays, sub, roc);
+            return FileExport(id, lastActivity, accountType, expiresDays, sub, roc, other);
 
         foreach (DataRow row in occupancyReports)
             roc.Add(JObject.FromObject(new
@@ -58,20 +64,24 @@ public class AccountExportController : ControllerBase
                 when_reported = row["when_reported"],
                 rate = row["rate"]
             }));
-        return FileExport(id, lastActivity, accountType, expiresDays, sub, roc);
+        return FileExport(id, lastActivity, accountType, expiresDays, sub, roc, other);
     }
 
-    private FileContentResult FileExport(string id, DateTime lastActivity, string accountType, int edays, string? sub,
-        JArray roc)
+    private FileContentResult FileExport(string id, DateTime lastActivity, string accountType, int eDays, string? sub,
+        JArray roc, JObject other)
     {
-        return File(Encoding.UTF8.GetBytes(JObject.FromObject(new
+        var fromObject = JObject.FromObject(new
         {
             id,
             last_activity = lastActivity.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
             account_type = accountType,
-            expires_days = edays,
+            expires_days = eDays,
             permissions = Grant.GetFormattedPerms(AccountAuthUtil.GetPermissions(sub)),
-            room_occupancy_reports = roc
-        }).ToString()), "application/json", id + ".json");
+            room_occupancy_reports = roc,
+            other
+        });
+        var fileContents = Encoding.UTF8.GetBytes(fromObject.ToString());
+        var fileDownloadName = id + ".json";
+        return File(fileContents, "application/json", fileDownloadName);
     }
 }

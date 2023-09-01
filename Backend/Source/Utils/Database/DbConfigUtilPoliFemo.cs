@@ -15,7 +15,7 @@ namespace PoliFemoBackend.Source.Utils.Database;
 
 public static class DbConfigUtilPoliFemo
 {
-    public static DbConfig? DbConfigVar { get; set; }
+    public static DbConfig? DbConfigVar { get; private set; }
 
 
     public static void InitializeDbConfig()
@@ -49,33 +49,33 @@ public static class DbConfigUtilPoliFemo
 
 
         var connectionString = DbConfigUtils.GetConnectionString(Data.GlobalVariables.DbConfigVar);
-        if (!string.IsNullOrEmpty(connectionString))
+        if (string.IsNullOrEmpty(connectionString))
+            return;
+
+        Data.GlobalVariables.DbConnection = new MySqlConnection(connectionString);
+        try
         {
-            Data.GlobalVariables.DbConnection = new MySqlConnection(connectionString);
-            try
-            {
-                Data.GlobalVariables.DbConnection.Open();
-                if (Data.GlobalVariables.DbConnection.State == ConnectionState.Open)
-                    GlobalVariables.DefaultLogger.Info(
-                        "Connection to db on start works! Performing table checks...");
-
-                if (Data.GlobalVariables.SkipDbSetup is null or false)
-                {
-                    var sql = File.ReadAllText(Constants.SqlCommandsPath);
-                    DB.ExecuteSelect(sql, Data.GlobalVariables.DbConfigVar);
-                }
-
+            Data.GlobalVariables.DbConnection.Open();
+            if (Data.GlobalVariables.DbConnection.State == ConnectionState.Open)
                 GlobalVariables.DefaultLogger.Info(
-                    "Table checks completed! Starting application...");
-            }
-            catch (Exception ex)
-            {
-                GlobalVariables.DefaultLogger.Emergency(
-                    "An error occurred while initializing the database. Check the details and try again.");
-                GlobalVariables.DefaultLogger.Emergency(ex.Message);
+                    "Connection to db on start works! Performing table checks...");
 
-                Environment.Exit(1);
+            if (Data.GlobalVariables.SkipDbSetup is null or false)
+            {
+                var sql = File.ReadAllText(Constants.SqlCommandsPath);
+                DB.ExecuteSelect(sql, Data.GlobalVariables.DbConfigVar);
             }
+
+            GlobalVariables.DefaultLogger.Info(
+                "Table checks completed! Starting application...");
+        }
+        catch (Exception ex)
+        {
+            GlobalVariables.DefaultLogger.Emergency(
+                "An error occurred while initializing the database. Check the details and try again.");
+            GlobalVariables.DefaultLogger.Emergency(ex.Message);
+
+            Environment.Exit(1);
         }
     }
 
