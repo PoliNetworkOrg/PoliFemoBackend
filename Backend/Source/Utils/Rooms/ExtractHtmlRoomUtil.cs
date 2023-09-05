@@ -14,7 +14,7 @@ public static class ExtractHtmlRoomUtil
     internal static object? GetAula(HtmlNode? node, IEnumerable<RoomOccupancyResultObject> roomOccupancyResultObjects)
     {
         //Flag to indicate if the room has a power outlet (true/false)
-        var pwr = SingleRoomUtil.RoomWithPower(node);
+        var pwr = SingleRoomUtil.HasPower(node);
         var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
         //Get Room name
         var nome = dove?.ChildNodes.First(x => x.Name == "a")?.InnerText.Trim();
@@ -59,28 +59,5 @@ public static class ExtractHtmlRoomUtil
         }
 
         return occupancies;
-    }
-
-    internal static IEnumerable<RoomOccupancyResultObject> FilterDuplicates(
-        IEnumerable<RoomOccupancyResultObject> roomOccupancyResultObjects)
-    {
-        var r = new List<RoomOccupancyResultObject>();
-        foreach (var roomOccupancyResultObject in roomOccupancyResultObjects)
-        {
-            if (!CheckIfKeep(roomOccupancyResultObject, r))
-                continue;
-
-            r.Add(roomOccupancyResultObject);
-        }
-
-        return r;
-    }
-
-    private static bool CheckIfKeep(RoomOccupancyResultObject roomOccupancyResultObject,
-        IReadOnlyCollection<RoomOccupancyResultObject> occupancies)
-    {
-        return
-            !occupancies.Any()
-            || occupancies.Last().RoomOccupancyEnum != roomOccupancyResultObject.RoomOccupancyEnum;
     }
 }

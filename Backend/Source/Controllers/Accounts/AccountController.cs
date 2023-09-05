@@ -49,7 +49,7 @@ public class ArticleByIdController : ControllerBase
         {
             id = userid.ToLower(),
             permissions = permarray,
-            authorized_authors = AccountAuthoursAuthUtil.GetAuthorizedAuthors(sub)
+            authorized_authors = AccountAuthUtil.GetAuthorizedAuthors(sub)
         });
     }
 

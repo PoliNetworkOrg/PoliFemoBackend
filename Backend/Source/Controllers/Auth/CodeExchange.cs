@@ -3,8 +3,13 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils;
+using PoliFemoBackend.Source.Utils.Auth;
 using PoliFemoBackend.Source.Utils.Auth.CodeExchange;
+using DB = PoliNetwork.Db.Utils.Database;
 
 #endregion
 
@@ -37,7 +42,45 @@ public class CodeExchangeController : ControllerBase
     {
         try
         {
-            return CodeExchangeUtil.CodeExchangeMethod(code, state, this);
+            var response = AuthUtil.GetResponse(code, state, GrantTypeEnum.authorization_code);
+
+            if (response == null) return BadRequest("Client secret not found");
+
+            var responseJson = JToken.Parse(response.Content.ReadAsStringAsync().Result);
+
+            if (!response.IsSuccessStatusCode)
+                return new BadRequestObjectResult(new
+                {
+                    error = "Error while exchanging code for token",
+                    reason = responseJson.Value<string>("error")
+                });
+
+            var loginResultObject = LoginUtil.LoginUser(this, responseJson);
+            if (loginResultObject is { ActionResult: not null })
+                return loginResultObject.ActionResult;
+
+            if (string.IsNullOrEmpty(loginResultObject?.Subject) || string.IsNullOrEmpty(loginResultObject?.Acctype))
+                return new BadRequestObjectResult(new
+                {
+                    error = "Error while exchanging code for token",
+                    reason = "Subject or acctype is null or empty"
+                });
+
+            const string query = "INSERT IGNORE INTO Users VALUES(sha2(@subject, 256), @acctype, NOW(), 730);";
+            var parameters = new Dictionary<string, object?>
+            {
+                { "@subject", loginResultObject.Subject },
+                { "@acctype", loginResultObject.Acctype }
+            };
+            var results = DB.Execute(query, GlobalVariables.DbConfigVar, parameters);
+
+            var responseObject = new JObject
+            {
+                { "access_token", responseJson["id_token"] },
+                { "refresh_token", responseJson["refresh_token"] },
+                { "expires_in", responseJson["expires_in"] }
+            };
+            return Ok(responseObject);
         }
         catch (MySqlException)
         {

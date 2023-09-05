@@ -48,12 +48,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Update="Other\Examples\roomsWithPower.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
-
-    <ItemGroup>
         <Folder Include="Source\Utils\Temp\Migrate\"/>
     </ItemGroup>
 

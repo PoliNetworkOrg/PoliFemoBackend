@@ -22,7 +22,7 @@ public static class HtmlUtil
         {
             if (useCache)
             {
-                var resultFromCache = CheckIfToUseCache(urlAddress);
+                var resultFromCache = CacheUtil.CheckIfToUseCache(urlAddress);
                 if (resultFromCache != null)
                     return Task.FromResult(resultFromCache);
             }
@@ -32,10 +32,19 @@ public static class HtmlUtil
             task.Wait();
             var response = task.Result;
             var s = Encoding.UTF8.GetString(response, 0, response.Length);
-            s = FixTableContentFromCache(cacheTypeEnum, s);
+            //s = FixTableContentFromCache(cacheTypeEnum, s);
+
+            switch (cacheTypeEnum)
+            {
+                case CacheTypeEnum.ROOMTABLE:
+                    s = FixFromTableRoomCache(s);
+                    break;
+                default:
+                    break;
+            }
 
             if (useCache)
-                SaveToCacheUtil.SaveToCache(urlAddress, s);
+                CacheUtil.SaveToCache(urlAddress, s);
 
             return Task.FromResult(new WebReply(s, HttpStatusCode.OK));
         }
@@ -44,16 +53,6 @@ public static class HtmlUtil
             Console.WriteLine(ex);
             return Task.FromResult(new WebReply(null, HttpStatusCode.ExpectationFailed));
         }
-    }
-
-    private static string FixTableContentFromCache(CacheTypeEnum cacheTypeEnum, string s)
-    {
-        return cacheTypeEnum switch
-        {
-            CacheTypeEnum.NONE => s,
-            CacheTypeEnum.ROOMTABLE => FixFromTableRoomCache(s),
-            _ => s
-        };
     }
 
     private static string FixFromTableRoomCache(string s)
@@ -66,10 +65,4 @@ public static class HtmlUtil
         return s;
     }
 
-
-    private static WebReply? CheckIfToUseCache(string urlAddress)
-    {
-        var sq = GetCacheUtil.GetCache(urlAddress);
-        return sq != null ? new WebReply(sq, HttpStatusCode.OK) : null;
-    }
 }

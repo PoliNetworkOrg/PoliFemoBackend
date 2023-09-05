@@ -10,11 +10,11 @@ using DB = PoliNetwork.Db.Utils.Database;
 
 namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
-public static class NewsDbUtil
+public static class NewsUtil
 {
     private const int PoliMiAuthorId = 1;
 
-    internal static DoneEnum UpdateDbWithNews(ArticleNews newsItem)
+    internal static DoneEnum UpdateDb(ArticleNews newsItem)
     {
         if (newsItem.ShouldBeSkipped()) return DoneEnum.SKIPPED;
         var url = newsItem.content[0].url;
@@ -35,11 +35,11 @@ public static class NewsDbUtil
         if (num > 0)
             return DoneEnum.SKIPPED; //news already in db
 
-        InsertItemInDb(newsItem);
+        InsertInDb(newsItem);
         return DoneEnum.DONE;
     }
 
-    private static void InsertItemInDb(ArticleNews newsItem) //11111
+    private static void InsertInDb(ArticleNews newsItem) //11111
     {
         var contentids = new int[newsItem.content.Length];
 

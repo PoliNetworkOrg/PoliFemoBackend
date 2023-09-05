@@ -1,14 +1,24 @@
 ﻿#region
 
+using System.Net;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Objects.Web;
 using DB = PoliNetwork.Db.Utils.Database;
 
 #endregion
 
 namespace PoliFemoBackend.Source.Utils.Cache;
 
-public static class SaveToCacheUtil
+public static class CacheUtil
 {
+    public static string? GetCache(string urlAddress)
+    {
+        const string selectFromWebcacheWhereUrlUrl = "SELECT * FROM WebCache WHERE url = @url";
+        var dictionary = new Dictionary<string, object?> { { "@url", urlAddress } };
+        var q = DB.ExecuteSelect(selectFromWebcacheWhereUrlUrl, GlobalVariables.DbConfigVar, dictionary);
+        return q?.Rows.Count > 0 ? q.Rows[0]["content"].ToString() : null;
+    }
+
     internal static void SaveToCache(string url, string content)
     {
         try
@@ -26,5 +36,11 @@ public static class SaveToCacheUtil
         {
             PoliNetwork.Core.Data.GlobalVariables.DefaultLogger.Error(ex.ToString());
         }
+    }
+
+    public static WebReply? CheckIfToUseCache(string urlAddress)
+    {
+        var sq = CacheUtil.GetCache(urlAddress);
+        return sq != null ? new WebReply(sq, HttpStatusCode.OK) : null;
     }
 }
