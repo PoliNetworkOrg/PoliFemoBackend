@@ -117,7 +117,8 @@ public static class FreeRoomsUtil
         var nodupes = new List<RoomOccupancyResultObject>();
         foreach (var roomOccupancyResultObject in occupied)
         {
-            if (!nodupes.Any() || nodupes.Last().RoomOccupancyEnum != roomOccupancyResultObject.RoomOccupancyEnum)
+            // Skip conditions (same status, empty list, different course)
+            if (nodupes.Any() && nodupes.Last().RoomOccupancyEnum == roomOccupancyResultObject.RoomOccupancyEnum && nodupes.Last().text == roomOccupancyResultObject.text)
                 continue;
 
             nodupes.Add(roomOccupancyResultObject);
