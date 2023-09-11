@@ -10,6 +10,7 @@ bin/*
 /secrets.json
 /config
 /logs
+logs
 out/*
 Backend/bin/
 

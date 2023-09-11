@@ -78,7 +78,7 @@ public static class AccountAuthUtil
     public static string?[] GetAuthorizedAuthors(string? userid)
     {
         var results = DB.ExecuteSelect(
-            "SELECT a.* FROM Authors a, permissions p WHERE p.user_id = sha2(@userid, 256) AND a.author_id = p.object_id AND p.grant_id = 'authors'",
+            "SELECT a.* FROM Authors a, permissions p WHERE p.user_id = sha2(@userid, 256) AND a.author_id = p.object_id AND p.grant_id = '" + Constants.Permissions.ManageArticles + "'",
             GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {

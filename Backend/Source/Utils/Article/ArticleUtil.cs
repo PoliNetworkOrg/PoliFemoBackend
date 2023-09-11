@@ -190,7 +190,7 @@ public static class ArticleUtil
                 { "error", "Invalid author" }
             });
 
-        if (AccountAuthUtil.HasGrantAndObjectPermission(sub, "authors", data.author_id))
+        if (AccountAuthUtil.HasGrantAndObjectPermission(sub, Constants.Permissions.ManageArticles, data.author_id))
             return null;
 
         insertArticle.Response.StatusCode = 403;
