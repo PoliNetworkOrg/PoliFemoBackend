@@ -38,7 +38,7 @@ public class DeleteArticle : ControllerBase
         if (article == null)
             return new NotFoundObjectResult("");
         var idAuthor = Convert.ToInt32(DB.GetFirstValueFromDataTable(article));
-        if (!AccountAuthUtil.HasGrantAndObjectPermission(sub, "authors", idAuthor))
+        if (!AccountAuthUtil.HasGrantAndObjectPermission(sub, Constants.Permissions.ManageArticles, idAuthor))
         {
             Response.StatusCode = 403;
             return new UnauthorizedObjectResult(new JObject

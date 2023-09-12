@@ -39,7 +39,7 @@ public static class SearchRoomUtil
     {
         var temp = new JArray();
         var polimidailysituation = "polimidailysituation://" + item + "/" + hourStart?.ToString("yyyy-MM-dd");
-        var q = GetCacheUtil.GetCache(polimidailysituation);
+        var q = CacheUtil.GetCache(polimidailysituation);
 
 
         if (!string.IsNullOrEmpty(q))
@@ -67,7 +67,7 @@ public static class SearchRoomUtil
                 temp.Add(r2);
         }
 
-        SaveToCacheUtil.SaveToCache(polimidailysituation, temp.ToString());
+        CacheUtil.SaveToCache(polimidailysituation, temp.ToString());
 
         foreach (var jToken in temp)
             results.Add(jToken);

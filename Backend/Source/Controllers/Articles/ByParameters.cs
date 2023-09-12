@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
@@ -83,8 +84,12 @@ public class ArticlesByParameters : ControllerBase
                 { "@author_id", author_id },
                 { "@title", "%" + title + "%" }
             });
-        if (results != null)
-            resultsJArray = ArticleUtil.ArticleAuthorsRowsToJArray(results);
+        if (results != null) {
+            resultsJArray = new JArray();
+            foreach (DataRow dr in results.Rows) resultsJArray.Add(ArticleUtil.ArticleAuthorsRowToJObject(dr));
+        }
+
+            //ArticleUtil.ArticleAuthorsRowsToJArray(results);
 
         var r = new JObject
         {

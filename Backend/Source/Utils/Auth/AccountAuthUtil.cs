@@ -74,4 +74,18 @@ public static class AccountAuthUtil
             });
         return results != null;
     }
+
+    public static string?[] GetAuthorizedAuthors(string? userid)
+    {
+        var results = DB.ExecuteSelect(
+            "SELECT a.* FROM Authors a, permissions p WHERE p.user_id = sha2(@userid, 256) AND a.author_id = p.object_id AND p.grant_id = '" + Constants.Permissions.ManageArticles + "'",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@userid", userid }
+            });
+        var array = new string?[results?.Rows.Count ?? 0];
+        for (var i = 0; i < results?.Rows.Count; i++) array[i] = results.Rows[i]["name"].ToString();
+        return array;
+    }
 }

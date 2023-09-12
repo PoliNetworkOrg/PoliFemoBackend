@@ -13,7 +13,7 @@ public static class Test
     {
         try
         {
-            var task = TestMain();
+            Task task = TestMain();
             task.Wait();
         }
         catch (Exception ex)
@@ -22,7 +22,7 @@ public static class Test
         }
     }
 
-    private static async Task TestMain()
+    private static Task TestMain()
     {
         Console.WriteLine("Test");
 
@@ -43,10 +43,6 @@ public static class Test
 
         //DbConfig.InitializeDbConfig();
         //ArticleContentUpgrade.ArticleContentUpgradeMethod();
-    }
-
-    private static void FixGlobalDbConfig()
-    {
-        GlobalVariables.DbConfigVar ??= GlobalVariables.GetDbConfig();
+        return Task.CompletedTask;
     }
 }

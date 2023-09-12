@@ -90,9 +90,4 @@ public static class DbConfigUtilPoliFemo
         GlobalVariables.DefaultLogger.Info("Initialized DBConfig to empty!");
         throw new Exception("Database failed to initialize, we generated an empty file to fill");
     }
-
-    public static DbConfig? GetDbConfigNew()
-    {
-        return Data.GlobalVariables.GetDbConfig();
-    }
 }

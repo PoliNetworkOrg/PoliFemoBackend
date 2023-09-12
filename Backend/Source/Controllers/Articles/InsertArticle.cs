@@ -2,8 +2,12 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Utils.Article;
+using PoliFemoBackend.Source.Utils.Auth;
+using DB = PoliNetwork.Db.Utils.Database;
 
 // ReSharper disable InconsistentNaming
 
@@ -45,6 +49,41 @@ public class InsertArticle : ControllerBase
         [FromBody] ArticleNews data
     )
     {
-        return InsertArticleUtil.InsertArticleDbMethod(data, this);
+        var isValidTag = DB.ExecuteSelect("SELECT * FROM Tags WHERE name = @tag",
+            GlobalVariables.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@tag", data.tag }
+            });
+        if (isValidTag == null)
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "Invalid tag" }
+            });
+
+        var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
+
+        var errorCheckAuthor = ArticleUtil.CheckAuthorErrors(data, this, sub);
+        if (errorCheckAuthor != null)
+            return errorCheckAuthor;
+
+        if ((data.latitude != 0 && data.longitude == 0) || (data.latitude == 0 && data.longitude != 0))
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "You must provide both latitude and longitude" }
+            });
+        if (data.latitude != 0 &&
+            (data.latitude is < -90 or > 90 || data.longitude is < -180 or > 180))
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "Invalid latitude or longitude" }
+            });
+        if (data.platforms is < 0 or > 3)
+            return new BadRequestObjectResult(new JObject
+            {
+                { "error", "Invalid platforms" }
+            });
+
+        return ArticleUtil.InsertArticleDb(data, this);
     }
 }

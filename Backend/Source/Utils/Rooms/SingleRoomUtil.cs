@@ -53,7 +53,7 @@ public static class SingleRoomUtil
         }
 
         properties["building"] = properties["building"]?.ToString().Split('-')[0].Trim();
-        var json = await File.ReadAllTextAsync("Other/Examples/roomsWithPower.json");
+        var json = await File.ReadAllTextAsync("Backend/Other/Examples/roomsWithPower.json");
         var data = JObject.Parse(json);
         //Retrieving the list of IDs for the room with power outlets
         var list = data["rwp"]?.Select(x => (int)x).ToArray();
@@ -62,7 +62,7 @@ public static class SingleRoomUtil
         return properties;
     }
 
-    internal static bool RoomWithPower(HtmlNode? node)
+    internal static bool HasPower(HtmlNode? node)
     {
         var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
         var a = dove?.ChildNodes.First(x => x.Name == "a");
@@ -72,7 +72,7 @@ public static class SingleRoomUtil
         //Get the room id, in order to see whether it has power or not
         var idAula = int.Parse(aulaUrl?.Split('=').Last() ?? string.Empty);
 
-        var json = File.ReadAllText("Other/Examples/roomsWithPower.json");
+        var json = File.ReadAllText("Backend/Other/Examples/roomsWithPower.json");
         var data = JObject.Parse(json);
 
         //Retrieving the list of IDs for the room with power outlets

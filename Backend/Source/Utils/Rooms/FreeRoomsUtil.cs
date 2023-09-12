@@ -16,8 +16,8 @@ public static class FreeRoomsUtil
     {
         if (table?.ChildNodes == null) return null;
 
-        var shiftStart = TimeRoomUtil.GetShiftSlotFromTime(start ?? DateTime.Now);
-        var shiftEnd = TimeRoomUtil.GetShiftSlotFromTime(stop ?? DateTime.Now);
+        var shiftStart = RoomUtil.GetShiftSlotFromTime(start ?? DateTime.Now);
+        var shiftEnd = RoomUtil.GetShiftSlotFromTime(stop ?? DateTime.Now);
 
         var enumerable = table.ChildNodes
             .Select(child => CheckIfFree(child, shiftStart, shiftEnd)).ToList();
@@ -113,7 +113,16 @@ public static class FreeRoomsUtil
         }
 
         // if no lesson takes place in the room in the time window, the room is free (duh)
-        var filterDuplicates = ExtractHtmlRoomUtil.FilterDuplicates(occupied);
-        return filterDuplicates;
+        // remove duplicates
+        var nodupes = new List<RoomOccupancyResultObject>();
+        foreach (var roomOccupancyResultObject in occupied)
+        {
+            // Skip conditions (same status, empty list, different course)
+            if (nodupes.Any() && nodupes.Last().RoomOccupancyEnum == roomOccupancyResultObject.RoomOccupancyEnum && nodupes.Last().text == roomOccupancyResultObject.text)
+                continue;
+
+            nodupes.Add(roomOccupancyResultObject);
+        }
+        return nodupes;
     }
 }

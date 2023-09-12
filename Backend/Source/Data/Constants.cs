@@ -41,5 +41,6 @@ public static class Constants
     public static class Permissions
     {
         public const string ManagePermissions = "permissions";
+        public const string ManageArticles = "authors";
     }
 }
