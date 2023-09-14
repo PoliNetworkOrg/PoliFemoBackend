@@ -6,9 +6,12 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
+using PNData = PoliNetwork.Core.Data;
 using PoliFemoBackend.Source.Enums;
+using PoliFemoBackend.Source.Objects.Threading;
 using PoliFemoBackend.Source.Utils.Cache;
 using DB = PoliNetwork.Db.Utils.Database;
+using Jint.Parser.Ast;
 
 #endregion
 
@@ -16,6 +19,42 @@ namespace PoliFemoBackend.Source.Utils.Rooms.Search;
 
 public static class SearchRoomUtil
 {
+    public static void LoopSearchRooms(ThreadWithAction threadWithAction)
+    {
+        const int timeToWait = 1000 * 60 * 60 * 8; //8 hours
+        while (true)
+        {
+            try
+            {
+                var daysToSearch = 2;
+
+                for (int i=1; i<=daysToSearch; i++)
+                {
+                    var date = DateTime.Now.AddDays(i);
+                    var t = SearchRooms(null, date, date);
+                    var jArray = t.Result.Item1;
+                    var doneEnum = t.Result.Item2;
+                    if (jArray == null || doneEnum != DoneEnum.DONE) continue;
+                    var jObject = new JObject(new JProperty("free_rooms", jArray));
+                    var json = jObject.ToString();
+                    var polimidailysituation = "polimidailysituation://" + date.ToString("yyyy-MM-dd");
+                    CacheUtil.SaveToCache(polimidailysituation, json);
+                }
+
+                threadWithAction.Total++;
+            }
+            catch (Exception ex)
+            {
+                threadWithAction.Failed++;
+                PNData.GlobalVariables.DefaultLogger.Error(ex.ToString());
+            }
+
+            PNData.GlobalVariables.DefaultLogger.Debug("Finished autosearch of rooms.");
+            Thread.Sleep(timeToWait);
+        }
+        // ReSharper disable once FunctionNeverReturns
+    }
+
     public static async Task<Tuple<JArray?, DoneEnum>> SearchRooms(string? sede, DateTime? hourStart,
         DateTime? hourStop)
     {

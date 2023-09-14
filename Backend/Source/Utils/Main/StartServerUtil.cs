@@ -27,7 +27,7 @@ public static class StartServerUtil
 
         try
         {
-            Start.Start.StartThings(au.UseNews);
+            Start.Start.StartThings(au);
         }
         catch (Exception ex)
         {

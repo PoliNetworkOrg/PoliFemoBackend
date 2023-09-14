@@ -11,6 +11,7 @@ namespace PoliFemoBackend.Source.Utils;
 public class ArgumentsUtil
 {
     public readonly bool UseNews = true;
+    public readonly bool UseRoomsSearch = true;
 
     public ArgumentsUtil(IEnumerable<string> args)
     {
@@ -45,6 +46,11 @@ public class ArgumentsUtil
                 {
                     "no-news" => false,
                     _ => UseNews
+                };
+                UseRoomsSearch = value switch
+                {
+                    "no-rooms" => false,
+                    _ => UseRoomsSearch
                 };
             }
     }
