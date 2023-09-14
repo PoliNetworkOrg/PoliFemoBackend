@@ -11,7 +11,7 @@ namespace PoliFemoBackend.Source.Utils.Start;
 
 public static class Start
 {
-    public static void StartThings(bool useNews = true)
+    public static void StartThings(ArgumentsUtil au)
     {
         try
         {
@@ -34,7 +34,7 @@ public static class Start
 
         try
         {
-            ThreadStartUtil.ThreadStartMethod(useNews);
+            ThreadStartUtil.ThreadStartMethod(au.UseNews, au.UseRoomsSearch);
         }
         catch (Exception ex)
         {
