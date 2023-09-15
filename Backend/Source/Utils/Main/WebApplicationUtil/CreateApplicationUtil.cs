@@ -34,17 +34,6 @@ public static class CreateApplicationUtil
 
         builder.Services.AddMetrics(metrics);
 
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy("policy",
-                policy =>
-                {
-                    policy.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-        });
-
         builder.Host
             .ConfigureMetrics(metricsBuilder =>
             {

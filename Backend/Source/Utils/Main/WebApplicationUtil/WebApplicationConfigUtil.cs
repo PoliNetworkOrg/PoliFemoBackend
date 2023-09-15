@@ -19,14 +19,7 @@ public static class WebApplicationConfigUtil
         app.UseMetricsAllMiddleware();
 
         app.UseMiddleware<PageNotFoundMiddleware>();
-
-        app.UseCors(policyBuilder =>
-        {
-            policyBuilder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
+        app.UseMiddleware<CorsMiddleware>();
 
         app.UseAuthentication();
 
