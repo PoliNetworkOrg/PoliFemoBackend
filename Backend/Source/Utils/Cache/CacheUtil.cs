@@ -24,7 +24,7 @@ public static class CacheUtil
         try
         {
             const string qi =
-                "INSERT INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAY)";
+                "REPLACE INTO WebCache (url, content, expires_at) VALUES (@url, @content, NOW() + INTERVAL 2 DAY)";
             var objects = new Dictionary<string, object?>
             {
                 { "@url", url },
