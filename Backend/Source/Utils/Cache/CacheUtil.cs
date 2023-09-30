@@ -2,7 +2,7 @@
 
 using System.Net;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Objects.Web;
+using PoliNetwork.Html.Objects.Web;
 using DB = PoliNetwork.Db.Utils.Database;
 
 #endregion
