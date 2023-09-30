@@ -3,13 +3,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Enums;
-using PoliFemoBackend.Source.Utils.Rooms.Search;
 using PoliNetwork.Core.Enums;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Controllers.Rooms.Search;
+namespace PoliFemoBackend.Source.Controllers.Rooms;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = "Rooms")]
