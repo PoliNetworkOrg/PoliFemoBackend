@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils.Rooms.Search;
+using PoliNetwork.Core.Enums;
 
 #endregion
 

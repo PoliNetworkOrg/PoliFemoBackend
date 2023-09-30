@@ -4,6 +4,7 @@ using HtmlAgilityPack;
 using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Utils.Html;
 using PoliNetwork.Core.Data;
+using PoliNetwork.Core.Enums;
 using PoliNetwork.Core.Objects.Threading;
 
 #endregion
