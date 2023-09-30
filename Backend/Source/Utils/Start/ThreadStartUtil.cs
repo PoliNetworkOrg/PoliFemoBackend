@@ -1,6 +1,7 @@
 ﻿#region
 
 using PoliFemoBackend.Source.Utils.News.PoliMi;
+using PoliFemoBackend.Source.Utils.Rooms;
 using PoliNetwork.Core.Data;
 using PoliNetwork.Core.Objects.Threading;
 

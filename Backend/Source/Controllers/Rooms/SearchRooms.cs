@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json.Linq;
+using PoliFemoBackend.Source.Utils.Rooms;
 using PoliNetwork.Core.Enums;
 
 #endregion
