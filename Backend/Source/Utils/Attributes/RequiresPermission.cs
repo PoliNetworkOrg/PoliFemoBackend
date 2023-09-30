@@ -4,7 +4,7 @@ using PoliFemoBackend.Source.Utils.Auth;
 
 namespace PoliFemoBackend.Source.Utils.Attributes;
 
-[AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.All, Inherited = false)]
 public class RequiresPermissionAttribute : Attribute, IActionFilter
 {
     private readonly string _permValue;

@@ -1,7 +1,6 @@
 ﻿#region
 
 using HtmlAgilityPack;
-using PoliFemoBackend.Source.Enums;
 using PoliNetwork.Core.Data;
 using PoliNetwork.Core.Enums;
 using PoliNetwork.Core.Objects.Threading;

@@ -36,7 +36,6 @@ public class EditPermissions : ControllerBase
     [Authorize]
     public ObjectResult GrantPermission(string id, [FromBody] Grant grant)
     {
-
         const string q =
             "INSERT IGNORE INTO permissions (grant_id, user_id, object_id) VALUES (@id_grant, @id_user, @id_object)";
         try
@@ -81,7 +80,6 @@ public class EditPermissions : ControllerBase
     [Authorize]
     public ObjectResult RevokePermission(string id, [FromBody] Grant grant)
     {
-
         const string q =
             "DELETE FROM permissions WHERE grant_id= @id_grant AND user_id = @id_user AND object_id = @id_object";
         var count = DB.Execute(q, DbConfigUtilPoliFemo.DbConfigVar, new Dictionary<string, object?>

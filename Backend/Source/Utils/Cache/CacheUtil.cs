@@ -40,7 +40,7 @@ public static class CacheUtil
 
     public static WebReply? CheckIfToUseCache(string urlAddress)
     {
-        var sq = CacheUtil.GetCache(urlAddress);
+        var sq = GetCache(urlAddress);
         return sq != null ? new WebReply(sq, HttpStatusCode.OK) : null;
     }
 }

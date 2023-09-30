@@ -130,7 +130,7 @@ public static class ArticleUtil
         string? blurhash = null;
         try
         {
-            blurhash = ArticleUtil.GenerateBlurhashAsync(data.image).Result;
+            blurhash = GenerateBlurhashAsync(data.image).Result;
         }
         catch (Exception)
         {
@@ -170,7 +170,7 @@ public static class ArticleUtil
     }
 
     internal static ObjectResult? CheckAuthorErrors(ArticleNews data, InsertArticle insertArticle,
-    string? sub)
+        string? sub)
     {
         if (data.author_id == 0)
             return new BadRequestObjectResult(new JObject
@@ -199,6 +199,4 @@ public static class ArticleUtil
             { "error", "You don't have enough permissions" }
         });
     }
-
-
 }

@@ -1,6 +1,5 @@
 ﻿#region
 
-using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Utils.News.PoliMi;
 
 #endregion
@@ -13,7 +12,7 @@ public static class Test
     {
         try
         {
-            Task task = TestMain();
+            var task = TestMain();
             task.Wait();
         }
         catch (Exception ex)

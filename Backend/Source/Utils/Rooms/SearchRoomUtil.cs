@@ -12,6 +12,7 @@ using PoliNetwork.Core.Enums;
 using PoliNetwork.Core.Objects.Threading;
 using PoliNetwork.Html.Objects.Web;
 using PoliNetwork.Rooms.Utils;
+using PoliNetwork.Rooms.Utils.Search;
 
 #endregion
 
@@ -28,7 +29,7 @@ public static class SearchRoomUtil
             {
                 var daysToSearch = 2;
 
-                for (int i=1; i<=daysToSearch; i++)
+                for (var i = 1; i <= daysToSearch; i++)
                 {
                     var date = DateTime.Now.AddDays(i);
                     var t = SearchRooms(null, date, date);
@@ -54,7 +55,7 @@ public static class SearchRoomUtil
         }
         // ReSharper disable once FunctionNeverReturns
     }
-    
+
     public static async Task<Tuple<JArray?, DoneEnum>> SearchRooms(string? sede, DateTime? hourStart,
         DateTime? hourStop)
     {
@@ -64,8 +65,8 @@ public static class SearchRoomUtil
 
         foreach (var item in sedi)
         {
-            var x = await ElaborateSingleRoom(hourStart, hourStop, item, results, 
-                cacheCheckIfToUse:CacheUtil.CheckIfToUseCache, cacheSaveToCache:CacheUtil.SaveToCache);
+            var x = await ElaborateSingleRoom(hourStart, hourStop, item, results,
+                CacheUtil.CheckIfToUseCache, CacheUtil.SaveToCache);
             if (x.Item1) return new Tuple<JArray?, DoneEnum>(x.Item2, x.Item3);
         }
 
@@ -73,7 +74,6 @@ public static class SearchRoomUtil
 
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
     }
-
 
 
     private static async Task<Tuple<bool, JArray?, DoneEnum>> ElaborateSingleRoom(DateTime? hourStart,
@@ -95,7 +95,8 @@ public static class SearchRoomUtil
             return new Tuple<bool, JArray?, DoneEnum>(false, null, DoneEnum.SKIPPED);
         }
 
-        var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, item, cacheCheckIfToUse:cacheCheckIfToUse, cacheSaveToCache:cacheSaveToCache);
+        var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, item, cacheCheckIfToUse: cacheCheckIfToUse,
+            cacheSaveToCache: cacheSaveToCache);
         if (t3.Item1 is null || t3.Item1?.Count == 0)
             return new Tuple<bool, JArray?, DoneEnum>(true, new JArray { t3.Item2 }, DoneEnum.ERROR);
 
@@ -105,7 +106,7 @@ public static class SearchRoomUtil
 
         foreach (var room in t4)
         {
-            var r2 = PoliNetwork.Rooms.Utils.Search.SearchUtil.FormatRoom(room);
+            var r2 = SearchUtil.FormatRoom(room);
             if (r2 != null)
                 temp.Add(r2);
         }
@@ -117,7 +118,6 @@ public static class SearchRoomUtil
 
         return new Tuple<bool, JArray?, DoneEnum>(false, null, DoneEnum.SKIPPED);
     }
-
 
 
     private static void UpdateOccupancyRate(JArray rooms)
