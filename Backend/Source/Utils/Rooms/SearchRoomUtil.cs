@@ -6,6 +6,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Utils.Cache;
+using PoliFemoBackend.Source.Utils.Database;
 using PoliNetwork.Core.Data;
 using PoliNetwork.Core.Enums;
 using PoliNetwork.Core.Objects.Threading;
@@ -141,7 +142,7 @@ public static class SearchRoomUtil
         {
             { "@yesterday", DateTime.Now.AddDays(-1) }
         };
-        var q2 = PoliNetwork.Db.Utils.Database.ExecuteSelect(q, GlobalVariables.DbConfigVar, dict);
+        var q2 = PoliNetwork.Db.Utils.Database.ExecuteSelect(q, DbConfigUtilPoliFemo.DbConfigVar, dict);
         if (!(q2?.Rows.Count > 0))
             return;
 
