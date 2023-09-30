@@ -1,7 +1,7 @@
 ﻿#region
 
 using PoliFemoBackend.Source.Objects.Articles.News;
-using PoliFemoBackend.Source.Utils.Html;
+using PoliNetwork.Html.Utils;
 
 #endregion
 

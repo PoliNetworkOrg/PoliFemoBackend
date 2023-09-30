@@ -1,5 +1,6 @@
 ﻿namespace PoliFemoBackend.Source.Objects.DbObjects;
 
+[Serializable]
 public class LimitOffset
 {
     private const int MaxLimit = 100;

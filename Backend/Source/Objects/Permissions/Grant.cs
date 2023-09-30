@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace PoliFemoBackend.Source.Objects.Permissions;
 
+[Serializable]
 public class Grant
 {
     public Grant(string nameGrant, int? idObject)

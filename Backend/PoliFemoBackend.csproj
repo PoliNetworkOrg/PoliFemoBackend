@@ -48,8 +48,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Source\Objects\Rooms\" />
-        <Folder Include="Source\Utils\Html\" />
         <Folder Include="Source\Utils\Temp\Migrate\"/>
     </ItemGroup>
 
