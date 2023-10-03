@@ -11,6 +11,7 @@ using PoliNetwork.Db.Objects;
 
 namespace PoliFemoBackend.Source.Data;
 
+[Serializable]
 public static class GlobalVariables
 {
     public static readonly DateTime Start = DateTime.Now;

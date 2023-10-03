@@ -84,12 +84,13 @@ public class ArticlesByParameters : ControllerBase
                 { "@author_id", author_id },
                 { "@title", "%" + title + "%" }
             });
-        if (results != null) {
+        if (results != null)
+        {
             resultsJArray = new JArray();
             foreach (DataRow dr in results.Rows) resultsJArray.Add(ArticleUtil.ArticleAuthorsRowToJObject(dr));
         }
 
-            //ArticleUtil.ArticleAuthorsRowsToJArray(results);
+        //ArticleUtil.ArticleAuthorsRowsToJArray(results);
 
         var r = new JObject
         {

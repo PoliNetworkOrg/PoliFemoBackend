@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PoliFemoBackend.Source.Objects.Auth;
 
+[Serializable]
 public class LoginResultObject
 {
     internal readonly string? Acctype;

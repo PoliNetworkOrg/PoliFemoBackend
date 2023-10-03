@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliNetwork.Core", "Lib_CSh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliNetwork.Db", "Lib_CSharp\PoliNetwork.Db\src\PoliNetwork.Db.csproj", "{05279018-ECC0-41B1-8769-75A747A53C41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliNetwork.Rooms", "Lib_CSharp\PoliNetwork.Rooms\PoliNetwork.Rooms.csproj", "{2274913E-1A88-4FAF-B2A2-F23AEB758C52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliNetwork.Html", "Lib_CSharp\PoliNetwork.Html\PoliNetwork.Html.csproj", "{341852D9-6AB7-496B-9EED-B0902DA10213}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +45,22 @@ Global
 		{05279018-ECC0-41B1-8769-75A747A53C41}.Release|Any CPU.Build.0 = Release|Any CPU
 		{05279018-ECC0-41B1-8769-75A747A53C41}.Release|x64.ActiveCfg = Release|Any CPU
 		{05279018-ECC0-41B1-8769-75A747A53C41}.Release|x64.Build.0 = Release|Any CPU
+		{2274913E-1A88-4FAF-B2A2-F23AEB758C52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2274913E-1A88-4FAF-B2A2-F23AEB758C52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2274913E-1A88-4FAF-B2A2-F23AEB758C52}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2274913E-1A88-4FAF-B2A2-F23AEB758C52}.Debug|x64.Build.0 = Debug|Any CPU
+		{2274913E-1A88-4FAF-B2A2-F23AEB758C52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2274913E-1A88-4FAF-B2A2-F23AEB758C52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2274913E-1A88-4FAF-B2A2-F23AEB758C52}.Release|x64.ActiveCfg = Release|Any CPU
+		{2274913E-1A88-4FAF-B2A2-F23AEB758C52}.Release|x64.Build.0 = Release|Any CPU
+		{341852D9-6AB7-496B-9EED-B0902DA10213}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{341852D9-6AB7-496B-9EED-B0902DA10213}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{341852D9-6AB7-496B-9EED-B0902DA10213}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{341852D9-6AB7-496B-9EED-B0902DA10213}.Debug|x64.Build.0 = Debug|Any CPU
+		{341852D9-6AB7-496B-9EED-B0902DA10213}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{341852D9-6AB7-496B-9EED-B0902DA10213}.Release|Any CPU.Build.0 = Release|Any CPU
+		{341852D9-6AB7-496B-9EED-B0902DA10213}.Release|x64.ActiveCfg = Release|Any CPU
+		{341852D9-6AB7-496B-9EED-B0902DA10213}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,30 +6,30 @@
 create table if not exists Authors
 (
     author_id int(10) auto_increment
-        primary key,
+    primary key,
     `name`     varchar(50)  null,
     link      varchar(200) null,
     image     varchar(100) null
-);
+    );
 
 create table if not exists Days
 (
     `day` date not null
-        primary key
+    primary key
 );
 
 create table if not exists Grants
 (
     grant_name varchar(100) not null
-        primary key
-);
+    primary key
+    );
 
 create table if not exists `Groups`
 (
     class                    varchar(100)                                            null,
     office                   enum ('Bovisa', 'Como', 'Cremona', 'Lecco', 'Leonardo') null,
     id                       varchar(100)                                            not null
-        primary key,
+    primary key,
     degree                   enum ('LT', 'LM', 'LU')                                 null,
     school                   enum ('ICAT', 'DES', '3I', 'ICAT+3I', 'AUIC')           null,
     link_id                  varchar(50)                                             null,
@@ -39,20 +39,20 @@ create table if not exists `Groups`
     platform                 enum ('WA', 'TG', 'FB')                                 null,
     last_updated             datetime                                                null,
     link_is_working          enum ('Y', 'N')                                         null
-);
+    );
 
 create table if not exists Tags
 (
     `name`  varchar(100) not null
-        primary key,
+    primary key,
     image varchar(100) null,
     blurhash varchar(80) null
-);
+    );
 
 create table if not exists Articles
 (
     article_id   int unsigned auto_increment
-        primary key,
+    primary key,
     tag_id       varchar(100) null,
     publish_time datetime     not null,
     target_time  datetime     null,
@@ -66,40 +66,40 @@ create table if not exists Articles
     content_it   int          null,
     content_en   int          null,
     constraint ArticleEN___fk
-        foreign key (content_en) references ArticleContent (id),
+    foreign key (content_en) references ArticleContent (id),
     constraint ArticleIT___fk
-        foreign key (content_it) references ArticleContent (id),
+    foreign key (content_it) references ArticleContent (id),
     constraint Author___fk
-        foreign key (author_id) references Authors (author_id),
+    foreign key (author_id) references Authors (author_id),
     constraint Tags___fk
-        foreign key (tag_id) references Tags (name)
-);
+    foreign key (tag_id) references Tags (name)
+    );
 
 create table if not exists ArticleContent
 (
     id       int auto_increment
-        primary key,
+    primary key,
     title    varchar(100) not null,
     subtitle varchar(200) null,
     content  text         not null,
     url      varchar(500) null
-);
+    );
 
 create table if not exists Types
 (
     type_id int unsigned auto_increment
-        primary key,
+    primary key,
     `name`      enum ('Festivo', 'Esame', 'Esame di profitto', 'Lauree Magistrali', 'Lezione', 'Sabato', 'Lauree 1 liv', 'Altre attività', 'Vacanza', 'Prova in itinere') null
-);
+    );
 
 create table if not exists Users
 (
     user_id       varchar(100)                               not null
-        primary key,
+    primary key,
     account_type  enum ('POLIMI', 'POLINETWORK', 'PERSONAL') not null,
     last_activity datetime                                   not null,
     expires_days  int                                        not null
-);
+    );
 
 create table if not exists RoomOccupancyReports
 (
@@ -109,8 +109,8 @@ create table if not exists RoomOccupancyReports
     when_reported datetime      not null,
     primary key (room_id, user_id),
     constraint RoomOccupancyReport_Users_user_id_fk
-        foreign key (user_id) references Users (user_id)
-);
+    foreign key (user_id) references Users (user_id)
+    );
 
 create table if not exists belongsTo
 (
@@ -118,10 +118,10 @@ create table if not exists belongsTo
     type_id int unsigned not null,
     primary key (`day`, type_id),
     constraint belongsTo_ibfk_1
-        foreign key (`day`) references Days (`day`),
+    foreign key (`day`) references Days (`day`),
     constraint belongsTo_ibfk_2
-        foreign key (type_id) references Types (type_id)
-);
+    foreign key (type_id) references Types (type_id)
+    );
 
 create or replace index type_id
     on belongsTo (type_id);
@@ -133,18 +133,18 @@ create table if not exists permissions
     object_id int          not null,
     primary key (grant_id, user_id, object_id),
     constraint grant_id
-        foreign key (grant_id) references Grants (grant_name),
+    foreign key (grant_id) references Grants (grant_name),
     constraint user_id
-        foreign key (user_id) references Users (user_id)
-);
+    foreign key (user_id) references Users (user_id)
+    );
 
 create table if not exists WebCache
 (
     url        varchar(500) not null
-        primary key,
+    primary key,
     content    longtext     not null,
     expires_at date         not null
-);
+    );
 
 create view if not exists ArticlesWithAuthors_View as
 select `a`.`article_id`   AS `article_id`,
@@ -171,8 +171,8 @@ select `a`.`article_id`   AS `article_id`,
        `aut`.`author_id`  AS `author_id`
 from (((`Articles` `a` join `ArticleContent` `ac_it`
         on (`a`.`content_it` = `ac_it`.`id`)) left join `ArticleContent` `ac_en`
-        on (`a`.`content_en` = `ac_en`.`id`)) join `Authors` `aut`
-        on (`a`.`author_id` = `aut`.`author_id`));
+       on (`a`.`content_en` = `ac_en`.`id`)) join `Authors` `aut`
+      on (`a`.`author_id` = `aut`.`author_id`));
 
 
 
@@ -180,11 +180,11 @@ create
     function if not exists deleteUser(userid varchar(100)) returns int
 BEGIN
 
-    DELETE FROM permissions WHERE user_id=userid;
-    DELETE FROM RoomOccupancyReports WHERE user_id=userid;
-    DELETE FROM Users WHERE user_id=userid;
+DELETE FROM permissions WHERE user_id=userid;
+DELETE FROM RoomOccupancyReports WHERE user_id=userid;
+DELETE FROM Users WHERE user_id=userid;
 
-    RETURN 0;
+RETURN 0;
 
 END;
 
@@ -194,12 +194,12 @@ BEGIN
 
     DECLARE ct_en, ct_it INT;
 
-    SELECT content_en, content_it INTO ct_en, ct_it FROM Articles WHERE article_id = id;
+SELECT content_en, content_it INTO ct_en, ct_it FROM Articles WHERE article_id = id;
 
-    DELETE FROM Articles WHERE article_id = id;
-    DELETE FROM ArticleContent WHERE ArticleContent.id IN (ct_en, ct_it);
+DELETE FROM Articles WHERE article_id = id;
+DELETE FROM ArticleContent WHERE ArticleContent.id IN (ct_en, ct_it);
 
-    RETURN 0;
+RETURN 0;
 
 END;
 
@@ -208,20 +208,20 @@ create event if not exists chores on schedule
         starts '2023-01-01 04:00:00'
     enable
     do
-    BEGIN
+BEGIN
 
     # Delete old users
     CREATE TEMPORARY TABLE IF NOT EXISTS UsersToDelete(userid VARCHAR(100), days INT);
-    INSERT INTO UsersToDelete SELECT user_id, expires_days from Users where DATEDIFF(NOW(), last_activity) > expires_days;
-    SELECT deleteUser(userid) FROM UsersToDelete;
-    DROP TABLE UsersToDelete;
+INSERT INTO UsersToDelete SELECT user_id, expires_days from Users where DATEDIFF(NOW(), last_activity) > expires_days;
+SELECT deleteUser(userid) FROM UsersToDelete;
+DROP TABLE UsersToDelete;
 
 
-    # Delete old cache entries
-    DELETE FROM WebCache WHERE NOW() > expires_at;
+# Delete old cache entries
+DELETE FROM WebCache WHERE NOW() > expires_at;
 
 
-    # Delete old room occupancies reports
+# Delete old room occupancies reports
     TRUNCATE TABLE RoomOccupancyReports;
 END;
 

@@ -5,17 +5,18 @@ using System.Data;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using PoliFemoBackend.Source.Data;
-using PNData = PoliNetwork.Core.Data;
-using PoliFemoBackend.Source.Enums;
-using PoliFemoBackend.Source.Objects.Threading;
 using PoliFemoBackend.Source.Utils.Cache;
-using DB = PoliNetwork.Db.Utils.Database;
-using Jint.Parser.Ast;
+using PoliFemoBackend.Source.Utils.Database;
+using PoliNetwork.Core.Data;
+using PoliNetwork.Core.Enums;
+using PoliNetwork.Core.Objects.Threading;
+using PoliNetwork.Html.Objects.Web;
+using PoliNetwork.Rooms.Utils;
+using PoliNetwork.Rooms.Utils.Search;
 
 #endregion
 
-namespace PoliFemoBackend.Source.Utils.Rooms.Search;
+namespace PoliFemoBackend.Source.Utils.Rooms;
 
 public static class SearchRoomUtil
 {
@@ -28,7 +29,7 @@ public static class SearchRoomUtil
             {
                 var daysToSearch = 2;
 
-                for (int i=1; i<=daysToSearch; i++)
+                for (var i = 1; i <= daysToSearch; i++)
                 {
                     var date = DateTime.Now.AddDays(i);
                     var t = SearchRooms(null, date, date);
@@ -46,10 +47,10 @@ public static class SearchRoomUtil
             catch (Exception ex)
             {
                 threadWithAction.Failed++;
-                PNData.GlobalVariables.DefaultLogger.Error(ex.ToString());
+                GlobalVariables.DefaultLogger.Error(ex.ToString());
             }
 
-            PNData.GlobalVariables.DefaultLogger.Debug("Finished autosearch of rooms.");
+            GlobalVariables.DefaultLogger.Debug("Finished autosearch of rooms.");
             Thread.Sleep(timeToWait);
         }
         // ReSharper disable once FunctionNeverReturns
@@ -64,7 +65,8 @@ public static class SearchRoomUtil
 
         foreach (var item in sedi)
         {
-            var x = await ElaborateSingleRoom(hourStart, hourStop, item, results);
+            var x = await ElaborateSingleRoom(hourStart, hourStop, item, results,
+                CacheUtil.CheckIfToUseCache, CacheUtil.SaveToCache);
             if (x.Item1) return new Tuple<JArray?, DoneEnum>(x.Item2, x.Item3);
         }
 
@@ -73,8 +75,10 @@ public static class SearchRoomUtil
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
     }
 
+
     private static async Task<Tuple<bool, JArray?, DoneEnum>> ElaborateSingleRoom(DateTime? hourStart,
-        DateTime? hourStop, string item, JArray results)
+        DateTime? hourStop, string item, JArray results, Func<string, WebReply?>? cacheCheckIfToUse,
+        Action<string, string>? cacheSaveToCache)
     {
         var temp = new JArray();
         var polimidailysituation = "polimidailysituation://" + item + "/" + hourStart?.ToString("yyyy-MM-dd");
@@ -91,7 +95,8 @@ public static class SearchRoomUtil
             return new Tuple<bool, JArray?, DoneEnum>(false, null, DoneEnum.SKIPPED);
         }
 
-        var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, item);
+        var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, item, cacheCheckIfToUse: cacheCheckIfToUse,
+            cacheSaveToCache: cacheSaveToCache);
         if (t3.Item1 is null || t3.Item1?.Count == 0)
             return new Tuple<bool, JArray?, DoneEnum>(true, new JArray { t3.Item2 }, DoneEnum.ERROR);
 
@@ -101,7 +106,7 @@ public static class SearchRoomUtil
 
         foreach (var room in t4)
         {
-            var r2 = FormatRoom(room);
+            var r2 = SearchUtil.FormatRoom(room);
             if (r2 != null)
                 temp.Add(r2);
         }
@@ -112,23 +117,6 @@ public static class SearchRoomUtil
             results.Add(jToken);
 
         return new Tuple<bool, JArray?, DoneEnum>(false, null, DoneEnum.SKIPPED);
-    }
-
-    private static JObject? FormatRoom(object? room)
-    {
-        if (room == null) return null;
-
-        var formattedRoom = JObject.FromObject(room);
-        var roomLink = formattedRoom.GetValue("link");
-        if (roomLink == null)
-            return formattedRoom;
-
-        var roomId = uint.Parse(roomLink.ToString().Split("idaula=")[1]);
-        formattedRoom.Add(new JProperty("room_id", roomId));
-
-        formattedRoom["occupancy_rate"] = null;
-
-        return formattedRoom;
     }
 
 
@@ -154,7 +142,7 @@ public static class SearchRoomUtil
         {
             { "@yesterday", DateTime.Now.AddDays(-1) }
         };
-        var q2 = DB.ExecuteSelect(q, GlobalVariables.DbConfigVar, dict);
+        var q2 = PoliNetwork.Db.Utils.Database.ExecuteSelect(q, DbConfigUtilPoliFemo.DbConfigVar, dict);
         if (!(q2?.Rows.Count > 0))
             return;
 

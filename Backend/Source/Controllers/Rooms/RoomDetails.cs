@@ -2,7 +2,8 @@
 
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using PoliFemoBackend.Source.Utils.Rooms;
+using PoliFemoBackend.Source.Utils.Cache;
+using PoliNetwork.Rooms.Utils;
 
 #endregion
 
@@ -24,7 +25,8 @@ public class RoomDetailsController : ControllerBase
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public async Task<ObjectResult> GetRoomDetails(int id)
     {
-        var room = await SingleRoomUtil.GetRoomById(id);
+        var room = await SingleRoomUtil.GetRoomById(id, cacheCheckIfToUse: CacheUtil.CheckIfToUseCache,
+            cacheSaveToCache: CacheUtil.SaveToCache);
         if (room is not null)
             return new ObjectResult(room);
 

@@ -55,6 +55,8 @@
         <ProjectReference Include="..\Lib_CSharp\PoliNetwork.Core\src\PoliNetwork.Core.csproj"/>
 
         <ProjectReference Include="..\Lib_CSharp\PoliNetwork.Db\src\PoliNetwork.Db.csproj"/>
+
+        <ProjectReference Include="..\Lib_CSharp\PoliNetwork.Rooms\PoliNetwork.Rooms.csproj"/>
     </ItemGroup>
 
 
