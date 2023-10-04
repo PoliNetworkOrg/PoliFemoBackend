@@ -14,9 +14,9 @@ using DB = PoliNetwork.Db.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
-[ApiExplorerSettings(GroupName = "Accounts")]
+[ApiExplorerSettings(GroupName = "Permissions")]
 [RequiresPermission(Constants.Permissions.ManagePermissions)]
-[Route("/accounts/{id}/permissions")]
+[Route("permissions/{id}")]
 public class EditPermissions : ControllerBase
 {
     /// <summary>

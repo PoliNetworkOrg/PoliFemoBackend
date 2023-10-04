@@ -13,8 +13,8 @@ using PoliFemoBackend.Source.Utils.Auth;
 namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
-[ApiExplorerSettings(GroupName = "Accounts")]
-[Route("accounts/{id}/permissions")]
+[ApiExplorerSettings(GroupName = "Permissions")]
+[Route("permissions/{id}")]
 [Authorize]
 public class GetPermissionsController : ControllerBase
 {
