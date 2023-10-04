@@ -1,15 +1,14 @@
-name: .NET Test
+name: .NET
 
 on:
   push:
-    branches: [ main, dev ]
-  pull_request:
 
 jobs:
   build:
+    if: ${{ github.ref != 'refs/heads/dev' || github.ref != 'refs/heads/main' }}
 
     runs-on: ubuntu-latest
-    name: Build (Test)
+    name: Build
 
     steps:
     - uses: actions/checkout@v3

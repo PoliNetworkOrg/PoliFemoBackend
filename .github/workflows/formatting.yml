@@ -1,4 +1,4 @@
-name: Check file length
+name: Formatting
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   check_file_length:
+    name: Check file length
     runs-on: ubuntu-20.04
     steps:
     - name: Install dependencies
@@ -17,3 +18,12 @@ jobs:
       run: curl -Lo check_file_length.py https://raw.githubusercontent.com/PoliNetworkOrg/CheckFilesLength/master/main.py
     - name: Run check_file_length
       run: python3 ./check_file_length.py
+
+  csharpier_check:
+    name: Check formatting (csharpier)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+        dotnet tool restore
+        dotnet csharpier --check .
