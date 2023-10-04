@@ -24,6 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        run: |
+      - run: |
           dotnet tool restore
           dotnet csharpier --check .
