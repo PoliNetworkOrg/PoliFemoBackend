@@ -25,8 +25,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         name: Checkout
+      - name: Install dependencies
         run: |
           dotnet tool restore
       - name: Run csharpier
-        run: |
           dotnet csharpier --check .
