@@ -29,35 +29,36 @@ public class DeleteArticle : ControllerBase
     public ObjectResult DeleteArticleDb(int id)
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        var article = DB.ExecuteSelect("SELECT author_id from Articles WHERE article_id=@id",
+        var article = DB.ExecuteSelect(
+            "SELECT author_id from Articles WHERE article_id=@id",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object?>
-            {
-                { "@id", id }
-            });
+            new Dictionary<string, object?> { { "@id", id } }
+        );
         if (article == null)
             return new NotFoundObjectResult("");
         var idAuthor = Convert.ToInt32(DB.GetFirstValueFromDataTable(article));
-        if (!AccountAuthUtil.HasGrantAndObjectPermission(sub, Constants.Permissions.ManageArticles, idAuthor))
+        if (
+            !AccountAuthUtil.HasGrantAndObjectPermission(
+                sub,
+                Constants.Permissions.ManageArticles,
+                idAuthor
+            )
+        )
         {
             Response.StatusCode = 403;
-            return new UnauthorizedObjectResult(new JObject
-            {
-                { "error", "You don't have enough permissions" }
-            });
+            return new UnauthorizedObjectResult(
+                new JObject { { "error", "You don't have enough permissions" } }
+            );
         }
 
-        var result = DB.ExecuteSelect("SELECT deleteArticle(@id) as result",
+        var result = DB.ExecuteSelect(
+            "SELECT deleteArticle(@id) as result",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object?>
-            {
-                { "@id", id }
-            });
-        if (result?.Rows[0]["result"].ToString() == "0") return Ok("");
+            new Dictionary<string, object?> { { "@id", id } }
+        );
+        if (result?.Rows[0]["result"].ToString() == "0")
+            return Ok("");
         Response.StatusCode = 500;
-        return new ObjectResult(new JObject
-        {
-            { "error", "Internal server error" }
-        });
+        return new ObjectResult(new JObject { { "error", "Internal server error" } });
     }
 }

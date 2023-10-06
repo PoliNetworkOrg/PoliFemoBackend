@@ -35,38 +35,47 @@ public class CodeExchangeController : ControllerBase
     [HttpGet]
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult? CodeExchange(string code, int state)
-        // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d
-        //      &scope=openid%20offline_access&response_type=code
-        //      &login_hint=nome.cognome@mail.polimi.it&state=10010
-        //      &redirect_uri=https://api.polinetwork.org/v1/auth/code
+    // https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?client_id=92602f24-dd8e-448e-a378-b1c575310f9d
+    //      &scope=openid%20offline_access&response_type=code
+    //      &login_hint=nome.cognome@mail.polimi.it&state=10010
+    //      &redirect_uri=https://api.polinetwork.org/v1/auth/code
     {
         try
         {
             var response = AuthUtil.GetResponse(code, state, GrantTypeEnum.authorization_code);
 
-            if (response == null) return BadRequest("Client secret not found");
+            if (response == null)
+                return BadRequest("Client secret not found");
 
             var responseJson = JToken.Parse(response.Content.ReadAsStringAsync().Result);
 
             if (!response.IsSuccessStatusCode)
-                return new BadRequestObjectResult(new
-                {
-                    error = "Error while exchanging code for token",
-                    reason = responseJson.Value<string>("error")
-                });
+                return new BadRequestObjectResult(
+                    new
+                    {
+                        error = "Error while exchanging code for token",
+                        reason = responseJson.Value<string>("error")
+                    }
+                );
 
             var loginResultObject = LoginUtil.LoginUser(this, responseJson);
             if (loginResultObject is { ActionResult: not null })
                 return loginResultObject.ActionResult;
 
-            if (string.IsNullOrEmpty(loginResultObject?.Subject) || string.IsNullOrEmpty(loginResultObject?.Acctype))
-                return new BadRequestObjectResult(new
-                {
-                    error = "Error while exchanging code for token",
-                    reason = "Subject or acctype is null or empty"
-                });
+            if (
+                string.IsNullOrEmpty(loginResultObject?.Subject)
+                || string.IsNullOrEmpty(loginResultObject?.Acctype)
+            )
+                return new BadRequestObjectResult(
+                    new
+                    {
+                        error = "Error while exchanging code for token",
+                        reason = "Subject or acctype is null or empty"
+                    }
+                );
 
-            const string query = "INSERT IGNORE INTO Users VALUES(sha2(@subject, 256), @acctype, NOW(), 730);";
+            const string query =
+                "INSERT IGNORE INTO Users VALUES(sha2(@subject, 256), @acctype, NOW(), 730);";
             var parameters = new Dictionary<string, object?>
             {
                 { "@subject", loginResultObject.Subject },
@@ -84,11 +93,9 @@ public class CodeExchangeController : ControllerBase
         }
         catch (MySqlException)
         {
-            return new ObjectResult(new
-            {
-                error = "Database error",
-                statusCode = HttpStatusCode.InternalServerError
-            });
+            return new ObjectResult(
+                new { error = "Database error", statusCode = HttpStatusCode.InternalServerError }
+            );
         }
         catch (Exception ex)
         {

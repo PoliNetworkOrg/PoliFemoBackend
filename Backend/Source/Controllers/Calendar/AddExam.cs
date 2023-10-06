@@ -78,8 +78,14 @@ public class AddExam : ControllerBase
                                 {
                                     var date = DateTime.Parse(c);
                                     //split datetime to time and date
-                                    query = query.Replace("@orario", date.TimeOfDay.ToString("hh\\:mm\\:ss"));
-                                    query = query.Replace("@giorno", date.Date.ToString("yyyy-MM-dd"));
+                                    query = query.Replace(
+                                        "@orario",
+                                        date.TimeOfDay.ToString("hh\\:mm\\:ss")
+                                    );
+                                    query = query.Replace(
+                                        "@giorno",
+                                        date.Date.ToString("yyyy-MM-dd")
+                                    );
                                 }
                                 else
                                 {

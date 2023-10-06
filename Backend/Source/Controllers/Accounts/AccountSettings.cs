@@ -30,23 +30,18 @@ public class AccountSettings : ControllerBase
     public ObjectResult GetSettings()
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        if (string.IsNullOrEmpty(sub)) return BadRequest("");
+        if (string.IsNullOrEmpty(sub))
+            return BadRequest("");
 
         const string query = "SELECT expires_days FROM Users WHERE user_id = (SHA2(@sub, 256))";
-        var parameters = new Dictionary<string, object?>
-        {
-            { "@sub", sub }
-        };
+        var parameters = new Dictionary<string, object?> { { "@sub", sub } };
 
         var r = DB.ExecuteSelect(query, GlobalVariables.DbConfigVar, parameters);
         var value = DB.GetFirstValueFromDataTable(r);
         if (value == null)
             return StatusCode(500, "");
 
-        var jObject = new JObject
-        {
-            { "expire_in_days", int.Parse(value.ToString() ?? "0") }
-        };
+        var jObject = new JObject { { "expire_in_days", int.Parse(value.ToString() ?? "0") } };
 
         return Ok(jObject);
     }
@@ -64,10 +59,7 @@ public class AccountSettings : ControllerBase
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
         var query = "";
-        var parameters = new Dictionary<string, object?>
-        {
-            { "@sub", sub }
-        };
+        var parameters = new Dictionary<string, object?> { { "@sub", sub } };
 
         for (var i = 0; i < body.Count; i++)
         {
@@ -77,20 +69,22 @@ public class AccountSettings : ControllerBase
             {
                 case "expire_in_days":
                     if (value.Value<int>() < 30 || value.Value<int>() > 365 * 5)
-                        return new BadRequestObjectResult(new JObject
-                        {
-                            { "error", "Invalid value. The number of days must be between 30 and 1825" }
-                        });
+                        return new BadRequestObjectResult(
+                            new JObject
+                            {
+                                {
+                                    "error",
+                                    "Invalid value. The number of days must be between 30 and 1825"
+                                }
+                            }
+                        );
 
                     query = "UPDATE Users SET expires_days = @v WHERE user_id = (SHA2(@sub, 256))";
                     parameters.Add("@v", value.Value<int>());
                     break;
 
                 default:
-                    return new BadRequestObjectResult(new JObject
-                    {
-                        { "error", "Invalid key" }
-                    });
+                    return new BadRequestObjectResult(new JObject { { "error", "Invalid key" } });
             }
         }
 

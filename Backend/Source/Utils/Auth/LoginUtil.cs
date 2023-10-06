@@ -13,7 +13,10 @@ namespace PoliFemoBackend.Source.Utils.Auth.CodeExchange;
 
 public static class LoginUtil
 {
-    internal static LoginResultObject? LoginUser(ControllerBase codeExchangeController, JToken responseJson)
+    internal static LoginResultObject? LoginUser(
+        ControllerBase codeExchangeController,
+        JToken responseJson
+    )
     {
         JwtSecurityToken? token;
         string? acctype = null;
@@ -22,16 +25,19 @@ public static class LoginUtil
 
         try
         {
-            token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["access_token"]?.ToString());
+            token = GlobalVariables.TokenHandler?.ReadJwtToken(
+                responseJson["access_token"]?.ToString()
+            );
             var domain = token?.Payload["upn"].ToString()?.Split('@')[1];
             if (domain == null || token?.Subject == null)
             {
-                actionResult = new BadRequestObjectResult(new
-                {
-                    error =
-                        "The received code is not a valid organization code. Request a new authorization code and login again.",
-                    statusCode = HttpStatusCode.BadRequest
-                });
+                actionResult = new BadRequestObjectResult(
+                    new
+                    {
+                        error = "The received code is not a valid organization code. Request a new authorization code and login again.",
+                        statusCode = HttpStatusCode.BadRequest
+                    }
+                );
                 return new LoginResultObject(acctype, subject, actionResult);
             }
 
@@ -46,23 +52,32 @@ public static class LoginUtil
                     break;
                 default:
                 {
-                    actionResult = codeExchangeController.StatusCode(403, new
-                    {
-                        error = "The user is not using a valid org email. Please use a public account."
-                    });
+                    actionResult = codeExchangeController.StatusCode(
+                        403,
+                        new
+                        {
+                            error = "The user is not using a valid org email. Please use a public account."
+                        }
+                    );
                     return new LoginResultObject(acctype, subject, actionResult);
                 }
             }
 
-            token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["id_token"]?.ToString());
+            token = GlobalVariables.TokenHandler?.ReadJwtToken(
+                responseJson["id_token"]?.ToString()
+            );
             subject = token != null ? token.Subject : throw new Exception("Token is null");
         }
         catch (ArgumentException)
         {
-            token = GlobalVariables.TokenHandler?.ReadJwtToken(responseJson["id_token"]?.ToString());
-            subject = token?.Subject ??
-                      throw new Exception(
-                          "The received code is invalid. Request a new authorization code and login again.");
+            token = GlobalVariables.TokenHandler?.ReadJwtToken(
+                responseJson["id_token"]?.ToString()
+            );
+            subject =
+                token?.Subject
+                ?? throw new Exception(
+                    "The received code is invalid. Request a new authorization code and login again."
+                );
             acctype = "PERSONAL";
         }
         catch (Exception ex)
@@ -71,7 +86,10 @@ public static class LoginUtil
                 actionResult = new BadRequestObjectResult(
                     new JObject
                     {
-                        { "error", "The received code is invalid. Request a new authorization code and login again." },
+                        {
+                            "error",
+                            "The received code is invalid. Request a new authorization code and login again."
+                        },
                         { "reason", ex.Message }
                     }.ToString()
                 );

@@ -25,33 +25,37 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
 
     public void Configure(SwaggerGenOptions options)
     {
-        options.SwaggerDoc("definitions", new OpenApiInfo
-        {
-            Title = "PoliFemo API",
-            Version = "v1",
-            Description = "PoliFemo API",
-            Contact = new OpenApiContact
+        options.SwaggerDoc(
+            "definitions",
+            new OpenApiInfo
             {
-                Name = "PoliFemo",
-                Email = "dsd"
+                Title = "PoliFemo API",
+                Version = "v1",
+                Description = "PoliFemo API",
+                Contact = new OpenApiContact { Name = "PoliFemo", Email = "dsd" }
             }
-        });
+        );
 
         options.SupportNonNullableReferenceTypes();
         options.MapType<JToken>(() => new OpenApiSchema { Type = nameof(JToken) });
         options.OperationFilter<AuthOperationsFilter>();
-        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            Description = "Access token using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-            Name = Constants.Authorization,
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer"
-        });
+        options.AddSecurityDefinition(
+            "Bearer",
+            new OpenApiSecurityScheme
+            {
+                Description =
+                    "Access token using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                Name = Constants.Authorization,
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            }
+        );
 
         options.TagActionsBy(api =>
         {
-            if (api.GroupName != null) return new[] { api.GroupName };
+            if (api.GroupName != null)
+                return new[] { api.GroupName };
 
             if (api.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
                 return new[] { controllerActionDescriptor.ControllerName };

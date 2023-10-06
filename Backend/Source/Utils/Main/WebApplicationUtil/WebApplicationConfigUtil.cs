@@ -22,10 +22,7 @@ public static class WebApplicationConfigUtil
 
         app.UseCors(policyBuilder =>
         {
-            policyBuilder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            policyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
         });
 
         app.UseAuthentication();
@@ -55,7 +52,10 @@ public static class WebApplicationConfigUtil
         app.UseSwaggerUI(options =>
         {
             options.DocExpansion(DocExpansion.None);
-            options.SwaggerEndpoint(GlobalVariables.BasePath + "swagger/definitions/swagger.json", "PoliFemo API");
+            options.SwaggerEndpoint(
+                GlobalVariables.BasePath + "swagger/definitions/swagger.json",
+                "PoliFemo API"
+            );
             options.InjectStylesheet(GlobalVariables.BasePath + "swagger-ui/SwaggerDark.css");
         });
     }

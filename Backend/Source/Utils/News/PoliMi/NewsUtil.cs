@@ -16,7 +16,8 @@ public static class NewsUtil
 
     internal static DoneEnum UpdateDb(ArticleNews newsItem)
     {
-        if (newsItem.ShouldBeSkipped()) return DoneEnum.SKIPPED;
+        if (newsItem.ShouldBeSkipped())
+            return DoneEnum.SKIPPED;
         var url = newsItem.content[0].url;
         if (string.IsNullOrEmpty(url))
             return DoneEnum.ERROR;
@@ -51,8 +52,9 @@ public static class NewsUtil
                 continue;
             }
 
-            const string query = "INSERT INTO ArticleContent (url, title, subtitle, content) " +
-                                 "VALUES (@url, @title, @subtitle, @content) RETURNING id";
+            const string query =
+                "INSERT INTO ArticleContent (url, title, subtitle, content) "
+                + "VALUES (@url, @title, @subtitle, @content) RETURNING id";
             var args = new Dictionary<string, object?>
             {
                 { "@url", content.url },
@@ -64,12 +66,12 @@ public static class NewsUtil
             contentids[Array.IndexOf(newsItem.content, content)] = Convert.ToInt32(rt?.Rows[0][0]);
         }
 
-
-        const string query1 = "INSERT IGNORE INTO Articles " +
-                              "(publish_time,author_id,image,blurhash,tag_id, platforms,content_it,content_en) " +
-                              "VALUES " +
-                              "(@publishTime, @author_id, @image, @blurhash, @tag, @platforms, @plit, @plen) " +
-                              "ON DUPLICATE KEY UPDATE article_id = LAST_INSERT_ID(article_id)";
+        const string query1 =
+            "INSERT IGNORE INTO Articles "
+            + "(publish_time,author_id,image,blurhash,tag_id, platforms,content_it,content_en) "
+            + "VALUES "
+            + "(@publishTime, @author_id, @image, @blurhash, @tag, @platforms, @plit, @plen) "
+            + "ON DUPLICATE KEY UPDATE article_id = LAST_INSERT_ID(article_id)";
         var args1 = new Dictionary<string, object?>
         {
             { "@publishTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },

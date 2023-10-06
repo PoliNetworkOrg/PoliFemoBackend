@@ -35,9 +35,10 @@ public class SearchRangeOfDate : ControllerBase
 
         var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar);
 
-        if (results == null) return StatusCode(500);
-        if (results.Rows.Count == 0) return NoContent();
-
+        if (results == null)
+            return StatusCode(500);
+        if (results.Rows.Count == 0)
+            return NoContent();
 
         //crea oggetto Day in json
 
@@ -51,12 +52,16 @@ public class SearchRangeOfDate : ControllerBase
             };
 
             //controllare se esiste già un day dentro a days
-            var exists = days.Select(d => d.Value<string>("date") ?? "").Any(x => x.Equals(day.Value<string>("date")));
+            var exists = days.Select(d => d.Value<string>("date") ?? "")
+                .Any(x => x.Equals(day.Value<string>("date")));
 
             if (exists)
                 continue;
 
-            day.Add("type", GetArrayString(results, ((DateTime)row["giorno"]).ToString("yyyy-MM-dd")));
+            day.Add(
+                "type",
+                GetArrayString(results, ((DateTime)row["giorno"]).ToString("yyyy-MM-dd"))
+            );
             days.Add(day);
         }
 

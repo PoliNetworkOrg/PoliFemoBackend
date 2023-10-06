@@ -18,7 +18,8 @@ public static class ArticleUtil
 {
     public static async Task<string?> GenerateBlurhashAsync(string? url)
     {
-        if (url == null || url == "") return null;
+        if (url == null || url == "")
+            return null;
 
         using (var bytes = await new HttpClient().GetStreamAsync(url))
         {
@@ -35,44 +36,57 @@ public static class ArticleUtil
             { "id", Convert.ToInt32(row["article_id"]) },
             { "tag_id", row["tag_id"].ToString() },
             { "latitude", GetValue(row["latitude"]) },
-            {
-                "longitude", GetValue(row["longitude"])
-            },
+            { "longitude", GetValue(row["longitude"]) },
             //change format of date
             {
                 "publish_time",
-                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["publish_time"].ToString() ?? ""))
+                DateTimeUtil.ConvertToMySqlString(
+                    DateTimeUtil.ConvertToDateTime(row["publish_time"].ToString() ?? "")
+                )
             },
             {
                 "target_time",
-                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["target_time"].ToString() ?? ""))
+                DateTimeUtil.ConvertToMySqlString(
+                    DateTimeUtil.ConvertToDateTime(row["target_time"].ToString() ?? "")
+                )
             },
             {
                 "hidden_until",
-                DateTimeUtil.ConvertToMySqlString(DateTimeUtil.ConvertToDateTime(row["hidden_until"].ToString() ?? ""))
+                DateTimeUtil.ConvertToMySqlString(
+                    DateTimeUtil.ConvertToDateTime(row["hidden_until"].ToString() ?? "")
+                )
             },
-            { "image", row["article_image"].ToString() == "" ? null : row["article_image"].ToString() },
+            {
+                "image",
+                row["article_image"].ToString() == "" ? null : row["article_image"].ToString()
+            },
             { "blurhash", row["blurhash"].ToString() == "" ? null : row["blurhash"].ToString() }
         };
 
         var contit = new JObject
         {
             { "title", row["title_it"].ToString() },
-            { "subtitle", row["subtitle_it"].ToString() != "" ? row["subtitle_it"].ToString() : null },
+            {
+                "subtitle",
+                row["subtitle_it"].ToString() != "" ? row["subtitle_it"].ToString() : null
+            },
             { "content", row["content_it"].ToString() },
             { "url", row["url_it"].ToString() != "" ? row["url_it"].ToString() : null }
         };
 
-        var conten = row["title_en"].ToString() != ""
-            ? new JObject
-            {
-                { "title", row["title_en"].ToString() },
-                { "subtitle", row["subtitle_en"].ToString() != "" ? row["subtitle_en"].ToString() : null },
-                { "content", row["content_en"].ToString() },
-                { "url", row["url_en"].ToString() != "" ? row["url_en"].ToString() : null }
-            }
-            : null;
-
+        var conten =
+            row["title_en"].ToString() != ""
+                ? new JObject
+                {
+                    { "title", row["title_en"].ToString() },
+                    {
+                        "subtitle",
+                        row["subtitle_en"].ToString() != "" ? row["subtitle_en"].ToString() : null
+                    },
+                    { "content", row["content_en"].ToString() },
+                    { "url", row["url_en"].ToString() != "" ? row["url_en"].ToString() : null }
+                }
+                : null;
 
         var b = new JObject
         {
@@ -81,11 +95,7 @@ public static class ArticleUtil
             { "image", row["author_image"].ToString() }
         };
 
-        var content = new JObject
-        {
-            { "it", contit },
-            { "en", conten }
-        };
+        var content = new JObject { { "it", contit }, { "en", conten } };
 
         a.Add("author", b);
         a.Add("content", content);
@@ -104,21 +114,23 @@ public static class ArticleUtil
         foreach (var articlecontent in data.content)
         {
             if (articlecontent.title == null)
-                return insertArticle.BadRequest(new JObject
-                {
-                    { "error", "All languages must have a valid title" }
-                });
+                return insertArticle.BadRequest(
+                    new JObject { { "error", "All languages must have a valid title" } }
+                );
 
             var query =
                 "INSERT INTO ArticleContent(title,subtitle,content,url) VALUES(@title,@subtitle,@content,@url) RETURNING id";
-            var result = DB.ExecuteSelect(query, GlobalVariables.DbConfigVar,
+            var result = DB.ExecuteSelect(
+                query,
+                GlobalVariables.DbConfigVar,
                 new Dictionary<string, object?>
                 {
                     { "@title", articlecontent.title },
                     { "@subtitle", articlecontent.subtitle },
                     { "@content", articlecontent.content },
                     { "@url", null }
-                });
+                }
+            );
 
             idContent.Add(Convert.ToInt32(DB.GetFirstValueFromDataTable(result)));
         }
@@ -134,13 +146,12 @@ public static class ArticleUtil
         }
         catch (Exception)
         {
-            return insertArticle.BadRequest(new JObject
-            {
-                { "error", "Invalid image" }
-            });
+            return insertArticle.BadRequest(new JObject { { "error", "Invalid image" } });
         }
 
-        var resultins = DB.Execute(insertQuery, GlobalVariables.DbConfigVar,
+        var resultins = DB.Execute(
+            insertQuery,
+            GlobalVariables.DbConfigVar,
             new Dictionary<string, object?>
             {
                 { "@latitude", data.latitude == 0 ? null : data.latitude },
@@ -157,46 +168,42 @@ public static class ArticleUtil
             }
         );
         if (resultins >= 0)
-            return insertArticle.Created("", new JObject
-            {
-                { "message", "Article created successfully" }
-            });
+            return insertArticle.Created(
+                "",
+                new JObject { { "message", "Article created successfully" } }
+            );
 
         insertArticle.Response.StatusCode = 500;
-        return new ObjectResult(new JObject
-        {
-            { "error", "Internal server error" }
-        });
+        return new ObjectResult(new JObject { { "error", "Internal server error" } });
     }
 
-    internal static ObjectResult? CheckAuthorErrors(ArticleNews data, InsertArticle insertArticle,
-        string? sub)
+    internal static ObjectResult? CheckAuthorErrors(
+        ArticleNews data,
+        InsertArticle insertArticle,
+        string? sub
+    )
     {
         if (data.author_id == 0)
-            return new BadRequestObjectResult(new JObject
-            {
-                { "error", "Invalid author" }
-            });
+            return new BadRequestObjectResult(new JObject { { "error", "Invalid author" } });
 
-        var isValidAuthor = DB.ExecuteSelect("SELECT * FROM Authors WHERE author_id = @id",
+        var isValidAuthor = DB.ExecuteSelect(
+            "SELECT * FROM Authors WHERE author_id = @id",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object?>
-            {
-                { "@id", data.author_id }
-            });
+            new Dictionary<string, object?> { { "@id", data.author_id } }
+        );
         if (isValidAuthor == null)
-            return new BadRequestObjectResult(new JObject
-            {
-                { "error", "Invalid author" }
-            });
+            return new BadRequestObjectResult(new JObject { { "error", "Invalid author" } });
 
-        if (AccountAuthUtil.HasGrantAndObjectPermission(sub, Constants.Permissions.ManageArticles, data.author_id))
+        if (
+            AccountAuthUtil.HasGrantAndObjectPermission(
+                sub,
+                Constants.Permissions.ManageArticles,
+                data.author_id
+            )
+        )
             return null;
 
         insertArticle.Response.StatusCode = 403;
-        return new ObjectResult(new JObject
-        {
-            { "error", "You don't have enough permissions" }
-        });
+        return new ObjectResult(new JObject { { "error", "You don't have enough permissions" } });
     }
 }

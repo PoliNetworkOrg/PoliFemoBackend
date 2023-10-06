@@ -4,7 +4,8 @@ public static class DateTimeUtil
 {
     public static DateTime? ConvertToDateTime(string? s)
     {
-        if (string.IsNullOrEmpty(s)) return null;
+        if (string.IsNullOrEmpty(s))
+            return null;
 
         try
         {

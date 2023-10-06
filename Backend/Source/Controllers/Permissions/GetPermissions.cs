@@ -34,19 +34,11 @@ public class GetPermissionsController : ControllerBase
         if (perms.Count == 0)
         {
             Response.StatusCode = 404;
-            return new NotFoundObjectResult(new JObject
-            {
-                { "error", "No permissions found" }
-            });
+            return new NotFoundObjectResult(new JObject { { "error", "No permissions found" } });
         }
 
         var formattedPerms = Grant.GetFormattedPerms(perms);
 
-        return Ok(
-            new JObject
-            {
-                { "permissions", JToken.FromObject(formattedPerms) }
-            }
-        );
+        return Ok(new JObject { { "permissions", JToken.FromObject(formattedPerms) } });
     }
 }

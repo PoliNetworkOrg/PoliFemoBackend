@@ -24,11 +24,12 @@ public class UserActivityMiddleware
         if (!done)
         {
             httpContext.Response.StatusCode = 500;
-            await httpContext.Response.WriteAsJsonAsync(new
-            {
-                error =
-                    "An error occurred while updating the user info. Please try again later."
-            });
+            await httpContext.Response.WriteAsJsonAsync(
+                new
+                {
+                    error = "An error occurred while updating the user info. Please try again later."
+                }
+            );
         }
         else
         {
@@ -51,11 +52,9 @@ public class UserActivityMiddleware
         if (string.IsNullOrEmpty(handlerSubject))
             return false;
 
-        const string query = "UPDATE Users SET last_activity = NOW() WHERE user_id = SHA2(@subject, 256)";
-        var parameters = new Dictionary<string, object?>
-        {
-            { "@subject", handlerSubject }
-        };
+        const string query =
+            "UPDATE Users SET last_activity = NOW() WHERE user_id = SHA2(@subject, 256)";
+        var parameters = new Dictionary<string, object?> { { "@subject", handlerSubject } };
 
         var results = DB.Execute(query, GlobalVariables.DbConfigVar, parameters);
         return results > 0;

@@ -17,11 +17,10 @@ public class RequiresPermissionAttribute : Attribute, IActionFilter
     public void OnActionExecuting(ActionExecutingContext context)
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(context.HttpContext.Request);
-        if (AccountAuthUtil.HasPermission(sub, _permValue)) return;
+        if (AccountAuthUtil.HasPermission(sub, _permValue))
+            return;
         context.Result = new ForbidResult();
     }
 
-    public void OnActionExecuted(ActionExecutedContext context)
-    {
-    }
+    public void OnActionExecuted(ActionExecutedContext context) { }
 }

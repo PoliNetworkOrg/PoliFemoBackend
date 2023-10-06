@@ -15,7 +15,6 @@ public static class PoliMiNewsUtil
     internal const string UrlPoliMiNews = "https://www.polimi.it/in-evidenza";
     internal const string UrlPoliMiHomePage = "https://www.polimi.it/";
 
-
     internal static List<HtmlNode>? GetNewsPoliMi(HtmlDocument? docPoliMi)
     {
         var slider = NodeUtil.GetElementsByTagAndClassName(docPoliMi?.DocumentNode, "body", null);
@@ -25,7 +24,6 @@ public static class PoliMiNewsUtil
         var slider5 = slider4?.Where(x => x.GetClasses().Contains("sp-slide")).ToList();
         return slider5;
     }
-
 
     /// <summary>
     ///     Loops every 30 mins to sync PoliMi news with the app db
@@ -55,7 +53,6 @@ public static class PoliMiNewsUtil
         }
         // ReSharper disable once FunctionNeverReturns
     }
-
 
     /// <summary>
     ///     Get the latest news from PoliMi and stores them in the database

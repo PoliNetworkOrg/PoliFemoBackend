@@ -19,23 +19,31 @@ public static class ThreadStartUtil
         if (useNews)
         {
             _getNewsThreadWithAction = new ThreadWithAction();
-            _getNewsThreadWithAction.SetAction(() => PoliMiNewsUtil.LoopGetNews(_getNewsThreadWithAction));
+            _getNewsThreadWithAction.SetAction(
+                () => PoliMiNewsUtil.LoopGetNews(_getNewsThreadWithAction)
+            );
             _getNewsThreadWithAction.Run();
         }
         else
         {
-            GlobalVariables.DefaultLogger.Info("--no-news flag found. We will not search for news.");
+            GlobalVariables.DefaultLogger.Info(
+                "--no-news flag found. We will not search for news."
+            );
         }
 
         if (searchRooms)
         {
             _roomsSearchThreadWithAction = new ThreadWithAction();
-            _roomsSearchThreadWithAction.SetAction(() => SearchRoomUtil.LoopSearchRooms(_roomsSearchThreadWithAction));
+            _roomsSearchThreadWithAction.SetAction(
+                () => SearchRoomUtil.LoopSearchRooms(_roomsSearchThreadWithAction)
+            );
             _roomsSearchThreadWithAction.Run();
         }
         else
         {
-            GlobalVariables.DefaultLogger.Info("--no-rooms flag found. We will not search for free rooms.");
+            GlobalVariables.DefaultLogger.Info(
+                "--no-rooms flag found. We will not search for free rooms."
+            );
         }
     }
 }

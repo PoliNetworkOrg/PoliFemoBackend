@@ -15,7 +15,8 @@ public static class HandleDataUtil
         foreach (DataRow row in results.Rows)
         {
             var c = new JObject();
-            foreach (DataColumn column in results.Columns) c.Add(column.ColumnName, row[column].ToString());
+            foreach (DataColumn column in results.Columns)
+                c.Add(column.ColumnName, row[column].ToString());
             b.Add(c);
         }
 
