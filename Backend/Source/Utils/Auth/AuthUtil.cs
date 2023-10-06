@@ -15,7 +15,8 @@ public static class AuthUtil
         HttpClient httpClient = new();
 
         var clientSecret = GlobalVariables.GetSecrets("Azure")?.ToString();
-        if (clientSecret == null) return null;
+        if (clientSecret == null)
+            return null;
 
         var formContent = new Dictionary<string, string>
         {
@@ -31,22 +32,27 @@ public static class AuthUtil
             {
                 case 10020:
                 {
-                    formContent.Add("redirect_uri",
-                        "https://dashboard.polinetwork.org");
+                    formContent.Add("redirect_uri", "https://dashboard.polinetwork.org");
                     break;
                 }
 
                 default:
                 {
-                    formContent.Add("redirect_uri",
-                        "https://api.polinetwork.org" + GlobalVariables.BasePath + "auth/code");
+                    formContent.Add(
+                        "redirect_uri",
+                        "https://api.polinetwork.org" + GlobalVariables.BasePath + "auth/code"
+                    );
                     break;
                 }
             }
 
         var formUrlEncodedContent = new FormUrlEncodedContent(formContent);
-        return httpClient.PostAsync("https://login.microsoftonline.com/common/oauth2/v2.0/token",
-            formUrlEncodedContent).Result;
+        return httpClient
+            .PostAsync(
+                "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+                formUrlEncodedContent
+            )
+            .Result;
     }
 
     /// <summary>

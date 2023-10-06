@@ -32,8 +32,16 @@ public class SearchExam : ControllerBase
     /// <response code="204">No available exam</response>
     [HttpGet]
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-    public ActionResult SearchExamDb(string? cod_mat, string? insegnamento, string? sede, int? semestre,
-        string? docente, string? orario, string? giorno, string? lista)
+    public ActionResult SearchExamDb(
+        string? cod_mat,
+        string? insegnamento,
+        string? sede,
+        int? semestre,
+        string? docente,
+        string? orario,
+        string? giorno,
+        string? lista
+    )
     {
         var d = new Dictionary<string, object?> { { "@insegnamento", insegnamento } };
         var query =
@@ -82,11 +90,13 @@ public class SearchExam : ControllerBase
 
         var results = Database.ExecuteSelect(query, GlobalVariables.DbConfigVar, d);
 
-        if (results == null) return StatusCode(500);
-        if (results.Rows.Count == 0) return NoContent();
+        if (results == null)
+            return StatusCode(500);
+        if (results.Rows.Count == 0)
+            return NoContent();
 
-
-        if (results.Rows.Count == 0) return NoContent();
+        if (results.Rows.Count == 0)
+            return NoContent();
 
         var sg = JsonConvert.SerializeObject(results);
         HttpContext.Response.ContentType = "application/json";

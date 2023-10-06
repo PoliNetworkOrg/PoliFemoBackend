@@ -39,7 +39,6 @@ public static class Test
             throw;
         }
 
-
         //DbConfig.InitializeDbConfig();
         //ArticleContentUpgrade.ArticleContentUpgradeMethod();
         return Task.CompletedTask;

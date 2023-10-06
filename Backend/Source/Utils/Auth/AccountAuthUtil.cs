@@ -16,10 +16,8 @@ public static class AccountAuthUtil
         var results = DB.ExecuteSelect(
             "SELECT account_type FROM Users WHERE user_id = sha2(@userid, 256)",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object?>
-            {
-                { "@userid", jwtSecurityToken.Subject }
-            });
+            new Dictionary<string, object?> { { "@userid", jwtSecurityToken.Subject } }
+        );
         return results?.Rows[0]["account_type"].ToString() ?? "NONE";
     }
 
@@ -27,16 +25,16 @@ public static class AccountAuthUtil
     {
         var query =
             "SELECT DISTINCT grant_name, object_id FROM Grants, permissions, Users WHERE grant_name=permissions.grant_id AND permissions.user_id=Users.user_id ";
-        if (convert) query += "AND Users.user_id=sha2(@userid, 256)";
-        else query += "AND Users.user_id=@userid";
+        if (convert)
+            query += "AND Users.user_id=sha2(@userid, 256)";
+        else
+            query += "AND Users.user_id=@userid";
 
         var results = DB.ExecuteSelect(
             query,
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object?>
-            {
-                { "@userid", userid }
-            });
+            new Dictionary<string, object?> { { "@userid", userid } }
+        );
         var array = new List<Grant>();
         for (var i = 0; i < results?.Rows.Count; i++)
             array.Add(
@@ -53,11 +51,8 @@ public static class AccountAuthUtil
         var results = DB.ExecuteSelect(
             "SELECT grant_id FROM permissions, Grants, Users WHERE Users.user_id=sha2(@userid, 256) AND grant_id=@permission",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object?>
-            {
-                { "@userid", userid },
-                { "@permission", permission }
-            });
+            new Dictionary<string, object?> { { "@userid", userid }, { "@permission", permission } }
+        );
         return results != null;
     }
 
@@ -71,22 +66,23 @@ public static class AccountAuthUtil
                 { "@userid", userid },
                 { "@permission", permission },
                 { "@objectid", objectid }
-            });
+            }
+        );
         return results != null;
     }
 
     public static string?[] GetAuthorizedAuthors(string? userid)
     {
         var results = DB.ExecuteSelect(
-            "SELECT a.* FROM Authors a, permissions p WHERE p.user_id = sha2(@userid, 256) AND a.author_id = p.object_id AND p.grant_id = '" +
-            Constants.Permissions.ManageArticles + "'",
+            "SELECT a.* FROM Authors a, permissions p WHERE p.user_id = sha2(@userid, 256) AND a.author_id = p.object_id AND p.grant_id = '"
+                + Constants.Permissions.ManageArticles
+                + "'",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object?>
-            {
-                { "@userid", userid }
-            });
+            new Dictionary<string, object?> { { "@userid", userid } }
+        );
         var array = new string?[results?.Rows.Count ?? 0];
-        for (var i = 0; i < results?.Rows.Count; i++) array[i] = results.Rows[i]["name"].ToString();
+        for (var i = 0; i < results?.Rows.Count; i++)
+            array[i] = results.Rows[i]["name"].ToString();
         return array;
     }
 }

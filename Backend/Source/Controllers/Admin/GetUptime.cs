@@ -25,10 +25,15 @@ public class GetUptimeController : ControllerBase
     {
         try
         {
-            return Ok(new JObject(
-                new JProperty("uptime", (DateTime.Now - GlobalVariables.Start).Ticks / 10000000),
-                new JProperty("node", Dns.GetHostName())
-            ));
+            return Ok(
+                new JObject(
+                    new JProperty(
+                        "uptime",
+                        (DateTime.Now - GlobalVariables.Start).Ticks / 10000000
+                    ),
+                    new JProperty("node", Dns.GetHostName())
+                )
+            );
         }
         catch (Exception ex)
         {

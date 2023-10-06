@@ -22,11 +22,18 @@ public static class CreateApplicationUtil
     internal static WebApplication? CreateWebApplication(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
-        builder.Services.Configure<MvcOptions>(options => { options.EnableEndpointRouting = false; });
+        builder.Services.Configure<KestrelServerOptions>(options =>
+        {
+            options.AllowSynchronousIO = true;
+        });
+        builder.Services.Configure<MvcOptions>(options =>
+        {
+            options.EnableEndpointRouting = false;
+        });
 
-        builder.Services.AddMvcCore(opts =>
-            opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver())));
+        builder.Services.AddMvcCore(
+            opts => opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver()))
+        );
         builder.Services.AddLogging();
         builder.Services.AddProxies();
 
@@ -36,19 +43,22 @@ public static class CreateApplicationUtil
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("policy",
+            options.AddPolicy(
+                "policy",
                 policy =>
                 {
-                    policy.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
+                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                }
+            );
         });
 
         builder.Host
             .ConfigureMetrics(metricsBuilder =>
             {
-                metricsBuilder.Configuration.Configure(options => { options.DefaultContextLabel = "default"; });
+                metricsBuilder.Configuration.Configure(options =>
+                {
+                    options.DefaultContextLabel = "default";
+                });
             })
             .UseMetricsWebTracking()
             .UseMetricsEndpoints()
@@ -82,25 +92,29 @@ public static class CreateApplicationUtil
 
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddAuthentication(sharedOptions =>
-        {
-            sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.Authority = Constants.AzureAuthority;
-            options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
-            options.TokenValidationParameters.ValidIssuers =
-                new[]
+        builder.Services
+            .AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.Authority = Constants.AzureAuthority;
+                options.TokenValidationParameters.ValidAudience = Constants.AzureClientId;
+                options.TokenValidationParameters.ValidIssuers = new[]
                 {
                     Constants.AzureCommonIssuer,
                     Constants.AzurePolimiIssuer,
                     Constants.AzurePoliNetworkIssuer
                 };
-            options.Events = new JwtBearerEvents
-            {
-                OnChallenge = async context => { await ProgramUtil.OnChallengeMethod(context); }
-            };
-        });
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = async context =>
+                    {
+                        await ProgramUtil.OnChallengeMethod(context);
+                    }
+                };
+            });
 
         builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 

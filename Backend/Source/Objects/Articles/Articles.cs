@@ -32,9 +32,11 @@ public class Articles
         foreach (var article in articles)
         {
             var author = article.Value["author"]?.ToString();
-            if (string.IsNullOrEmpty(author)) continue;
+            if (string.IsNullOrEmpty(author))
+                continue;
 
-            if (!result.ContainsKey(author)) result.Add(author, new List<JToken>());
+            if (!result.ContainsKey(author))
+                result.Add(author, new List<JToken>());
 
             result[author].Add(article.Value);
         }
@@ -53,8 +55,11 @@ public class Articles
     /// <returns></returns>
     public List<JToken> FilterByAuthor(string author)
     {
-        return string.IsNullOrEmpty(author) ? new List<JToken>() :
-            _articlesByAuthor.ContainsKey(author) ? _articlesByAuthor[author] : new List<JToken>();
+        return string.IsNullOrEmpty(author)
+            ? new List<JToken>()
+            : _articlesByAuthor.ContainsKey(author)
+                ? _articlesByAuthor[author]
+                : new List<JToken>();
     }
 
     /// <summary>
@@ -87,12 +92,14 @@ public class Articles
     /// <returns></returns>
     public List<JToken> FilterByStartingId(uint id)
     {
-        if (id == 0) return new List<JToken>();
+        if (id == 0)
+            return new List<JToken>();
 
         try
         {
             var results = new List<JToken>();
-            for (var i = id; i <= _articles.Count; i++) results.Add(_articles[i]);
+            for (var i = id; i <= _articles.Count; i++)
+                results.Add(_articles[i]);
 
             return results;
         }

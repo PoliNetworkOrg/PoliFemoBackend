@@ -25,8 +25,11 @@ public class RoomDetailsController : ControllerBase
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public async Task<ObjectResult> GetRoomDetails(int id)
     {
-        var room = await SingleRoomUtil.GetRoomById(id, cacheCheckIfToUse: CacheUtil.CheckIfToUseCache,
-            cacheSaveToCache: CacheUtil.SaveToCache);
+        var room = await SingleRoomUtil.GetRoomById(
+            id,
+            cacheCheckIfToUse: CacheUtil.CheckIfToUseCache,
+            cacheSaveToCache: CacheUtil.SaveToCache
+        );
         if (room is not null)
             return new ObjectResult(room);
 

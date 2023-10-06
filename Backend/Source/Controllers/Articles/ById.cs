@@ -35,10 +35,8 @@ public class ArticleByIdController : ControllerBase
         var results = DB.ExecuteSelect(
             "SELECT * FROM ArticlesWithAuthors_View WHERE article_id = @id",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object?>
-            {
-                { "@id", id }
-            });
+            new Dictionary<string, object?> { { "@id", id } }
+        );
 
         var row = results?.Rows[0];
         return row == null ? null : ArticleUtil.ArticleAuthorsRowToJObject(row);

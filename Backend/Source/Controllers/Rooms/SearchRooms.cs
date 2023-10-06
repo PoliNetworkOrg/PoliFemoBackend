@@ -47,15 +47,21 @@ public class SearchRoomsController : ControllerBase
         var doneEnums = new List<DoneEnum>();
         foreach (var sede in sedi)
         {
-            var (jArrayResults, doneEnum) = await SearchRoomUtil.SearchRooms(sede, hourStart, hourStop);
+            var (jArrayResults, doneEnum) = await SearchRoomUtil.SearchRooms(
+                sede,
+                hourStart,
+                hourStop
+            );
             jObject.Add(sede, jArrayResults);
             doneEnums.Add(doneEnum);
         }
 
         return doneEnums.Contains(DoneEnum.ERROR)
             ? SearchRoomUtil.ReturnActionResult(this, DoneEnum.ERROR, null)
-            : SearchRoomUtil.ReturnActionResult(this, jObject.Count == 0
-                ? DoneEnum.SKIPPED
-                : DoneEnum.DONE, jObject);
+            : SearchRoomUtil.ReturnActionResult(
+                this,
+                jObject.Count == 0 ? DoneEnum.SKIPPED : DoneEnum.DONE,
+                jObject
+            );
     }
 }

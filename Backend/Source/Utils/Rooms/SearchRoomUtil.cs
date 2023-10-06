@@ -35,10 +35,12 @@ public static class SearchRoomUtil
                     var t = SearchRooms(null, date, date);
                     var jArray = t.Result.Item1;
                     var doneEnum = t.Result.Item2;
-                    if (jArray == null || doneEnum != DoneEnum.DONE) continue;
+                    if (jArray == null || doneEnum != DoneEnum.DONE)
+                        continue;
                     var jObject = new JObject(new JProperty("free_rooms", jArray));
                     var json = jObject.ToString();
-                    var polimidailysituation = "polimidailysituation://" + date.ToString("yyyy-MM-dd");
+                    var polimidailysituation =
+                        "polimidailysituation://" + date.ToString("yyyy-MM-dd");
                     CacheUtil.SaveToCache(polimidailysituation, json);
                 }
 
@@ -56,18 +58,29 @@ public static class SearchRoomUtil
         // ReSharper disable once FunctionNeverReturns
     }
 
-    public static async Task<Tuple<JArray?, DoneEnum>> SearchRooms(string? sede, DateTime? hourStart,
-        DateTime? hourStop)
+    public static async Task<Tuple<JArray?, DoneEnum>> SearchRooms(
+        string? sede,
+        DateTime? hourStart,
+        DateTime? hourStop
+    )
     {
         hourStop = hourStop?.AddMinutes(-1);
-        var sedi = sede == null ? new[] { "MIA", "MIB", "LCF", "MNI", "PCL", "CRG" } : new[] { sede };
+        var sedi =
+            sede == null ? new[] { "MIA", "MIB", "LCF", "MNI", "PCL", "CRG" } : new[] { sede };
         var results = new JArray();
 
         foreach (var item in sedi)
         {
-            var x = await ElaborateSingleRoom(hourStart, hourStop, item, results,
-                CacheUtil.CheckIfToUseCache, CacheUtil.SaveToCache);
-            if (x.Item1) return new Tuple<JArray?, DoneEnum>(x.Item2, x.Item3);
+            var x = await ElaborateSingleRoom(
+                hourStart,
+                hourStop,
+                item,
+                results,
+                CacheUtil.CheckIfToUseCache,
+                CacheUtil.SaveToCache
+            );
+            if (x.Item1)
+                return new Tuple<JArray?, DoneEnum>(x.Item2, x.Item3);
         }
 
         UpdateOccupancyRate(results);
@@ -75,15 +88,19 @@ public static class SearchRoomUtil
         return new Tuple<JArray?, DoneEnum>(results, DoneEnum.DONE);
     }
 
-
-    private static async Task<Tuple<bool, JArray?, DoneEnum>> ElaborateSingleRoom(DateTime? hourStart,
-        DateTime? hourStop, string item, JArray results, Func<string, WebReply?>? cacheCheckIfToUse,
-        Action<string, string>? cacheSaveToCache)
+    private static async Task<Tuple<bool, JArray?, DoneEnum>> ElaborateSingleRoom(
+        DateTime? hourStart,
+        DateTime? hourStop,
+        string item,
+        JArray results,
+        Func<string, WebReply?>? cacheCheckIfToUse,
+        Action<string, string>? cacheSaveToCache
+    )
     {
         var temp = new JArray();
-        var polimidailysituation = "polimidailysituation://" + item + "/" + hourStart?.ToString("yyyy-MM-dd");
+        var polimidailysituation =
+            "polimidailysituation://" + item + "/" + hourStart?.ToString("yyyy-MM-dd");
         var q = CacheUtil.GetCache(polimidailysituation);
-
 
         if (!string.IsNullOrEmpty(q))
         {
@@ -95,14 +112,23 @@ public static class SearchRoomUtil
             return new Tuple<bool, JArray?, DoneEnum>(false, null, DoneEnum.SKIPPED);
         }
 
-        var t3 = await RoomUtil.GetDailySituationOnDate(hourStart, item, cacheCheckIfToUse: cacheCheckIfToUse,
-            cacheSaveToCache: cacheSaveToCache);
+        var t3 = await RoomUtil.GetDailySituationOnDate(
+            hourStart,
+            item,
+            cacheCheckIfToUse: cacheCheckIfToUse,
+            cacheSaveToCache: cacheSaveToCache
+        );
         if (t3.Item1 is null || t3.Item1?.Count == 0)
-            return new Tuple<bool, JArray?, DoneEnum>(true, new JArray { t3.Item2 }, DoneEnum.ERROR);
+            return new Tuple<bool, JArray?, DoneEnum>(
+                true,
+                new JArray { t3.Item2 },
+                DoneEnum.ERROR
+            );
 
         var htmlNode = t3.Item1?[0];
         var t4 = FreeRoomsUtil.GetFreeRooms(htmlNode, hourStart, hourStop);
-        if (t4 is null || t4.Count == 0) return new Tuple<bool, JArray?, DoneEnum>(true, null, DoneEnum.SKIPPED);
+        if (t4 is null || t4.Count == 0)
+            return new Tuple<bool, JArray?, DoneEnum>(true, null, DoneEnum.SKIPPED);
 
         foreach (var room in t4)
         {
@@ -119,7 +145,6 @@ public static class SearchRoomUtil
         return new Tuple<bool, JArray?, DoneEnum>(false, null, DoneEnum.SKIPPED);
     }
 
-
     private static void UpdateOccupancyRate(JArray rooms)
     {
         var ids = new int[rooms.Count];
@@ -132,33 +157,40 @@ public static class SearchRoomUtil
                 ids[i++] = id;
         }
 
-        var q = string.Format("SELECT room_id, SUM(x.w * x.rate)/SUM(x.w) " +
-                              "FROM (" +
-                              "SELECT room_id, TIMESTAMPDIFF(SECOND, NOW(), when_reported) w, rate " +
-                              "FROM RoomOccupancyReports " +
-                              "WHERE room_id in ({0}) AND when_reported >= @yesterday" +
-                              ") x GROUP BY room_id", string.Join(",", ids));
-        var dict = new Dictionary<string, object?>
-        {
-            { "@yesterday", DateTime.Now.AddDays(-1) }
-        };
-        var q2 = PoliNetwork.Db.Utils.Database.ExecuteSelect(q, DbConfigUtilPoliFemo.DbConfigVar, dict);
+        var q = string.Format(
+            "SELECT room_id, SUM(x.w * x.rate)/SUM(x.w) "
+                + "FROM ("
+                + "SELECT room_id, TIMESTAMPDIFF(SECOND, NOW(), when_reported) w, rate "
+                + "FROM RoomOccupancyReports "
+                + "WHERE room_id in ({0}) AND when_reported >= @yesterday"
+                + ") x GROUP BY room_id",
+            string.Join(",", ids)
+        );
+        var dict = new Dictionary<string, object?> { { "@yesterday", DateTime.Now.AddDays(-1) } };
+        var q2 = PoliNetwork.Db.Utils.Database.ExecuteSelect(
+            q,
+            DbConfigUtilPoliFemo.DbConfigVar,
+            dict
+        );
         if (!(q2?.Rows.Count > 0))
             return;
 
         foreach (DataRow row in q2.Rows)
-        foreach (var jToken in rooms)
-        {
-            var roomobj = (JObject)jToken;
-            if (roomobj["room_id"]?.ToString() != row[0].ToString())
-                continue;
-            roomobj["occupancy_rate"] = (double)row[1];
-            break;
-        }
+            foreach (var jToken in rooms)
+            {
+                var roomobj = (JObject)jToken;
+                if (roomobj["room_id"]?.ToString() != row[0].ToString())
+                    continue;
+                roomobj["occupancy_rate"] = (double)row[1];
+                break;
+            }
     }
 
-    public static IActionResult ReturnActionResult(ControllerBase controllerBase, DoneEnum doneEnum,
-        IEnumerable? jArrayResults)
+    public static IActionResult ReturnActionResult(
+        ControllerBase controllerBase,
+        DoneEnum doneEnum,
+        IEnumerable? jArrayResults
+    )
     {
         switch (doneEnum)
         {

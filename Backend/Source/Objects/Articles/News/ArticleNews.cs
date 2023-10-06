@@ -9,10 +9,7 @@ namespace PoliFemoBackend.Source.Objects.Articles.News;
 public class ArticleNews
 {
     //internal News
-    private static readonly Config config = new()
-    {
-        RemoveComments = true
-    };
+    private static readonly Config config = new() { RemoveComments = true };
 
     private static Converter converter = new(config);
 
@@ -27,8 +24,19 @@ public class ArticleNews
         content = new ArticleContent[2];
     }
 
-    public ArticleNews(int author_id, string? image, DateTime target_time, DateTime? hidden_until, double? latitude,
-        double? longitude, string? blurhash, int platforms, bool? internalNews, string? tag, ArticleContent[] content)
+    public ArticleNews(
+        int author_id,
+        string? image,
+        DateTime target_time,
+        DateTime? hidden_until,
+        double? latitude,
+        double? longitude,
+        string? blurhash,
+        int platforms,
+        bool? internalNews,
+        string? tag,
+        ArticleContent[] content
+    )
     {
         this.author_id = author_id;
         this.image = image;
@@ -43,9 +51,7 @@ public class ArticleNews
         this.content = content;
     }
 
-    public ArticleNews()
-    {
-    }
+    public ArticleNews() { }
 
     public int author_id { get; set; }
     public string? image { get; set; }
@@ -68,8 +74,10 @@ public class ArticleNews
 
     public bool ShouldBeSkipped()
     {
-        if (content[0] == null) return true;
-        if (content[0].url == null) return true;
+        if (content[0] == null)
+            return true;
+        if (content[0].url == null)
+            return true;
         return false;
     }
 }

@@ -13,8 +13,8 @@ using PoliFemoBackend.Source.Utils.Auth;
 namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
-[ApiExplorerSettings(GroupName = "Accounts")]
-[Route("accounts/{id}/permissions")]
+[ApiExplorerSettings(GroupName = "Permissions")]
+[Route("permissions/{id}")]
 [Authorize]
 public class GetPermissionsController : ControllerBase
 {
@@ -34,19 +34,11 @@ public class GetPermissionsController : ControllerBase
         if (perms.Count == 0)
         {
             Response.StatusCode = 404;
-            return new NotFoundObjectResult(new JObject
-            {
-                { "error", "No permissions found" }
-            });
+            return new NotFoundObjectResult(new JObject { { "error", "No permissions found" } });
         }
 
         var formattedPerms = Grant.GetFormattedPerms(perms);
 
-        return Ok(
-            new JObject
-            {
-                { "permissions", JToken.FromObject(formattedPerms) }
-            }
-        );
+        return Ok(new JObject { { "permissions", JToken.FromObject(formattedPerms) } });
     }
 }

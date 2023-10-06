@@ -26,15 +26,14 @@ public class TagByIdController : ControllerBase
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult SearchTags()
     {
-        var results = DB.ExecuteSelect(
-            "SELECT * FROM Tags",
-            GlobalVariables.DbConfigVar);
-
+        var results = DB.ExecuteSelect("SELECT * FROM Tags", GlobalVariables.DbConfigVar);
 
         //if results is null
-        if (results == null) return StatusCode(500);
+        if (results == null)
+            return StatusCode(500);
 
-        if (results.Rows.Count == 0) return NotFound();
+        if (results.Rows.Count == 0)
+            return NotFound();
 
         //convert results to json
         var a = new JObject { { "tags", HandleDataUtil.GetResultsAsJArray(results) } };

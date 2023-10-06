@@ -15,7 +15,9 @@ public static class Start
     {
         try
         {
-            GlobalVariables.SetSecrets(JsonConvert.DeserializeObject<JObject>(File.ReadAllText(Constants.SecretJson)));
+            GlobalVariables.SetSecrets(
+                JsonConvert.DeserializeObject<JObject>(File.ReadAllText(Constants.SecretJson))
+            );
         }
         catch (Exception ex)
         {
@@ -30,7 +32,6 @@ public static class Start
         {
             Console.WriteLine(ex);
         }
-
 
         try
         {

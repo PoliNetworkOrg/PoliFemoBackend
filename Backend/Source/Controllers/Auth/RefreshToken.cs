@@ -33,14 +33,17 @@ public class RefreshTokenController : ControllerBase
             var refreshToken = Request.Headers["Token"].ToString();
             var response = AuthUtil.GetResponse(refreshToken, 99999, GrantTypeEnum.refresh_token);
 
-            if (response == null) return BadRequest("Client secret not found");
+            if (response == null)
+                return BadRequest("Client secret not found");
 
             if (!response.IsSuccessStatusCode)
-                return new ObjectResult(new
-                {
-                    error = "Refresh token not valid. Request a new authorization code.",
-                    statusCode = response.StatusCode
-                });
+                return new ObjectResult(
+                    new
+                    {
+                        error = "Refresh token not valid. Request a new authorization code.",
+                        statusCode = response.StatusCode
+                    }
+                );
 
             var responseBody = response.Content.ReadAsStringAsync().Result;
             Response.ContentType = "application/json";

@@ -45,14 +45,15 @@ public class ArticleByIdController : ControllerBase
 
         var permarray = Grant.GetFormattedPerms(permissions);
 
-        return new ObjectResult(new
-        {
-            id = userid.ToLower(),
-            permissions = permarray,
-            authorized_authors = AccountAuthUtil.GetAuthorizedAuthors(sub)
-        });
+        return new ObjectResult(
+            new
+            {
+                id = userid.ToLower(),
+                permissions = permarray,
+                authorized_authors = AccountAuthUtil.GetAuthorizedAuthors(sub)
+            }
+        );
     }
-
 
     /// <summary>
     ///     Delete the user's account and data
@@ -66,7 +67,8 @@ public class ArticleByIdController : ControllerBase
     public ObjectResult DeleteAccount()
     {
         var sub = AuthUtil.GetSubjectFromHttpRequest(Request);
-        if (string.IsNullOrEmpty(sub)) return BadRequest("");
+        if (string.IsNullOrEmpty(sub))
+            return BadRequest("");
 
         var r = AccountDeletionUtil.DeleteAccountSingle(sub, false);
         return r ? Ok("") : StatusCode(500, "");

@@ -14,9 +14,9 @@ using DB = PoliNetwork.Db.Utils.Database;
 namespace PoliFemoBackend.Source.Controllers.Accounts;
 
 [ApiController]
-[ApiExplorerSettings(GroupName = "Accounts")]
+[ApiExplorerSettings(GroupName = "Permissions")]
 [RequiresPermission(Constants.Permissions.ManagePermissions)]
-[Route("/accounts/{id}/permissions")]
+[Route("permissions/{id}")]
 public class EditPermissions : ControllerBase
 {
     /// <summary>
@@ -40,30 +40,38 @@ public class EditPermissions : ControllerBase
             "INSERT IGNORE INTO permissions (grant_id, user_id, object_id) VALUES (@id_grant, @id_user, @id_object)";
         try
         {
-            var count = DB.Execute(q, DbConfigUtilPoliFemo.DbConfigVar, new Dictionary<string, object?>
-            {
-                { "@id_grant", grant.grant },
-                { "@id_user", id },
-                { "@id_object", grant.object_id ?? -1 }
-            });
+            var count = DB.Execute(
+                q,
+                DbConfigUtilPoliFemo.DbConfigVar,
+                new Dictionary<string, object?>
+                {
+                    { "@id_grant", grant.grant },
+                    { "@id_user", id },
+                    { "@id_object", grant.object_id ?? -1 }
+                }
+            );
 
             if (count != 1)
-                return new BadRequestObjectResult(new JObject
-                {
-                    { "error", "Grant failed. Is the permission already granted?" }
-                });
+                return new BadRequestObjectResult(
+                    new JObject { { "error", "Grant failed. Is the permission already granted?" } }
+                );
         }
         catch (Exception)
         {
-            return StatusCode(500, new JObject
-            {
-                { "error", "An error occurred while granting the permission. Make sure the grant is valid" }
-            });
+            return StatusCode(
+                500,
+                new JObject
+                {
+                    {
+                        "error",
+                        "An error occurred while granting the permission. Make sure the grant is valid"
+                    }
+                }
+            );
         }
 
         return Ok("");
     }
-
 
     /// <summary>
     ///     Revoke a permission from a user
@@ -82,18 +90,21 @@ public class EditPermissions : ControllerBase
     {
         const string q =
             "DELETE FROM permissions WHERE grant_id= @id_grant AND user_id = @id_user AND object_id = @id_object";
-        var count = DB.Execute(q, DbConfigUtilPoliFemo.DbConfigVar, new Dictionary<string, object?>
-        {
-            { "@id_grant", grant.grant },
-            { "@id_user", id },
-            { "@id_object", grant.object_id ?? -1 }
-        });
+        var count = DB.Execute(
+            q,
+            DbConfigUtilPoliFemo.DbConfigVar,
+            new Dictionary<string, object?>
+            {
+                { "@id_grant", grant.grant },
+                { "@id_user", id },
+                { "@id_object", grant.object_id ?? -1 }
+            }
+        );
 
         if (count != 1)
-            return new BadRequestObjectResult(new JObject
-            {
-                { "error", "Revoke failed. Is the permission already revoked?" }
-            });
+            return new BadRequestObjectResult(
+                new JObject { { "error", "Revoke failed. Is the permission already revoked?" } }
+            );
         return Ok("");
     }
 }

@@ -10,7 +10,10 @@ namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
 public static class MergeNewsUtil
 {
-    internal static IEnumerable<HtmlNews> Merge(HtmlNodeCollection? urls, IReadOnlyCollection<HtmlNode>? newsPolimi)
+    internal static IEnumerable<HtmlNews> Merge(
+        HtmlNodeCollection? urls,
+        IReadOnlyCollection<HtmlNode>? newsPolimi
+    )
     {
         var result = new List<HtmlNews>();
         switch (urls)
@@ -19,7 +22,9 @@ public static class MergeNewsUtil
                 return result;
             case null:
             {
-                result.AddRange(newsPolimi.Select(item => new HtmlNews { NodePoliMiHomePage = item }));
+                result.AddRange(
+                    newsPolimi.Select(item => new HtmlNews { NodePoliMiHomePage = item })
+                );
                 return result;
             }
             case not null when newsPolimi == null:
@@ -29,14 +34,18 @@ public static class MergeNewsUtil
             }
         }
 
-        var nodiPoliMiHomePage = newsPolimi.Select(item => new NodeFlagged { HtmlNode = item }).ToList();
+        var nodiPoliMiHomePage = newsPolimi
+            .Select(item => new NodeFlagged { HtmlNode = item })
+            .ToList();
         var nodiInEvidenza = urls.Select(item => new NodeFlagged { HtmlNode = item }).ToList();
 
         return MergeNotNull(nodiPoliMiHomePage, nodiInEvidenza);
     }
 
-    private static IEnumerable<HtmlNews> MergeNotNull(IReadOnlyList<NodeFlagged> nodiPoliMiHomePage,
-        IReadOnlyList<NodeFlagged> nodiInEvidenza)
+    private static IEnumerable<HtmlNews> MergeNotNull(
+        IReadOnlyList<NodeFlagged> nodiPoliMiHomePage,
+        IReadOnlyList<NodeFlagged> nodiInEvidenza
+    )
     {
         var result = new List<HtmlNews>();
         foreach (var itemHomePage in nodiPoliMiHomePage)
@@ -52,18 +61,27 @@ public static class MergeNewsUtil
 
                 itemHomePage.Flagged = true;
                 itemInEvidenza.Flagged = true;
-                result.Add(new HtmlNews
-                    { NodeInEvidenza = itemInEvidenza.HtmlNode, NodePoliMiHomePage = itemHomePage.HtmlNode });
+                result.Add(
+                    new HtmlNews
+                    {
+                        NodeInEvidenza = itemInEvidenza.HtmlNode,
+                        NodePoliMiHomePage = itemHomePage.HtmlNode
+                    }
+                );
                 break;
             }
         }
 
-        result.AddRange(from t in nodiPoliMiHomePage
+        result.AddRange(
+            from t in nodiPoliMiHomePage
             where t.Flagged == false
-            select new HtmlNews { NodePoliMiHomePage = t.HtmlNode });
-        result.AddRange(from t in nodiInEvidenza
+            select new HtmlNews { NodePoliMiHomePage = t.HtmlNode }
+        );
+        result.AddRange(
+            from t in nodiInEvidenza
             where t.Flagged == false
-            select new HtmlNews { NodeInEvidenza = t.HtmlNode });
+            select new HtmlNews { NodeInEvidenza = t.HtmlNode }
+        );
 
         return result;
     }
@@ -73,8 +91,14 @@ public static class MergeNewsUtil
         if (itemHomePage.HtmlNode == null || itemInEvidenza.HtmlNode == null)
             return false;
 
-        var hrefHomePage = NodeUtil.GetElementsByTagAndClassName(itemHomePage.HtmlNode, "a")?.First().Attributes;
-        var hrefInEvidenza = NodeUtil.GetElementsByTagAndClassName(itemInEvidenza.HtmlNode, "a")?.First().Attributes;
+        var hrefHomePage = NodeUtil
+            .GetElementsByTagAndClassName(itemHomePage.HtmlNode, "a")
+            ?.First()
+            .Attributes;
+        var hrefInEvidenza = NodeUtil
+            .GetElementsByTagAndClassName(itemInEvidenza.HtmlNode, "a")
+            ?.First()
+            .Attributes;
 
         if (hrefHomePage == null || hrefInEvidenza == null)
             return false;

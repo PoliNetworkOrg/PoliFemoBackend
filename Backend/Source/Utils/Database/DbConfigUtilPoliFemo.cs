@@ -17,7 +17,6 @@ public static class DbConfigUtilPoliFemo
 {
     public static DbConfig? DbConfigVar { get; set; }
 
-
     public static void InitializeDbConfig()
     {
         if (!Directory.Exists(Constants.ConfigPath))
@@ -31,7 +30,8 @@ public static class DbConfigUtilPoliFemo
                 var text = File.ReadAllText(configDbconfigJson);
                 DbConfigVar = JsonConvert.DeserializeObject<DbConfig>(text);
                 DbConfigVar?.FixName();
-                if (DbConfigVar != null) DbConfigVar.Logger = GlobalVariables.DefaultLogger;
+                if (DbConfigVar != null)
+                    DbConfigVar.Logger = GlobalVariables.DefaultLogger;
                 Data.GlobalVariables.DbConfigVar = DbConfigVar;
             }
             catch (Exception ex)
@@ -47,7 +47,6 @@ public static class DbConfigUtilPoliFemo
             GenerateDbConfigEmpty();
         }
 
-
         var connectionString = DbConfigUtils.GetConnectionString(Data.GlobalVariables.DbConfigVar);
         if (!string.IsNullOrEmpty(connectionString))
         {
@@ -57,7 +56,8 @@ public static class DbConfigUtilPoliFemo
                 Data.GlobalVariables.DbConnection.Open();
                 if (Data.GlobalVariables.DbConnection.State == ConnectionState.Open)
                     GlobalVariables.DefaultLogger.Info(
-                        "Connection to db on start works! Performing table checks...");
+                        "Connection to db on start works! Performing table checks..."
+                    );
 
                 if (Data.GlobalVariables.SkipDbSetup is null or false)
                 {
@@ -66,12 +66,14 @@ public static class DbConfigUtilPoliFemo
                 }
 
                 GlobalVariables.DefaultLogger.Info(
-                    "Table checks completed! Starting application...");
+                    "Table checks completed! Starting application..."
+                );
             }
             catch (Exception ex)
             {
                 GlobalVariables.DefaultLogger.Emergency(
-                    "An error occurred while initializing the database. Check the details and try again.");
+                    "An error occurred while initializing the database. Check the details and try again."
+                );
                 GlobalVariables.DefaultLogger.Emergency(ex.Message);
 
                 Environment.Exit(1);
