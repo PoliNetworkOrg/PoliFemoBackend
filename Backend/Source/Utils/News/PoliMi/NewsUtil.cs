@@ -78,7 +78,7 @@ public static class NewsUtil
             { "@author_id", PoliMiAuthorId },
             { "@image", newsItem.image != "" ? newsItem.image : null },
             { "@blurhash", ArticleUtil.GenerateBlurhashAsync(newsItem.image).Result },
-            { "@tag", newsItem.tag?.ToUpper() == "" ? "ALTRO" : newsItem.tag?.ToUpper() },
+            { "@tag", newsItem.tag },
             { "@platforms", 1 },
             { "@plit", contentids[0] },
             { "@plen", contentids[1] != -1 ? contentids[1] : null }

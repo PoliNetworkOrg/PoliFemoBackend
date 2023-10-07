@@ -230,8 +230,8 @@ END;
 -- Minimal rows for the database to work --
 
 insert ignore into Authors values(1, "Politecnico di Milano", "https://www.polimi.it/", "https://techcamp.polimi.it/wp-content/uploads/2018/11/LogoPolimi-bianco-h324.png");
-insert ignore into Tags values("ALTRO", null, null);
-insert ignore into Tags values("ATENEO", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg", "eWIYITE2%MWEt8F$Ipt8NHt8?wNHV@R*WB4;ofi^s.V@?boLnhoead");
-insert ignore into Tags values("RICERCA E INNOVAZIONE", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg", "eWIYITE2%MWEt8F$Ipt8NHt8?wNHV@R*WB4;ofi^s.V@?boLnhoead");
-insert ignore into Tags values("STUDENTI", "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop", "eIH_rg.9t,Z#tm~Ut58_%2xuxtROR.g4xu.TE1xtRkxZyEM|xEkCae");
-insert ignore into Tags values("POLIMIWORLD", null, null);
+insert ignore into Tags values("tags_altro", "https://i.pinimg.com/564x/b5/c5/6d/b5c56d7a3107ec647ca545fda89ec5dc.jpg", "eIHWDm%4K,MvTxWonjxaNGR*CmOU$Ks=iboMTIIoxHxb%3rWMxo~tk");
+insert ignore into Tags values("tags_ateneo", "https://www.coolinmilan.it/wp-content/uploads/2022/04/politecnico-milano-universita.jpg", "eWIYITE2%MWEt8F$Ipt8NHt8?wNHV@R*WB4;ofi^s.V@?boLnhoead");
+insert ignore into Tags values("tags_ricerca", "https://i.pinimg.com/564x/a7/07/62/a7076228adc67a0fb88235ebc146ac88.jpg", "eWIYITE2%MWEt8F$Ipt8NHt8?wNHV@R*WB4;ofi^s.V@?boLnhoead");
+insert ignore into Tags values("tags_studenti", "https://i.pinimg.com/564x/03/d7/4f/03d74f53d4ad9e459c873213876b76ab.jpg", "eIH_rg.9t,Z#tm~Ut58_%2xuxtROR.g4xu.TE1xtRkxZyEM|xEkCae");
+insert ignore into Tags values("tags_polimiworld", null, null);

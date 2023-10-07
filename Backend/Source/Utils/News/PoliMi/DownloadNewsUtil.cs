@@ -78,7 +78,6 @@ public static class DownloadNewsUtil
                 }
             }
 
-
             tagFinal = ConvertTag(tagFinal);
             var result = new ArticleNews(tagFinal, urlImgFinal ?? "");
             if (internalNews ?? false)
@@ -97,13 +96,14 @@ public static class DownloadNewsUtil
         }
     }
 
-    private static string ConvertTag(string? tag){
+    private static string ConvertTag(string? tag)
+    {
         return tag switch
         {
-            "STUDENTI" => "tags_studenti",
-            "RICERCA e INNOVAZIONE" => "tags_ricerca",
-            "ATENEO" => "tags_ateneo",
-            "POLIMIWORLD" => "tags_polimiworld",
+            "Studenti" => "tags_studenti",
+            "Ricerca e innovazione" => "tags_ricerca",
+            "Ateneo" => "tags_ateneo",
+            "Polimiworld" => "tags_polimiworld",
             _ => "tags_altro"
         };
     }
