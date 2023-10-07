@@ -78,7 +78,9 @@ public static class DownloadNewsUtil
                 }
             }
 
-            var result = new ArticleNews(tagFinal ?? "", urlImgFinal ?? "");
+
+            tagFinal = ConvertTag(tagFinal);
+            var result = new ArticleNews(tagFinal, urlImgFinal ?? "");
             if (internalNews ?? false)
             {
                 var cts = ArticleContent.LoadContentFromURL(url2 ?? "");
@@ -93,5 +95,16 @@ public static class DownloadNewsUtil
             Console.WriteLine(ex);
             return null;
         }
+    }
+
+    private static string ConvertTag(string? tag){
+        return tag switch
+        {
+            "STUDENTI" => "tags_studenti",
+            "RICERCA e INNOVAZIONE" => "tags_ricerca",
+            "ATENEO" => "tags_ateneo",
+            "POLIMIWORLD" => "tags_polimiworld",
+            _ => "tags_altro"
+        };
     }
 }
