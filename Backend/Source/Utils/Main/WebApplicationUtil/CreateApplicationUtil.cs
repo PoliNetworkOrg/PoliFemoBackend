@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using PoliFemoBackend.Source.Configure;
 using PoliFemoBackend.Source.Data;
@@ -51,6 +53,18 @@ public static class CreateApplicationUtil
                 }
             );
         });
+
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.AddSlidingWindowLimiter("sliding", options =>
+            {
+                options.PermitLimit = 10;
+                options.Window = TimeSpan.FromSeconds(10);
+                options.SegmentsPerWindow = 2;
+                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            });
+        });         
 
         builder.Host
             .ConfigureMetrics(metricsBuilder =>

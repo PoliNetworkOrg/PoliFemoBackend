@@ -3,8 +3,8 @@
 namespace PoliFemoBackend.Source.Enums;
 
 [Serializable]
-public enum GrantTypeEnum
+public enum GrantType
 {
-    authorization_code = 1,
-    refresh_token = 2
+    AUTHORIZATION_CODE = 1,
+    REFRESH_TOKEN = 2
 }

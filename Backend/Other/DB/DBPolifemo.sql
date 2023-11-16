@@ -96,7 +96,7 @@ create table if not exists Users
 (
     user_id       varchar(100)                               not null
     primary key,
-    account_type  enum ('POLIMI', 'POLINETWORK', 'PERSONAL') not null,
+    account_type  int                                        not null,
     last_activity datetime                                   not null,
     expires_days  int                                        not null
     );

@@ -2,13 +2,15 @@
 
 public static class Constants
 {
-    public const string DbConfig = ConfigPath + "/dbconfig.json";
+    public static string ConfigPath = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
+    ? Environment.GetEnvironmentVariable("CONFIG_DIR") ?? "/config"
+    : "/config";
+
+    public static string DbConfig = ConfigPath + "/dbconfig.json";
 
     public const string DataLogPath = LogsPath + "/backend.log";
 
-    public const string SecretJson = ConfigPath + "/secrets.json";
-
-    public const string ConfigPath = "/config";
+    public static string SecretJson = ConfigPath + "/secrets.json";
 
     public const string DataPath = "./data";
 
@@ -33,10 +35,7 @@ public static class Constants
     public const double MaxRate = 5;
     public const double MinRate = 1;
 
-    public static readonly string SqlCommandsPath =
-        Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
-            ? "./Backend/Other/DB/DBPolifemo.sql"
-            : "Other/DB/DBPolifemo.sql";
+    public static readonly string SqlCommandsPath = "Other/DB/DBPolifemo.sql";
 
     public static class Permissions
     {
