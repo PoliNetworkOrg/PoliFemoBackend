@@ -71,9 +71,9 @@ public static class CreateApplicationUtil
                     "sliding",
                     options =>
                     {
-                        options.PermitLimit = 10;
-                        options.Window = TimeSpan.FromSeconds(10);
-                        options.SegmentsPerWindow = 2;
+                        options.PermitLimit = 30;
+                        options.Window = TimeSpan.FromMinutes(1);
+                        options.SegmentsPerWindow = 1;
                         options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
                     }
                 );
