@@ -24,12 +24,14 @@ public class UserActivityMiddleware
         if (!done)
         {
             httpContext.Response.StatusCode = 500;
-            await httpContext.Response.WriteAsJsonAsync(
-                new
-                {
-                    error = "An error occurred while updating the user info. Please try again later."
-                }
-            );
+            await httpContext
+                .Response
+                .WriteAsJsonAsync(
+                    new
+                    {
+                        error = "An error occurred while updating the user info. Please try again later."
+                    }
+                );
         }
         else
         {

@@ -2,9 +2,10 @@
 
 public static class Constants
 {
-    public static string ConfigPath = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
-    ? Environment.GetEnvironmentVariable("CONFIG_DIR") ?? "/config"
-    : "/config";
+    public static string ConfigPath =
+        Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
+            ? Environment.GetEnvironmentVariable("CONFIG_DIR") ?? "/config"
+            : "/config";
 
     public static string DbConfig = ConfigPath + "/dbconfig.json";
 

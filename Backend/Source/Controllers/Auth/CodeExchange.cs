@@ -62,8 +62,7 @@ public class CodeExchangeController : ControllerBase
             if (loginResultObject is { ActionResult: not null })
                 return loginResultObject.ActionResult;
 
-            if (
-                string.IsNullOrEmpty(loginResultObject?.Subject))
+            if (string.IsNullOrEmpty(loginResultObject?.Subject))
                 return new BadRequestObjectResult(
                     new
                     {

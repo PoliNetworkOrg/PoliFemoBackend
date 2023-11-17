@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Threading.RateLimiting;
 using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Prometheus;
@@ -10,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using PoliFemoBackend.Source.Configure;
 using PoliFemoBackend.Source.Data;
@@ -24,18 +24,24 @@ public static class CreateApplicationUtil
     internal static WebApplication? CreateWebApplication(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.Services.Configure<KestrelServerOptions>(options =>
-        {
-            options.AllowSynchronousIO = true;
-        });
-        builder.Services.Configure<MvcOptions>(options =>
-        {
-            options.EnableEndpointRouting = false;
-        });
+        builder
+            .Services
+            .Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+        builder
+            .Services
+            .Configure<MvcOptions>(options =>
+            {
+                options.EnableEndpointRouting = false;
+            });
 
-        builder.Services.AddMvcCore(
-            opts => opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver()))
-        );
+        builder
+            .Services
+            .AddMvcCore(
+                opts => opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver()))
+            );
         builder.Services.AddLogging();
         builder.Services.AddProxies();
 
@@ -43,36 +49,46 @@ public static class CreateApplicationUtil
 
         builder.Services.AddMetrics(metrics);
 
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy(
-                "policy",
-                policy =>
-                {
-                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-                }
-            );
-        });
-
-        builder.Services.AddRateLimiter(options =>
-        {
-            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-            options.AddSlidingWindowLimiter("sliding", options =>
+        builder
+            .Services
+            .AddCors(options =>
             {
-                options.PermitLimit = 10;
-                options.Window = TimeSpan.FromSeconds(10);
-                options.SegmentsPerWindow = 2;
-                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                options.AddPolicy(
+                    "policy",
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    }
+                );
             });
-        });         
 
-        builder.Host
+        builder
+            .Services
+            .AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                options.AddSlidingWindowLimiter(
+                    "sliding",
+                    options =>
+                    {
+                        options.PermitLimit = 10;
+                        options.Window = TimeSpan.FromSeconds(10);
+                        options.SegmentsPerWindow = 2;
+                        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    }
+                );
+            });
+
+        builder
+            .Host
             .ConfigureMetrics(metricsBuilder =>
             {
-                metricsBuilder.Configuration.Configure(options =>
-                {
-                    options.DefaultContextLabel = "default";
-                });
+                metricsBuilder
+                    .Configuration
+                    .Configure(options =>
+                    {
+                        options.DefaultContextLabel = "default";
+                    });
             })
             .UseMetricsWebTracking()
             .UseMetricsEndpoints()
@@ -91,22 +107,27 @@ public static class CreateApplicationUtil
         //https://learn.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-7.0
         builder.Services.AddResponseCaching();
 
-        builder.Services.AddApiVersioning(setup =>
-        {
-            setup.ApiVersionReader = new UrlSegmentApiVersionReader();
-            setup.DefaultApiVersion = new ApiVersion(1, 0);
-            setup.AssumeDefaultVersionWhenUnspecified = true;
-            setup.ReportApiVersions = true;
-        });
-        builder.Services.AddVersionedApiExplorer(setup =>
-        {
-            setup.GroupNameFormat = "'v'VVV";
-            setup.SubstituteApiVersionInUrl = true;
-        });
+        builder
+            .Services
+            .AddApiVersioning(setup =>
+            {
+                setup.ApiVersionReader = new UrlSegmentApiVersionReader();
+                setup.DefaultApiVersion = new ApiVersion(1, 0);
+                setup.AssumeDefaultVersionWhenUnspecified = true;
+                setup.ReportApiVersions = true;
+            });
+        builder
+            .Services
+            .AddVersionedApiExplorer(setup =>
+            {
+                setup.GroupNameFormat = "'v'VVV";
+                setup.SubstituteApiVersionInUrl = true;
+            });
 
         builder.Services.AddSwaggerGen();
 
-        builder.Services
+        builder
+            .Services
             .AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;

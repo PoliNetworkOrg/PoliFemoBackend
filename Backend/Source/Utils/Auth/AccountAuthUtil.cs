@@ -15,7 +15,7 @@ public static class AccountAuthUtil
     {
         if (userid == null)
             return AccountType.NONE;
-            
+
         var results = DB.ExecuteSelect(
             "SELECT account_type FROM Users WHERE user_id = sha2(@userid, 256)",
             GlobalVariables.DbConfigVar,

@@ -13,7 +13,8 @@ public class AuthOperationsFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var noAuthRequired = context.ApiDescription
+        var noAuthRequired = context
+            .ApiDescription
             .CustomAttributes()
             .All(attr => attr.GetType() != typeof(AuthorizeAttribute));
 

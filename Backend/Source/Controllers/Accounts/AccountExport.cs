@@ -72,26 +72,28 @@ public class AccountExportController : ControllerBase
     )
     {
         return File(
-            Encoding.UTF8.GetBytes(
-                JObject
-                    .FromObject(
-                        new
-                        {
-                            id,
-                            last_activity = lastActivity.ToString(
-                                "yyyy-MM-ddTHH:mm:ssZ",
-                                CultureInfo.InvariantCulture
-                            ),
-                            account_type = accountType,
-                            expires_days = edays,
-                            permissions = Grant.GetFormattedPerms(
-                                AccountAuthUtil.GetPermissions(sub)
-                            ),
-                            room_occupancy_reports = roc
-                        }
-                    )
-                    .ToString()
-            ),
+            Encoding
+                .UTF8
+                .GetBytes(
+                    JObject
+                        .FromObject(
+                            new
+                            {
+                                id,
+                                last_activity = lastActivity.ToString(
+                                    "yyyy-MM-ddTHH:mm:ssZ",
+                                    CultureInfo.InvariantCulture
+                                ),
+                                account_type = accountType,
+                                expires_days = edays,
+                                permissions = Grant.GetFormattedPerms(
+                                    AccountAuthUtil.GetPermissions(sub)
+                                ),
+                                room_occupancy_reports = roc
+                            }
+                        )
+                        .ToString()
+                ),
             "application/json",
             id + ".json"
         );
