@@ -33,13 +33,19 @@ jobs:
           dotnet csharpier .
           dotnet csharpier --check .
 
-      - name: git
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+      - name: git config
         run: |
-          git add . || true
           git config --global user.email "github-csharpier@nouser.github.com"
           git config --global user.name "csharpier"
-          git commit -m 'csharpier' || true
-          git push || true
 
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'CSharpier PR'
+          title: 'CSharpier PR'
+          body: 'CSharpier PR'
+          branch-suffix: timestamp
 
