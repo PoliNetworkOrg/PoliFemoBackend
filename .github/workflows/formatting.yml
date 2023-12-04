@@ -34,7 +34,12 @@ jobs:
           dotnet csharpier --check .
 
       - name: git
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         run: |
           git add . || true
+          git config --global user.email "github-csharpier@nouser.github.com"
+          git config --global user.name "csharpier"
           git commit -m 'csharpier' || true
           git push || true
+
+
