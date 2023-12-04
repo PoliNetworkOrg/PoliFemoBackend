@@ -17,7 +17,8 @@ namespace PoliFemoBackend.Source.Controllers.Admin;
 [Route("/updates/assets/{name}")]
 public class GetUpdateAssetController : ControllerBase
 {
-    private readonly HttpProxyOptions _httpOptions = HttpProxyOptionsBuilder.Instance
+    private readonly HttpProxyOptions _httpOptions = HttpProxyOptionsBuilder
+        .Instance
         .WithAfterReceive(
             (c, hrm) =>
             {

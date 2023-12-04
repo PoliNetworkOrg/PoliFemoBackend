@@ -167,23 +167,23 @@ public static class SearchRoomUtil
             string.Join(",", ids)
         );
         var dict = new Dictionary<string, object?> { { "@yesterday", DateTime.Now.AddDays(-1) } };
-        var q2 = PoliNetwork.Db.Utils.Database.ExecuteSelect(
-            q,
-            DbConfigUtilPoliFemo.DbConfigVar,
-            dict
-        );
+        var q2 = PoliNetwork
+            .Db
+            .Utils
+            .Database
+            .ExecuteSelect(q, DbConfigUtilPoliFemo.DbConfigVar, dict);
         if (!(q2?.Rows.Count > 0))
             return;
 
         foreach (DataRow row in q2.Rows)
-            foreach (var jToken in rooms)
-            {
-                var roomobj = (JObject)jToken;
-                if (roomobj["room_id"]?.ToString() != row[0].ToString())
-                    continue;
-                roomobj["occupancy_rate"] = (double)row[1];
-                break;
-            }
+        foreach (var jToken in rooms)
+        {
+            var roomobj = (JObject)jToken;
+            if (roomobj["room_id"]?.ToString() != row[0].ToString())
+                continue;
+            roomobj["occupancy_rate"] = (double)row[1];
+            break;
+        }
     }
 
     public static IActionResult ReturnActionResult(

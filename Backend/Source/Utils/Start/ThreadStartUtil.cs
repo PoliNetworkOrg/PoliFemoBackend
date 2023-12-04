@@ -26,9 +26,9 @@ public static class ThreadStartUtil
         }
         else
         {
-            GlobalVariables.DefaultLogger.Info(
-                "--no-news flag found. We will not search for news."
-            );
+            GlobalVariables
+                .DefaultLogger
+                .Info("--no-news flag found. We will not search for news.");
         }
 
         if (searchRooms)
@@ -41,9 +41,9 @@ public static class ThreadStartUtil
         }
         else
         {
-            GlobalVariables.DefaultLogger.Info(
-                "--no-rooms flag found. We will not search for free rooms."
-            );
+            GlobalVariables
+                .DefaultLogger
+                .Info("--no-rooms flag found. We will not search for free rooms.");
         }
     }
 }

@@ -13,7 +13,8 @@ public static class DownloadNewsUtil
     {
         // Get news from the Polimi news page
         var docNews = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
-        var urls = docNews?.DocumentNode
+        var urls = docNews
+            ?.DocumentNode
             .SelectNodes("//ul")
             .First(x => x.GetClasses().Contains("ce-menu"));
 
@@ -46,11 +47,14 @@ public static class DownloadNewsUtil
                 var img =
                     NodeUtil
                         .GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")
-                        ?.First().Attributes["src"].Value ?? "";
+                        ?.First()
+                        .Attributes["src"]
+                        .Value ?? "";
                 tagFinal = NodeUtil
                     .GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
                     ?.First(x => x.GetClasses().Contains("newsCategory"))
-                    .InnerHtml.Trim();
+                    .InnerHtml
+                    .Trim();
                 urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
             }
             else
@@ -69,11 +73,14 @@ public static class DownloadNewsUtil
                     var img =
                         NodeUtil
                             .GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "img")
-                            ?.First().Attributes["src"].Value ?? "";
+                            ?.First()
+                            .Attributes["src"]
+                            .Value ?? "";
                     tagFinal = NodeUtil
                         .GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
                         ?.First(x => x.GetClasses().Contains("newsCategory"))
-                        .InnerHtml.Trim();
+                        .InnerHtml
+                        .Trim();
                     urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
                 }
             }
