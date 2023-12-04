@@ -8,6 +8,8 @@ using PoliFemoBackend.Source.Controllers.Articles;
 using PoliFemoBackend.Source.Data;
 using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliFemoBackend.Source.Utils.Auth;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using DB = PoliNetwork.Db.Utils.Database;
 
 #endregion
@@ -21,11 +23,9 @@ public static class ArticleUtil
         if (url == null || url == "")
             return null;
 
-        using (var bytes = await new HttpClient().GetStreamAsync(url))
-        {
-            var image = Image.Load<Rgba32>(bytes);
-            return Blurhasher.Encode(image, 5, 5);
-        }
+        using var bytes = await new HttpClient().GetStreamAsync(url);
+        var image = Image.Load<Rgba32>(bytes);
+        return Blurhasher.Encode(image, 5, 5);
     }
 
     public static JObject ArticleAuthorsRowToJObject(DataRow row)
@@ -139,7 +139,7 @@ public static class ArticleUtil
             @"INSERT INTO Articles(tag_id, publish_time, target_time, hidden_until, latitude, longitude, image, author_id, platforms, blurhash, content_it, content_en) 
             VALUES (@id_tag, NOW(), @targetTimeConverted, @hiddenUntil, @latitude, @longitude, @image, @id_author, @platforms, @blurhash, @ctit, @cten)";
 
-        string? blurhash = null;
+        string? blurhash;
         try
         {
             blurhash = GenerateBlurhashAsync(data.image).Result;
