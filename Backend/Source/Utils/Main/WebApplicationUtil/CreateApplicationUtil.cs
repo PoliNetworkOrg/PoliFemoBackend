@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Threading.RateLimiting;
 using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Prometheus;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using PoliFemoBackend.Source.Configure;
 using PoliFemoBackend.Source.Data;
@@ -56,6 +58,23 @@ public static class CreateApplicationUtil
                     policy =>
                     {
                         policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    }
+                );
+            });
+
+        builder
+            .Services
+            .AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                options.AddSlidingWindowLimiter(
+                    "sliding",
+                    options =>
+                    {
+                        options.PermitLimit = 30;
+                        options.Window = TimeSpan.FromMinutes(1);
+                        options.SegmentsPerWindow = 1;
+                        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
                     }
                 );
             });

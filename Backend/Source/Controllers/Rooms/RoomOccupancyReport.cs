@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
-using PoliFemoBackend.Source.Utils.Auth;
+using PoliFemoBackend.Source.Enums;
+using PoliFemoBackend.Source.Utils.Attributes;
 using DB = PoliNetwork.Db.Utils.Database;
 
 #endregion
@@ -32,16 +33,13 @@ public class RoomOccupancyReport : ControllerBase
     /// <response code="500">Can't connect to the server</response>
     [HttpPost]
     [Authorize]
+    [RequiresAccountType(AccountType.POLIMI)]
     public ObjectResult ReportOccupancy(uint id, float rate)
     {
         var whenReported = DateTime.Now;
 
         var token = Request.Headers[Constants.Authorization];
         var jwt = new JwtSecurityToken(token.ToString()[7..]);
-        if (AccountAuthUtil.GetAccountType(jwt) != "POLIMI")
-            return new UnauthorizedObjectResult(
-                new JObject { { "error", "You don't have enough permissions" } }
-            );
 
         if (rate < Constants.MinRate || rate > Constants.MaxRate)
             return new BadRequestObjectResult(

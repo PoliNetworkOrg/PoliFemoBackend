@@ -13,6 +13,7 @@ using PoliNetwork.Core.Objects.Threading;
 using PoliNetwork.Html.Objects.Web;
 using PoliNetwork.Rooms.Utils;
 using PoliNetwork.Rooms.Utils.Search;
+using DB = PoliNetwork.Db.Utils.Database;
 
 #endregion
 
@@ -167,11 +168,7 @@ public static class SearchRoomUtil
             string.Join(",", ids)
         );
         var dict = new Dictionary<string, object?> { { "@yesterday", DateTime.Now.AddDays(-1) } };
-        var q2 = PoliNetwork
-            .Db
-            .Utils
-            .Database
-            .ExecuteSelect(q, DbConfigUtilPoliFemo.DbConfigVar, dict);
+        var q2 = DB.ExecuteSelect(q, DbConfigUtilPoliFemo.DbConfigVar, dict);
         if (!(q2?.Rows.Count > 0))
             return;
 

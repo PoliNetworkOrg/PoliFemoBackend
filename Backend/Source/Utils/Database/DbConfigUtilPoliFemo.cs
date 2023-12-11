@@ -22,7 +22,7 @@ public static class DbConfigUtilPoliFemo
         if (!Directory.Exists(Constants.ConfigPath))
             Directory.CreateDirectory(Constants.ConfigPath);
 
-        const string configDbconfigJson = Constants.DbConfig;
+        string configDbconfigJson = Constants.DbConfig;
         if (File.Exists(configDbconfigJson))
         {
             try

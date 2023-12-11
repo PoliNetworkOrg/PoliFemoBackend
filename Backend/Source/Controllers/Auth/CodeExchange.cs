@@ -42,7 +42,7 @@ public class CodeExchangeController : ControllerBase
     {
         try
         {
-            var response = AuthUtil.GetResponse(code, state, GrantTypeEnum.authorization_code);
+            var response = AuthUtil.GetResponse(code, state, GrantType.AUTHORIZATION_CODE);
 
             if (response == null)
                 return BadRequest("Client secret not found");
@@ -62,10 +62,7 @@ public class CodeExchangeController : ControllerBase
             if (loginResultObject is { ActionResult: not null })
                 return loginResultObject.ActionResult;
 
-            if (
-                string.IsNullOrEmpty(loginResultObject?.Subject)
-                || string.IsNullOrEmpty(loginResultObject?.Acctype)
-            )
+            if (string.IsNullOrEmpty(loginResultObject?.Subject))
                 return new BadRequestObjectResult(
                     new
                     {

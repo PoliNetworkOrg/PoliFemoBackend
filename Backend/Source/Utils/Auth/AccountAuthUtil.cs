@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.IdentityModel.Tokens.Jwt;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Permissions;
 using DB = PoliNetwork.Db.Utils.Database;
 
@@ -11,14 +11,23 @@ namespace PoliFemoBackend.Source.Utils.Auth;
 
 public static class AccountAuthUtil
 {
-    public static string GetAccountType(JwtSecurityToken jwtSecurityToken)
+    public static AccountType GetAccountType(string? userid)
     {
+        if (userid == null)
+            return AccountType.NONE;
+
         var results = DB.ExecuteSelect(
             "SELECT account_type FROM Users WHERE user_id = sha2(@userid, 256)",
             GlobalVariables.DbConfigVar,
-            new Dictionary<string, object?> { { "@userid", jwtSecurityToken.Subject } }
+            new Dictionary<string, object?> { { "@userid", userid } }
         );
-        return results?.Rows[0]["account_type"].ToString() ?? "NONE";
+        return results?.Rows[0]["account_type"].ToString() switch
+        {
+            "1" => AccountType.POLIMI,
+            "2" => AccountType.POLINETWORK,
+            "3" => AccountType.PERSONAL,
+            _ => AccountType.NONE
+        };
     }
 
     public static List<Grant> GetPermissions(string? userid, bool convert = true)

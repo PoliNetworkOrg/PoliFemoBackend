@@ -5,6 +5,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using PoliFemoBackend.Source.Data;
+using PoliFemoBackend.Source.Enums;
 using PoliFemoBackend.Source.Objects.Auth;
 
 #endregion
@@ -19,7 +20,7 @@ public static class LoginUtil
     )
     {
         JwtSecurityToken? token;
-        string? acctype = null;
+        AccountType acctype = AccountType.NONE;
         string? subject = null;
         ActionResult? actionResult = null;
 
@@ -45,10 +46,10 @@ public static class LoginUtil
             {
                 case "polimi.it":
                 case "mail.polimi.it":
-                    acctype = "POLIMI";
+                    acctype = AccountType.POLIMI;
                     break;
                 case "polinetwork.org":
-                    acctype = "POLINETWORK";
+                    acctype = AccountType.POLINETWORK;
                     break;
                 default:
                 {
@@ -78,7 +79,7 @@ public static class LoginUtil
                 ?? throw new Exception(
                     "The received code is invalid. Request a new authorization code and login again."
                 );
-            acctype = "PERSONAL";
+            acctype = AccountType.PERSONAL;
         }
         catch (Exception ex)
         {

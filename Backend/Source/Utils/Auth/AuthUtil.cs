@@ -10,7 +10,7 @@ namespace PoliFemoBackend.Source.Utils.Auth;
 
 public static class AuthUtil
 {
-    public static HttpResponseMessage? GetResponse(string code, int state, GrantTypeEnum grantType)
+    public static HttpResponseMessage? GetResponse(string code, int state, GrantType grantType)
     {
         HttpClient httpClient = new();
 
@@ -22,12 +22,13 @@ public static class AuthUtil
         {
             { "client_id", Constants.AzureClientId },
             { "client_secret", clientSecret },
-            { grantType == GrantTypeEnum.authorization_code ? "code" : "refresh_token", code },
+            { grantType == GrantType.AUTHORIZATION_CODE ? "code" : "refresh_token", code },
             { "grant_type", grantType.ToString() }
         };
 
-        //non rimuovere - test
-        if (grantType == GrantTypeEnum.authorization_code)
+        // Applications list using the login flow
+
+        if (grantType == GrantType.AUTHORIZATION_CODE)
             switch (state)
             {
                 case 10020:

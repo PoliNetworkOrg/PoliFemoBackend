@@ -31,7 +31,7 @@ public class RefreshTokenController : ControllerBase
         try
         {
             var refreshToken = Request.Headers["Token"].ToString();
-            var response = AuthUtil.GetResponse(refreshToken, 99999, GrantTypeEnum.refresh_token);
+            var response = AuthUtil.GetResponse(refreshToken, 99999, GrantType.REFRESH_TOKEN);
 
             if (response == null)
                 return BadRequest("Client secret not found");
