@@ -31,11 +31,13 @@ public static class WebApplicationConfigUtil
 
         app.UseResponseCaching();
 
+        app.UseRateLimiter();
+
         app.UseAuthorization();
 
         app.UseUserActivityMiddleware();
 
-        app.MapControllers().RequireRateLimiting("sliding");
+        app.MapControllers();
     }
 
     internal static void AppConfigPreServerThreads(IApplicationBuilder? app)
