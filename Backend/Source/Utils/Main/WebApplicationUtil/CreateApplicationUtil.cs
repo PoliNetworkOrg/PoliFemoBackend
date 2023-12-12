@@ -80,7 +80,6 @@ public static class CreateApplicationUtil
                             _ =>
                                 new TokenBucketRateLimiterOptions
                                 {
-                                    
                                     TokenLimit = 50,
                                     QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                                     QueueLimit = 100,
