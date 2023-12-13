@@ -25,8 +25,6 @@ public static class WebApplicationConfigUtil
             policyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
         });
 
-        app.UseRateLimiter();
-
         app.UseAuthentication();
 
         app.UseResponseCaching();
