@@ -25,17 +25,17 @@ public static class WebApplicationConfigUtil
             policyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
         });
 
-        app.UseRateLimiter();
-
         app.UseAuthentication();
 
         app.UseResponseCaching();
+
+        app.UseRateLimiter();
 
         app.UseAuthorization();
 
         app.UseUserActivityMiddleware();
 
-        app.MapControllers().RequireRateLimiting("sliding");
+        app.MapControllers();
     }
 
     internal static void AppConfigPreServerThreads(IApplicationBuilder? app)

@@ -53,6 +53,11 @@ public class ArgumentsUtil
                     _ => UseRoomsSearch
                 };
             }
+        if (GlobalVariables.LogLevel == 0)
+        {
+            var logConfig = GetLogConfig("3");
+            PoliNetwork.Core.Data.GlobalVariables.DefaultLogger.SetLogConfig(logConfig);
+        }
     }
 
     private static LogConfig GetLogConfig(string value)

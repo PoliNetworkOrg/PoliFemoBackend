@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Net;
 using System.Threading.RateLimiting;
 using App.Metrics;
 using App.Metrics.AspNetCore;
@@ -10,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using PoliFemoBackend.Source.Configure;
 using PoliFemoBackend.Source.Data;
@@ -64,21 +64,34 @@ public static class CreateApplicationUtil
 
         builder
             .Services
-            .AddRateLimiter(options =>
+            .AddRateLimiter(limiterOptions =>
             {
-                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-                options.AddSlidingWindowLimiter(
-                    "sliding",
-                    options =>
+                limiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                limiterOptions.GlobalLimiter = PartitionedRateLimiter.Create<
+                    HttpContext,
+                    IPAddress
+                >(context =>
+                {
+                    IPAddress? remoteIpAddress = context.Connection.RemoteIpAddress;
+                    if (!IPAddress.IsLoopback(remoteIpAddress!))
                     {
-                        options.PermitLimit = 30;
-                        options.Window = TimeSpan.FromMinutes(1);
-                        options.SegmentsPerWindow = 1;
-                        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                        return RateLimitPartition.GetTokenBucketLimiter(
+                            remoteIpAddress!,
+                            _ =>
+                                new TokenBucketRateLimiterOptions
+                                {
+                                    TokenLimit = 50,
+                                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                                    QueueLimit = 100,
+                                    ReplenishmentPeriod = TimeSpan.FromMinutes(1),
+                                    TokensPerPeriod = 50,
+                                    AutoReplenishment = true
+                                }
+                        );
                     }
-                );
+                    return RateLimitPartition.GetNoLimiter(IPAddress.Loopback);
+                });
             });
-
         builder
             .Host
             .ConfigureMetrics(metricsBuilder =>
