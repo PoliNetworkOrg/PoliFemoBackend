@@ -30,7 +30,7 @@
         <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.3.0"/>
         <PackageReference Include="AspNetCore.Proxy" Version="4.4.0"/>
         <PackageReference Include="Blurhash.ImageSharp" Version="3.0.0"/>
-        <PackageReference Include="EPPlus" Version="7.0.3"/>
+        <PackageReference Include="EPPlus" Version="7.0.4"/>
         <PackageReference Include="HtmlAgilityPack" Version="1.11.55"/>
         <PackageReference Include="Jsonize" Version="3.1.1"/>
         <PackageReference Include="Jsonize.Parser" Version="3.1.1"/>
