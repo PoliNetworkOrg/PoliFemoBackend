@@ -55,9 +55,9 @@ public static class DbConfigUtilPoliFemo
             {
                 Data.GlobalVariables.DbConnection.Open();
                 if (Data.GlobalVariables.DbConnection.State == ConnectionState.Open)
-                    GlobalVariables
-                        .DefaultLogger
-                        .Info("Connection to db on start works! Performing table checks...");
+                    GlobalVariables.DefaultLogger.Info(
+                        "Connection to db on start works! Performing table checks..."
+                    );
 
                 if (Data.GlobalVariables.SkipDbSetup is null or false)
                 {
@@ -65,17 +65,15 @@ public static class DbConfigUtilPoliFemo
                     DB.ExecuteSelect(sql, Data.GlobalVariables.DbConfigVar);
                 }
 
-                GlobalVariables
-                    .DefaultLogger
-                    .Info("Table checks completed! Starting application...");
+                GlobalVariables.DefaultLogger.Info(
+                    "Table checks completed! Starting application..."
+                );
             }
             catch (Exception ex)
             {
-                GlobalVariables
-                    .DefaultLogger
-                    .Emergency(
-                        "An error occurred while initializing the database. Check the details and try again."
-                    );
+                GlobalVariables.DefaultLogger.Emergency(
+                    "An error occurred while initializing the database. Check the details and try again."
+                );
                 GlobalVariables.DefaultLogger.Emergency(ex.Message);
 
                 Environment.Exit(1);

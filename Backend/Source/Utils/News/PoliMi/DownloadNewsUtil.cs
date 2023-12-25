@@ -53,8 +53,7 @@ public static class DownloadNewsUtil
                 tagFinal = NodeUtil
                     .GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
                     ?.First(x => x.GetClasses().Contains("newsCategory"))
-                    .InnerHtml
-                    .Trim();
+                    .InnerHtml.Trim();
                 urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
             }
             else
@@ -79,8 +78,7 @@ public static class DownloadNewsUtil
                     tagFinal = NodeUtil
                         .GetElementsByTagAndClassName(htmlNews.NodePoliMiHomePage, "span")
                         ?.First(x => x.GetClasses().Contains("newsCategory"))
-                        .InnerHtml
-                        .Trim();
+                        .InnerHtml.Trim();
                     urlImgFinal = img.StartsWith("http") ? img : "https://polimi.it" + img;
                 }
             }

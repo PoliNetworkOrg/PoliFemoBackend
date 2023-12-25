@@ -52,9 +52,9 @@ public class ArticleContent
                 // If empty, try to get the "content" id
                 if (urls == null)
                 {
-                    GlobalVariables
-                        .DefaultLogger
-                        .Info("No news-single-item class found, trying to get the content element");
+                    GlobalVariables.DefaultLogger.Info(
+                        "No news-single-item class found, trying to get the content element"
+                    );
                     urls = urls1.First(x => x.GetAttributeValue("id", "") == "content");
                 }
 
@@ -71,8 +71,7 @@ public class ArticleContent
 
                 if (i == 0)
                 {
-                    var pathnode = doc.DocumentNode
-                        .Descendants("li")
+                    var pathnode = doc.DocumentNode.Descendants("li")
                         .FirstOrDefault(li => li.GetAttributeValue("id", "") == "lienglish")
                         ?.Descendants("span")
                         .First()

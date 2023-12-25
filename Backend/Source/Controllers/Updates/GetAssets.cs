@@ -18,8 +18,7 @@ namespace PoliFemoBackend.Source.Controllers.Admin;
 public class GetUpdateAssetController : ControllerBase
 {
     private readonly HttpProxyOptions _httpOptions = HttpProxyOptionsBuilder
-        .Instance
-        .WithAfterReceive(
+        .Instance.WithAfterReceive(
             (c, hrm) =>
             {
                 MediaTypeHeaderValue header;

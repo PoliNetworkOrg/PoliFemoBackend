@@ -26,9 +26,9 @@ public static class LoginUtil
 
         try
         {
-            token = GlobalVariables
-                .TokenHandler
-                ?.ReadJwtToken(responseJson["access_token"]?.ToString());
+            token = GlobalVariables.TokenHandler?.ReadJwtToken(
+                responseJson["access_token"]?.ToString()
+            );
             var domain = token?.Payload["upn"].ToString()?.Split('@')[1];
             if (domain == null || token?.Subject == null)
             {
@@ -64,16 +64,16 @@ public static class LoginUtil
                 }
             }
 
-            token = GlobalVariables
-                .TokenHandler
-                ?.ReadJwtToken(responseJson["id_token"]?.ToString());
+            token = GlobalVariables.TokenHandler?.ReadJwtToken(
+                responseJson["id_token"]?.ToString()
+            );
             subject = token != null ? token.Subject : throw new Exception("Token is null");
         }
         catch (ArgumentException)
         {
-            token = GlobalVariables
-                .TokenHandler
-                ?.ReadJwtToken(responseJson["id_token"]?.ToString());
+            token = GlobalVariables.TokenHandler?.ReadJwtToken(
+                responseJson["id_token"]?.ToString()
+            );
             subject =
                 token?.Subject
                 ?? throw new Exception(
