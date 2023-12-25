@@ -21,15 +21,13 @@ public class PageNotFoundMiddleware
             switch (httpContext.Response.StatusCode)
             {
                 case 404:
-                    await httpContext
-                        .Response
-                        .WriteAsJsonAsync(
-                            new
-                            {
-                                Description = "Welcome to PoliNetwork's API. If you were looking for something in particular it has not been found or has been moved. For a list of available APIs please visit https://api.polinetwork.org/swagger",
-                                Status = 404
-                            }
-                        );
+                    await httpContext.Response.WriteAsJsonAsync(
+                        new
+                        {
+                            Description = "Welcome to PoliNetwork's API. If you were looking for something in particular it has not been found or has been moved. For a list of available APIs please visit https://api.polinetwork.org/swagger",
+                            Status = 404
+                        }
+                    );
 
                     return;
             }
