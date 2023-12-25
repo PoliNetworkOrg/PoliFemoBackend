@@ -1,0 +1,35 @@
+name: Formatting Fix
+
+on:
+  workflow_dispatch:
+
+jobs:
+  csharpier_check:
+    name: Check csharpier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout
+      - name: Install dependencies
+        run: |
+          dotnet tool restore
+      - name: Run csharpier
+        run: |
+          dotnet csharpier .
+          dotnet csharpier --check .
+
+      - name: git config
+        run: |
+          git config --global user.email "github-csharpier@nouser.github.com"
+          git config --global user.name "csharpier"
+
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'CSharpier PR'
+          title: 'CSharpier PR'
+          body: 'CSharpier PR'
+          branch-suffix: timestamp
