@@ -36,7 +36,7 @@
         <PackageReference Include="Jsonize.Parser" Version="3.1.1"/>
         <PackageReference Include="Jsonize.Serializer" Version="3.1.1"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.14"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.14"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0"/>
         <PackageReference Include="Mysql.Data" Version="8.2.0"/>
@@ -45,7 +45,7 @@
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.2"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2"/>
-        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.0.0" />
+        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.1.2" />
     </ItemGroup>
 
     <ItemGroup>
