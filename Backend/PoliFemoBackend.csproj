@@ -44,7 +44,7 @@
         <PackageReference Include="ReverseMarkdown" Version="4.1.0"/>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.2"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0"/>
         <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.1.2" />
     </ItemGroup>
 
