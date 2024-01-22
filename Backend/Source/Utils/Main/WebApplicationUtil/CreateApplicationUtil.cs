@@ -33,8 +33,8 @@ public static class CreateApplicationUtil
             options.EnableEndpointRouting = false;
         });
 
-        builder.Services.AddMvcCore(
-            opts => opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver()))
+        builder.Services.AddMvcCore(opts =>
+            opts.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver()))
         );
         builder.Services.AddLogging();
         builder.Services.AddProxies();
@@ -57,18 +57,15 @@ public static class CreateApplicationUtil
         builder.Services.AddRateLimiter(limiterOptions =>
         {
             limiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-            limiterOptions.GlobalLimiter = PartitionedRateLimiter.Create<
-                HttpContext,
-                IPAddress
-            >(context =>
-            {
-                IPAddress? remoteIpAddress = context.Connection.RemoteIpAddress;
-                if (!IPAddress.IsLoopback(remoteIpAddress!))
+            limiterOptions.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(
+                context =>
                 {
-                    return RateLimitPartition.GetTokenBucketLimiter(
-                        remoteIpAddress!,
-                        _ =>
-                            new TokenBucketRateLimiterOptions
+                    IPAddress? remoteIpAddress = context.Connection.RemoteIpAddress;
+                    if (!IPAddress.IsLoopback(remoteIpAddress!))
+                    {
+                        return RateLimitPartition.GetTokenBucketLimiter(
+                            remoteIpAddress!,
+                            _ => new TokenBucketRateLimiterOptions
                             {
                                 TokenLimit = 50,
                                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
@@ -77,10 +74,11 @@ public static class CreateApplicationUtil
                                 TokensPerPeriod = 50,
                                 AutoReplenishment = true
                             }
-                    );
+                        );
+                    }
+                    return RateLimitPartition.GetNoLimiter(IPAddress.Loopback);
                 }
-                return RateLimitPartition.GetNoLimiter(IPAddress.Loopback);
-            });
+            );
         });
         builder
             .Host.ConfigureMetrics(metricsBuilder =>

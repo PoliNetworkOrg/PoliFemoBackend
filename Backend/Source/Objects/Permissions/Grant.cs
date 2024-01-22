@@ -22,9 +22,11 @@ public class Grant
     public static List<JObject> GetFormattedPerms(IEnumerable<Grant> perms)
     {
         return perms
-            .Select(
-                t => new JObject { { nameof(grant), t.grant }, { nameof(object_id), t.object_id } }
-            )
+            .Select(t => new JObject
+            {
+                { nameof(grant), t.grant },
+                { nameof(object_id), t.object_id }
+            })
             .ToList();
     }
 }

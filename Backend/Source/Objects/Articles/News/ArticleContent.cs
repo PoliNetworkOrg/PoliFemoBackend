@@ -45,8 +45,8 @@ public class ArticleContent
             try
             {
                 // Try to get the news-single-item class, if none are found, try to get the content id
-                var urls = urls1.FirstOrDefault(
-                    x => x.GetAttributeValue("class", "") == "news-single-item"
+                var urls = urls1.FirstOrDefault(x =>
+                    x.GetAttributeValue("class", "") == "news-single-item"
                 );
 
                 // If empty, try to get the "content" id
