@@ -14,8 +14,7 @@ public static class DownloadNewsUtil
         // Get news from the Polimi news page
         var docNews = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
         var urls = docNews
-            ?.DocumentNode
-            .SelectNodes("//ul")
+            ?.DocumentNode.SelectNodes("//ul")
             .First(x => x.GetClasses().Contains("ce-menu"));
 
         // Get news from the Polimi home page
