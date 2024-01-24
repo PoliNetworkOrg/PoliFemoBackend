@@ -71,7 +71,8 @@ public class ArticleContent
 
                 if (i == 0)
                 {
-                    var pathnode = doc.DocumentNode.Descendants("li")
+                    var pathnode = doc
+                        .DocumentNode.Descendants("li")
                         .FirstOrDefault(li => li.GetAttributeValue("id", "") == "lienglish")
                         ?.Descendants("span")
                         .First()
