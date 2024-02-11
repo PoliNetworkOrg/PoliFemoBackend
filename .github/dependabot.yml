@@ -12,7 +12,8 @@ updates:
     labels:
       - "dependencies"
     commit-message:
-      prefix: "fix"
+      prefix: "chore"
       include: "scope"
-    grouping:
-      update-types: ["all"]
+    groups: 
+      - group-name: "dependencies"
+        update-types: ["all"]
