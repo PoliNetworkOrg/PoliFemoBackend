@@ -16,4 +16,5 @@ updates:
       include: "scope"
     groups: 
       global-dependencies:
-        update-types: ["all"]
+        patterns:
+          - "*"
