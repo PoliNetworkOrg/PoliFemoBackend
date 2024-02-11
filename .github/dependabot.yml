@@ -15,5 +15,5 @@ updates:
       prefix: "chore"
       include: "scope"
     groups: 
-      - group-name: "dependencies"
+      global-dependencies:
         update-types: ["all"]
