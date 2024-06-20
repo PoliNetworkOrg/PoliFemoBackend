@@ -2,6 +2,7 @@
 
 using PoliFemoBackend.Source.Objects.Articles.News;
 using PoliNetwork.Html.Utils;
+using CoreGlobals = PoliNetwork.Core.Data.GlobalVariables;
 
 #endregion
 
@@ -11,23 +12,33 @@ public static class DownloadNewsUtil
 {
     internal static IEnumerable<ArticleNews> DownloadCurrentNews()
     {
-        // Get news from the Polimi news page
-        var docNews = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
-        var urls = docNews
-            ?.DocumentNode.SelectNodes("//ul")
-            .First(x => x.GetClasses().Contains("ce-menu"));
+        try
+        {
+            // Get news from the Polimi news page
+            var docNews = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
+            var urls = docNews
+                ?.DocumentNode.SelectNodes("//ul")
+                .First(x => x.GetClasses().Contains("ce-menu"));
 
-        // Get news from the Polimi home page
-        var docPoliMi = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiHomePage);
-        var newsPolimi = PoliMiNewsUtil.GetNewsPoliMi(docPoliMi);
+            // Get news from the Polimi home page
+            var docPoliMi = HtmlNewsUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiHomePage);
+            var newsPolimi = PoliMiNewsUtil.GetNewsPoliMi(docPoliMi);
 
-        // Merge the two lists
-        var newslist = MergeNewsUtil.Merge(urls?.ChildNodes, newsPolimi);
+            // Merge the two lists
+            var newslist = MergeNewsUtil.Merge(urls?.ChildNodes, newsPolimi);
 
-        // Filter & parse the news
-        var newsobjlist = newslist.Select(ExtractNews).ToList();
+            // Filter & parse the news
+            var newsobjlist = newslist.Select(ExtractNews).ToList();
 
-        return (from item in newsobjlist where item != null select item).ToList();
+            return (from item in newsobjlist where item != null select item).ToList();
+        }
+        catch (InvalidOperationException ex)
+        {
+            CoreGlobals.DefaultLogger.Error(
+                "There was an error parsing the polimi page, search skipped: " + ex
+            );
+            return new List<ArticleNews>();
+        }
     }
 
     private static ArticleNews? ExtractNews(HtmlNews htmlNews)
