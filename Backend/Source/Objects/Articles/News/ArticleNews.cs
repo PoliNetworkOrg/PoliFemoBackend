@@ -19,7 +19,6 @@ public class ArticleNews
     {
         this.tag = tag;
         this.image = image;
-        internalNews = true;
         author_id = 1;
         content = new ArticleContent[2];
     }
@@ -33,7 +32,6 @@ public class ArticleNews
         double? longitude,
         string? blurhash,
         int platforms,
-        bool? internalNews,
         string? tag,
         ArticleContent[] content
     )
@@ -46,7 +44,6 @@ public class ArticleNews
         this.longitude = longitude;
         this.blurhash = blurhash;
         this.platforms = platforms;
-        this.internalNews = internalNews;
         this.tag = tag;
         this.content = content;
     }
@@ -61,7 +58,6 @@ public class ArticleNews
     public double? longitude { get; set; }
     public string? blurhash { get; set; }
     public int? platforms { get; set; }
-    public bool? internalNews { get; set; }
     public string? tag { get; set; }
 
     public void AddContent(ArticleContent c)

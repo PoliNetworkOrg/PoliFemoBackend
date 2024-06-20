@@ -1,10 +1,8 @@
 ﻿#region
 
-using HtmlAgilityPack;
-using PoliNetwork.Core.Data;
 using PoliNetwork.Core.Enums;
 using PoliNetwork.Core.Objects.Threading;
-using PoliNetwork.Html.Utils;
+using CoreGlobals = PoliNetwork.Core.Data.GlobalVariables;
 
 #endregion
 
@@ -12,18 +10,7 @@ namespace PoliFemoBackend.Source.Utils.News.PoliMi;
 
 public static class PoliMiNewsUtil
 {
-    internal const string UrlPoliMiNews = "https://www.polimi.it/in-evidenza";
-    internal const string UrlPoliMiHomePage = "https://www.polimi.it/";
-
-    internal static List<HtmlNode>? GetNewsPoliMi(HtmlDocument? docPoliMi)
-    {
-        var slider = NodeUtil.GetElementsByTagAndClassName(docPoliMi?.DocumentNode, "body", null);
-        var slider2 = NodeUtil.GetElementsByTagAndClassName(slider?.First(), "section");
-        var slider3 = slider2?.First(x => x.Id == "news");
-        var slider4 = NodeUtil.GetElementsByTagAndClassName(slider3, "div");
-        var slider5 = slider4?.Where(x => x.GetClasses().Contains("sp-slide")).ToList();
-        return slider5;
-    }
+    internal const string UrlPoliMiNews = "https://polimi.it/il-politecnico/news";
 
     /// <summary>
     ///     Loops every 30 mins to sync PoliMi news with the app db
@@ -46,9 +33,10 @@ public static class PoliMiNewsUtil
             catch (Exception ex)
             {
                 threadWithAction.Failed++;
-                GlobalVariables.DefaultLogger.Error(ex.ToString());
+                CoreGlobals.DefaultLogger.Error(ex.ToString());
             }
 
+            CoreGlobals.DefaultLogger.Debug("Finished autosearch of news.");
             Thread.Sleep(timeToWait);
         }
         // ReSharper disable once FunctionNeverReturns
