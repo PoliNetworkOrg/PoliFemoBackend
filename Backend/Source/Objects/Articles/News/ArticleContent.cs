@@ -44,11 +44,15 @@ public class ArticleContent
                 // Get the html article content
                 var htmlContent = article.SelectSingleNode("//div[@itemprop='articleBody']");
 
-                r[i].title = article.SelectSingleNode("//h1[@itemprop='headline']").InnerText.Trim();
-                r[i].subtitle = article.SelectSingleNode("//div[@itemprop='description']").InnerText.Trim();
+                r[i].title = article
+                    .SelectSingleNode("//h1[@itemprop='headline']")
+                    .InnerText.Trim();
+                r[i].subtitle = article
+                    .SelectSingleNode("//div[@itemprop='description']")
+                    .InnerText.Trim();
 
                 var content = converter.Convert(htmlContent.InnerHtml);
-                
+
                 content = content.Replace("](/", "](https://www.polimi.it/"); // Replace relative PoliMi links with absolute ones
                 r[i].content = content.Trim();
                 r[i].url = url;

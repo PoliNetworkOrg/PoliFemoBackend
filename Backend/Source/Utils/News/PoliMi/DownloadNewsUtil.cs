@@ -16,7 +16,12 @@ public static class DownloadNewsUtil
         {
             // Get news from the Polimi news page
             var docNews = HtmlPageUtil.LoadUrl(PoliMiNewsUtil.UrlPoliMiNews);
-            var newsCards = NodeUtil.GetElementsByTagAndClassName(docNews?.DocumentNode, "div", "card--editorial-photo") ?? new List<HtmlAgilityPack.HtmlNode>();
+            var newsCards =
+                NodeUtil.GetElementsByTagAndClassName(
+                    docNews?.DocumentNode,
+                    "div",
+                    "card--editorial-photo"
+                ) ?? new List<HtmlAgilityPack.HtmlNode>();
 
             // Filter & parse the news
             var newsobjlist = newsCards?.Select(ExtractNews).ToList();
@@ -36,9 +41,16 @@ public static class DownloadNewsUtil
     {
         try
         {
-            string url = "https://polimi.it" + htmlNews?.SelectSingleNode(".//a")?.GetAttributeValue("href", "") ?? "";
+            string url =
+                "https://polimi.it"
+                    + htmlNews?.SelectSingleNode(".//a")?.GetAttributeValue("href", "")
+                ?? "";
 
-            string img = NodeUtil.GetElementsByTagAndClassName(htmlNews, "img")?.First()?.GetAttributeValue("src", "") ?? "";
+            string img =
+                NodeUtil
+                    .GetElementsByTagAndClassName(htmlNews, "img")
+                    ?.First()
+                    ?.GetAttributeValue("src", "") ?? "";
             img = img.StartsWith("http") ? img : "https://polimi.it" + img;
 
             string tag = "tags_dalpoli";
@@ -47,7 +59,7 @@ public static class DownloadNewsUtil
             var cts = ArticleContent.LoadContentFromURL(url ?? "");
             result.AddContent(cts[0]);
             result.AddContent(cts[1]);
-        
+
             return result;
         }
         catch (Exception ex)
