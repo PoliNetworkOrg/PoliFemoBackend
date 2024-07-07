@@ -49,6 +49,16 @@ create table if not exists Tags
     blurhash varchar(80) null
     );
 
+create table if not exists ArticleContent
+(
+    id       int auto_increment
+    primary key,
+    title    varchar(100) not null,
+    subtitle varchar(200) null,
+    content  text         not null,
+    url      varchar(500) null
+    );
+
 create table if not exists Articles
 (
     article_id   int unsigned auto_increment
@@ -75,15 +85,6 @@ create table if not exists Articles
     foreign key (tag_id) references Tags (name)
     );
 
-create table if not exists ArticleContent
-(
-    id       int auto_increment
-    primary key,
-    title    varchar(100) not null,
-    subtitle varchar(200) null,
-    content  text         not null,
-    url      varchar(500) null
-    );
 
 create table if not exists Types
 (
