@@ -11,8 +11,6 @@ public class ArticleNews
     //internal News
     private static readonly Config config = new() { RemoveComments = true };
 
-    private static Converter converter = new(config);
-
     public ArticleContent[] content = new ArticleContent[2];
 
     public ArticleNews(string? tag, string? image)

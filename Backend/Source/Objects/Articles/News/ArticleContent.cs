@@ -41,7 +41,7 @@ public class ArticleContent
             var article = doc.DocumentNode.SelectSingleNode("//div[@class='article']");
             try
             {
-                // Get the html article content
+                // Get the html article text
                 var htmlContent = article.SelectSingleNode("//div[@itemprop='articleBody']");
 
                 r[i].title = article
@@ -59,7 +59,7 @@ public class ArticleContent
 
                 if (i == 0)
                 {
-                    //Get second li element
+                    //Get the second li element (the link to the english version, if available)
                     var pathnode = doc.DocumentNode.SelectNodes("//li//a").Skip(1).FirstOrDefault();
                     if (pathnode == null)
                         break;
